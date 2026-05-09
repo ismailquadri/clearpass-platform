@@ -1,4 +1,5 @@
 # Frontend Audit: Quick Reference Checklist
+
 ## For AI Agents — Rapid Assessment Format
 
 ---
@@ -6,30 +7,35 @@
 ## 🚀 QUICK WINS (Check These First — Easy Fixes, High Impact)
 
 ### Performance (5 min check)
+
 - [ ] Lighthouse score > 80? (If <50, site feels slow)
 - [ ] First Contentful Paint < 1.8s?
 - [ ] No images >500KB?
 - [ ] Mobile LCP < 2.5s?
 
 ### Critical Bugs (5 min check)
+
 - [ ] Can I sign up → log in → use main feature without errors?
 - [ ] Forms submit without duplicating on double-click?
 - [ ] "No data" screens show helpful guidance, not blank?
 - [ ] Links don't 404 (or 404 page is helpful)?
 
 ### Mobile Basics (5 min check)
+
 - [ ] No horizontal scroll?
 - [ ] Buttons at least 44x44px and tappable?
 - [ ] Text readable without zoom (16px+ body)?
 - [ ] Keyboard doesn't cover form inputs?
 
 ### Accessibility Basics (5 min check)
+
 - [ ] Can I Tab through page without getting stuck?
 - [ ] Can I see focus outline (keyboard nav)?
 - [ ] Images have alt text (meaningful, not "image1")?
 - [ ] Text contrast looks good (no light gray on white)?
 
 ### Engagement (5 min check)
+
 - [ ] Is there a reason to come back? (Progress, streak, daily bonus?)
 - [ ] Does the app celebrate wins? (Confetti, badge, toast?)
 - [ ] Can I see my profile/personalization?
@@ -42,6 +48,7 @@
 ## 📋 FULL AUDIT CHECKLIST (Organized by Severity)
 
 ### CRITICAL (Product Cannot Ship)
+
 - [ ] No rendering crashes (blank screens, console errors)
 - [ ] Core features work on Chrome, Safari, Firefox
 - [ ] Forms don't double-submit on double-click
@@ -56,6 +63,7 @@
 - [ ] Responsive at 320px, 768px, 1440px breakpoints
 
 ### HIGH (Ship With These Fixed or Accept Known Issues)
+
 - [ ] Loading states visible (spinners, skeletons, not blank)
 - [ ] Confirmation on delete/destructive actions
 - [ ] Error messages clear and inline (not "ERR_400")
@@ -70,6 +78,7 @@
 - [ ] Images responsive (scale, not stretched)
 
 ### MEDIUM (Should Fix Soon After Launch)
+
 - [ ] Progress/streaks visible (if applicable to product)
 - [ ] Celebration animation on first significant action
 - [ ] Customization options (dark mode, preferences)
@@ -82,6 +91,7 @@
 - [ ] Achievement/badge system (if applicable)
 
 ### LOW (Nice-to-Have Polish)
+
 - [ ] Easter eggs or playful moments
 - [ ] Micro-animations (button press feedback)
 - [ ] Personalized recommendations
@@ -98,40 +108,47 @@
 ### Does the product have...
 
 **Habit Loops?**
+
 - [ ] Clear trigger (notification, email, internal motivation)
 - [ ] Frictionless action (one-click if possible)
 - [ ] Variable reward (not same every time)
 - [ ] Investment step (profile, content, purchase)
 
 **Progress Visibility?**
+
 - [ ] User sees % complete or level progress
 - [ ] Milestones celebrated (badge, toast, animation)
 - [ ] Next goal visible ("3 more to unlock...")
 
 **Streaks/Consistency Hooks?**
+
 - [ ] Daily login streak visible
 - [ ] Milestone streaks highlighted (7, 30, 365)
 - [ ] "You'll lose streak if you don't..." motivation
 
 **Social Mechanics?**
+
 - [ ] Can compare with friends or see leaderboard
 - [ ] Can see friend activity
 - [ ] Can share achievements
 - [ ] Can invite others
 
 **Rewards System?**
+
 - [ ] Points/XP visible and meaningful
 - [ ] Badges achievable but not trivial
 - [ ] Levels provide progression feeling
 - [ ] Unlockables available (features, cosmetics)
 
 **Personalization?**
+
 - [ ] Profile customizable (avatar, bio, theme)
 - [ ] Recommendations based on behavior
 - [ ] Notification preferences user-controlled
 - [ ] Dark/light mode toggle
 
 **FTUE (First-Time User Experience)?**
+
 - [ ] Product value clear within 3 seconds
 - [ ] Aha moment < 5 minutes
 - [ ] Tutorial/guide optional, not mandatory
@@ -139,6 +156,7 @@
 - [ ] No paywall before showing value
 
 **Scoring:**
+
 - 6–7 mechanics strong = Excellent retention potential
 - 4–5 mechanics = Good engagement
 - 2–3 mechanics = Basic, but will churn users
@@ -149,12 +167,14 @@
 ## 🔍 TESTING CHECKLIST BY DEVICE
 
 ### Desktop (Chrome)
+
 - [ ] LCP < 2.5s?
 - [ ] All buttons tappable/clickable?
 - [ ] Hover states visible?
 - [ ] Modal/overlay stacking correct?
 
 ### Mobile (iPhone)
+
 - [ ] No horizontal scroll?
 - [ ] Tap targets 44x44px+?
 - [ ] Keyboard doesn't hide input?
@@ -162,17 +182,20 @@
 - [ ] Input type correct (email, tel, number)?
 
 ### Tablet (iPad)
+
 - [ ] Landscape layout works?
 - [ ] Portrait layout works?
 - [ ] Touch targets adequate?
 
 ### Slow Network (3G)
+
 - [ ] Loading states visible?
 - [ ] Page usable while loading?
 - [ ] Images load progressively?
 - [ ] Timeouts handled (not infinite loading)?
 
 ### Screen Reader (NVDA/JAWS)
+
 - [ ] Page purpose clear from h1?
 - [ ] Navigation labeled (nav, landmark)?
 - [ ] Form inputs have labels?
@@ -180,12 +203,14 @@
 - [ ] Tables have headers?
 
 ### Keyboard Only (Tab/Shift-Tab/Enter/Escape)
+
 - [ ] Can reach all interactive elements?
 - [ ] Focus visible?
 - [ ] Tab order logical?
 - [ ] No traps (can't escape)?
 
 ### High Zoom (200%)
+
 - [ ] Readable?
 - [ ] Functional?
 - [ ] No horizontal scroll?
@@ -195,36 +220,42 @@
 ## 🚨 CRITICAL RED FLAGS (Stop and Fix)
 
 ### Performance
+
 - [ ] LCP > 4s on mobile = **CRITICAL**
 - [ ] CLS > 0.25 = **CRITICAL** (layout jumping is annoying)
 - [ ] "Error: undefined" visible to user = **CRITICAL**
 - [ ] Images > 1MB = **HIGH**
 
 ### Functionality
+
 - [ ] Forms submit twice on double-click = **CRITICAL**
 - [ ] API failure shows no message = **CRITICAL**
 - [ ] Modal can't be closed = **CRITICAL**
 - [ ] Core feature broken on mobile = **CRITICAL**
 
 ### UX
+
 - [ ] No indication when action completes = **HIGH**
 - [ ] No loading spinner (appears frozen) = **HIGH**
 - [ ] Buttons < 32px wide on mobile = **HIGH**
 - [ ] Error message unclear ("Invalid input") = **MEDIUM**
 
 ### Accessibility
+
 - [ ] Can't navigate with keyboard = **CRITICAL**
 - [ ] No focus visible = **CRITICAL**
 - [ ] Text contrast < 3:1 = **HIGH**
 - [ ] No alt text on images = **HIGH**
 
 ### Security
+
 - [ ] API tokens in localStorage = **CRITICAL**
 - [ ] XSS vulnerability (unescaped HTML) = **CRITICAL**
 - [ ] Mixed HTTP/HTTPS = **HIGH**
 - [ ] File upload no validation = **MEDIUM**
 
 ### Engagement
+
 - [ ] No reason to return (no progress, no reward) = **MEDIUM**
 - [ ] Success happens silently = **MEDIUM**
 - [ ] Notifications spam user (>5/day) = **MEDIUM**
@@ -234,6 +265,7 @@
 ## 📊 AUDIT SCORING SYSTEM
 
 **Technical: 0–100**
+
 - 90–100: Excellent (fast, reliable, no errors)
 - 70–89: Good (minor issues, good baseline)
 - 50–69: Acceptable (works but has friction)
@@ -241,6 +273,7 @@
 - 0–29: Broken (not production-ready)
 
 **UX: 0–100**
+
 - 90–100: Delightful (clear, intuitive, polished)
 - 70–89: Good (minor clarity issues)
 - 50–69: Adequate (works but confusing in places)
@@ -248,6 +281,7 @@
 - 0–29: Broken (can't figure out how to use)
 
 **Accessibility: A–F**
+
 - A: Full WCAG AA compliance (keyboard, SR, contrast, etc.)
 - B: Most WCAG AA (minor gaps)
 - C: Some accessibility (basic only)
@@ -255,6 +289,7 @@
 - F: Inaccessible (fails on multiple criteria)
 
 **Engagement: 0–10 Hooks**
+
 - 8–10: Habit-forming (multiple strong mechanics)
 - 6–7: Engaging (good retention potential)
 - 4–5: Basic engagement (users return for utility)
@@ -262,6 +297,7 @@
 - 0–1: No reason to return (one-time use only)
 
 **Overall Grade: A–F**
+
 - A: Ship it (minor polish only)
 - B: Ship with known issues (non-critical items documented)
 - C: Fix critical items, then ship
@@ -287,6 +323,7 @@ For each issue found, document:
 ```
 
 ### Example:
+
 ```
 **Issue ID:** #3
 **Feature/Page:** Mobile Sign-Up Form

@@ -430,10 +430,11 @@ export function CertificateUploadModal({
             {uploadMethod === 'manual' && (
               <div className="space-y-4">
                 <div>
-                  <label className="block mb-2" style={{ fontSize: '13px', fontWeight: '500' }}>
+                  <label htmlFor="cert-number" className="block mb-2" style={{ fontSize: '13px', fontWeight: '500' }}>
                     Certificate Number *
                   </label>
                   <input
+                    id="cert-number"
                     type="text"
                     value={certificateNumber}
                     onChange={(e) => setCertificateNumber(e.target.value)}
@@ -445,10 +446,11 @@ export function CertificateUploadModal({
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block mb-2" style={{ fontSize: '13px', fontWeight: '500' }}>
+                    <label htmlFor="cert-issued-date" className="block mb-2" style={{ fontSize: '13px', fontWeight: '500' }}>
                       Issued Date *
                     </label>
                     <input
+                      id="cert-issued-date"
                       type="date"
                       value={issuedDate}
                       onChange={(e) => setIssuedDate(e.target.value)}
@@ -458,10 +460,11 @@ export function CertificateUploadModal({
                   </div>
 
                   <div>
-                    <label className="block mb-2" style={{ fontSize: '13px', fontWeight: '500' }}>
+                    <label htmlFor="cert-expiry-date" className="block mb-2" style={{ fontSize: '13px', fontWeight: '500' }}>
                       Expiry Date *
                     </label>
                     <input
+                      id="cert-expiry-date"
                       type="date"
                       value={expiryDate}
                       onChange={(e) => setExpiryDate(e.target.value)}
@@ -472,10 +475,11 @@ export function CertificateUploadModal({
                 </div>
 
                 <div>
-                  <label className="block mb-2" style={{ fontSize: '13px', fontWeight: '500' }}>
+                  <label htmlFor="cert-issuing-authority" className="block mb-2" style={{ fontSize: '13px', fontWeight: '500' }}>
                     Issuing Authority
                   </label>
                   <input
+                    id="cert-issuing-authority"
                     type="text"
                     value={issuingAuthority}
                     onChange={(e) => setIssuingAuthority(e.target.value)}
@@ -510,10 +514,11 @@ export function CertificateUploadModal({
                 </div>
 
                 <div>
-                  <label className="block mb-2" style={{ fontSize: '13px', fontWeight: '500' }}>
+                  <label htmlFor="api-cert-number" className="block mb-2" style={{ fontSize: '13px', fontWeight: '500' }}>
                     Certificate Number
                   </label>
                   <input
+                    id="api-cert-number"
                     type="text"
                     value={certificateNumber}
                     onChange={(e) => setCertificateNumber(e.target.value)}

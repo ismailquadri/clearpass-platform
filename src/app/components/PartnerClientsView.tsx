@@ -216,8 +216,10 @@ export function PartnerClientsView() {
         <div className="bg-card border border-border rounded-lg p-4 mb-6">
           <div className="flex gap-4">
             <div className="flex-1 relative">
+              <label htmlFor="partner-clients-search" className="sr-only absolute">Search clients</label>
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
               <input
+                id="partner-clients-search"
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}

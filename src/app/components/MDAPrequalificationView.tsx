@@ -91,10 +91,18 @@ export function MDAPrequalificationView() {
   };
 
   const removeVendor = (id: string) => {
-    const vendor = vendors.find(v => v.id === id);
-    if (window.confirm(`Are you sure you want to remove ${vendor?.companyName} from the pre-qualification list? This action cannot be undone.`)) {
+    const vendor = vendors.find((v) => v.id === id);
+    if (
+      window.confirm(
+        `Are you sure you want to remove ${vendor?.companyName} from the pre-qualification list? This action cannot be undone.`
+      )
+    ) {
       setVendors(vendors.filter((v) => v.id !== id));
-      showToast('success', 'Vendor Removed', `${vendor?.companyName} has been removed from the list`);
+      showToast(
+        'success',
+        'Vendor Removed',
+        `${vendor?.companyName} has been removed from the list`
+      );
     }
   };
 
@@ -128,10 +136,11 @@ export function MDAPrequalificationView() {
         <div className="bg-card border border-border rounded-lg p-6 mb-6">
           <div className="grid grid-cols-2 gap-6">
             <div>
-              <label className="block mb-2" style={{ fontSize: '14px', fontWeight: '500' }}>
+              <label htmlFor="list-name-input" className="block mb-2" style={{ fontSize: '14px', fontWeight: '500' }}>
                 Pre-Qualification List Name
               </label>
               <input
+                id="list-name-input"
                 type="text"
                 value={listName}
                 onChange={(e) => setListName(e.target.value)}
@@ -139,10 +148,11 @@ export function MDAPrequalificationView() {
               />
             </div>
             <div>
-              <label className="block mb-2" style={{ fontSize: '14px', fontWeight: '500' }}>
+              <label htmlFor="tender-number-input" className="block mb-2" style={{ fontSize: '14px', fontWeight: '500' }}>
                 Tender Number
               </label>
               <input
+                id="tender-number-input"
                 type="text"
                 value={tenderNumber}
                 onChange={(e) => setTenderNumber(e.target.value)}

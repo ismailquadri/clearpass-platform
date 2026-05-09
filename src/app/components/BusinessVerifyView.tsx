@@ -68,13 +68,14 @@ export function BusinessVerifyView() {
 
         {/* Search Section */}
         <div className="bg-card border border-border rounded-lg p-6 mb-6">
-          <label className="block mb-3" style={{ fontSize: '14px', fontWeight: '500' }}>
+          <label htmlFor="business-search-input" className="block mb-3" style={{ fontSize: '14px', fontWeight: '500' }}>
             Company RC Number
           </label>
           <div className="flex gap-3">
             <div className="flex-1 relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
               <input
+                id="business-search-input"
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}

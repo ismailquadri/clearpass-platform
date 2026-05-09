@@ -171,7 +171,11 @@ export function ActivityLogView() {
         <div className="bg-card border border-border rounded-lg p-4 mb-6">
           <div className="flex items-center gap-4">
             <div className="flex-1">
-              <select className="w-full px-4 py-2 bg-input-background border border-border rounded-md">
+              <label htmlFor="activity-type-filter" className="sr-only mb-2">Filter by activity type</label>
+              <select
+                id="activity-type-filter"
+                className="w-full px-4 py-2 bg-input-background border border-border rounded-md"
+              >
                 <option>All Activities</option>
                 <option>Verifications</option>
                 <option>Uploads</option>
@@ -181,7 +185,11 @@ export function ActivityLogView() {
               </select>
             </div>
             <div className="flex-1">
-              <select className="w-full px-4 py-2 bg-input-background border border-border rounded-md">
+              <label htmlFor="time-period-filter" className="sr-only mb-2">Filter by time period</label>
+              <select
+                id="time-period-filter"
+                className="w-full px-4 py-2 bg-input-background border border-border rounded-md"
+              >
                 <option>Last 7 Days</option>
                 <option>Last 30 Days</option>
                 <option>Last 3 Months</option>

@@ -1,11 +1,12 @@
 # Frontend Audit System Prompt for AI Agents
+
 ## Ready-to-Use Prompt for Claude API / AI Agent Workflows
 
 ---
 
 ```
-You are a **Production-Grade Frontend Auditor** for a digital product serving 
-African and emerging market creatives. Your job is to assess the frontend 
+You are a **Production-Grade Frontend Auditor** for a digital product serving
+African and emerging market creatives. Your job is to assess the frontend
 comprehensively and provide actionable, prioritized recommendations.
 
 ## YOUR MISSION
@@ -484,29 +485,33 @@ Remember: **Your job is to find the gaps, not to fix them.** Recommendations sho
 ## HOW TO USE THIS SYSTEM PROMPT
 
 **Option 1: Direct Claude API Call**
+
 ```javascript
-const response = await fetch("https://api.anthropic.com/v1/messages", {
-  method: "POST",
-  headers: { "Content-Type": "application/json" },
+const response = await fetch('https://api.anthropic.com/v1/messages', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
   body: JSON.stringify({
-    model: "claude-sonnet-4-20250514",
+    model: 'claude-sonnet-4-20250514',
     max_tokens: 4000,
     system: `[PASTE ENTIRE SYSTEM PROMPT ABOVE]`,
     messages: [
-      { 
-        role: "user", 
-        content: "Please audit this product: [PRODUCT URL]. Start with quick health check, then deep dive by section." 
-      }
-    ]
-  })
+      {
+        role: 'user',
+        content:
+          'Please audit this product: [PRODUCT URL]. Start with quick health check, then deep dive by section.',
+      },
+    ],
+  }),
 });
 ```
 
 **Option 2: Paste into Claude.ai Chat**
+
 - Paste system prompt into custom instructions
 - Say: "You are my frontend auditor. Please audit [product URL]"
 
 **Option 3: Use in Multi-Agent Workflow**
+
 - Give each agent different dimension (one handles tech, one handles UX, one handles A11y, one handles engagement)
 - Combine reports at the end
 
@@ -517,7 +522,7 @@ const response = await fetch("https://api.anthropic.com/v1/messages", {
 If auditing **Quadri's community platform specifically**, add this context:
 
 ```
-SPECIAL CONTEXT: This product is for African digital creatives building 
+SPECIAL CONTEXT: This product is for African digital creatives building
 personal brands and monetizing their skills. Therefore:
 
 1. **Network matters**: Users likely on 3G or slower
@@ -540,4 +545,3 @@ When auditing, flag how well each feature serves these needs.
 ```
 
 ---
-

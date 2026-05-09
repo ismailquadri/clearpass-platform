@@ -230,11 +230,12 @@ export function VendorVerificationModal({ isOpen, onClose }: VendorVerificationM
           <div className="flex-1 overflow-y-auto p-6">
             {/* Search Section */}
             <div className="mb-6">
-              <label className="block mb-2" style={{ fontSize: '13px', fontWeight: '500' }}>
+              <label htmlFor="vendor-rc-input" className="block mb-2" style={{ fontSize: '13px', fontWeight: '500' }}>
                 RC Number
               </label>
               <div className="flex gap-3">
                 <input
+                  id="vendor-rc-input"
                   type="text"
                   value={rcNumber}
                   onChange={(e) => setRcNumber(e.target.value.toUpperCase())}

@@ -234,10 +234,11 @@ export function PartnerCertificateUploadModal({
             {step === 'client' && (
               <div className="space-y-4">
                 <div>
-                  <label className="block mb-2" style={{ fontSize: '13px', fontWeight: '500' }}>
+                  <label htmlFor="partner-search-input" className="block mb-2" style={{ fontSize: '13px', fontWeight: '500' }}>
                     Search Clients
                   </label>
                   <input
+                    id="partner-search-input"
                     type="text"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}

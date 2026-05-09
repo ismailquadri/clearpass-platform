@@ -133,12 +133,13 @@ export function MDAVerifyView() {
         <div className="bg-card border border-border rounded-lg p-6 mb-6">
           <div className="flex gap-4 mb-4">
             <div className="flex-1">
-              <label className="block mb-2" style={{ fontSize: '14px', fontWeight: '500' }}>
+              <label htmlFor="mda-search-input" className="block mb-2" style={{ fontSize: '14px', fontWeight: '500' }}>
                 RC Number or Company Name
               </label>
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
                 <input
+                  id="mda-search-input"
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
