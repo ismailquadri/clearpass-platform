@@ -1,4 +1,4 @@
-import { FileCheck, Download, Upload, Plus, CheckCircle2, XCircle, AlertTriangle, Trash2 } from 'lucide-react';
+import { Download, Upload, Plus, CheckCircle2, XCircle, AlertTriangle, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 
 interface Vendor {
@@ -190,22 +190,40 @@ export function MDAPrequalificationView() {
             <table className="w-full">
               <thead className="bg-muted/50">
                 <tr>
-                  <th className="px-6 py-3 text-left" style={{ fontSize: '12px', fontWeight: '500' }}>
+                  <th
+                    className="px-6 py-3 text-left"
+                    style={{ fontSize: '12px', fontWeight: '500' }}
+                  >
                     RC NUMBER
                   </th>
-                  <th className="px-6 py-3 text-left" style={{ fontSize: '12px', fontWeight: '500' }}>
+                  <th
+                    className="px-6 py-3 text-left"
+                    style={{ fontSize: '12px', fontWeight: '500' }}
+                  >
                     COMPANY NAME
                   </th>
-                  <th className="px-6 py-3 text-left" style={{ fontSize: '12px', fontWeight: '500' }}>
+                  <th
+                    className="px-6 py-3 text-left"
+                    style={{ fontSize: '12px', fontWeight: '500' }}
+                  >
                     SUBMISSION DATE
                   </th>
-                  <th className="px-6 py-3 text-left" style={{ fontSize: '12px', fontWeight: '500' }}>
+                  <th
+                    className="px-6 py-3 text-left"
+                    style={{ fontSize: '12px', fontWeight: '500' }}
+                  >
                     SCORE
                   </th>
-                  <th className="px-6 py-3 text-left" style={{ fontSize: '12px', fontWeight: '500' }}>
+                  <th
+                    className="px-6 py-3 text-left"
+                    style={{ fontSize: '12px', fontWeight: '500' }}
+                  >
                     STATUS
                   </th>
-                  <th className="px-6 py-3 text-left" style={{ fontSize: '12px', fontWeight: '500' }}>
+                  <th
+                    className="px-6 py-3 text-left"
+                    style={{ fontSize: '12px', fontWeight: '500' }}
+                  >
                     ACTIONS
                   </th>
                 </tr>
@@ -216,7 +234,10 @@ export function MDAPrequalificationView() {
                   const StatusIcon = config.icon;
 
                   return (
-                    <tr key={vendor.id} className="border-b border-border last:border-b-0 hover:bg-muted/30">
+                    <tr
+                      key={vendor.id}
+                      className="border-b border-border last:border-b-0 hover:bg-muted/30"
+                    >
                       <td className="px-6 py-4">
                         <span style={{ fontSize: '14px', fontFamily: 'monospace' }}>
                           {vendor.rcNumber}

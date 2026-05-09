@@ -159,7 +159,9 @@ export function ActivityLogView() {
       <div className="p-8 max-w-[1200px] mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="mb-2" style={{ fontSize: '32px' }}>Activity Log</h1>
+          <h1 className="mb-2" style={{ fontSize: '32px' }}>
+            Activity Log
+          </h1>
           <p className="text-muted-foreground" style={{ fontSize: '16px' }}>
             Track all compliance activities and system events
           </p>

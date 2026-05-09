@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import ErrorBoundary from './components/ErrorBoundary';
 import { Sidebar } from './components/Sidebar';
 import { MDASidebar } from './components/MDASidebar';
 import { PartnerSidebar } from './components/PartnerSidebar';
@@ -73,6 +74,18 @@ export default function App() {
           return <AlertsView />;
         case 'settings':
           return <SettingsView />;
+        default:
+          console.warn(`Unknown Business section: ${activeSection}`);
+          return (
+            <div className="flex-1 h-screen overflow-y-auto bg-background flex items-center justify-center">
+              <div className="text-center">
+                <h2 className="text-2xl mb-2">Section Not Found</h2>
+                <p className="text-muted-foreground">
+                  The section "{activeSection}" is not available in the Business Portal.
+                </p>
+              </div>
+            </div>
+          );
       }
     }
 
@@ -85,6 +98,18 @@ export default function App() {
           return <MDAPrequalificationView />;
         case 'settings':
           return <SettingsView />;
+        default:
+          console.warn(`Unknown MDA section: ${activeSection}`);
+          return (
+            <div className="flex-1 h-screen overflow-y-auto bg-background flex items-center justify-center">
+              <div className="text-center">
+                <h2 className="text-2xl mb-2">Section Not Found</h2>
+                <p className="text-muted-foreground">
+                  The section "{activeSection}" is not available in the MDA Portal.
+                </p>
+              </div>
+            </div>
+          );
       }
     }
 
@@ -97,44 +122,55 @@ export default function App() {
           return <PartnerAnalyticsView />;
         case 'settings':
           return <SettingsView />;
+        default:
+          console.warn(`Unknown Partner section: ${activeSection}`);
+          return (
+            <div className="flex-1 h-screen overflow-y-auto bg-background flex items-center justify-center">
+              <div className="text-center">
+                <h2 className="text-2xl mb-2">Section Not Found</h2>
+                <p className="text-muted-foreground">
+                  The section "{activeSection}" is not available in the Partner Portal.
+                </p>
+              </div>
+            </div>
+          );
       }
     }
 
-    // For other sections, show placeholder
+    // Fallback for unknown persona
+    console.warn(`Unknown persona: ${selectedPersona}`);
     return (
       <div className="flex-1 h-screen overflow-y-auto bg-background flex items-center justify-center">
         <div className="text-center">
-          <h2 style={{ fontSize: '24px', marginBottom: '8px' }}>
-            {activeSection.charAt(0).toUpperCase() + activeSection.slice(1)}
-          </h2>
-          <p className="text-muted-foreground">
-            {selectedPersona} Portal - {activeSection} section coming soon
-          </p>
+          <h2 className="text-2xl mb-2">Portal Not Found</h2>
+          <p className="text-muted-foreground">The portal "{selectedPersona}" is not available.</p>
         </div>
       </div>
     );
   };
 
   return (
-    <ToastProvider>
-      <div className="size-full flex">
-        {renderSidebar()}
-        {renderMainContent()}
+    <ErrorBoundary>
+      <ToastProvider>
+        <div className="size-full flex">
+          {renderSidebar()}
+          {renderMainContent()}
 
-        {/* Tweaks Panel */}
-        <TweaksButton onClick={() => setIsTweaksPanelOpen(true)} />
-        <TweaksPanel
-          isOpen={isTweaksPanelOpen}
-          onClose={() => setIsTweaksPanelOpen(false)}
-          selectedPersona={selectedPersona}
-          onPersonaChange={handlePersonaChange}
-          selectedState={selectedState}
-          onStateChange={setSelectedState}
-        />
+          {/* Tweaks Panel */}
+          <TweaksButton onClick={() => setIsTweaksPanelOpen(true)} />
+          <TweaksPanel
+            isOpen={isTweaksPanelOpen}
+            onClose={() => setIsTweaksPanelOpen(false)}
+            selectedPersona={selectedPersona}
+            onPersonaChange={handlePersonaChange}
+            selectedState={selectedState}
+            onStateChange={setSelectedState}
+          />
 
-        {/* Onboarding Flow */}
-        {showOnboarding && <OnboardingFlow onComplete={() => setShowOnboarding(false)} />}
-      </div>
-    </ToastProvider>
+          {/* Onboarding Flow */}
+          {showOnboarding && <OnboardingFlow onComplete={() => setShowOnboarding(false)} />}
+        </div>
+      </ToastProvider>
+    </ErrorBoundary>
   );
 }

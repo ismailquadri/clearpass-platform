@@ -82,21 +82,11 @@ export function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
                     className={`w-10 h-10 rounded-full flex items-center justify-center transition-all ${
                       isActive || isCompleted ? 'text-white' : 'bg-muted text-muted-foreground'
                     }`}
-                    style={
-                      isActive || isCompleted
-                        ? { backgroundColor: 'rgb(251, 115, 25)' }
-                        : {}
-                    }
+                    style={isActive || isCompleted ? { backgroundColor: 'rgb(251, 115, 25)' } : {}}
                   >
-                    {isCompleted ? (
-                      <Check className="w-5 h-5" />
-                    ) : (
-                      <StepIcon className="w-5 h-5" />
-                    )}
+                    {isCompleted ? <Check className="w-5 h-5" /> : <StepIcon className="w-5 h-5" />}
                   </div>
-                  {index < steps.length - 1 && (
-                    <div className="w-12 h-px bg-border mx-2" />
-                  )}
+                  {index < steps.length - 1 && <div className="w-12 h-px bg-border mx-2" />}
                 </div>
               );
             })}

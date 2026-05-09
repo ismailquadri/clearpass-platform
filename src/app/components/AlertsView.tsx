@@ -1,13 +1,4 @@
-import {
-  Bell,
-  AlertTriangle,
-  CheckCircle2,
-  Clock,
-  XCircle,
-  X,
-  RefreshCw,
-  Eye,
-} from 'lucide-react';
+import { Bell, AlertTriangle, CheckCircle2, Clock, XCircle, X, RefreshCw, Eye } from 'lucide-react';
 import { useState } from 'react';
 
 interface Alert {
@@ -78,7 +69,8 @@ export function AlertsView() {
       id: '5',
       type: 'success',
       title: 'NHIA Certificate Verified Successfully',
-      message: 'Your NHIA certificate has been verified via government API and is active until 15 Jan 2027.',
+      message:
+        'Your NHIA certificate has been verified via government API and is active until 15 Jan 2027.',
       timestamp: '6 May 2026, 10:23 AM',
       certificateName: 'NHIA',
       actionRequired: false,
@@ -166,7 +158,11 @@ export function AlertsView() {
               {unreadCount > 0 && (
                 <span
                   className="px-3 py-1 rounded-full text-white"
-                  style={{ backgroundColor: 'rgb(251, 115, 25)', fontSize: '14px', fontWeight: '500' }}
+                  style={{
+                    backgroundColor: 'rgb(251, 115, 25)',
+                    fontSize: '14px',
+                    fontWeight: '500',
+                  }}
                 >
                   {unreadCount} unread
                 </span>
@@ -271,10 +267,7 @@ export function AlertsView() {
             const Icon = config.icon;
 
             return (
-              <div
-                key={alert.id}
-                className="bg-card border border-[#e5e5e5] rounded-lg p-5"
-              >
+              <div key={alert.id} className="bg-card border border-[#e5e5e5] rounded-lg p-5">
                 <div className="flex items-start gap-4">
                   <div
                     className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0"

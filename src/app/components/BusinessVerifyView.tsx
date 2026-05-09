@@ -36,7 +36,9 @@ export function BusinessVerifyView() {
       <div className="p-8 max-w-[1000px] mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="mb-2" style={{ fontSize: '32px' }}>Verify Company</h1>
+          <h1 className="mb-2" style={{ fontSize: '32px' }}>
+            Verify Company
+          </h1>
           <p className="text-muted-foreground" style={{ fontSize: '16px' }}>
             Check compliance status of potential partners and subcontractors
           </p>
@@ -151,21 +153,21 @@ export function BusinessVerifyView() {
                     cert.status === 'active'
                       ? 'rgb(31, 193, 107)'
                       : cert.status === 'expiring'
-                      ? 'rgb(250, 115, 25)'
-                      : 'rgb(251, 55, 72)';
+                        ? 'rgb(250, 115, 25)'
+                        : 'rgb(251, 55, 72)';
                   const certStatusBg =
                     cert.status === 'active'
                       ? 'rgb(31, 193, 107, 0.1)'
                       : cert.status === 'expiring'
-                      ? 'rgb(250, 115, 25, 0.1)'
-                      : 'rgb(251, 55, 72, 0.1)';
+                        ? 'rgb(250, 115, 25, 0.1)'
+                        : 'rgb(251, 55, 72, 0.1)';
 
                   const StatusIcon =
                     cert.status === 'active'
                       ? CheckCircle2
                       : cert.status === 'expiring'
-                      ? AlertTriangle
-                      : XCircle;
+                        ? AlertTriangle
+                        : XCircle;
 
                   return (
                     <div
@@ -192,15 +194,18 @@ export function BusinessVerifyView() {
               style={{ backgroundColor: 'rgb(71, 194, 255, 0.1)' }}
             >
               <div className="flex items-start gap-2">
-                <FileText className="w-4 h-4 flex-shrink-0 mt-0.5" style={{ color: 'rgb(71, 194, 255)' }} />
+                <FileText
+                  className="w-4 h-4 flex-shrink-0 mt-0.5"
+                  style={{ color: 'rgb(71, 194, 255)' }}
+                />
                 <div>
                   <p style={{ fontSize: '14px', fontWeight: '500', color: 'rgb(71, 194, 255)' }}>
                     Verification Audit Trail
                   </p>
                   <p className="caption text-muted-foreground mt-1">
-                    This verification was performed by ClearPass at {verificationResult.lastVerified}
-                    . Results are current as of verification time and may change as certificates
-                    expire or are renewed.
+                    This verification was performed by ClearPass at{' '}
+                    {verificationResult.lastVerified}. Results are current as of verification time
+                    and may change as certificates expire or are renewed.
                   </p>
                 </div>
               </div>

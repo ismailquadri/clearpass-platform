@@ -1,4 +1,4 @@
-import { Users, Search, Plus, AlertCircle, CheckCircle2, TrendingUp, Upload } from 'lucide-react';
+import { Users, Search, Plus, AlertCircle, TrendingUp, Upload } from 'lucide-react';
 import { useState } from 'react';
 import { PartnerCertificateUploadModal } from './PartnerCertificateUploadModal';
 import { useToast } from './ToastProvider';
@@ -259,9 +259,7 @@ export function PartnerClientsView() {
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
                     <div className="flex items-center gap-3 mb-2">
-                      <h4 style={{ fontSize: '18px', fontWeight: '500' }}>
-                        {client.companyName}
-                      </h4>
+                      <h4 style={{ fontSize: '18px', fontWeight: '500' }}>{client.companyName}</h4>
                       <span
                         className="px-3 py-1 rounded-full"
                         style={{
@@ -307,8 +305,8 @@ export function PartnerClientsView() {
                                 client.daysToExpiry < 0
                                   ? 'rgb(251, 55, 72)'
                                   : client.daysToExpiry < 15
-                                  ? 'rgb(250, 115, 25)'
-                                  : 'inherit',
+                                    ? 'rgb(250, 115, 25)'
+                                    : 'inherit',
                             }}
                           >
                             (
@@ -330,13 +328,21 @@ export function PartnerClientsView() {
 
                   <div className="flex gap-2 ml-6">
                     <button
-                      onClick={() => showToast('info', 'Client Dashboard', 'Opening client compliance dashboard...')}
+                      onClick={() =>
+                        showToast(
+                          'info',
+                          'Client Dashboard',
+                          'Opening client compliance dashboard...'
+                        )
+                      }
                       className="px-4 py-2 rounded-md border border-border hover:bg-muted transition-colors"
                     >
                       View Dashboard
                     </button>
                     <button
-                      onClick={() => showToast('info', 'Client Management', 'Opening client management panel...')}
+                      onClick={() =>
+                        showToast('info', 'Client Management', 'Opening client management panel...')
+                      }
                       className="px-4 py-2 rounded-md text-white"
                       style={{ backgroundColor: 'rgb(251, 115, 25)' }}
                     >

@@ -6,7 +6,7 @@ import {
   Upload,
   Eye,
   Copy,
-  RefreshCw
+  RefreshCw,
 } from 'lucide-react';
 import { useState } from 'react';
 import { CertificateUploadModal } from './CertificateUploadModal';
@@ -133,14 +133,20 @@ export function CertificateCard({
             {isApiVerified && (
               <span
                 className="px-1.5 py-0.5 rounded-full flex items-center gap-0.5"
-                style={{ backgroundColor: 'rgb(71, 194, 255, 0.1)', color: 'rgb(71, 194, 255)', fontSize: '13px' }}
+                style={{
+                  backgroundColor: 'rgb(71, 194, 255, 0.1)',
+                  color: 'rgb(71, 194, 255)',
+                  fontSize: '13px',
+                }}
               >
                 <CheckCircle2 className="w-2.5 h-2.5" />
                 API
               </span>
             )}
           </div>
-          <p className="text-muted-foreground text-[#404040]" style={{ fontSize: '13px' }}>{name}</p>
+          <p className="text-muted-foreground text-[#404040]" style={{ fontSize: '13px' }}>
+            {name}
+          </p>
         </div>
         <div
           className="w-7 h-7 rounded-full flex items-center justify-center"
@@ -153,14 +159,16 @@ export function CertificateCard({
       {/* Status */}
       <div className="space-y-2">
         <div className="flex items-center justify-between">
-          <span className="text-muted-foreground text-[#404040]" style={{ fontSize: '13px' }}>Status</span>
+          <span className="text-muted-foreground text-[#404040]" style={{ fontSize: '13px' }}>
+            Status
+          </span>
           <span
             className="px-2 py-0.5 rounded-full"
             style={{
               backgroundColor: config.bgColor,
               color: config.color,
               fontSize: '13px',
-              fontWeight: '500'
+              fontWeight: '500',
             }}
           >
             {config.label}
@@ -169,21 +177,27 @@ export function CertificateCard({
 
         {config.showDays && daysToExpiry !== undefined && (
           <div className="flex items-center justify-between">
-            <span className="text-muted-foreground text-[#404040]" style={{ fontSize: '13px' }}>Days to Expiry</span>
+            <span className="text-muted-foreground text-[#404040]" style={{ fontSize: '13px' }}>
+              Days to Expiry
+            </span>
             <span style={{ fontSize: '12px', fontWeight: '500' }}>{daysToExpiry} days</span>
           </div>
         )}
 
         {expiryDate && (
           <div className="flex items-center justify-between">
-            <span className="text-muted-foreground text-[#404040]" style={{ fontSize: '13px' }}>Expiry Date</span>
+            <span className="text-muted-foreground text-[#404040]" style={{ fontSize: '13px' }}>
+              Expiry Date
+            </span>
             <span style={{ fontSize: '12px' }}>{expiryDate}</span>
           </div>
         )}
 
         {certificateNumber && (
           <div className="flex items-center justify-between">
-            <span className="text-muted-foreground text-[#404040]" style={{ fontSize: '13px' }}>Certificate No.</span>
+            <span className="text-muted-foreground text-[#404040]" style={{ fontSize: '13px' }}>
+              Certificate No.
+            </span>
             <div className="flex items-center gap-1">
               <span style={{ fontSize: '13px', fontFamily: 'monospace' }}>
                 {certificateNumber.slice(0, 12)}...
@@ -248,7 +262,11 @@ export function CertificateCard({
         dashboardState={dashboardState}
         urgencyLevel={urgencyLevel}
         onUploadSuccess={() => {
-          showToast('success', 'Certificate Updated', `${shortName} certificate has been updated successfully`);
+          showToast(
+            'success',
+            'Certificate Updated',
+            `${shortName} certificate has been updated successfully`
+          );
         }}
       />
 

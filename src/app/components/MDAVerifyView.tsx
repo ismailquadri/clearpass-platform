@@ -82,7 +82,11 @@ export function MDAVerifyView() {
   };
 
   const handleBulkUpload = () => {
-    showToast('info', 'Bulk Upload', 'Bulk upload feature coming soon. Contact support for assistance.');
+    showToast(
+      'info',
+      'Bulk Upload',
+      'Bulk upload feature coming soon. Contact support for assistance.'
+    );
   };
 
   const getStatusConfig = (status: VerificationResult['status']) => {
@@ -116,7 +120,9 @@ export function MDAVerifyView() {
       <div className="p-8 max-w-[1400px] mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="mb-2" style={{ fontSize: '32px' }}>Verify Vendors</h1>
+          <h1 className="mb-2" style={{ fontSize: '32px' }}>
+            Verify Vendors
+          </h1>
           <p className="text-muted-foreground" style={{ fontSize: '16px' }}>
             Real-time compliance verification for procurement pre-qualification
           </p>
@@ -168,7 +174,8 @@ export function MDAVerifyView() {
             </div>
           </div>
           <p className="caption text-muted-foreground">
-            Search for single vendor or upload CSV file with multiple RC numbers for batch verification
+            Search for single vendor or upload CSV file with multiple RC numbers for batch
+            verification
           </p>
         </div>
 
@@ -268,14 +275,14 @@ export function MDAVerifyView() {
                           cert.status === 'active'
                             ? 'rgb(31, 193, 107)'
                             : cert.status === 'expiring'
-                            ? 'rgb(250, 115, 25)'
-                            : 'rgb(251, 55, 72)';
+                              ? 'rgb(250, 115, 25)'
+                              : 'rgb(251, 55, 72)';
                         const certStatusBg =
                           cert.status === 'active'
                             ? 'rgb(31, 193, 107, 0.1)'
                             : cert.status === 'expiring'
-                            ? 'rgb(250, 115, 25, 0.1)'
-                            : 'rgb(251, 55, 72, 0.1)';
+                              ? 'rgb(250, 115, 25, 0.1)'
+                              : 'rgb(251, 55, 72, 0.1)';
 
                         return (
                           <div
@@ -292,9 +299,7 @@ export function MDAVerifyView() {
                             >
                               {cert.name}
                             </p>
-                            <p className="caption text-muted-foreground mt-1">
-                              {cert.expiryDate}
-                            </p>
+                            <p className="caption text-muted-foreground mt-1">{cert.expiryDate}</p>
                           </div>
                         );
                       })}

@@ -62,18 +62,26 @@ export function ReportsView() {
   ];
 
   const generateNewReport = () => {
-    showToast('success', 'Report Generated', 'Your compliance report is being generated and will be ready in a few moments');
+    showToast(
+      'success',
+      'Report Generated',
+      'Your compliance report is being generated and will be ready in a few moments'
+    );
   };
 
   const downloadReport = (report: Report) => {
     if (report.status === 'locked') {
-      showToast('error', 'Report Locked', 'This report requires a compliance score of 80+ to download');
+      showToast(
+        'error',
+        'Report Locked',
+        'This report requires a compliance score of 80+ to download'
+      );
       return;
     }
     showToast('success', 'Download Started', `Downloading ${report.title}`);
   };
 
-  const getReportIcon = (type: Report['type']) => {
+  const getReportIcon = (_type: Report['type']) => {
     return FileText;
   };
 
@@ -239,7 +247,10 @@ export function ReportsView() {
                         style={{ backgroundColor: 'rgb(251, 55, 72, 0.1)' }}
                       >
                         <div className="flex items-center gap-2">
-                          <AlertTriangle className="w-4 h-4" style={{ color: 'rgb(251, 55, 72)' }} />
+                          <AlertTriangle
+                            className="w-4 h-4"
+                            style={{ color: 'rgb(251, 55, 72)' }}
+                          />
                           <p className="caption" style={{ color: 'rgb(251, 55, 72)' }}>
                             Report locked: Score must be ≥80 with all certificates active to
                             generate Procurement Ready report
@@ -266,7 +277,9 @@ export function ReportsView() {
                       </button>
                       {report.type === 'procurement-ready' && report.status !== 'locked' && (
                         <button
-                          onClick={() => showToast('success', 'Email Sent', 'Report sent to procurement office')}
+                          onClick={() =>
+                            showToast('success', 'Email Sent', 'Report sent to procurement office')
+                          }
                           className="px-4 py-2 rounded-md border border-border hover:bg-muted transition-colors"
                         >
                           Email to MDA
@@ -294,8 +307,8 @@ export function ReportsView() {
                 Procurement Ready Report
               </h4>
               <p className="caption text-muted-foreground">
-                Full compliance report accepted by all federal MDAs. Requires score ≥80, NHIA active,
-                no expired certificates. Valid for 7 days from generation.
+                Full compliance report accepted by all federal MDAs. Requires score ≥80, NHIA
+                active, no expired certificates. Valid for 7 days from generation.
               </p>
             </div>
             <div>

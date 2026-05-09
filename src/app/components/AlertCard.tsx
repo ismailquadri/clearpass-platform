@@ -44,7 +44,9 @@ export function AlertCard({
       <Icon className="w-4 h-4 flex-shrink-0" style={{ color: config.color }} />
       <div className="flex-1 min-w-0">
         <p style={{ fontSize: '14px', fontWeight: '500', color: config.color }}>{title}</p>
-        <p className="text-muted-foreground text-[#404040]" style={{ fontSize: '13px' }}>{message}</p>
+        <p className="text-muted-foreground text-[#404040]" style={{ fontSize: '13px' }}>
+          {message}
+        </p>
       </div>
       {actionLabel && onAction && (
         <button

@@ -66,10 +66,7 @@ export function TweaksPanel({
   return (
     <>
       {/* Backdrop */}
-      <div
-        className="fixed inset-0 bg-black/20 z-40"
-        onClick={onClose}
-      />
+      <div className="fixed inset-0 bg-black/20 z-40" onClick={onClose} />
 
       {/* Panel */}
       <div
@@ -100,9 +97,7 @@ export function TweaksPanel({
                   key={persona}
                   onClick={() => onPersonaChange(persona)}
                   className={`flex-1 px-4 py-2 rounded-md transition-colors ${
-                    selectedPersona === persona
-                      ? 'bg-card shadow-sm'
-                      : 'hover:bg-card/50'
+                    selectedPersona === persona ? 'bg-card shadow-sm' : 'hover:bg-card/50'
                   }`}
                   style={{
                     fontSize: '14px',
@@ -113,9 +108,12 @@ export function TweaksPanel({
                 </button>
               ))}
             </div>
-            <p className="mt-3 text-muted-foreground" style={{ fontSize: '14px', lineHeight: '1.5' }}>
-              Switch between the three production portals. Each has its own information architecture,
-              sidebar, and task ergonomics.
+            <p
+              className="mt-3 text-muted-foreground"
+              style={{ fontSize: '14px', lineHeight: '1.5' }}
+            >
+              Switch between the three production portals. Each has its own information
+              architecture, sidebar, and task ergonomics.
             </p>
           </div>
 
@@ -139,7 +137,12 @@ export function TweaksPanel({
                   stroke="currentColor"
                   viewBox="0 0 24 24"
                 >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M19 9l-7 7-7-7"
+                  />
                 </svg>
               </button>
 
@@ -157,9 +160,7 @@ export function TweaksPanel({
                       }`}
                     >
                       <div className="flex items-center justify-between mb-1">
-                        <span style={{ fontSize: '14px', fontWeight: '500' }}>
-                          {state.label}
-                        </span>
+                        <span style={{ fontSize: '14px', fontWeight: '500' }}>{state.label}</span>
                         <span
                           className="px-2 py-0.5 rounded-full"
                           style={{
@@ -168,14 +169,14 @@ export function TweaksPanel({
                               state.score >= 80
                                 ? 'rgb(31, 193, 107, 0.1)'
                                 : state.score >= 60
-                                ? 'rgb(250, 115, 25, 0.1)'
-                                : 'rgb(251, 55, 72, 0.1)',
+                                  ? 'rgb(250, 115, 25, 0.1)'
+                                  : 'rgb(251, 55, 72, 0.1)',
                             color:
                               state.score >= 80
                                 ? 'rgb(31, 193, 107)'
                                 : state.score >= 60
-                                ? 'rgb(250, 115, 25)'
-                                : 'rgb(251, 55, 72)',
+                                  ? 'rgb(250, 115, 25)'
+                                  : 'rgb(251, 55, 72)',
                           }}
                         >
                           {state.score}/100
@@ -187,8 +188,12 @@ export function TweaksPanel({
                 </div>
               )}
             </div>
-            <p className="mt-3 text-muted-foreground" style={{ fontSize: '14px', lineHeight: '1.5' }}>
-              All six PRD-defined dashboard states. The state strip on the dashboard mirrors this control.
+            <p
+              className="mt-3 text-muted-foreground"
+              style={{ fontSize: '14px', lineHeight: '1.5' }}
+            >
+              All six PRD-defined dashboard states. The state strip on the dashboard mirrors this
+              control.
             </p>
           </div>
         </div>

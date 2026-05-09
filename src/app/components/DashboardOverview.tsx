@@ -68,7 +68,9 @@ export function DashboardOverview() {
       <div className="p-8 max-w-[1400px] mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="mb-2" style={{ fontSize: '32px' }}>Welcome back, Amaka</h1>
+          <h1 className="mb-2" style={{ fontSize: '32px' }}>
+            Welcome back, Amaka
+          </h1>
           <p className="text-muted-foreground" style={{ fontSize: '16px' }}>
             Here's your compliance status for TechBuild Nigeria Ltd.
           </p>
@@ -81,7 +83,9 @@ export function DashboardOverview() {
             title="Certificate Expiring Soon"
             message="Your NSITF certificate expires in 6 days. Renew now to maintain your Procurement Ready status."
             actionLabel="Renew Now"
-            onAction={() => showToast('info', 'Opening Renewal', 'Redirecting to NSITF renewal portal...')}
+            onAction={() =>
+              showToast('info', 'Opening Renewal', 'Redirecting to NSITF renewal portal...')
+            }
           />
           <AlertCard
             type="info"
@@ -164,7 +168,9 @@ export function DashboardOverview() {
 
         {/* Quick Actions */}
         <div className="bg-card border border-border rounded-lg p-6">
-          <h3 className="mb-4" style={{ fontSize: '18px' }}>Quick Actions</h3>
+          <h3 className="mb-4" style={{ fontSize: '18px' }}>
+            Quick Actions
+          </h3>
           <div className="grid grid-cols-4 gap-3">
             <button className="px-4 py-3 rounded-md border border-border hover:bg-muted transition-colors text-left">
               <p style={{ fontSize: '14px', fontWeight: '500' }}>Generate Report</p>

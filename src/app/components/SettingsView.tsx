@@ -14,9 +14,9 @@ import {
 import { useState } from 'react';
 
 export function SettingsView() {
-  const [activeTab, setActiveTab] = useState<'company' | 'notifications' | 'preferences' | 'security'>(
-    'company'
-  );
+  const [activeTab, setActiveTab] = useState<
+    'company' | 'notifications' | 'preferences' | 'security'
+  >('company');
 
   const tabs = [
     { id: 'company', label: 'Company Profile', icon: Building2 },
@@ -30,7 +30,9 @@ export function SettingsView() {
       <div className="p-8 max-w-[1200px] mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="mb-2" style={{ fontSize: '32px' }}>Settings</h1>
+          <h1 className="mb-2" style={{ fontSize: '32px' }}>
+            Settings
+          </h1>
           <p className="text-muted-foreground" style={{ fontSize: '16px' }}>
             Manage your company profile, notifications, and preferences
           </p>
@@ -49,11 +51,7 @@ export function SettingsView() {
                     ? 'text-foreground'
                     : 'border-transparent text-muted-foreground hover:text-foreground'
                 }`}
-                style={
-                  activeTab === tab.id
-                    ? { borderColor: 'rgb(251, 115, 25)' }
-                    : {}
-                }
+                style={activeTab === tab.id ? { borderColor: 'rgb(251, 115, 25)' } : {}}
               >
                 <Icon className="w-5 h-5" />
                 <span style={{ fontSize: '14px', fontWeight: '500' }}>{tab.label}</span>
@@ -90,9 +88,7 @@ export function SettingsView() {
                     disabled
                     className="w-full px-4 py-2 bg-muted border border-border rounded-md opacity-60"
                   />
-                  <p className="caption text-muted-foreground mt-1">
-                    RC number cannot be changed
-                  </p>
+                  <p className="caption text-muted-foreground mt-1">RC number cannot be changed</p>
                 </div>
                 <div>
                   <label className="block mb-2" style={{ fontSize: '14px', fontWeight: '500' }}>
@@ -111,7 +107,10 @@ export function SettingsView() {
                   <label className="block mb-2" style={{ fontSize: '14px', fontWeight: '500' }}>
                     Number of Employees
                   </label>
-                  <select className="w-full px-4 py-2 bg-input-background border border-border rounded-md" defaultValue="11-50">
+                  <select
+                    className="w-full px-4 py-2 bg-input-background border border-border rounded-md"
+                    defaultValue="11-50"
+                  >
                     <option>1-10</option>
                     <option>11-50</option>
                     <option>51-200</option>
@@ -406,14 +405,10 @@ export function SettingsView() {
               <div className="space-y-3">
                 <button className="w-full px-4 py-3 rounded-md border border-border hover:bg-muted transition-colors text-left">
                   <p style={{ fontSize: '14px', fontWeight: '500' }}>Change Password</p>
-                  <p className="caption text-muted-foreground">
-                    Last changed 45 days ago
-                  </p>
+                  <p className="caption text-muted-foreground">Last changed 45 days ago</p>
                 </button>
                 <button className="w-full px-4 py-3 rounded-md border border-border hover:bg-muted transition-colors text-left">
-                  <p style={{ fontSize: '14px', fontWeight: '500' }}>
-                    Two-Factor Authentication
-                  </p>
+                  <p style={{ fontSize: '14px', fontWeight: '500' }}>Two-Factor Authentication</p>
                   <p className="caption text-muted-foreground">
                     Add an extra layer of security to your account
                   </p>

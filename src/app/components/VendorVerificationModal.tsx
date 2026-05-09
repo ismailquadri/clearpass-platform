@@ -1,4 +1,13 @@
-import { X, Search, CheckCircle2, XCircle, AlertTriangle, Download, FileText, Shield } from 'lucide-react';
+import {
+  X,
+  Search,
+  CheckCircle2,
+  XCircle,
+  AlertTriangle,
+  Download,
+  FileText,
+  Shield,
+} from 'lucide-react';
 import { useState } from 'react';
 import { useToast } from './ToastProvider';
 
@@ -108,7 +117,11 @@ export function VendorVerificationModal({ isOpen, onClose }: VendorVerificationM
 
   const handleDownloadReport = () => {
     if (verificationResult) {
-      showToast('success', 'Report Downloaded', `Verification report for ${verificationResult.companyName}`);
+      showToast(
+        'success',
+        'Report Downloaded',
+        `Verification report for ${verificationResult.companyName}`
+      );
     }
   };
 
@@ -179,7 +192,10 @@ export function VendorVerificationModal({ isOpen, onClose }: VendorVerificationM
               </div>
               <div>
                 <h2 style={{ fontSize: '24px', fontWeight: '600' }}>Vendor Verification</h2>
-                <p className="text-muted-foreground text-[#404040] mt-1" style={{ fontSize: '14px' }}>
+                <p
+                  className="text-muted-foreground text-[#404040] mt-1"
+                  style={{ fontSize: '14px' }}
+                >
                   Verify vendor compliance status via RC number
                 </p>
               </div>
@@ -241,7 +257,10 @@ export function VendorVerificationModal({ isOpen, onClose }: VendorVerificationM
                       <h3 style={{ fontSize: '20px', fontWeight: '600' }} className="mb-1">
                         {verificationResult.companyName}
                       </h3>
-                      <p className="text-muted-foreground text-[#404040]" style={{ fontSize: '13px' }}>
+                      <p
+                        className="text-muted-foreground text-[#404040]"
+                        style={{ fontSize: '13px' }}
+                      >
                         RC Number: {verificationResult.rcNumber}
                       </p>
                     </div>
@@ -263,7 +282,10 @@ export function VendorVerificationModal({ isOpen, onClose }: VendorVerificationM
 
                   <div className="grid grid-cols-3 gap-4">
                     <div>
-                      <p className="text-muted-foreground text-[#404040] mb-1" style={{ fontSize: '11px' }}>
+                      <p
+                        className="text-muted-foreground text-[#404040] mb-1"
+                        style={{ fontSize: '11px' }}
+                      >
                         Compliance Score
                       </p>
                       <p
@@ -277,21 +299,35 @@ export function VendorVerificationModal({ isOpen, onClose }: VendorVerificationM
                       </p>
                     </div>
                     <div>
-                      <p className="text-muted-foreground text-[#404040] mb-1" style={{ fontSize: '11px' }}>
+                      <p
+                        className="text-muted-foreground text-[#404040] mb-1"
+                        style={{ fontSize: '11px' }}
+                      >
                         CAC Status
                       </p>
                       <div className="flex items-center gap-1.5">
                         <CheckCircle2 className="w-4 h-4" style={{ color: 'rgb(31, 193, 107)' }} />
-                        <p style={{ fontSize: '13px', fontWeight: '500', color: 'rgb(31, 193, 107)' }}>
+                        <p
+                          style={{
+                            fontSize: '13px',
+                            fontWeight: '500',
+                            color: 'rgb(31, 193, 107)',
+                          }}
+                        >
                           Verified
                         </p>
                       </div>
                     </div>
                     <div>
-                      <p className="text-muted-foreground text-[#404040] mb-1" style={{ fontSize: '11px' }}>
+                      <p
+                        className="text-muted-foreground text-[#404040] mb-1"
+                        style={{ fontSize: '11px' }}
+                      >
                         Last Verified
                       </p>
-                      <p style={{ fontSize: '13px', fontWeight: '500' }}>{verificationResult.lastVerified}</p>
+                      <p style={{ fontSize: '13px', fontWeight: '500' }}>
+                        {verificationResult.lastVerified}
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -323,7 +359,10 @@ export function VendorVerificationModal({ isOpen, onClose }: VendorVerificationM
                             </span>
                           </div>
                           {cert.expiryDate && (
-                            <p className="text-muted-foreground text-[#404040]" style={{ fontSize: '11px' }}>
+                            <p
+                              className="text-muted-foreground text-[#404040]"
+                              style={{ fontSize: '11px' }}
+                            >
                               {cert.status === 'active' ? 'Expires: ' : 'Expired: '}
                               {cert.expiryDate}
                               {cert.daysToExpiry && ` (${cert.daysToExpiry} days)`}
@@ -343,8 +382,12 @@ export function VendorVerificationModal({ isOpen, onClose }: VendorVerificationM
                       <p style={{ fontSize: '14px', fontWeight: '500', color: '#47c2ff' }}>
                         Official Verification Record
                       </p>
-                      <p className="text-muted-foreground text-[#404040] mt-1" style={{ fontSize: '13px' }}>
-                        This verification has been logged in the MDA audit trail. You can download an official report for your records.
+                      <p
+                        className="text-muted-foreground text-[#404040] mt-1"
+                        style={{ fontSize: '13px' }}
+                      >
+                        This verification has been logged in the MDA audit trail. You can download
+                        an official report for your records.
                       </p>
                     </div>
                   </div>

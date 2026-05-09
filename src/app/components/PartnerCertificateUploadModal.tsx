@@ -238,8 +238,13 @@ export function PartnerCertificateUploadModal({
                     >
                       <div className="flex items-start justify-between mb-2">
                         <div className="flex-1">
-                          <h3 style={{ fontSize: '15px', fontWeight: '500' }}>{client.companyName}</h3>
-                          <p className="text-muted-foreground text-[#404040]" style={{ fontSize: '13px' }}>
+                          <h3 style={{ fontSize: '15px', fontWeight: '500' }}>
+                            {client.companyName}
+                          </h3>
+                          <p
+                            className="text-muted-foreground text-[#404040]"
+                            style={{ fontSize: '13px' }}
+                          >
                             {client.rcNumber}
                           </p>
                         </div>
@@ -250,14 +255,14 @@ export function PartnerCertificateUploadModal({
                               client.complianceScore >= 80
                                 ? 'rgb(31, 193, 107, 0.1)'
                                 : client.complianceScore >= 60
-                                ? 'rgb(250, 115, 25, 0.1)'
-                                : 'rgb(251, 55, 72, 0.1)',
+                                  ? 'rgb(250, 115, 25, 0.1)'
+                                  : 'rgb(251, 55, 72, 0.1)',
                             color:
                               client.complianceScore >= 80
                                 ? 'rgb(31, 193, 107)'
                                 : client.complianceScore >= 60
-                                ? 'rgb(250, 115, 25)'
-                                : 'rgb(251, 55, 72)',
+                                  ? 'rgb(250, 115, 25)'
+                                  : 'rgb(251, 55, 72)',
                             fontSize: '13px',
                             fontWeight: '500',
                           }}
@@ -288,8 +293,13 @@ export function PartnerCertificateUploadModal({
                       <Users className="w-5 h-5" style={{ color: '#fb7319' }} />
                     </div>
                     <div>
-                      <p style={{ fontSize: '14px', fontWeight: '500' }}>{selectedClient.companyName}</p>
-                      <p className="text-muted-foreground text-[#404040]" style={{ fontSize: '13px' }}>
+                      <p style={{ fontSize: '14px', fontWeight: '500' }}>
+                        {selectedClient.companyName}
+                      </p>
+                      <p
+                        className="text-muted-foreground text-[#404040]"
+                        style={{ fontSize: '13px' }}
+                      >
                         {selectedClient.rcNumber}
                       </p>
                     </div>
@@ -325,7 +335,10 @@ export function PartnerCertificateUploadModal({
                       <p style={{ fontSize: '13px', fontWeight: '500' }} className="mb-1">
                         Client
                       </p>
-                      <p className="text-muted-foreground text-[#404040]" style={{ fontSize: '13px' }}>
+                      <p
+                        className="text-muted-foreground text-[#404040]"
+                        style={{ fontSize: '13px' }}
+                      >
                         {selectedClient.companyName}
                       </p>
                     </div>
@@ -333,22 +346,26 @@ export function PartnerCertificateUploadModal({
                       <p style={{ fontSize: '13px', fontWeight: '500' }} className="mb-1">
                         Certificate
                       </p>
-                      <p className="text-muted-foreground text-[#404040]" style={{ fontSize: '13px' }}>
+                      <p
+                        className="text-muted-foreground text-[#404040]"
+                        style={{ fontSize: '13px' }}
+                      >
                         {selectedCertificate.split(' - ')[0]}
                       </p>
                     </div>
                   </div>
                 </div>
 
-                <div
-                  className="border-2 border-dashed border-border rounded-lg p-8 text-center"
-                >
+                <div className="border-2 border-dashed border-border rounded-lg p-8 text-center">
                   {selectedFile ? (
                     <div className="flex items-center justify-center gap-3">
                       <FileText className="w-8 h-8" style={{ color: '#fb7319' }} />
                       <div className="text-left">
                         <p style={{ fontSize: '14px', fontWeight: '500' }}>{selectedFile.name}</p>
-                        <p className="text-muted-foreground text-[#404040]" style={{ fontSize: '13px' }}>
+                        <p
+                          className="text-muted-foreground text-[#404040]"
+                          style={{ fontSize: '13px' }}
+                        >
                           {(selectedFile.size / 1024 / 1024).toFixed(2)} MB
                         </p>
                       </div>
@@ -365,7 +382,10 @@ export function PartnerCertificateUploadModal({
                       <p style={{ fontSize: '14px', fontWeight: '500' }} className="mb-1">
                         Drop certificate here or click to browse
                       </p>
-                      <p className="text-muted-foreground text-[#404040]" style={{ fontSize: '13px' }}>
+                      <p
+                        className="text-muted-foreground text-[#404040]"
+                        style={{ fontSize: '13px' }}
+                      >
                         Supports PDF and image files (max 10MB)
                       </p>
                       <input

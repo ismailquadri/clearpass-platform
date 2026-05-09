@@ -85,7 +85,10 @@ export function ToastProvider({ children }: { children: ReactNode }) {
       {children}
 
       {/* Toast Container */}
-      <div className="fixed bottom-4 right-4 z-[100] flex flex-col gap-2" style={{ maxWidth: '390px' }}>
+      <div
+        className="fixed bottom-4 right-4 z-[100] flex flex-col gap-2"
+        style={{ maxWidth: '390px' }}
+      >
         {toasts.map((toast) => {
           const config = getToastConfig(toast.type);
           const Icon = config.icon;

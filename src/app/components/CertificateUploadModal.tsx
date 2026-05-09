@@ -85,7 +85,11 @@ export function CertificateUploadModal({
     // Simulate file upload
     setTimeout(() => {
       setIsUploading(false);
-      showToast('success', 'Certificate Uploaded', `${certificateType.shortName} certificate uploaded successfully`);
+      showToast(
+        'success',
+        'Certificate Uploaded',
+        `${certificateType.shortName} certificate uploaded successfully`
+      );
       onUploadSuccess();
       onClose();
       resetForm();
@@ -103,7 +107,11 @@ export function CertificateUploadModal({
     // Simulate manual entry submission
     setTimeout(() => {
       setIsUploading(false);
-      showToast('success', 'Certificate Added', `${certificateType.shortName} certificate added successfully`);
+      showToast(
+        'success',
+        'Certificate Added',
+        `${certificateType.shortName} certificate added successfully`
+      );
       onUploadSuccess();
       onClose();
       resetForm();
@@ -119,12 +127,20 @@ export function CertificateUploadModal({
       setIsUploading(false);
 
       if (success) {
-        showToast('success', 'API Connected', `${certificateType.shortName} verified via government API`);
+        showToast(
+          'success',
+          'API Connected',
+          `${certificateType.shortName} verified via government API`
+        );
         onUploadSuccess();
         onClose();
         resetForm();
       } else {
-        showToast('error', 'Connection Failed', 'Unable to verify via API. Please try manual upload.');
+        showToast(
+          'error',
+          'Connection Failed',
+          'Unable to verify via API. Please try manual upload.'
+        );
       }
     }, 2500);
   };
@@ -186,8 +202,8 @@ export function CertificateUploadModal({
                     urgencyLevel === 'critical'
                       ? 'rgb(251, 55, 72, 0.1)'
                       : urgencyLevel === 'high'
-                      ? 'rgb(250, 115, 25, 0.1)'
-                      : 'rgb(71, 194, 255, 0.1)',
+                        ? 'rgb(250, 115, 25, 0.1)'
+                        : 'rgb(71, 194, 255, 0.1)',
                 }}
               >
                 <AlertCircle
@@ -197,8 +213,8 @@ export function CertificateUploadModal({
                       urgencyLevel === 'critical'
                         ? 'rgb(251, 55, 72)'
                         : urgencyLevel === 'high'
-                        ? 'rgb(250, 115, 25)'
-                        : 'rgb(71, 194, 255)',
+                          ? 'rgb(250, 115, 25)'
+                          : 'rgb(71, 194, 255)',
                   }}
                 />
                 <div>
@@ -210,15 +226,18 @@ export function CertificateUploadModal({
                         urgencyLevel === 'critical'
                           ? 'rgb(251, 55, 72)'
                           : urgencyLevel === 'high'
-                          ? 'rgb(250, 115, 25)'
-                          : 'rgb(71, 194, 255)',
+                            ? 'rgb(250, 115, 25)'
+                            : 'rgb(71, 194, 255)',
                     }}
                   >
                     {urgencyLevel === 'critical' && 'Critical: Immediate Action Required'}
                     {urgencyLevel === 'high' && 'High Priority Upload'}
                     {urgencyLevel === 'medium' && 'Complete Your Profile'}
                   </p>
-                  <p className="text-muted-foreground text-[#404040] mt-1" style={{ fontSize: '13px' }}>
+                  <p
+                    className="text-muted-foreground text-[#404040] mt-1"
+                    style={{ fontSize: '13px' }}
+                  >
                     {dashboardState === 'New Registration' &&
                       'Complete your certificate setup to activate procurement eligibility.'}
                     {dashboardState === 'Non-Compliant' &&
@@ -256,7 +275,10 @@ export function CertificateUploadModal({
                 >
                   Upload File
                 </p>
-                <p className="text-muted-foreground text-[#404040] mt-1" style={{ fontSize: '11px' }}>
+                <p
+                  className="text-muted-foreground text-[#404040] mt-1"
+                  style={{ fontSize: '11px' }}
+                >
                   PDF or Image
                 </p>
               </button>
@@ -283,7 +305,10 @@ export function CertificateUploadModal({
                 >
                   Manual Entry
                 </p>
-                <p className="text-muted-foreground text-[#404040] mt-1" style={{ fontSize: '11px' }}>
+                <p
+                  className="text-muted-foreground text-[#404040] mt-1"
+                  style={{ fontSize: '11px' }}
+                >
                   Type details
                 </p>
               </button>
@@ -310,7 +335,10 @@ export function CertificateUploadModal({
                 >
                   API Connect
                 </p>
-                <p className="text-muted-foreground text-[#404040] mt-1" style={{ fontSize: '11px' }}>
+                <p
+                  className="text-muted-foreground text-[#404040] mt-1"
+                  style={{ fontSize: '11px' }}
+                >
                   Auto-verify
                 </p>
               </button>
@@ -333,7 +361,10 @@ export function CertificateUploadModal({
                       <FileText className="w-8 h-8" style={{ color: '#fb7319' }} />
                       <div className="text-left">
                         <p style={{ fontSize: '14px', fontWeight: '500' }}>{selectedFile.name}</p>
-                        <p className="text-muted-foreground text-[#404040]" style={{ fontSize: '13px' }}>
+                        <p
+                          className="text-muted-foreground text-[#404040]"
+                          style={{ fontSize: '13px' }}
+                        >
                           {(selectedFile.size / 1024 / 1024).toFixed(2)} MB
                         </p>
                       </div>
@@ -350,7 +381,10 @@ export function CertificateUploadModal({
                       <p style={{ fontSize: '14px', fontWeight: '500' }} className="mb-1">
                         Drop your certificate here or click to browse
                       </p>
-                      <p className="text-muted-foreground text-[#404040]" style={{ fontSize: '13px' }}>
+                      <p
+                        className="text-muted-foreground text-[#404040]"
+                        style={{ fontSize: '13px' }}
+                      >
                         Supports PDF and image files (max 10MB)
                       </p>
                       <input
@@ -444,8 +478,13 @@ export function CertificateUploadModal({
                       <p style={{ fontSize: '14px', fontWeight: '500', color: '#47c2ff' }}>
                         Auto-Verification Available
                       </p>
-                      <p className="text-muted-foreground text-[#404040] mt-1" style={{ fontSize: '13px' }}>
-                        Connect directly to the government database to automatically verify and sync your {certificateType.shortName} certificate. This provides real-time updates and instant verification.
+                      <p
+                        className="text-muted-foreground text-[#404040] mt-1"
+                        style={{ fontSize: '13px' }}
+                      >
+                        Connect directly to the government database to automatically verify and sync
+                        your {certificateType.shortName} certificate. This provides real-time
+                        updates and instant verification.
                       </p>
                     </div>
                   </div>
@@ -463,7 +502,10 @@ export function CertificateUploadModal({
                     className="w-full px-3 py-2 rounded-md border border-border bg-background"
                     style={{ fontSize: '13px' }}
                   />
-                  <p className="text-muted-foreground text-[#404040] mt-1" style={{ fontSize: '11px' }}>
+                  <p
+                    className="text-muted-foreground text-[#404040] mt-1"
+                    style={{ fontSize: '11px' }}
+                  >
                     We'll securely verify this with the issuing authority
                   </p>
                 </div>
@@ -487,8 +529,8 @@ export function CertificateUploadModal({
                   uploadMethod === 'file'
                     ? handleFileUpload
                     : uploadMethod === 'manual'
-                    ? handleManualSubmit
-                    : handleApiConnect
+                      ? handleManualSubmit
+                      : handleApiConnect
                 }
                 disabled={isUploading}
                 className="px-4 py-2 rounded-md text-white flex items-center gap-2 disabled:opacity-50"
@@ -500,9 +542,7 @@ export function CertificateUploadModal({
                     {uploadMethod === 'api' ? 'Verifying...' : 'Uploading...'}
                   </>
                 ) : (
-                  <>
-                    {uploadMethod === 'api' ? 'Connect & Verify' : 'Upload Certificate'}
-                  </>
+                  <>{uploadMethod === 'api' ? 'Connect & Verify' : 'Upload Certificate'}</>
                 )}
               </button>
             </div>

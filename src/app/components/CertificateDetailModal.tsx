@@ -26,7 +26,11 @@ export function CertificateDetailModal({
 
   const getStatusColor = (status: string) => {
     if (status === 'active') return 'rgb(31, 193, 107)';
-    if (status === 'expiring-soon' || status === 'expiring-critical' || status === 'expiring-urgent')
+    if (
+      status === 'expiring-soon' ||
+      status === 'expiring-critical' ||
+      status === 'expiring-urgent'
+    )
       return 'rgb(250, 115, 25)';
     if (status === 'expired') return 'rgb(251, 55, 72)';
     if (status === 'pending') return 'rgb(71, 194, 255)';

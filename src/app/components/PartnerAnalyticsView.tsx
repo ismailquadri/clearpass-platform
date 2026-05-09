@@ -1,5 +1,19 @@
 import { TrendingUp, TrendingDown, Users, DollarSign, AlertTriangle, Calendar } from 'lucide-react';
-import { LineChart, Line, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import {
+  LineChart,
+  Line,
+  BarChart,
+  Bar,
+  PieChart,
+  Pie,
+  Cell,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+} from 'recharts';
 
 export function PartnerAnalyticsView() {
   // Revenue trend data
@@ -43,7 +57,9 @@ export function PartnerAnalyticsView() {
       <div className="p-8 max-w-[1400px] mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="mb-2" style={{ fontSize: '32px' }}>Analytics</h1>
+          <h1 className="mb-2" style={{ fontSize: '32px' }}>
+            Analytics
+          </h1>
           <p className="text-muted-foreground" style={{ fontSize: '16px' }}>
             Track client performance, revenue trends, and compliance metrics
           </p>
@@ -118,7 +134,11 @@ export function PartnerAnalyticsView() {
             <ResponsiveContainer width="100%" height={300}>
               <LineChart data={revenueData}>
                 <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
-                <XAxis dataKey="month" stroke="var(--muted-foreground)" style={{ fontSize: '12px' }} />
+                <XAxis
+                  dataKey="month"
+                  stroke="var(--muted-foreground)"
+                  style={{ fontSize: '12px' }}
+                />
                 <YAxis stroke="var(--muted-foreground)" style={{ fontSize: '12px' }} />
                 <Tooltip
                   contentStyle={{
@@ -167,10 +187,7 @@ export function PartnerAnalyticsView() {
             <div className="flex justify-center gap-6 mt-4">
               {complianceDistribution.map((item, index) => (
                 <div key={index} className="flex items-center gap-2">
-                  <div
-                    className="w-3 h-3 rounded-full"
-                    style={{ backgroundColor: item.color }}
-                  />
+                  <div className="w-3 h-3 rounded-full" style={{ backgroundColor: item.color }} />
                   <span className="caption">{item.name}</span>
                 </div>
               ))}
@@ -188,7 +205,11 @@ export function PartnerAnalyticsView() {
             <ResponsiveContainer width="100%" height={300}>
               <BarChart data={expiryTimeline}>
                 <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
-                <XAxis dataKey="period" stroke="var(--muted-foreground)" style={{ fontSize: '12px' }} />
+                <XAxis
+                  dataKey="period"
+                  stroke="var(--muted-foreground)"
+                  style={{ fontSize: '12px' }}
+                />
                 <YAxis stroke="var(--muted-foreground)" style={{ fontSize: '12px' }} />
                 <Tooltip
                   contentStyle={{
@@ -210,8 +231,17 @@ export function PartnerAnalyticsView() {
             <ResponsiveContainer width="100%" height={300}>
               <BarChart data={certificateTypes} layout="vertical">
                 <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
-                <XAxis type="number" stroke="var(--muted-foreground)" style={{ fontSize: '12px' }} />
-                <YAxis type="category" dataKey="name" stroke="var(--muted-foreground)" style={{ fontSize: '12px' }} />
+                <XAxis
+                  type="number"
+                  stroke="var(--muted-foreground)"
+                  style={{ fontSize: '12px' }}
+                />
+                <YAxis
+                  type="category"
+                  dataKey="name"
+                  stroke="var(--muted-foreground)"
+                  style={{ fontSize: '12px' }}
+                />
                 <Tooltip
                   contentStyle={{
                     backgroundColor: 'var(--card)',

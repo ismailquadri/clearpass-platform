@@ -5,7 +5,7 @@ import {
   Settings,
   Bell,
   Activity,
-  Download
+  Download,
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -29,10 +29,15 @@ export function Sidebar({ activeSection, onSectionChange }: SidebarProps) {
       {/* Logo/Header */}
       <div className="px-4 py-4 border-b border-border">
         <div className="flex items-center gap-2">
-          <div className="w-7 h-7 rounded-md flex items-center justify-center" style={{ backgroundColor: 'rgb(251, 115, 25)' }}>
+          <div
+            className="w-7 h-7 rounded-md flex items-center justify-center"
+            style={{ backgroundColor: 'rgb(251, 115, 25)' }}
+          >
             <CheckCircle2 className="w-4 h-4 text-white" />
           </div>
-          <span className="font-medium" style={{ fontSize: '15px' }}>ClearPass</span>
+          <span className="font-medium" style={{ fontSize: '15px' }}>
+            ClearPass
+          </span>
         </div>
       </div>
 
@@ -40,7 +45,10 @@ export function Sidebar({ activeSection, onSectionChange }: SidebarProps) {
       <nav className="flex-1 p-3">
         <div className="space-y-0.5">
           <div className="px-2 py-1.5 mb-1">
-            <p className="uppercase tracking-wide" style={{ fontSize: '13px', color: '#a0a0a0', fontWeight: '600' }}>
+            <p
+              className="uppercase tracking-wide"
+              style={{ fontSize: '13px', color: '#a0a0a0', fontWeight: '600' }}
+            >
               Main
             </p>
           </div>
@@ -52,20 +60,18 @@ export function Sidebar({ activeSection, onSectionChange }: SidebarProps) {
                 key={item.id}
                 onClick={() => onSectionChange(item.id)}
                 className={`w-full flex items-center gap-2 px-2 py-1.5 rounded-md transition-all ${
-                  isActive
-                    ? ''
-                    : 'hover:bg-[#f5f5f5] dark:hover:bg-[#2a2a2a]'
+                  isActive ? '' : 'hover:bg-[#f5f5f5] dark:hover:bg-[#2a2a2a]'
                 }`}
                 style={
                   isActive
                     ? {
                         backgroundColor: '#ffeee6',
                         fontSize: '13px',
-                        fontWeight: '500'
+                        fontWeight: '500',
                       }
                     : {
                         fontSize: '13px',
-                        fontWeight: '400'
+                        fontWeight: '400',
                       }
                 }
               >
@@ -76,7 +82,10 @@ export function Sidebar({ activeSection, onSectionChange }: SidebarProps) {
           })}
 
           <div className="px-2 py-1.5 mt-4 mb-1">
-            <p className="uppercase tracking-wide" style={{ fontSize: '13px', color: '#a0a0a0', fontWeight: '600' }}>
+            <p
+              className="uppercase tracking-wide"
+              style={{ fontSize: '13px', color: '#a0a0a0', fontWeight: '600' }}
+            >
               Tools
             </p>
           </div>
@@ -88,20 +97,18 @@ export function Sidebar({ activeSection, onSectionChange }: SidebarProps) {
                 key={item.id}
                 onClick={() => onSectionChange(item.id)}
                 className={`w-full flex items-center gap-2 px-2 py-1.5 rounded-md transition-all ${
-                  isActive
-                    ? ''
-                    : 'hover:bg-[#f5f5f5] dark:hover:bg-[#2a2a2a]'
+                  isActive ? '' : 'hover:bg-[#f5f5f5] dark:hover:bg-[#2a2a2a]'
                 }`}
                 style={
                   isActive
                     ? {
                         backgroundColor: '#ffeee6',
                         fontSize: '13px',
-                        fontWeight: '500'
+                        fontWeight: '500',
                       }
                     : {
                         fontSize: '13px',
-                        fontWeight: '400'
+                        fontWeight: '400',
                       }
                 }
               >
@@ -112,7 +119,10 @@ export function Sidebar({ activeSection, onSectionChange }: SidebarProps) {
           })}
 
           <div className="px-2 py-1.5 mt-4 mb-1">
-            <p className="uppercase tracking-wide" style={{ fontSize: '13px', color: '#a0a0a0', fontWeight: '600' }}>
+            <p
+              className="uppercase tracking-wide"
+              style={{ fontSize: '13px', color: '#a0a0a0', fontWeight: '600' }}
+            >
               Account
             </p>
           </div>
@@ -124,20 +134,18 @@ export function Sidebar({ activeSection, onSectionChange }: SidebarProps) {
                 key={item.id}
                 onClick={() => onSectionChange(item.id)}
                 className={`w-full flex items-center gap-2 px-2 py-1.5 rounded-md transition-all ${
-                  isActive
-                    ? ''
-                    : 'hover:bg-[#f5f5f5] dark:hover:bg-[#2a2a2a]'
+                  isActive ? '' : 'hover:bg-[#f5f5f5] dark:hover:bg-[#2a2a2a]'
                 }`}
                 style={
                   isActive
                     ? {
                         backgroundColor: '#ffeee6',
                         fontSize: '13px',
-                        fontWeight: '500'
+                        fontWeight: '500',
                       }
                     : {
                         fontSize: '13px',
-                        fontWeight: '400'
+                        fontWeight: '400',
                       }
                 }
               >
@@ -164,8 +172,12 @@ export function Sidebar({ activeSection, onSectionChange }: SidebarProps) {
             <span style={{ fontSize: '12px' }}>AO</span>
           </div>
           <div className="flex-1 overflow-hidden">
-            <p style={{ fontSize: '12px' }} className="truncate">Amaka Okoro</p>
-            <p className="text-muted-foreground truncate" style={{ fontSize: '13px' }}>amaka@company.ng</p>
+            <p style={{ fontSize: '12px' }} className="truncate">
+              Amaka Okoro
+            </p>
+            <p className="text-muted-foreground truncate" style={{ fontSize: '13px' }}>
+              amaka@company.ng
+            </p>
           </div>
         </div>
       </div>

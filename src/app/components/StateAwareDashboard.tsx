@@ -17,7 +17,11 @@ export function StateAwareDashboard({ state, onNavigate }: StateAwareDashboardPr
   const getUrgencyLevel = (certStatus: string): 'low' | 'medium' | 'high' | 'critical' => {
     if (state.label === 'Non-Compliant' && certStatus === 'not-connected') return 'critical';
     if (state.label === 'Non-Compliant' && certStatus === 'expired') return 'critical';
-    if (state.label === 'Critical' && (certStatus === 'expired' || certStatus === 'expiring-urgent')) return 'critical';
+    if (
+      state.label === 'Critical' &&
+      (certStatus === 'expired' || certStatus === 'expiring-urgent')
+    )
+      return 'critical';
     if (state.label === 'Attention Required' && certStatus === 'expiring-urgent') return 'high';
     if (state.label === 'New Registration' && certStatus === 'not-connected') return 'medium';
     if (certStatus === 'not-connected') return 'medium';
@@ -355,19 +359,33 @@ export function StateAwareDashboard({ state, onNavigate }: StateAwareDashboardPr
         <div
           className="mb-4 px-3 py-2 rounded-lg border border-[#e5e5e5] flex items-center justify-between"
           style={{
-            backgroundColor: state.score >= 80 ? 'rgb(31, 193, 107, 0.1)' : state.score >= 60 ? 'rgb(250, 115, 25, 0.1)' : 'rgb(251, 55, 72, 0.1)',
+            backgroundColor:
+              state.score >= 80
+                ? 'rgb(31, 193, 107, 0.1)'
+                : state.score >= 60
+                  ? 'rgb(250, 115, 25, 0.1)'
+                  : 'rgb(251, 55, 72, 0.1)',
           }}
         >
           <div>
-            <span style={{ fontSize: '13px', fontWeight: '500' }}>Current State: {state.label}</span>
-            <p className="text-muted-foreground text-[#404040]" style={{ fontSize: '13px' }}>{state.description}</p>
+            <span style={{ fontSize: '13px', fontWeight: '500' }}>
+              Current State: {state.label}
+            </span>
+            <p className="text-muted-foreground text-[#404040]" style={{ fontSize: '13px' }}>
+              {state.description}
+            </p>
           </div>
           <span
             className="px-2.5 py-0.5 rounded-full"
             style={{
               fontSize: '12px',
               fontWeight: '500',
-              backgroundColor: state.score >= 80 ? 'rgb(31, 193, 107)' : state.score >= 60 ? 'rgb(250, 115, 25)' : 'rgb(251, 55, 72)',
+              backgroundColor:
+                state.score >= 80
+                  ? 'rgb(31, 193, 107)'
+                  : state.score >= 60
+                    ? 'rgb(250, 115, 25)'
+                    : 'rgb(251, 55, 72)',
               color: 'white',
             }}
           >
@@ -377,7 +395,9 @@ export function StateAwareDashboard({ state, onNavigate }: StateAwareDashboardPr
 
         {/* Header */}
         <div className="mb-5">
-          <h1 className="mb-1" style={{ fontSize: '24px', fontWeight: '500' }}>Welcome back, Amaka</h1>
+          <h1 className="mb-1" style={{ fontSize: '24px', fontWeight: '500' }}>
+            Welcome back, Amaka
+          </h1>
           <p className="text-muted-foreground" style={{ fontSize: '13px' }}>
             Here's your compliance status for TechBuild Nigeria Ltd.
           </p>
@@ -461,7 +481,9 @@ export function StateAwareDashboard({ state, onNavigate }: StateAwareDashboardPr
               </div>
             </div>
             <p style={{ fontSize: '24px', fontWeight: '600' }}>{activeCerts}</p>
-            <p className="text-muted-foreground text-[#404040]" style={{ fontSize: '13px' }}>out of 6 total</p>
+            <p className="text-muted-foreground text-[#404040]" style={{ fontSize: '13px' }}>
+              out of 6 total
+            </p>
           </div>
 
           <div className="bg-card border border-border rounded-lg p-3">
@@ -472,19 +494,31 @@ export function StateAwareDashboard({ state, onNavigate }: StateAwareDashboardPr
               <div
                 className="w-7 h-7 rounded-full flex items-center justify-center"
                 style={{
-                  backgroundColor: state.score >= 80 ? 'rgb(31, 193, 107, 0.2)' : state.score >= 60 ? 'rgb(250, 115, 25, 0.2)' : 'rgb(251, 55, 72, 0.2)',
+                  backgroundColor:
+                    state.score >= 80
+                      ? 'rgb(31, 193, 107, 0.2)'
+                      : state.score >= 60
+                        ? 'rgb(250, 115, 25, 0.2)'
+                        : 'rgb(251, 55, 72, 0.2)',
                 }}
               >
                 <TrendingUp
                   className="w-3.5 h-3.5"
                   style={{
-                    color: state.score >= 80 ? 'rgb(31, 193, 107)' : state.score >= 60 ? 'rgb(250, 115, 25)' : 'rgb(251, 55, 72)',
+                    color:
+                      state.score >= 80
+                        ? 'rgb(31, 193, 107)'
+                        : state.score >= 60
+                          ? 'rgb(250, 115, 25)'
+                          : 'rgb(251, 55, 72)',
                   }}
                 />
               </div>
             </div>
             <p style={{ fontSize: '24px', fontWeight: '600' }}>{state.score}</p>
-            <p className="text-muted-foreground text-[#404040]" style={{ fontSize: '13px' }}>out of 100</p>
+            <p className="text-muted-foreground text-[#404040]" style={{ fontSize: '13px' }}>
+              out of 100
+            </p>
           </div>
 
           <div className="bg-card border border-border rounded-lg p-3">
@@ -495,7 +529,9 @@ export function StateAwareDashboard({ state, onNavigate }: StateAwareDashboardPr
               <div
                 className="w-7 h-7 rounded-full flex items-center justify-center"
                 style={{
-                  backgroundColor: isProcurementReady ? 'rgb(31, 193, 107, 0.2)' : 'rgb(250, 115, 25, 0.2)',
+                  backgroundColor: isProcurementReady
+                    ? 'rgb(31, 193, 107, 0.2)'
+                    : 'rgb(250, 115, 25, 0.2)',
                 }}
               >
                 <Building2
@@ -515,7 +551,9 @@ export function StateAwareDashboard({ state, onNavigate }: StateAwareDashboardPr
             >
               {isProcurementReady ? 'Procurement Ready' : state.label}
             </p>
-            <p className="text-muted-foreground text-[#404040]" style={{ fontSize: '13px' }}>CAC Verified</p>
+            <p className="text-muted-foreground text-[#404040]" style={{ fontSize: '13px' }}>
+              CAC Verified
+            </p>
           </div>
         </div>
 
@@ -561,35 +599,45 @@ export function StateAwareDashboard({ state, onNavigate }: StateAwareDashboardPr
 
         {/* Quick Actions */}
         <div className="bg-card border border-border rounded-lg p-4">
-          <h3 className="mb-3" style={{ fontSize: '15px', fontWeight: '500' }}>Quick Actions</h3>
+          <h3 className="mb-3" style={{ fontSize: '15px', fontWeight: '500' }}>
+            Quick Actions
+          </h3>
           <div className="grid grid-cols-4 gap-2">
             <button
               onClick={() => onNavigate('reports')}
               className="px-3 py-2 rounded-md border border-border hover:bg-[#fafafa] hover:border-[#e5e5e5] transition-all duration-200 ease-in-out text-left"
             >
               <p style={{ fontSize: '13px', fontWeight: '500' }}>Generate Report</p>
-              <p className="text-muted-foreground text-[#404040]" style={{ fontSize: '13px' }}>Download compliance PDF</p>
+              <p className="text-muted-foreground text-[#404040]" style={{ fontSize: '13px' }}>
+                Download compliance PDF
+              </p>
             </button>
             <button
               onClick={() => onNavigate('verify')}
               className="px-3 py-2 rounded-md border border-border hover:bg-[#fafafa] hover:border-[#e5e5e5] transition-all duration-200 ease-in-out text-left"
             >
               <p style={{ fontSize: '13px', fontWeight: '500' }}>Verify Company</p>
-              <p className="text-muted-foreground text-[#404040]" style={{ fontSize: '13px' }}>Check another company's status</p>
+              <p className="text-muted-foreground text-[#404040]" style={{ fontSize: '13px' }}>
+                Check another company's status
+              </p>
             </button>
             <button
               onClick={() => onNavigate('certificates')}
               className="px-3 py-2 rounded-md border border-border hover:bg-[#fafafa] hover:border-[#e5e5e5] transition-all duration-200 ease-in-out text-left"
             >
               <p style={{ fontSize: '13px', fontWeight: '500' }}>Upload Certificate</p>
-              <p className="text-muted-foreground text-[#404040]" style={{ fontSize: '13px' }}>Add new certification</p>
+              <p className="text-muted-foreground text-[#404040]" style={{ fontSize: '13px' }}>
+                Add new certification
+              </p>
             </button>
             <button
               onClick={() => onNavigate('settings')}
               className="px-3 py-2 rounded-md border border-border hover:bg-[#fafafa] hover:border-[#e5e5e5] transition-all duration-200 ease-in-out text-left"
             >
               <p style={{ fontSize: '13px', fontWeight: '500' }}>Contact Support</p>
-              <p className="text-muted-foreground text-[#404040]" style={{ fontSize: '13px' }}>Get help with compliance</p>
+              <p className="text-muted-foreground text-[#404040]" style={{ fontSize: '13px' }}>
+                Get help with compliance
+              </p>
             </button>
           </div>
         </div>
