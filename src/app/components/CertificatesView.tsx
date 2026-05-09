@@ -89,9 +89,9 @@ export function CertificatesView() {
       (filterStatus === 'active' && cert.status === 'active') ||
       (filterStatus === 'expiring' &&
         (cert.status === 'expiring-soon' ||
-          cert.status === 'expiring-critical' ||
+          (cert.status as string) === 'expiring-critical' ||
           cert.status === 'expiring-urgent')) ||
-      (filterStatus === 'expired' && cert.status === 'expired');
+      (filterStatus === 'expired' && (cert.status as string) === 'expired');
 
     return matchesSearch && matchesFilter;
   });
@@ -100,11 +100,11 @@ export function CertificatesView() {
   const expiringCount = allCertificates.filter(
     (c) =>
       c.status === 'expiring-soon' ||
-      c.status === 'expiring-critical' ||
+      (c.status as string) === 'expiring-critical' ||
       c.status === 'expiring-urgent'
   ).length;
   const pendingCount = allCertificates.filter(
-    (c) => c.status === 'pending' || c.status === 'not-connected'
+    (c) => c.status === 'pending' || (c.status as string) === 'not-connected'
   ).length;
 
   return (
