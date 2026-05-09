@@ -70,6 +70,10 @@
       "optional": true
     }
   },
+  "lint-staged": {
+    "*.{ts,tsx}": ["eslint --fix", "prettier --write"],
+    "*.{json,md,css}": ["prettier --write"]
+  },
   "pnpm": {
     "overrides": {
       "vite": "6.3.5"
