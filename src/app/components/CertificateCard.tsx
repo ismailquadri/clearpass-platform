@@ -177,29 +177,29 @@ export function CertificateCard({
 
         {config.showDays && daysToExpiry !== undefined && (
           <div className="flex items-center justify-between">
-            <span className="text-muted-foreground text-[#404040]" style={{ fontSize: '13px' }}>
+            <span className="text-muted-foreground text-[#404040] text-xs">
               Days to Expiry
             </span>
-            <span style={{ fontSize: '12px', fontWeight: '500' }}>{daysToExpiry} days</span>
+            <span className="text-xs font-medium">{daysToExpiry} days</span>
           </div>
         )}
 
         {expiryDate && (
           <div className="flex items-center justify-between">
-            <span className="text-muted-foreground text-[#404040]" style={{ fontSize: '13px' }}>
+            <span className="text-muted-foreground text-[#404040] text-xs">
               Expiry Date
             </span>
-            <span style={{ fontSize: '12px' }}>{expiryDate}</span>
+            <span className="text-xs">{expiryDate}</span>
           </div>
         )}
 
         {certificateNumber && (
           <div className="flex items-center justify-between">
-            <span className="text-muted-foreground text-[#404040]" style={{ fontSize: '13px' }}>
+            <span className="text-muted-foreground text-[#404040] text-xs">
               Certificate No.
             </span>
             <div className="flex items-center gap-1">
-              <span style={{ fontSize: '13px', fontFamily: 'monospace' }}>
+              <span className="text-xs font-mono">
                 {certificateNumber.slice(0, 12)}...
               </span>
               <button
@@ -221,8 +221,7 @@ export function CertificateCard({
         {status === 'not-connected' ? (
           <button
             onClick={() => setIsUploadModalOpen(true)}
-            className="flex-1 px-3 py-1.5 rounded-md flex items-center justify-center gap-1.5 "
-            style={{ backgroundColor: 'rgb(251, 115, 25)', color: 'white', fontSize: '12px' }}
+            className="flex-1 px-3 py-1.5 rounded-md flex items-center justify-center gap-1.5 bg-orange-500 text-white text-xs hover:bg-orange-600 transition-colors"
           >
             <Upload className="w-3 h-3" />
             Connect
