@@ -129,6 +129,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
               </div>
               <button
                 onClick={() => removeToast(toast.id)}
+                aria-label="Close notification"
                 className="shrink-0 size-4 flex items-center justify-center transition-opacity hover:opacity-100"
                 style={{ opacity: config.closeOpacity }}
               >

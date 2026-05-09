@@ -1,4 +1,5 @@
 import { X, CheckCircle2, Clock, Download, Upload, RefreshCw, Eye } from 'lucide-react';
+import { useEffect } from 'react';
 
 interface CertificateDetailModalProps {
   isOpen: boolean;
@@ -22,6 +23,23 @@ export function CertificateDetailModal({
   onClose,
   certificate,
 }: CertificateDetailModalProps) {
+  // Handle Escape key to close modal
+  useEffect(() => {
+    const handleEscapeKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        onClose();
+      }
+    };
+
+    if (isOpen) {
+      document.addEventListener('keydown', handleEscapeKey);
+    }
+
+    return () => {
+      document.removeEventListener('keydown', handleEscapeKey);
+    };
+  }, [isOpen, onClose]);
+
   if (!isOpen) return null;
 
   const getStatusColor = (status: string) => {
@@ -93,6 +111,7 @@ export function CertificateDetailModal({
             </div>
             <button
               onClick={onClose}
+              aria-label="Close modal"
               className="w-10 h-10 rounded-md hover:bg-muted flex items-center justify-center transition-colors"
             >
               <X className="w-5 h-5" />

@@ -285,6 +285,7 @@ export function MDAPrequalificationView() {
                           </button>
                           <button
                             onClick={() => removeVendor(vendor.id)}
+                            aria-label="Remove vendor"
                             className="p-1 rounded-md hover:bg-red-100 transition-colors"
                           >
                             <Trash2 className="w-4 h-4 text-red-600" />

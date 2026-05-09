@@ -1,5 +1,5 @@
 import { X, Upload, Users, FileText, CheckCircle2 } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useToast } from './ToastProvider';
 
 interface Client {
@@ -71,6 +71,23 @@ export function PartnerCertificateUploadModal({
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+
+  // Handle Escape key to close modal
+  useEffect(() => {
+    const handleEscapeKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && !isUploading) {
+        onClose();
+      }
+    };
+
+    if (isOpen) {
+      document.addEventListener('keydown', handleEscapeKey);
+    }
+
+    return () => {
+      document.removeEventListener('keydown', handleEscapeKey);
+    };
+  }, [isOpen, isUploading, onClose]);
 
   if (!isOpen) return null;
 
@@ -171,6 +188,7 @@ export function PartnerCertificateUploadModal({
             <button
               onClick={handleClose}
               disabled={isUploading}
+              aria-label="Close modal"
               className="w-10 h-10 rounded-md hover:bg-muted flex items-center justify-center transition-colors disabled:opacity-50"
             >
               <X className="w-5 h-5" />
@@ -371,6 +389,7 @@ export function PartnerCertificateUploadModal({
                       </div>
                       <button
                         onClick={() => setSelectedFile(null)}
+                        aria-label="Remove selected file"
                         className="ml-auto p-1 hover:bg-muted rounded"
                       >
                         <X className="w-4 h-4" />

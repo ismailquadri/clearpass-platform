@@ -207,6 +207,7 @@ export function CertificateCard({
                   navigator.clipboard.writeText(certificateNumber || '');
                   showToast('success', 'Copied', 'Certificate number copied to clipboard');
                 }}
+                aria-label="Copy certificate number"
                 className="p-0.5 rounded hover:bg-muted transition-colors"
               >
                 <Copy className="w-3 h-3 text-muted-foreground" />

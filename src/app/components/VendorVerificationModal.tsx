@@ -8,7 +8,7 @@ import {
   FileText,
   Shield,
 } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useToast } from './ToastProvider';
 
 interface VendorVerificationModalProps {
@@ -36,6 +36,23 @@ export function VendorVerificationModal({ isOpen, onClose }: VendorVerificationM
   const [rcNumber, setRcNumber] = useState('');
   const [isVerifying, setIsVerifying] = useState(false);
   const [verificationResult, setVerificationResult] = useState<VerificationResult | null>(null);
+
+  // Handle Escape key to close modal
+  useEffect(() => {
+    const handleEscapeKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && !isVerifying) {
+        onClose();
+      }
+    };
+
+    if (isOpen) {
+      document.addEventListener('keydown', handleEscapeKey);
+    }
+
+    return () => {
+      document.removeEventListener('keydown', handleEscapeKey);
+    };
+  }, [isOpen, isVerifying, onClose]);
 
   if (!isOpen) return null;
 
@@ -202,6 +219,7 @@ export function VendorVerificationModal({ isOpen, onClose }: VendorVerificationM
             </div>
             <button
               onClick={onClose}
+              aria-label="Close modal"
               className="w-10 h-10 rounded-md hover:bg-muted flex items-center justify-center transition-colors"
             >
               <X className="w-5 h-5" />

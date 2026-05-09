@@ -78,6 +78,7 @@ export function TweaksPanel({
           <h2 style={{ fontSize: '24px', fontWeight: '600' }}>Tweaks</h2>
           <button
             onClick={onClose}
+            aria-label="Close tweaks panel"
             className="w-8 h-8 rounded-md hover:bg-muted flex items-center justify-center transition-colors"
           >
             <X className="w-5 h-5" />

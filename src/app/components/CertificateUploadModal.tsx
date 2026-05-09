@@ -1,5 +1,5 @@
 import { X, Upload, Link as LinkIcon, FileText, CheckCircle2, AlertCircle } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useToast } from './ToastProvider';
 
 interface CertificateUploadModalProps {
@@ -35,6 +35,23 @@ export function CertificateUploadModal({
   const [issuedDate, setIssuedDate] = useState('');
   const [expiryDate, setExpiryDate] = useState('');
   const [issuingAuthority, setIssuingAuthority] = useState('');
+
+  // Handle Escape key to close modal
+  useEffect(() => {
+    const handleEscapeKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && !isUploading) {
+        onClose();
+      }
+    };
+
+    if (isOpen) {
+      document.addEventListener('keydown', handleEscapeKey);
+    }
+
+    return () => {
+      document.removeEventListener('keydown', handleEscapeKey);
+    };
+  }, [isOpen, isUploading, onClose]);
 
   if (!isOpen) return null;
 
@@ -185,6 +202,7 @@ export function CertificateUploadModal({
             <button
               onClick={handleClose}
               disabled={isUploading}
+              aria-label="Close modal"
               className="w-10 h-10 rounded-md hover:bg-muted flex items-center justify-center transition-colors disabled:opacity-50"
             >
               <X className="w-5 h-5" />
@@ -370,6 +388,7 @@ export function CertificateUploadModal({
                       </div>
                       <button
                         onClick={() => setSelectedFile(null)}
+                        aria-label="Remove selected file"
                         className="ml-auto p-1 hover:bg-muted rounded"
                       >
                         <X className="w-4 h-4" />
