@@ -186,7 +186,7 @@ export function ReportsView() {
             return (
               <div
                 key={report.id}
-                className="bg-card border border-border rounded-lg p-5 hover:shadow-md transition-shadow"
+                className="bg-card border border-border rounded-lg p-5 transition-shadow"
               >
                 <div className="flex items-start gap-4">
                   <div

@@ -226,7 +226,7 @@ export function MDAVerifyView() {
                 return (
                   <div
                     key={index}
-                    className="bg-card border border-border rounded-lg p-6 hover:shadow-md transition-shadow"
+                    className="bg-card border border-border rounded-lg p-6 transition-shadow"
                   >
                     <div className="flex items-start justify-between mb-4">
                       <div className="flex-1">

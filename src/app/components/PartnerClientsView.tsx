@@ -254,7 +254,7 @@ export function PartnerClientsView() {
             return (
               <div
                 key={client.id}
-                className="bg-card border border-border rounded-lg p-5 hover:shadow-md transition-shadow"
+                className="bg-card border border-border rounded-lg p-5 transition-shadow"
               >
                 <div className="flex items-start justify-between">
                   <div className="flex-1">

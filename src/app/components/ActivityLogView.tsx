@@ -212,7 +212,7 @@ export function ActivityLogView() {
                   return (
                     <div
                       key={activity.id}
-                      className="bg-card border border-border rounded-lg p-4 hover:shadow-md transition-shadow"
+                      className="bg-card border border border-border rounded-lg p-4 transition-shadow"
                     >
                       <div className="flex items-start gap-4">
                         <div
