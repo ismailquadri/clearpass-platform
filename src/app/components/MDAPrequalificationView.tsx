@@ -1,5 +1,6 @@
 import { Download, Upload, Plus, CheckCircle2, XCircle, AlertTriangle, Trash2 } from 'lucide-react';
 import { useState } from 'react';
+import { useToast } from './ToastProvider';
 
 interface Vendor {
   id: string;
@@ -11,6 +12,7 @@ interface Vendor {
 }
 
 export function MDAPrequalificationView() {
+  const { showToast } = useToast();
   const [vendors, setVendors] = useState<Vendor[]>([
     {
       id: '1',
@@ -89,7 +91,11 @@ export function MDAPrequalificationView() {
   };
 
   const removeVendor = (id: string) => {
-    setVendors(vendors.filter((v) => v.id !== id));
+    const vendor = vendors.find(v => v.id === id);
+    if (window.confirm(`Are you sure you want to remove ${vendor?.companyName} from the pre-qualification list? This action cannot be undone.`)) {
+      setVendors(vendors.filter((v) => v.id !== id));
+      showToast('success', 'Vendor Removed', `${vendor?.companyName} has been removed from the list`);
+    }
   };
 
   return (
@@ -286,7 +292,7 @@ export function MDAPrequalificationView() {
                           <button
                             onClick={() => removeVendor(vendor.id)}
                             aria-label="Remove vendor"
-                            className="p-1 rounded-md hover:bg-red-100 transition-colors"
+                            className="p-2.5 rounded-md hover:bg-red-100 transition-colors min-w-[44px] min-h-[44px] flex items-center justify-center"
                           >
                             <Trash2 className="w-4 h-4 text-red-600" />
                           </button>

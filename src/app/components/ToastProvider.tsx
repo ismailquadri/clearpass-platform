@@ -130,10 +130,10 @@ export function ToastProvider({ children }: { children: ReactNode }) {
               <button
                 onClick={() => removeToast(toast.id)}
                 aria-label="Close notification"
-                className="shrink-0 size-4 flex items-center justify-center transition-opacity hover:opacity-100"
+                className="shrink-0 size-6 flex items-center justify-center transition-opacity hover:opacity-100 min-w-[44px] min-h-[44px]"
                 style={{ opacity: config.closeOpacity }}
               >
-                <X className="w-3 h-3" style={{ color: config.textColor }} />
+                <X className="w-4 h-4" style={{ color: config.textColor }} />
               </button>
             </div>
           );

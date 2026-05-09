@@ -1,7 +1,9 @@
 import { Search, CheckCircle2, XCircle, AlertTriangle, Building2, FileText } from 'lucide-react';
 import { useState } from 'react';
+import { useToast } from './ToastProvider';
 
 export function BusinessVerifyView() {
+  const { showToast } = useToast();
   const [searchQuery, setSearchQuery] = useState('');
   const [verificationResult, setVerificationResult] = useState<any>(null);
   const [isSearching, setIsSearching] = useState(false);
@@ -28,6 +30,7 @@ export function BusinessVerifyView() {
         ],
       });
       setIsSearching(false);
+      showToast('success', 'Verification Complete', `Successfully verified ${searchQuery}`);
     }, 800);
   };
 

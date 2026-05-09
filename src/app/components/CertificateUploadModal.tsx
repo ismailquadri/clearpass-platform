@@ -203,7 +203,7 @@ export function CertificateUploadModal({
               onClick={handleClose}
               disabled={isUploading}
               aria-label="Close modal"
-              className="w-10 h-10 rounded-md hover:bg-muted flex items-center justify-center transition-colors disabled:opacity-50"
+              className="w-11 h-11 rounded-md hover:bg-muted flex items-center justify-center transition-colors disabled:opacity-50 min-w-[44px] min-h-[44px]"
             >
               <X className="w-5 h-5" />
             </button>
@@ -389,7 +389,7 @@ export function CertificateUploadModal({
                       <button
                         onClick={() => setSelectedFile(null)}
                         aria-label="Remove selected file"
-                        className="ml-auto p-1 hover:bg-muted rounded"
+                        className="ml-auto p-2.5 hover:bg-muted rounded min-w-[44px] min-h-[44px] flex items-center justify-center"
                       >
                         <X className="w-4 h-4" />
                       </button>

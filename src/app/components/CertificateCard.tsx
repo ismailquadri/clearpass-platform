@@ -177,40 +177,32 @@ export function CertificateCard({
 
         {config.showDays && daysToExpiry !== undefined && (
           <div className="flex items-center justify-between">
-            <span className="text-muted-foreground text-[#404040] text-xs">
-              Days to Expiry
-            </span>
+            <span className="text-muted-foreground text-[#404040] text-xs">Days to Expiry</span>
             <span className="text-xs font-medium">{daysToExpiry} days</span>
           </div>
         )}
 
         {expiryDate && (
           <div className="flex items-center justify-between">
-            <span className="text-muted-foreground text-[#404040] text-xs">
-              Expiry Date
-            </span>
+            <span className="text-muted-foreground text-[#404040] text-xs">Expiry Date</span>
             <span className="text-xs">{expiryDate}</span>
           </div>
         )}
 
         {certificateNumber && (
           <div className="flex items-center justify-between">
-            <span className="text-muted-foreground text-[#404040] text-xs">
-              Certificate No.
-            </span>
+            <span className="text-muted-foreground text-[#404040] text-xs">Certificate No.</span>
             <div className="flex items-center gap-1">
-              <span className="text-xs font-mono">
-                {certificateNumber.slice(0, 12)}...
-              </span>
+              <span className="text-xs font-mono">{certificateNumber.slice(0, 12)}...</span>
               <button
                 onClick={() => {
                   navigator.clipboard.writeText(certificateNumber || '');
                   showToast('success', 'Copied', 'Certificate number copied to clipboard');
                 }}
                 aria-label="Copy certificate number"
-                className="p-0.5 rounded hover:bg-muted transition-colors"
+                className="p-2.5 rounded hover:bg-muted transition-colors min-w-[44px] min-h-[44px] flex items-center justify-center"
               >
-                <Copy className="w-3 h-3 text-muted-foreground" />
+                <Copy className="w-4 h-4 text-muted-foreground" />
               </button>
             </div>
           </div>

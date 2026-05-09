@@ -78,6 +78,7 @@ export function MDAVerifyView() {
     setTimeout(() => {
       setVerificationResults(mockResults);
       setIsSearching(false);
+      showToast('success', 'Search Complete', `Found ${mockResults.length} verification results`);
     }, 800);
   };
 
