@@ -1,4 +1,6 @@
 import { Search, FileCheck, Activity, BarChart3, Settings } from 'lucide-react';
+import { useState } from 'react';
+import { ProfileModal } from './ProfileModal';
 
 interface MDASidebarProps {
   activeSection: string;
@@ -29,9 +31,24 @@ export function MDASidebar({
   onItemSelect,
   fluid = false,
 }: MDASidebarProps) {
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
+
   const handleClick = (id: string) => {
     onSectionChange(id);
     onItemSelect?.();
+  };
+
+  const handleLogout = () => {
+    // Handle logout logic here
+    console.log('Logging out...');
+  };
+
+  const userProfile = {
+    name: 'Engr. Bello',
+    email: 'bello@mda.gov.ng',
+    phone: '+234 802 345 6789',
+    company: 'Federal Ministry of Procurement',
+    role: 'Procurement Officer',
   };
 
   return (
@@ -59,11 +76,14 @@ export function MDASidebar({
       </nav>
 
       <div className="p-3 border-t border-border">
-        <div className="flex items-center gap-2 px-2 py-1.5">
-          <div className="w-7 h-7 rounded-full bg-muted flex items-center justify-center">
-            <span style={{ fontSize: '12px' }}>EB</span>
+        <button
+          onClick={() => setIsProfileOpen(true)}
+          className="w-full flex items-center gap-2 px-2 py-1.5 hover:bg-muted rounded-md transition-colors"
+        >
+          <div className="w-7 h-7 rounded-full bg-[#FF3000] flex items-center justify-center text-white text-xs font-bold">
+            EB
           </div>
-          <div className="flex-1 overflow-hidden">
+          <div className="flex-1 overflow-hidden text-left">
             <p style={{ fontSize: '12px' }} className="truncate">
               Engr. Bello
             </p>
@@ -71,8 +91,16 @@ export function MDASidebar({
               Procurement Officer
             </p>
           </div>
-        </div>
+        </button>
       </div>
+
+      <ProfileModal
+        isOpen={isProfileOpen}
+        onClose={() => setIsProfileOpen(false)}
+        persona="MDA"
+        userProfile={userProfile}
+        onLogout={handleLogout}
+      />
     </aside>
   );
 }

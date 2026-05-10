@@ -6,7 +6,10 @@ import {
   Bell,
   Activity,
   Download,
+  CreditCard,
 } from 'lucide-react';
+import { useState } from 'react';
+import { ProfileModal } from './ProfileModal';
 
 interface SidebarProps {
   activeSection: string;
@@ -35,6 +38,7 @@ const TOOL_ITEMS: MenuItem[] = [
 ];
 const ACCOUNT_ITEMS: MenuItem[] = [
   { id: 'alerts', label: 'Alerts', icon: Bell, badge: '2' },
+  { id: 'billing', label: 'Billing', icon: CreditCard },
   { id: 'settings', label: 'Settings', icon: Settings },
 ];
 
@@ -44,9 +48,24 @@ export function Sidebar({
   onItemSelect,
   fluid = false,
 }: SidebarProps) {
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
+
   const handleClick = (id: string) => {
     onSectionChange(id);
     onItemSelect?.();
+  };
+
+  const handleLogout = () => {
+    // Handle logout logic here
+    console.log('Logging out...');
+  };
+
+  const userProfile = {
+    name: 'Amaka Okoro',
+    email: 'amaka@company.ng',
+    phone: '+234 801 234 5678',
+    company: 'TechVentures Nigeria Ltd',
+    role: 'Compliance Officer',
   };
 
   return (
@@ -81,11 +100,14 @@ export function Sidebar({
       </nav>
 
       <div className="p-3 border-t border-border">
-        <div className="flex items-center gap-2 px-2 py-1.5">
-          <div className="w-7 h-7 rounded-full bg-muted flex items-center justify-center">
-            <span style={{ fontSize: '12px' }}>AO</span>
+        <button
+          onClick={() => setIsProfileOpen(true)}
+          className="w-full flex items-center gap-2 px-2 py-1.5 hover:bg-muted rounded-md transition-colors"
+        >
+          <div className="w-7 h-7 rounded-full bg-[#FF3000] flex items-center justify-center text-white text-xs font-bold">
+            AO
           </div>
-          <div className="flex-1 overflow-hidden">
+          <div className="flex-1 overflow-hidden text-left">
             <p style={{ fontSize: '12px' }} className="truncate">
               Amaka Okoro
             </p>
@@ -93,8 +115,16 @@ export function Sidebar({
               amaka@company.ng
             </p>
           </div>
-        </div>
+        </button>
       </div>
+
+      <ProfileModal
+        isOpen={isProfileOpen}
+        onClose={() => setIsProfileOpen(false)}
+        persona="Business"
+        userProfile={userProfile}
+        onLogout={handleLogout}
+      />
     </aside>
   );
 }

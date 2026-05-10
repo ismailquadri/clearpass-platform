@@ -1,6 +1,7 @@
 import { Users, FileText, TrendingUp, DollarSign, Settings, Briefcase, AlertCircle } from 'lucide-react';
 import { useState } from 'react';
 import { NotificationCenter, NotificationBell } from './NotificationCenter';
+import { ProfileModal } from './ProfileModal';
 
 interface PartnerSidebarProps {
   activeSection: string;
@@ -36,10 +37,24 @@ export function PartnerSidebar({
   fluid = false,
 }: PartnerSidebarProps) {
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
-  
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
+
   const handleClick = (id: string) => {
     onSectionChange(id);
     onItemSelect?.();
+  };
+
+  const handleLogout = () => {
+    // Handle logout logic here
+    console.log('Logging out...');
+  };
+
+  const userProfile = {
+    name: 'Chisom Okafor',
+    email: 'chisom@compliancepartner.com',
+    phone: '+234 803 456 7890',
+    company: 'Compliance Partners Ltd',
+    role: 'Compliance Consultant',
   };
 
   return (
@@ -80,11 +95,14 @@ export function PartnerSidebar({
       </nav>
 
       <div className="p-3 border-t border-border">
-        <div className="flex items-center gap-2 px-2 py-1.5">
-          <div className="w-7 h-7 rounded-full bg-muted flex items-center justify-center">
-            <span style={{ fontSize: '12px' }}>CO</span>
+        <button
+          onClick={() => setIsProfileOpen(true)}
+          className="w-full flex items-center gap-2 px-2 py-1.5 hover:bg-muted rounded-md transition-colors"
+        >
+          <div className="w-7 h-7 rounded-full bg-[#FF3000] flex items-center justify-center text-white text-xs font-bold">
+            CO
           </div>
-          <div className="flex-1 overflow-hidden">
+          <div className="flex-1 overflow-hidden text-left">
             <p style={{ fontSize: '12px' }} className="truncate">
               Chisom Okafor
             </p>
@@ -92,12 +110,20 @@ export function PartnerSidebar({
               Compliance Consultant
             </p>
           </div>
-        </div>
+        </button>
       </div>
-      
+
       <NotificationCenter
         isOpen={isNotificationOpen}
         onClose={() => setIsNotificationOpen(false)}
+      />
+
+      <ProfileModal
+        isOpen={isProfileOpen}
+        onClose={() => setIsProfileOpen(false)}
+        persona="Partner"
+        userProfile={userProfile}
+        onLogout={handleLogout}
       />
     </aside>
   );
