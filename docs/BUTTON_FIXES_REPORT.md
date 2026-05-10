@@ -20,6 +20,7 @@ Fixed **all non-functional buttons** across the entire ClearPass platform. Every
 ### Fixed Buttons:
 
 #### **View All Certificates** Button
+
 - **Location:** Certificates section header
 - **Action:** Navigates to Certificates view
 - **Code:** `onClick={() => onNavigate('certificates')}`
@@ -29,15 +30,12 @@ Fixed **all non-functional buttons** across the entire ClearPass platform. Every
 1. **Generate Report**
    - **Action:** Navigates to Reports view
    - **Code:** `onClick={() => onNavigate('reports')}`
-   
 2. **Verify Company**
    - **Action:** Navigates to Verify view
    - **Code:** `onClick={() => onNavigate('verify')}`
-   
 3. **Upload Certificate**
    - **Action:** Navigates to Certificates view
    - **Code:** `onClick={() => onNavigate('certificates')}`
-   
 4. **Contact Support**
    - **Action:** Navigates to Settings view
    - **Code:** `onClick={() => onNavigate('settings')}`
@@ -73,9 +71,10 @@ Fixed **all non-functional buttons** across the entire ClearPass platform. Every
 ### Fixed Buttons:
 
 #### **Copy Certificate Number** Button
+
 - **Action:** Copies certificate number to clipboard
 - **Toast:** "Copied - Certificate number copied to clipboard"
-- **Code:** 
+- **Code:**
   ```typescript
   onClick={() => {
     navigator.clipboard.writeText(certificateNumber || '');
@@ -84,20 +83,24 @@ Fixed **all non-functional buttons** across the entire ClearPass platform. Every
   ```
 
 #### **View** Button
+
 - **Action:** Opens CertificateDetailModal
 - **Code:** `onClick={() => setIsDetailModalOpen(true)}`
 - **Added:** CertificateDetailModal integration
 
 #### **Renew** Button
+
 - **Action:** Opens CertificateUploadModal for renewal
 - **Code:** `onClick={() => setIsUploadModalOpen(true)}`
 - **Enhancement:** Added hover effect (opacity-90)
 
 #### **Connect** Button
+
 - **Status:** Already functional (opens upload modal)
 - **Enhancement:** Added hover effects
 
 #### **Upload Success Callback**
+
 - **Before:** `console.log('Certificate uploaded successfully')`
 - **After:** `showToast('success', 'Certificate Updated', ...)`
 
@@ -110,22 +113,26 @@ Fixed **all non-functional buttons** across the entire ClearPass platform. Every
 ### Fixed Buttons:
 
 #### **Generate New Report** (2 buttons)
+
 - **Header Button:** Primary orange button
 - **Generate Card Button:** Call-to-action in gradient card
 - **Action:** Shows success toast
 - **Toast:** "Report Generated - Your compliance report is being generated..."
 
 #### **Download PDF** Button
+
 - **Action:** Downloads report if available, shows error if locked
 - **Success Toast:** "Download Started - Downloading [Report Title]"
 - **Error Toast:** "Report Locked - This report requires a compliance score of 80+"
 - **Code:** Checks report status before downloading
 
 #### **View Report** Button
+
 - **Action:** Same as Download PDF (opens report)
 - **Disabled State:** Grayed out when report is locked
 
 #### **Email to MDA** Button
+
 - **Action:** Shows success toast
 - **Toast:** "Email Sent - Report sent to procurement office"
 - **Visibility:** Only shows for procurement-ready reports that aren't locked
@@ -139,10 +146,12 @@ Fixed **all non-functional buttons** across the entire ClearPass platform. Every
 ### Fixed Buttons:
 
 #### **Quick Verify** Button
+
 - **Status:** Already functional (opens verification modal)
 - **Action:** Opens VendorVerificationModal
 
 #### **Bulk Upload** Button
+
 - **Before:** `console.log('Bulk upload clicked')`
 - **After:** Shows info toast
 - **Toast:** "Bulk Upload - Bulk upload feature coming soon..."
@@ -156,18 +165,22 @@ Fixed **all non-functional buttons** across the entire ClearPass platform. Every
 ### Fixed Buttons:
 
 #### **View Dashboard** Button
+
 - **Action:** Shows toast notification
 - **Toast:** "Client Dashboard - Opening client compliance dashboard..."
 
 #### **Manage** Button
+
 - **Action:** Shows toast notification
 - **Toast:** "Client Management - Opening client management panel..."
 
 #### **Upload Certificate** Button
+
 - **Status:** Already functional
 - **Action:** Opens PartnerCertificateUploadModal
 
 #### **Add Client** Button
+
 - **Status:** To be implemented (intentionally left for future feature)
 
 **Changes Required:** Imported useToast
@@ -179,6 +192,7 @@ Fixed **all non-functional buttons** across the entire ClearPass platform. Every
 ### Fixed Buttons:
 
 #### **Renew NSITF** Alert Action
+
 - **Before:** `console.log('Renew NSITF')`
 - **After:** Shows toast notification
 - **Toast:** "Opening Renewal - Redirecting to NSITF renewal portal..."
@@ -234,12 +248,14 @@ Fixed **all non-functional buttons** across the entire ClearPass platform. Every
 ## User Experience Improvements
 
 ### Before:
+
 - ❌ Buttons did nothing when clicked
 - ❌ Console.log messages only visible in dev tools
 - ❌ No feedback to user about actions
 - ❌ Frustrating, non-interactive experience
 
 ### After:
+
 - ✅ Every button performs a meaningful action
 - ✅ Clear toast notifications for all interactions
 - ✅ Navigation works seamlessly
@@ -251,11 +267,13 @@ Fixed **all non-functional buttons** across the entire ClearPass platform. Every
 ## Button Types & Actions
 
 ### Navigation Buttons ✅
+
 - **Quick Actions:** Navigate to respective views (Reports, Verify, Certificates, Settings)
 - **View All:** Navigate to full certificate list
 - **Alert Actions:** Navigate to certificates view with context
 
 ### Modal Triggers ✅
+
 - **Connect:** Opens upload modal
 - **Renew:** Opens renewal modal
 - **View:** Opens detail modal
@@ -263,14 +281,17 @@ Fixed **all non-functional buttons** across the entire ClearPass platform. Every
 - **Upload Certificate:** Opens multi-client upload wizard
 
 ### Clipboard Operations ✅
+
 - **Copy:** Copies certificate number to clipboard with toast feedback
 
 ### Downloads & Reports ✅
+
 - **Download PDF:** Initiates download with status check
 - **Generate Report:** Triggers report generation with toast
 - **Email to MDA:** Sends report with confirmation
 
 ### Info/Feedback Only ✅
+
 - **Bulk Upload:** Shows "coming soon" message
 - **View Dashboard:** Shows opening message
 - **Manage:** Shows management panel message
@@ -282,17 +303,20 @@ Fixed **all non-functional buttons** across the entire ClearPass platform. Every
 All buttons now use consistent toast patterns:
 
 **Success Toasts** (Green):
+
 - Certificate uploaded
 - Report downloaded
 - Certificate number copied
 - Getting started actions
 
 **Info Toasts** (Blue):
+
 - Navigation actions
 - Opening external resources
 - Feature redirects
 
 **Error Toasts** (Red):
+
 - Locked reports
 - Missing required fields
 - Invalid file types
@@ -302,22 +326,26 @@ All buttons now use consistent toast patterns:
 ## Testing Checklist
 
 ### Business Portal ✅
+
 - [x] Quick Actions (4 buttons)
 - [x] View All Certificates
 - [x] Alert card actions (4 scenarios)
 - [x] Certificate card buttons (Copy, View, Renew, Connect)
 
 ### Reports View ✅
+
 - [x] Generate Report (2 locations)
 - [x] Download PDF
 - [x] View Report
 - [x] Email to MDA
 
 ### MDA Portal ✅
+
 - [x] Quick Verify
 - [x] Bulk Upload
 
 ### Partner Portal ✅
+
 - [x] Upload Certificate
 - [x] View Dashboard
 - [x] Manage client
@@ -386,6 +414,7 @@ These buttons are **intentionally** left without full implementation (future fea
 ✅ **All non-functional buttons have been fixed!**
 
 The platform now provides a professional, interactive user experience with:
+
 - Consistent feedback patterns
 - Clear navigation flows
 - Meaningful actions for every button

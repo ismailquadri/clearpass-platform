@@ -8,6 +8,7 @@ interface AlertCardProps {
   actionLabel?: string;
   onAction?: () => void;
   onDismiss?: () => void;
+  noBackground?: boolean;
 }
 
 export const AlertCard = memo(function AlertCard({
@@ -17,6 +18,7 @@ export const AlertCard = memo(function AlertCard({
   actionLabel,
   onAction,
   onDismiss,
+  noBackground = false,
 }: AlertCardProps) {
   const config =
     type === 'warning'
@@ -39,7 +41,7 @@ export const AlertCard = memo(function AlertCard({
     <div
       className="px-3 py-2 rounded-lg border border-[#e5e5e5] flex items-center gap-2"
       style={{
-        backgroundColor: config.bgColor,
+        backgroundColor: noBackground ? 'transparent' : config.bgColor,
       }}
     >
       <Icon className="w-4 h-4 flex-shrink-0" style={{ color: config.color }} />

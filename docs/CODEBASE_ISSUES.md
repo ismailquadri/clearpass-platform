@@ -15,6 +15,7 @@
 **Location:** Project root
 
 **Issues:**
+
 - No ESLint configuration
 - No Prettier configuration
 - No TypeScript strict mode
@@ -23,6 +24,7 @@
 - No CI/CD pipeline
 
 **Remediation:**
+
 ```bash
 # Install linting tools
 npm install --save-dev eslint @typescript-eslint/parser @typescript-eslint/eslint-plugin eslint-plugin-react eslint-plugin-react-hooks
@@ -47,6 +49,7 @@ npx husky add .husky/pre-commit "npx lint-staged"
 **Location:** `src/app/App.tsx:107`
 
 **Current Code:**
+
 ```typescript
 <h2 style={{ fontSize: '24px', marginBottom: '8px' }}>
   {activeSection.charAt(0).toUpperCase() + activeSection.slice(1)}
@@ -56,6 +59,7 @@ npx husky add .husky/pre-commit "npx lint-staged"
 **Issue:** Inline styles override Tailwind classes, not responsive
 
 **Fix:**
+
 ```typescript
 <h2 className="text-2xl mb-2">
   {activeSection.charAt(0).toUpperCase() + activeSection.slice(1)}
@@ -71,6 +75,7 @@ npx husky add .husky/pre-commit "npx lint-staged"
 **Location:** Multiple components
 
 **Examples:**
+
 ```typescript
 // App.tsx
 setActiveSection('overview')
@@ -84,6 +89,7 @@ case 'Critical':
 ```
 
 **Fix:** Create constants file
+
 ```typescript
 // src/constants/routes.ts
 export const ROUTES = {
@@ -115,6 +121,7 @@ export const DASHBOARD_STATES = {
 **Location:** Multiple components
 
 **Example - App.tsx:58-101:**
+
 ```typescript
 const renderMainContent = () => {
   if (selectedPersona === 'Business') {
@@ -133,6 +140,7 @@ const renderMainContent = () => {
 ```
 
 **Fix:**
+
 ```typescript
 const renderMainContent = () => {
   if (selectedPersona === 'Business') {
@@ -162,6 +170,7 @@ const renderMainContent = () => {
 **Issue:** No error boundary to catch React component errors
 
 **Fix:**
+
 ```typescript
 // src/components/ErrorBoundary.tsx
 import React, { Component, ErrorInfo, ReactNode } from 'react';
@@ -235,6 +244,7 @@ export default ErrorBoundary;
 **Location:** Multiple components
 
 **Example - StateAwareDashboard.tsx:28-200:**
+
 ```typescript
 const getCertificatesForState = () => {
   switch (state.label) {
@@ -256,6 +266,7 @@ const getCertificatesForState = () => {
 ```
 
 **Fix:** Create separate mock data files
+
 ```typescript
 // src/mock/certificates.ts
 export const mockCertificates = {
@@ -294,6 +305,7 @@ const getCertificatesForState = () => {
 **Location:** All async operations
 
 **Example - CertificateUploadModal.tsx:**
+
 ```typescript
 const handleFileUpload = async () => {
   setIsUploading(true);
@@ -304,6 +316,7 @@ const handleFileUpload = async () => {
 ```
 
 **Fix:**
+
 ```typescript
 const handleFileUpload = async () => {
   setIsUploading(true);
@@ -337,11 +350,13 @@ const handleFileUpload = async () => {
 **Location:** Various component files
 
 **Issues:**
+
 - Some components use descriptive names: `CertificateUploadModal`
 - Some use abbreviated names: `MDASidebar`, `MDAVerifyView`
 - Inconsistent capitalization patterns
 
 **Fix:** Standardize naming
+
 ```typescript
 // Good
 CertificateUploadModal.tsx
@@ -363,6 +378,7 @@ MDASidebar.tsx → MdaSidebar.tsx or MetropolitanDevelopmentAgencySidebar.tsx
 **Current Configuration:** (file may not exist or have loose settings)
 
 **Fix:**
+
 ```json
 {
   "compilerOptions": {
@@ -398,6 +414,7 @@ MDASidebar.tsx → MdaSidebar.tsx or MetropolitanDevelopmentAgencySidebar.tsx
 **Location:** All form components
 
 **Example - CertificateUploadModal.tsx:**
+
 ```typescript
 const handleManualEntry = () => {
   // No validation
@@ -410,6 +427,7 @@ const handleManualEntry = () => {
 ```
 
 **Fix:**
+
 ```typescript
 // src/utils/validation.ts
 export const validateCertificateNumber = (number: string): boolean => {
@@ -434,22 +452,22 @@ const handleManualEntry = () => {
     showToast('error', 'Invalid Input', 'Certificate number is required');
     return;
   }
-  
+
   if (!validateCertificateNumber(certificateNumber)) {
     showToast('error', 'Invalid Format', 'Certificate number format is invalid');
     return;
   }
-  
+
   if (!validateDate(issuedDate)) {
     showToast('error', 'Invalid Date', 'Issue date is not valid');
     return;
   }
-  
+
   if (!validateExpiryDate(expiryDate)) {
     showToast('error', 'Invalid Date', 'Expiry date must be in the future');
     return;
   }
-  
+
   // Proceed with submission
 };
 ```
@@ -465,6 +483,7 @@ const handleManualEntry = () => {
 **Issue:** No `.env` files, environment variables hardcoded
 
 **Fix:**
+
 ```bash
 # .env.example
 VITE_API_BASE_URL=https://api.clearpass.com.ng
@@ -493,12 +512,14 @@ VITE_SENTRY_DSN=https://your-sentry-dsn
 **Location:** Interactive components
 
 **Examples:**
+
 - Missing `aria-label` on icon-only buttons
 - Missing `alt` text on images
 - Missing `role` attributes on custom components
 - Missing keyboard navigation support
 
 **Fix:**
+
 ```typescript
 // Button with icon only
 <button
@@ -544,11 +565,13 @@ VITE_SENTRY_DSN=https://your-sentry-dsn
 **Location:** Several components
 
 **Examples:**
+
 - `StateAwareDashboard.tsx`: 599 lines
 - `CertificateUploadModal.tsx`: 514 lines
 - `MDAVerifyView.tsx`: ~400 lines
 
 **Fix:** Break down into smaller components
+
 ```typescript
 // StateAwareDashboard.tsx → split into:
 // - DashboardHeader.tsx
@@ -574,6 +597,7 @@ VITE_SENTRY_DSN=https://your-sentry-dsn
 **Location:** Some components
 
 **Fix:** Ensure all components have proper TypeScript interfaces
+
 ```typescript
 interface CertificateCardProps {
   certificate: {
@@ -606,6 +630,7 @@ export function CertificateCard({ certificate, onConnect, onRenew, onView }: Cer
 **Issue:** Some functions use try-catch, some don't; error handling inconsistent
 
 **Fix:** Standardize error handling
+
 ```typescript
 // src/utils/errorHandler.ts
 export class AppError extends Error {
@@ -621,7 +646,7 @@ export class AppError extends Error {
 
 export const handleError = (error: unknown, context: string) => {
   console.error(`Error in ${context}:`, error);
-  
+
   if (error instanceof AppError) {
     showToast('error', 'Error', error.message);
   } else if (error instanceof Error) {
@@ -629,7 +654,7 @@ export const handleError = (error: unknown, context: string) => {
   } else {
     showToast('error', 'Error', 'An unexpected error occurred');
   }
-  
+
   // Log to error reporting service
   // logErrorToService(error, context);
 };
@@ -654,6 +679,7 @@ const handleUpload = async () => {
 **Location:** All hardcoded text
 
 **Fix:** Setup i18n framework
+
 ```typescript
 // npm install i18next react-i18next
 // src/i18n/config.ts
@@ -693,11 +719,13 @@ const { t } = useTranslation();
 **Location:** `package.json`
 
 **Potential Unused Dependencies:**
+
 - `react-router` (not used, using conditional rendering)
 - `react-slick` (may not be used)
 - `react-responsive-masonry` (may not be used)
 
 **Fix:** Audit and remove unused dependencies
+
 ```bash
 npx depcheck
 ```
@@ -711,6 +739,7 @@ npx depcheck
 **Location:** Build configuration
 
 **Fix:** Setup bundle analysis
+
 ```bash
 npm install --save-dev rollup-plugin-visualizer
 ```
@@ -739,6 +768,7 @@ export default defineConfig({
 **Location:** Project root
 
 **Fix:** Add service worker
+
 ```bash
 npm install vite-plugin-pwa
 ```
@@ -764,12 +794,14 @@ export default defineConfig({
 ## Summary Statistics
 
 ### Issue Breakdown by Severity:
+
 - **Critical:** 1 issue
-- **High:** 7 issues  
+- **High:** 7 issues
 - **Medium:** 7 issues
 - **Low:** 3 issues
 
 ### Issue Breakdown by Category:
+
 - **Code Quality:** 8 issues
 - **Performance:** 3 issues
 - **Accessibility:** 2 issues
@@ -777,6 +809,7 @@ export default defineConfig({
 - **Maintainability:** 4 issues
 
 ### Estimated Remediation Time:
+
 - **Critical Issues:** 2-3 days
 - **High Priority Issues:** 5-7 days
 - **Medium Priority Issues:** 4-5 days
@@ -788,6 +821,7 @@ export default defineConfig({
 ## Recommended Fix Order
 
 ### Week 1 (Critical + High Priority):
+
 1. Setup development infrastructure (Issue #1)
 2. Add error boundaries (Issue #5)
 3. Fix inline styles (Issue #2)
@@ -797,6 +831,7 @@ export default defineConfig({
 7. Add loading states (Issue #7)
 
 ### Week 2 (Medium Priority):
+
 8. Standardize naming (Issue #8)
 9. Enable TypeScript strict mode (Issue #9)
 10. Add form validation (Issue #10)
@@ -804,6 +839,7 @@ export default defineConfig({
 12. Add accessibility attributes (Issue #12)
 
 ### Week 3 (Low Priority + Cleanup):
+
 13. Break down large components (Issue #13)
 14. Add TypeScript interfaces (Issue #14)
 15. Standardize error handling (Issue #15)
@@ -817,6 +853,7 @@ export default defineConfig({
 ## Success Criteria
 
 ### Completion Metrics:
+
 - [ ] All critical issues resolved
 - [ ] All high priority issues resolved
 - [ ] All medium priority issues resolved
@@ -827,6 +864,7 @@ export default defineConfig({
 - [ ] Lighthouse score > 90
 
 ### Quality Gates:
+
 - [ ] Code review approved
 - [ ] QA testing passed
 - [ ] Performance benchmarks met

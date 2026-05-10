@@ -18,6 +18,7 @@
 ## 🏢 **BUSINESS PORTAL TESTS**
 
 ### **Navigation Tests**
+
 - [ ] **Overview Dashboard** - Default view loads correctly
 - [ ] **Certificates View** - Click "Certificates" in sidebar → loads certificate list
 - [ ] **Verify Company** - Click "Verify Company" → loads verification form
@@ -28,6 +29,7 @@
 - [ ] **Back Navigation** - Clicking sidebar items returns to correct views
 
 ### **Dashboard Tests**
+
 - [ ] **Compliance Score** - Score displays correctly (e.g., "85/100")
 - [ ] **Score Color** - Score color matches state (green/amber/red)
 - [ ] **Certificate Cards** - All 6 certificate cards display
@@ -39,6 +41,7 @@
   - [ ] Contact Support → navigates to Settings
 
 ### **Certificate Management Tests**
+
 - [ ] **View All Certificates** - Button navigates to full certificate list
 - [ ] **Certificate Connect Button** - Opens upload modal
 - [ ] **Certificate Card Click** - Opens detail modal
@@ -47,6 +50,7 @@
 - [ ] **Certificate View Button** - Opens detail modal
 
 ### **Certificate Upload Modal Tests**
+
 - [ ] **Modal Opens** - Clicking "Connect" opens modal
 - [ ] **Close Button** - X button closes modal
 - [ ] **Backdrop Click** - Clicking outside closes modal
@@ -71,6 +75,7 @@
 - [ ] **State-Aware Messaging** - Banner shows correct message based on dashboard state
 
 ### **Reports Page Tests**
+
 - [ ] **Generate New Report** buttons work (2 locations)
 - [ ] **Download PDF** buttons work for available reports
 - [ ] **View Report** buttons work
@@ -80,6 +85,7 @@
 - [ ] **Toast Notifications** - All actions show toast feedback
 
 ### **Settings Page Tests**
+
 - [ ] **Form Fields** - All input fields accept data
 - [ ] **Save Button** - Shows success toast
 - [ ] **Navigation** - Settings sections load correctly
@@ -89,16 +95,19 @@
 ## 🏛️ **MDA PORTAL TESTS**
 
 ### **Portal Switching**
+
 - [ ] **Switch to MDA Portal** - Use Tweaks Panel → Select "MDA"
 - [ ] **Sidebar Changes** - MDA-specific sidebar appears
 - [ ] **Default View** - Verify view loads by default
 
 ### **MDA Navigation Tests**
+
 - [ ] **Verify Vendors** - Default view loads correctly
 - [ ] **Pre-Qualification** - Click "Pre-Qualification" → loads list
 - [ ] **Settings** - Click "Settings" → loads settings
 
 ### **Vendor Verification Tests**
+
 - [ ] **Quick Verify Button** - Orange button opens verification modal
 - [ ] **RC Number Input** - Accepts RC number input
 - [ ] **Verify Button** - Shows loading state
@@ -110,6 +119,7 @@
 - [ ] **Verify Another** - Resets form for new search
 
 ### **Pre-Qualification List Tests**
+
 - [ ] **Vendor List** - Displays mock vendor data
 - [ ] **Statistics Cards** - Show correct numbers
 - [ ] **Filter Buttons** - Filter buttons work
@@ -122,16 +132,19 @@
 ## 🤝 **PARTNER PORTAL TESTS**
 
 ### **Portal Switching**
+
 - [ ] **Switch to Partner Portal** - Use Tweaks Panel → Select "Partner"
 - [ ] **Sidebar Changes** - Partner-specific sidebar appears
 - [ ] **Default View** - Clients view loads by default
 
 ### **Partner Navigation Tests**
+
 - [ ] **My Clients** - Default view loads correctly
 - [ ] **Analytics** - Click "Analytics" → loads analytics dashboard
 - [ ] **Settings** - Click "Settings" → loads settings
 
 ### **Client Management Tests**
+
 - [ ] **Client List** - Displays mock client data
 - [ ] **Search** - Search field filters clients
 - [ ] **Client Cards** - Display correctly
@@ -140,6 +153,7 @@
 - [ ] **Upload Certificate** - Button opens upload modal
 
 ### **Partner Upload Modal Tests**
+
 - [ ] **3-Step Wizard** - Steps work correctly
 - [ ] **Step 1 - Client Selection** - Search and select client
 - [ ] **Step 2 - Certificate Type** - Select certificate type
@@ -149,6 +163,7 @@
 - [ ] **Success Toast** - Shows client name and certificate type
 
 ### **Analytics Tests**
+
 - [ ] **Dashboard Loads** - Analytics dashboard displays
 - [ ] **Charts** - Charts display correctly
 - [ ] **Statistics** - Numbers display correctly
@@ -159,6 +174,7 @@
 ## 🎛️ **TWEAKS PANEL TESTS**
 
 ### **Panel Functionality**
+
 - [ ] **Panel Opens** - Floating button opens panel
 - [ ] **Panel Closes** - X button and backdrop close panel
 - [ ] **Persona Switching** - Business/MDA/Partner switching works
@@ -172,6 +188,7 @@
 - [ ] **State Persistence** - State applies correctly when switching
 
 ### **State Testing**
+
 - [ ] **Healthy State** - Green score, all certificates active
 - [ ] **Attention Required** - Amber score, some certificates expiring
 - [ ] **Critical State** - Red score, urgent action needed
@@ -184,6 +201,7 @@
 ## 🔔 **TOAST NOTIFICATION TESTS**
 
 ### **Toast Types**
+
 - [ ] **Success Toasts** - Green toasts appear and auto-dismiss
 - [ ] **Error Toasts** - Red toasts appear and auto-dismiss
 - [ ] **Info Toasts** - Blue toasts appear and auto-dismiss
@@ -196,18 +214,21 @@
 ## 📱 **RESPONSIVE DESIGN TESTS**
 
 ### **Desktop (1920x1080)**
+
 - [ ] **Layout** - Full layout displays correctly
 - [ ] **Sidebar** - Sidebar displays correctly
 - [ ] **Content** - Main content area displays correctly
 - [ ] **Tweaks Panel** - Floating button accessible
 
 ### **Tablet (768x1024)**
+
 - [ ] **Layout** - Layout adapts correctly
 - [ ] **Sidebar** - Sidebar still accessible
 - [ ] **Content** - Content displays correctly
 - [ ] **Modals** - Modals fit within screen
 
 ### **Mobile (375x667)**
+
 - [ ] **Layout** - Layout adapts for mobile
 - [ ] **Sidebar** - Navigation works on mobile
 - [ ] **Content** - Content displays correctly
@@ -219,6 +240,7 @@
 ## 🐛 **KNOWN LIMITATIONS (Expected for Prototype)**
 
 ### **Non-Functional (By Design)**
+
 - ❌ **Real File Uploads** - Files aren't actually stored (simulated)
 - ❌ **Real API Connections** - Government APIs not connected (simulated)
 - ❌ **Real Authentication** - No real login/signup (simulated)
@@ -227,6 +249,7 @@
 - ❌ **Real PDF Generation** - Downloads are simulated
 
 ### **Functional (Should Work)**
+
 - ✅ **All UI Interactions** - Buttons, modals, navigation should work
 - ✅ **Form Validation** - Frontend validation should work
 - ✅ **State Management** - Switching states/portals should work
@@ -250,18 +273,20 @@ If you find any broken features, please document:
 
 ## ✅ **TESTING COMPLETE**
 
-**Test Date:** _____________  
-**Tester Name:** _____________  
+**Test Date:** ******\_******  
+**Tester Name:** ******\_******  
 **Overall Status:** [ ] Ready for Backend / [ ] Needs Fixes
 
 **Summary:**
-- Total Features Tested: ___/___
-- Working Features: ___/___
-- Broken Features: ___/___
-- Critical Issues: ___
+
+- Total Features Tested: **_/_**
+- Working Features: **_/_**
+- Broken Features: **_/_**
+- Critical Issues: \_\_\_
 
 ---
 
 **Next Steps:**
+
 - If all tests pass: Ready for backend development handoff
 - If tests fail: Report specific issues for fixes

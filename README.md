@@ -5,6 +5,7 @@ A comprehensive compliance management platform for Nigerian businesses, MDAs, an
 ## Documentation
 
 All documentation has been moved to the `docs/` directory:
+
 - [README](docs/README.md) - Project overview and getting started
 - [QUICK_START_GUIDE](docs/QUICK_START_GUIDE.md) - Quick start instructions
 - [BACKEND_DEVELOPMENT_GUIDE](docs/BACKEND_DEVELOPMENT_GUIDE.md) - Backend development guide

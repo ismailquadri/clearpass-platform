@@ -36,6 +36,7 @@ npx husky add .husky/pre-commit "npx lint-staged"
 **Priority:** CRITICAL
 
 Create `.eslintrc.json`:
+
 ```json
 {
   "root": true,
@@ -52,10 +53,7 @@ Create `.eslintrc.json`:
   "parser": "@typescript-eslint/parser",
   "plugins": ["react-refresh", "@typescript-eslint"],
   "rules": {
-    "react-refresh/only-export-components": [
-      "warn",
-      { "allowConstantExport": true }
-    ],
+    "react-refresh/only-export-components": ["warn", { "allowConstantExport": true }],
     "react/prop-types": "off",
     "@typescript-eslint/no-unused-vars": ["error", { "argsIgnorePattern": "^_" }],
     "@typescript-eslint/no-explicit-any": "warn"
@@ -67,6 +65,7 @@ Create `.eslintrc.json`:
 ```
 
 Create `.prettierrc`:
+
 ```json
 {
   "semi": true,
@@ -79,6 +78,7 @@ Create `.prettierrc`:
 ```
 
 Create `.prettierignore`:
+
 ```
 node_modules
 dist
@@ -91,6 +91,7 @@ package-lock.json
 ```
 
 Create `lint-staged.config.js`:
+
 ```javascript
 module.exports = {
   '*.{ts,tsx}': ['eslint --fix', 'prettier --write'],
@@ -104,6 +105,7 @@ module.exports = {
 **Priority:** HIGH
 
 Add these scripts to your `package.json`:
+
 ```json
 {
   "scripts": {
@@ -146,6 +148,7 @@ npm run format
 **Priority:** HIGH
 
 Create `src/constants/routes.ts`:
+
 ```typescript
 export const ROUTES = {
   OVERVIEW: 'overview',
@@ -172,9 +175,9 @@ export const PORTALS = {
   PARTNER: 'Partner',
 } as const;
 
-export type Route = typeof ROUTES[keyof typeof ROUTES];
-export type DashboardState = typeof DASHBOARD_STATES[keyof typeof DASHBOARD_STATES];
-export type Portal = typeof PORTALS[keyof typeof PORTALS];
+export type Route = (typeof ROUTES)[keyof typeof ROUTES];
+export type DashboardState = (typeof DASHBOARD_STATES)[keyof typeof DASHBOARD_STATES];
+export type Portal = (typeof PORTALS)[keyof typeof PORTALS];
 ```
 
 ### Step 6: Fix Inline Styles in App.tsx
@@ -183,6 +186,7 @@ export type Portal = typeof PORTALS[keyof typeof PORTALS];
 **Priority:** HIGH
 
 Replace inline styles with Tailwind classes in `src/app/App.tsx`:
+
 ```typescript
 // BEFORE
 <h2 style={{ fontSize: '24px', marginBottom: '8px' }}>
@@ -201,6 +205,7 @@ Replace inline styles with Tailwind classes in `src/app/App.tsx`:
 **Priority:** HIGH
 
 Update `src/app/App.tsx` renderMainContent function:
+
 ```typescript
 const renderMainContent = () => {
   // Business Portal Routes
@@ -277,6 +282,7 @@ const renderMainContent = () => {
 **Priority:** HIGH
 
 Create `src/app/components/ErrorBoundary.tsx`:
+
 ```typescript
 import React, { Component, ErrorInfo, ReactNode } from 'react';
 
@@ -372,6 +378,7 @@ export default ErrorBoundary;
 ```
 
 Update `src/app/App.tsx` to use ErrorBoundary:
+
 ```typescript
 import ErrorBoundary from './components/ErrorBoundary';
 
@@ -410,6 +417,7 @@ return (
 **Priority:** HIGH
 
 Create `tsconfig.json`:
+
 ```json
 {
   "compilerOptions": {
@@ -441,6 +449,7 @@ Create `tsconfig.json`:
 ```
 
 Create `tsconfig.node.json`:
+
 ```json
 {
   "compilerOptions": {
@@ -464,6 +473,7 @@ npm run type-check
 ```
 
 Fix any TypeScript errors that appear. This may require:
+
 - Adding proper type annotations
 - Fixing implicit any types
 - Adding missing type imports
@@ -491,6 +501,7 @@ npm install --save-dev @playwright/test
 **Priority:** HIGH
 
 Create `vitest.config.ts`:
+
 ```typescript
 import { defineConfig } from 'vitest/config';
 import react from '@vitejs/plugin-react';
@@ -507,6 +518,7 @@ export default defineConfig({
 ```
 
 Create `src/test/setup.ts`:
+
 ```typescript
 import '@testing-library/jest-dom';
 ```
@@ -517,6 +529,7 @@ import '@testing-library/jest-dom';
 **Priority:** HIGH
 
 Add to `package.json` scripts:
+
 ```json
 {
   "scripts": {
@@ -561,11 +574,13 @@ npm run dev
 **Priority:** HIGH
 
 Test all three portals:
+
 - [ ] Business Portal - All navigation works
 - [ ] MDA Portal - All navigation works
 - [ ] Partner Portal - All navigation works
 
 Test all dashboard states:
+
 - [ ] Healthy state displays correctly
 - [ ] Attention Required state displays correctly
 - [ ] Critical state displays correctly
@@ -574,16 +589,19 @@ Test all dashboard states:
 - [ ] Pending Verification state displays correctly
 
 Test certificate upload:
+
 - [ ] File upload works
 - [ ] Manual entry works
 - [ ] API connect simulation works
 
 Test modals:
+
 - [ ] All modals open correctly
 - [ ] All modals close correctly
 - [ ] Backdrop click closes modals
 
 Test error handling:
+
 - [ ] Error boundary catches errors
 - [ ] Toast notifications appear correctly
 - [ ] Form validation shows errors
@@ -602,6 +620,7 @@ npm install --save-dev @lhci/cli
 ```
 
 Create `lighthouserc.json`:
+
 ```json
 {
   "ci": {
@@ -630,6 +649,7 @@ npx lhci autorun
 ```
 
 **Target Scores:**
+
 - Performance: > 90
 - Accessibility: > 95
 - Best Practices: > 90
@@ -642,12 +662,14 @@ npx lhci autorun
 Before moving to backend development, ensure:
 
 ### Code Quality ✅
+
 - [ ] Zero ESLint errors
 - [ ] Zero TypeScript errors
 - [ ] All code formatted with Prettier
 - [ ] Pre-commit hooks working
 
 ### Functionality ✅
+
 - [ ] All three portals work correctly
 - [ ] All navigation works
 - [ ] All modals function properly
@@ -655,12 +677,14 @@ Before moving to backend development, ensure:
 - [ ] Form validation works
 
 ### Performance ✅
+
 - [ ] Build completes without errors
 - [ ] Lighthouse score > 90
 - [ ] No console errors in browser
 - [ ] Fast page load (< 3s)
 
 ### Testing ✅
+
 - [ ] Testing infrastructure setup
 - [ ] Can run tests successfully
 - [ ] At least basic component tests written
@@ -669,14 +693,14 @@ Before moving to backend development, ensure:
 
 ## 📝 Summary Timeline
 
-| Phase | Duration | Priority | Status |
-|-------|----------|----------|--------|
-| Phase 1: Setup Infrastructure | Day 1 (2 hours) | CRITICAL | ⏳ Ready |
-| Phase 2: Fix Critical Issues | Day 1-2 (3 hours) | HIGH | ⏳ Ready |
-| Phase 3: TypeScript Config | Day 2 (1 hour) | HIGH | ⏳ Ready |
-| Phase 4: Testing Setup | Day 2 (1 hour) | HIGH | ⏳ Ready |
-| Phase 5: Validation | Day 2-3 (4 hours) | CRITICAL | ⏳ Ready |
-| Phase 6: Performance Check | Day 3 (1 hour) | MEDIUM | ⏳ Ready |
+| Phase                         | Duration          | Priority | Status   |
+| ----------------------------- | ----------------- | -------- | -------- |
+| Phase 1: Setup Infrastructure | Day 1 (2 hours)   | CRITICAL | ⏳ Ready |
+| Phase 2: Fix Critical Issues  | Day 1-2 (3 hours) | HIGH     | ⏳ Ready |
+| Phase 3: TypeScript Config    | Day 2 (1 hour)    | HIGH     | ⏳ Ready |
+| Phase 4: Testing Setup        | Day 2 (1 hour)    | HIGH     | ⏳ Ready |
+| Phase 5: Validation           | Day 2-3 (4 hours) | CRITICAL | ⏳ Ready |
+| Phase 6: Performance Check    | Day 3 (1 hour)    | MEDIUM   | ⏳ Ready |
 
 **Total Time:** 2-3 days  
 **Effort:** Medium  
@@ -696,6 +720,7 @@ Before moving to backend development, ensure:
 ## 📞 Support
 
 If you encounter issues:
+
 1. Check the detailed `FRONTEND_VALIDATION_PLAN.md`
 2. Review `CODEBASE_ISSUES.md` for detailed explanations
 3. Run `npm run lint` to see specific errors

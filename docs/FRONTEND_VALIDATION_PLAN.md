@@ -10,7 +10,8 @@
 
 This plan provides a comprehensive roadmap to validate, test, and optimize the existing ClearPass frontend implementation. The goal is to ensure the frontend foundation is solid, performant, and production-ready before investing in backend development.
 
-**Current Status:** 
+**Current Status:**
+
 - ✅ UI Components: 26 components built
 - ✅ Three Portal Interfaces: Business, MDA, Partner
 - ✅ Interactive Features: Buttons, modals, navigation
@@ -29,6 +30,7 @@ This plan provides a comprehensive roadmap to validate, test, and optimize the e
 **Time:** 1 day
 
 #### Tasks:
+
 - [ ] Install ESLint with React and TypeScript rules
 - [ ] Install Prettier for code formatting
 - [ ] Configure Husky for pre-commit hooks
@@ -36,6 +38,7 @@ This plan provides a comprehensive roadmap to validate, test, and optimize the e
 - [ ] Setup VS Code workspace settings
 
 #### Commands:
+
 ```bash
 npm install --save-dev eslint @typescript-eslint/parser @typescript-eslint/eslint-plugin eslint-plugin-react eslint-plugin-react-hooks
 npm install --save-dev prettier eslint-config-prettier eslint-plugin-prettier
@@ -45,6 +48,7 @@ npx husky add .husky/pre-commit "npx lint-staged"
 ```
 
 #### Success Criteria:
+
 - ESLint runs without errors on entire codebase
 - Prettier formats all files consistently
 - Pre-commit hooks prevent linting errors from being committed
@@ -93,6 +97,7 @@ npx husky add .husky/pre-commit "npx lint-staged"
    - Fix: Add loading spinners/skeletons
 
 #### Remediation Plan:
+
 ```typescript
 // Create constants file
 // src/constants/routes.ts
@@ -108,7 +113,7 @@ export const ROUTES = {
 
 // Create types file
 // src/types/index.ts
-export type Route = typeof ROUTES[keyof typeof ROUTES];
+export type Route = (typeof ROUTES)[keyof typeof ROUTES];
 export type Portal = 'Business' | 'MDA' | 'Partner';
 
 // Create error boundary
@@ -126,6 +131,7 @@ class ErrorBoundary extends React.Component {
 **Time:** 2 days
 
 #### Tasks:
+
 - [ ] Audit all 26 components for prop drilling
 - [ ] Identify components that need context API
 - [ ] Review component size and complexity
@@ -133,6 +139,7 @@ class ErrorBoundary extends React.Component {
 - [ ] Document component dependencies
 
 #### Success Criteria:
+
 - No component exceeds 300 lines
 - No prop drilling deeper than 3 levels
 - Clear component hierarchy documented
@@ -148,6 +155,7 @@ class ErrorBoundary extends React.Component {
 **Time:** 1 day
 
 #### Tasks:
+
 - [ ] Install Vitest for unit testing
 - [ ] Install React Testing Library for component testing
 - [ ] Install Playwright for E2E testing
@@ -155,12 +163,14 @@ class ErrorBoundary extends React.Component {
 - [ ] Setup test coverage reporting
 
 #### Commands:
+
 ```bash
 npm install --save-dev vitest @testing-library/react @testing-library/jest-dom @testing-library/user-event
 npm install --save-dev @playwright/test
 ```
 
 #### Package.json additions:
+
 ```json
 {
   "scripts": {
@@ -201,6 +211,7 @@ npm install --save-dev @playwright/test
    - [ ] SettingsView (test form handling)
 
 #### Test Coverage Goals:
+
 - **Critical Components:** 90%+ coverage
 - **UI Components:** 80%+ coverage
 - **Utility Functions:** 100% coverage
@@ -245,6 +256,7 @@ npm install --save-dev @playwright/test
 #### Critical User Flows:
 
 1. **Business Portal Onboarding**
+
    ```typescript
    test('Business portal complete onboarding', async ({ page }) => {
      // Navigate to business portal
@@ -255,6 +267,7 @@ npm install --save-dev @playwright/test
    ```
 
 2. **MDA Vendor Verification**
+
    ```typescript
    test('MDA officer verifies vendor', async ({ page }) => {
      // Navigate to MDA portal
@@ -265,6 +278,7 @@ npm install --save-dev @playwright/test
    ```
 
 3. **Partner Multi-Client Management**
+
    ```typescript
    test('Partner manages multiple clients', async ({ page }) => {
      // Navigate to partner portal
@@ -285,6 +299,7 @@ npm install --save-dev @playwright/test
    ```
 
 #### Browser Coverage:
+
 - [ ] Chrome (latest)
 - [ ] Firefox (latest)
 - [ ] Safari (latest)
@@ -301,11 +316,13 @@ npm install --save-dev @playwright/test
 **Time:** 2 days
 
 #### Tools to Use:
+
 - [ ] Lighthouse CI for performance scoring
 - [ ] React DevTools Profiler for component performance
 - [ ] Webpack Bundle Analyzer for bundle size
 
 #### Performance Targets:
+
 - **First Contentful Paint:** < 1.5s
 - **Largest Contentful Paint:** < 2.5s
 - **Time to Interactive:** < 3.5s
@@ -320,24 +337,28 @@ npm install --save-dev @playwright/test
 **Time:** 3-4 days
 
 #### Bundle Optimization:
+
 - [ ] Code splitting by route
 - [ ] Lazy loading heavy components
 - [ ] Tree shaking unused dependencies
 - [ ] Optimize imports (remove unused re-exports)
 
 #### Component Optimization:
+
 - [ ] Add React.memo() to expensive components
 - [ ] Use useMemo() for expensive calculations
 - [ ] Use useCallback() for event handlers
 - [ ] Virtualize long lists (react-window)
 
 #### Asset Optimization:
+
 - [ ] Compress images
 - [ ] Use WebP format
 - [ ] Implement lazy loading for images
 - [ ] Add font-display: swap
 
 #### Network Optimization:
+
 - [ ] Implement HTTP/2
 - [ ] Add service worker for caching
 - [ ] Optimize API call patterns
@@ -351,6 +372,7 @@ npm install --save-dev @playwright/test
 **Time:** 1-2 days
 
 #### Tools:
+
 - [ ] Setup Sentry for error tracking
 - [ ] Setup Google Analytics for user analytics
 - [ ] Implement custom performance metrics
@@ -366,6 +388,7 @@ npm install --save-dev @playwright/test
 **Time:** 2-3 days
 
 #### Breakpoints to Test:
+
 - **Mobile:** 320px - 480px
 - **Tablet:** 481px - 768px
 - **Desktop:** 769px - 1024px
@@ -374,6 +397,7 @@ npm install --save-dev @playwright/test
 #### Testing Checklist:
 
 **Business Portal:**
+
 - [ ] Dashboard layout on mobile
 - [ ] Certificate cards stack correctly
 - [ ] Sidebar becomes hamburger menu
@@ -381,12 +405,14 @@ npm install --save-dev @playwright/test
 - [ ] Touch targets minimum 44px
 
 **MDA Portal:**
+
 - [ ] Verification form on mobile
 - [ ] Results display on mobile
 - [ ] Report download on mobile
 - [ ] Bulk upload interface on mobile
 
 **Partner Portal:**
+
 - [ ] Client list on mobile
 - [ ] Upload wizard on mobile
 - [ ] Analytics charts on mobile
@@ -400,6 +426,7 @@ npm install --save-dev @playwright/test
 **Time:** 2 days
 
 #### Tasks:
+
 - [ ] Add touch-friendly interactions
 - [ ] Implement swipe gestures where appropriate
 - [ ] Optimize for mobile keyboards
@@ -414,6 +441,7 @@ npm install --save-dev @playwright/test
 **Time:** 1-2 days
 
 #### Physical Devices to Test:
+
 - [ ] iPhone (iOS 14+)
 - [ ] Android (various manufacturers)
 - [ ] iPad (various sizes)
@@ -430,6 +458,7 @@ npm install --save-dev @playwright/test
 **Time:** 3-4 days
 
 #### Tools:
+
 - [ ] axe DevTools for automated testing
 - [ ] WAVE for manual evaluation
 - [ ] Screen reader testing (NVDA, VoiceOver)
@@ -438,6 +467,7 @@ npm install --save-dev @playwright/test
 #### Compliance Checklist:
 
 **Perceivable:**
+
 - [ ] All images have alt text
 - [ ] Color contrast ratio ≥ 4.5:1
 - [ ] Text can be resized to 200%
@@ -445,6 +475,7 @@ npm install --save-dev @playwright/test
 - [ ] Captions for video content
 
 **Operable:**
+
 - [ ] All functionality available via keyboard
 - [ ] No keyboard traps
 - [ ] Focus indicators visible
@@ -452,6 +483,7 @@ npm install --save-dev @playwright/test
 - [ ] No content that flashes > 3 times per second
 
 **Understandable:**
+
 - [ ] Page language identified
 - [ ] Error messages are descriptive
 - [ ] Labels are clear and concise
@@ -459,6 +491,7 @@ npm install --save-dev @playwright/test
 - [ ] Error prevention in forms
 
 **Robust:**
+
 - [ ] Compatible with assistive technologies
 - [ ] Valid HTML markup
 - [ ] ARIA attributes used correctly
@@ -472,6 +505,7 @@ npm install --save-dev @playwright/test
 **Time:** 2 days
 
 #### Tasks:
+
 - [ ] Test with NVDA (Windows)
 - [ ] Test with VoiceOver (Mac)
 - [ ] Test with TalkBack (Android)
@@ -487,6 +521,7 @@ npm install --save-dev @playwright/test
 **Time:** 1-2 days
 
 #### Test Scenarios:
+
 - [ ] Tab through entire interface
 - [ ] Enter/Space activates buttons
 - [ ] Escape closes modals
@@ -504,6 +539,7 @@ npm install --save-dev @playwright/test
 **Time:** 1-2 days
 
 #### Tasks:
+
 - [ ] Create global Error Boundary component
 - [ ] Add fallback UI for component failures
 - [ ] Implement error logging service
@@ -538,6 +574,7 @@ npm install --save-dev @playwright/test
    - [ ] Notification preferences validation
 
 #### Validation Strategy:
+
 ```typescript
 // Create validation utilities
 // src/utils/validation.ts
@@ -554,15 +591,15 @@ export const validateEmail = (email: string): boolean => {
 export const validateFile = (file: File): { valid: boolean; error?: string } => {
   const validTypes = ['application/pdf', 'image/jpeg', 'image/png'];
   const maxSize = 10 * 1024 * 1024; // 10MB
-  
+
   if (!validTypes.includes(file.type)) {
     return { valid: false, error: 'Invalid file type. Please upload PDF or image files.' };
   }
-  
+
   if (file.size > maxSize) {
     return { valid: false, error: 'File size exceeds 10MB limit.' };
   }
-  
+
   return { valid: true };
 };
 ```
@@ -577,6 +614,7 @@ export const validateFile = (file: File): { valid: boolean; error?: string } => 
 #### Edge Cases to Test:
 
 **Data Edge Cases:**
+
 - [ ] Empty certificate lists
 - [ ] Very long company names
 - [ ] Special characters in inputs
@@ -584,6 +622,7 @@ export const validateFile = (file: File): { valid: boolean; error?: string } => 
 - [ ] Null/undefined data handling
 
 **UI Edge Cases:**
+
 - [ ] Very small screens (320px)
 - [ ] Very large screens (4K)
 - [ ] High DPI displays
@@ -591,6 +630,7 @@ export const validateFile = (file: File): { valid: boolean; error?: string } => 
 - [ ] Offline mode
 
 **Interaction Edge Cases:**
+
 - [ ] Rapid button clicking
 - [ ] Concurrent modal opens
 - [ ] Browser back button during flows
@@ -605,6 +645,7 @@ export const validateFile = (file: File): { valid: boolean; error?: string } => 
 **Time:** 1-2 days
 
 #### Tasks:
+
 - [ ] Implement retry logic for failed requests
 - [ ] Add offline detection
 - [ ] Show user-friendly network error messages
@@ -621,6 +662,7 @@ export const validateFile = (file: File): { valid: boolean; error?: string } => 
 **Time:** 2-3 days
 
 #### Tasks:
+
 - [ ] Add JSDoc comments to all functions
 - [ ] Document component props and usage
 - [ ] Create README for each major component
@@ -635,6 +677,7 @@ export const validateFile = (file: File): { valid: boolean; error?: string } => 
 **Time:** 2 days
 
 #### Tasks:
+
 - [ ] Create user guide for each portal
 - [ ] Document all features and workflows
 - [ ] Create troubleshooting guide
@@ -649,6 +692,7 @@ export const validateFile = (file: File): { valid: boolean; error?: string } => 
 **Time:** 2 days
 
 #### Tasks:
+
 - [ ] Setup development environment guide
 - [ ] Component storybook (Storybook)
 - [ ] API documentation (when backend is ready)
@@ -667,6 +711,7 @@ export const validateFile = (file: File): { valid: boolean; error?: string } => 
 #### Final Testing Checklist:
 
 **Functional Testing:**
+
 - [ ] All user flows work end-to-end
 - [ ] All buttons and interactions functional
 - [ ] All forms validate correctly
@@ -674,6 +719,7 @@ export const validateFile = (file: File): { valid: boolean; error?: string } => 
 - [ ] Navigation works across all portals
 
 **Cross-Browser Testing:**
+
 - [ ] Chrome (latest 2 versions)
 - [ ] Firefox (latest 2 versions)
 - [ ] Safari (latest 2 versions)
@@ -681,6 +727,7 @@ export const validateFile = (file: File): { valid: boolean; error?: string } => 
 - [ ] Mobile browsers
 
 **Performance Testing:**
+
 - [ ] Lighthouse score > 90
 - [ ] Bundle size under 500KB
 - [ ] Load time under 3s on 3G
@@ -688,6 +735,7 @@ export const validateFile = (file: File): { valid: boolean; error?: string } => 
 - [ ] Smooth 60fps animations
 
 **Accessibility Testing:**
+
 - [ ] WCAG 2.1 AA compliant
 - [ ] Screen reader compatible
 - [ ] Keyboard navigable
@@ -702,6 +750,7 @@ export const validateFile = (file: File): { valid: boolean; error?: string } => 
 **Time:** 2 days
 
 #### Security Checklist:
+
 - [ ] No hardcoded secrets
 - [ ] Input sanitization implemented
 - [ ] XSS prevention measures
@@ -717,6 +766,7 @@ export const validateFile = (file: File): { valid: boolean; error?: string } => 
 **Time:** 1-2 days
 
 #### Final Checklist:
+
 - [ ] All tests passing (unit, integration, E2E)
 - [ ] Code coverage > 75%
 - [ ] No console errors or warnings
@@ -733,6 +783,7 @@ export const validateFile = (file: File): { valid: boolean; error?: string } => 
 ## Success Metrics
 
 ### Quantitative Metrics:
+
 - **Test Coverage:** > 75%
 - **Lighthouse Performance Score:** > 90
 - **Accessibility Score:** > 95
@@ -741,6 +792,7 @@ export const validateFile = (file: File): { valid: boolean; error?: string } => 
 - **Zero Console Errors:** 100%
 
 ### Qualitative Metrics:
+
 - **Code Quality:** Consistent patterns, no technical debt
 - **User Experience:** Smooth interactions, clear feedback
 - **Maintainability:** Well-documented, easy to understand
@@ -751,16 +803,16 @@ export const validateFile = (file: File): { valid: boolean; error?: string } => 
 
 ## Timeline Summary
 
-| Phase | Duration | Priority | Dependencies |
-|-------|----------|----------|--------------|
-| Phase 1: Code Quality | Week 1 | CRITICAL | None |
-| Phase 2: Testing Infrastructure | Week 2 | CRITICAL | Phase 1 |
-| Phase 3: Performance Optimization | Week 3 | HIGH | Phase 1 |
-| Phase 4: Mobile Responsiveness | Week 4 | CRITICAL | Phase 1 |
-| Phase 5: Accessibility | Week 5 | CRITICAL | Phase 1 |
-| Phase 6: Error Handling | Week 6 | HIGH | Phase 2 |
-| Phase 7: Documentation | Week 7 | MEDIUM | Phase 6 |
-| Phase 8: Final Validation | Week 8 | CRITICAL | All phases |
+| Phase                             | Duration | Priority | Dependencies |
+| --------------------------------- | -------- | -------- | ------------ |
+| Phase 1: Code Quality             | Week 1   | CRITICAL | None         |
+| Phase 2: Testing Infrastructure   | Week 2   | CRITICAL | Phase 1      |
+| Phase 3: Performance Optimization | Week 3   | HIGH     | Phase 1      |
+| Phase 4: Mobile Responsiveness    | Week 4   | CRITICAL | Phase 1      |
+| Phase 5: Accessibility            | Week 5   | CRITICAL | Phase 1      |
+| Phase 6: Error Handling           | Week 6   | HIGH     | Phase 2      |
+| Phase 7: Documentation            | Week 7   | MEDIUM   | Phase 6      |
+| Phase 8: Final Validation         | Week 8   | CRITICAL | All phases   |
 
 **Total Duration:** 8 weeks
 
@@ -769,17 +821,20 @@ export const validateFile = (file: File): { valid: boolean; error?: string } => 
 ## Resource Requirements
 
 ### Development Tools:
+
 - ESLint, Prettier, Husky
 - Vitest, React Testing Library, Playwright
 - Lighthouse CI, Webpack Bundle Analyzer
 - axe DevTools, WAVE
 
 ### Developer Time:
+
 - **Senior Frontend Developer:** 40 hours/week for 8 weeks
 - **QA Engineer:** 20 hours/week for weeks 2-8
 - **UX Designer:** 10 hours/week for weeks 4-5
 
 ### Budget Estimate:
+
 - **Development Tools:** $0 (all open source)
 - **Developer Time:** ~$32,000 (based on $100/hour)
 - **QA Time:** ~$8,000 (based on $50/hour)
@@ -791,6 +846,7 @@ export const validateFile = (file: File): { valid: boolean; error?: string } => 
 ## Risk Mitigation
 
 ### Potential Risks:
+
 1. **Scope Creep:** Strict adherence to defined phases
 2. **Technical Debt:** Weekly code reviews
 3. **Timeline Delays:** Buffer time built into each phase
@@ -798,6 +854,7 @@ export const validateFile = (file: File): { valid: boolean; error?: string } => 
 5. **Browser Compatibility:** Early and continuous testing
 
 ### Mitigation Strategies:
+
 - **Weekly Progress Reviews:** Track against timeline
 - **Automated Testing:** Prevent regressions
 - **Continuous Integration:** Catch issues early

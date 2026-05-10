@@ -9,6 +9,7 @@ All features are fully integrated and ready to test! Use the **Tweaks Panel** (b
 ## 1. Business Portal - Certificate Upload
 
 ### What Was Built
+
 - **State-Aware Upload Modal** with contextual messaging based on dashboard state
 - **Three Upload Methods**: File Upload, Manual Entry, API Connect
 - **Smart Urgency Levels**: Critical (red), High (orange), Medium (blue), Low (no banner)
@@ -50,6 +51,7 @@ All features are fully integrated and ready to test! Use the **Tweaks Panel** (b
 ## 2. MDA Portal - Vendor Verification
 
 ### What Was Built
+
 - **Quick Verification Modal** for instant vendor lookup
 - **Comprehensive Results**: Compliance score, all 6 certificates, CAC verification
 - **Report Download**: Generate official verification reports
@@ -87,6 +89,7 @@ All features are fully integrated and ready to test! Use the **Tweaks Panel** (b
 ## 3. Partner Portal - Multi-Client Upload
 
 ### What Was Built
+
 - **3-Step Wizard**: Client Selection → Certificate Type → File Upload
 - **Client Search**: Filter by company name or RC number
 - **Breadcrumb Navigation**: Jump between steps
@@ -195,23 +198,28 @@ All features are fully integrated and ready to test! Use the **Tweaks Panel** (b
 All operations show toast feedback:
 
 ✅ **Success Toasts** (green background #c5f4dc):
+
 - Certificate uploaded successfully
 - Vendor verified successfully
 - Report downloaded
 
 ✅ **Error Toasts** (red background #ffc0c5):
+
 - Invalid file type
 - Missing required fields
 - Vendor not found
 - Connection failed
 
 ✅ **Warning Toasts** (orange background #ffd9c0):
+
 - Custom warnings (if needed)
 
 ✅ **Info Toasts** (blue background #c4edff):
+
 - Informational messages
 
 **Toast Behavior:**
+
 - Auto-dismiss after 5 seconds
 - Manual dismiss with X button
 - Horizontal layout (icon, title, message, close)
@@ -252,6 +260,7 @@ All async operations show loading:
 - **API Connect**: Spinning loader + "Connecting..."
 
 During loading:
+
 - ✅ Buttons disabled
 - ✅ Modal cannot be closed
 - ✅ Form inputs disabled
@@ -301,11 +310,13 @@ During loading:
 ## Files Modified/Created
 
 ### New Components
+
 - `CertificateUploadModal.tsx` - State-aware upload for Business portal
 - `VendorVerificationModal.tsx` - Vendor search for MDA portal
 - `PartnerCertificateUploadModal.tsx` - Multi-client upload for Partners
 
 ### Modified Components
+
 - `CertificateCard.tsx` - Integrated upload modal, added state props
 - `StateAwareDashboard.tsx` - Added urgency level logic
 - `MDAVerifyView.tsx` - Integrated verification modal

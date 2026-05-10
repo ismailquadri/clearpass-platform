@@ -441,9 +441,7 @@ export function StateAwareDashboard({ state, onNavigate }: StateAwareDashboardPr
           style={{ backgroundColor: SCORE_STRIP_COLOR[state.label] ?? 'rgba(255,48,0,0.04)' }}
         >
           <div>
-            <span style={{ fontSize: '13px', fontWeight: '500' }}>
-              Status: {state.label}
-            </span>
+            <span style={{ fontSize: '13px', fontWeight: '500' }}>Status: {state.label}</span>
             <p className="text-muted-foreground text-[#404040]" style={{ fontSize: '13px' }}>
               {state.description}
             </p>
@@ -481,6 +479,7 @@ export function StateAwareDashboard({ state, onNavigate }: StateAwareDashboardPr
               type="info"
               title="Verification Pending"
               message="Your ITF certificate is pending admin review. Expected completion within 1-2 business days."
+              noBackground
             />
           </div>
         )}
@@ -619,7 +618,10 @@ export function StateAwareDashboard({ state, onNavigate }: StateAwareDashboardPr
             return (
               <div className="bg-card border border-border rounded-lg p-3">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-muted-foreground text-[#404040]" style={{ fontSize: '12px' }}>
+                  <span
+                    className="text-muted-foreground text-[#404040]"
+                    style={{ fontSize: '12px' }}
+                  >
                     {streak.positive ? 'Compliance Streak' : 'Days Since Issue'}
                   </span>
                   <div
