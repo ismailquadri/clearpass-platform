@@ -4,6 +4,8 @@ import { memo, useMemo } from 'react';
 interface ComplianceScoreProps {
   score: number;
   isProcurementReady: boolean;
+  activeCerts?: number;
+  totalCerts?: number;
   projectedScore?: {
     score: number;
     date: string;
@@ -14,19 +16,29 @@ interface ComplianceScoreProps {
 export const ComplianceScore = memo(function ComplianceScore({
   score,
   isProcurementReady,
+  activeCerts,
+  totalCerts = 6,
   projectedScore,
 }: ComplianceScoreProps) {
   const scoreColor = useMemo(() => {
-    if (score >= 80) return '#FF3000'; // green
-    if (score >= 60) return '#FF3000'; // orange
-    return '#FF3000'; // red
+    if (score >= 80) return '#1FC16B';
+    if (score >= 60) return '#F59E0B';
+    return '#FF3000';
   }, [score]);
 
   const scoreLabel = useMemo(() => {
     if (score >= 80) return 'Excellent';
-    if (score >= 60) return 'Attention Required';
-    return 'Action Needed';
+    if (score >= 60) return 'Needs Attention';
+    return 'Action Required';
   }, [score]);
+
+  const goalText = useMemo(() => {
+    if (isProcurementReady) return null;
+    if (activeCerts === undefined) return null;
+    const missing = totalCerts - activeCerts;
+    if (missing <= 0) return null;
+    return `${missing} more certificate${missing > 1 ? 's' : ''} to reach Procurement Ready`;
+  }, [isProcurementReady, activeCerts, totalCerts]);
 
   return (
     <div className="bg-card border border-border rounded-lg p-4">
@@ -112,6 +124,29 @@ export const ComplianceScore = memo(function ComplianceScore({
                 <p className="text-muted-foreground text-[#404040]" style={{ fontSize: '13px' }}>
                   Complete all certificates to become eligible
                 </p>
+              </div>
+            </div>
+          )}
+
+          {/* Certificate progress toward goal */}
+          {goalText && activeCerts !== undefined && (
+            <div>
+              <div className="flex items-center justify-between mb-1.5">
+                <p className="text-muted-foreground" style={{ fontSize: '12px' }}>
+                  {activeCerts}/{totalCerts} certificates active
+                </p>
+                <p style={{ fontSize: '12px', fontWeight: 500, color: scoreColor }}>
+                  {goalText}
+                </p>
+              </div>
+              <div className="h-1.5 rounded-full bg-muted overflow-hidden">
+                <div
+                  className="h-full rounded-full transition-all duration-500"
+                  style={{
+                    width: `${(activeCerts / totalCerts) * 100}%`,
+                    backgroundColor: scoreColor,
+                  }}
+                />
               </div>
             </div>
           )}

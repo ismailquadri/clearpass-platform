@@ -5,6 +5,7 @@ import { useToast } from './ToastProvider';
 import { useVerifyVendor, verifyVendor } from '../api';
 import type { VendorEligibilityStatus, VendorVerification } from '../api';
 import { EmptyState } from './ui';
+import { MDAActivityHook } from './NextBestAction';
 
 export function MDAVerifyView() {
   const { showToast } = useToast();
@@ -155,6 +156,15 @@ export function MDAVerifyView() {
 
         {verificationResults.length > 0 && (
           <>
+            <MDAActivityHook
+              sessionCount={verificationResults.length}
+              readyCount={verificationResults.filter((r) => r.status === 'procurement-ready').length}
+              flaggedCount={
+                verificationResults.filter(
+                  (r) => r.status === 'attention-required' || r.status === 'ineligible'
+                ).length
+              }
+            />
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6">
               <StatTile label="Total Verified" value={verificationResults.length} />
               <StatTile

@@ -1,17 +1,66 @@
 import { ComplianceScore } from './ComplianceScore';
 import { CertificateCard } from './CertificateCard';
 import { AlertCard } from './AlertCard';
-import { Calendar, TrendingUp, Building2 } from 'lucide-react';
+import { NextBestAction } from './NextBestAction';
+import { Calendar, TrendingUp, Building2, Flame } from 'lucide-react';
 import type { DashboardState } from './TweaksPanel';
 import { useToast } from './ToastProvider';
+import { useEffect, useRef } from 'react';
 
 interface StateAwareDashboardProps {
   state: DashboardState;
   onNavigate: (section: string) => void;
 }
 
+function getTimeGreeting(): string {
+  const h = new Date().getHours();
+  if (h < 12) return 'Good morning';
+  if (h < 17) return 'Good afternoon';
+  return 'Good evening';
+}
+
+const STREAK_BY_STATE: Record<string, { days: number; positive: boolean }> = {
+  Healthy: { days: 47, positive: true },
+  'Attention Required': { days: 14, positive: true },
+  Critical: { days: 3, positive: false },
+  'Non-Compliant': { days: 0, positive: false },
+  'New Registration': { days: 0, positive: false },
+};
+
+const SCORE_STRIP_COLOR: Record<string, string> = {
+  Healthy: 'rgba(31, 193, 107, 0.08)',
+  'Attention Required': 'rgba(245, 158, 11, 0.08)',
+  Critical: 'rgba(255, 48, 0, 0.08)',
+  'Non-Compliant': 'rgba(255, 48, 0, 0.08)',
+  'New Registration': 'rgba(255, 48, 0, 0.04)',
+};
+
+const SCORE_BADGE_COLOR: Record<string, string> = {
+  Healthy: '#1FC16B',
+  'Attention Required': '#F59E0B',
+  Critical: '#FF3000',
+  'Non-Compliant': '#FF3000',
+  'New Registration': '#FF3000',
+};
+
 export function StateAwareDashboard({ state, onNavigate }: StateAwareDashboardProps) {
   const { showToast } = useToast();
+  const milestoneFiredRef = useRef(false);
+
+  // Milestone celebration — fires once when score reaches 100 / Procurement Ready
+  useEffect(() => {
+    if (state.label === 'Healthy' && !milestoneFiredRef.current) {
+      milestoneFiredRef.current = true;
+      const id = setTimeout(() => {
+        showToast(
+          'success',
+          'Procurement Ready',
+          'All 6 certificates are active. You are fully eligible for federal procurement.'
+        );
+      }, 900);
+      return () => clearTimeout(id);
+    }
+  }, [state.label, showToast]);
 
   // Determine urgency level based on state and certificate status
   const getUrgencyLevel = (certStatus: string): 'low' | 'medium' | 'high' | 'critical' => {
@@ -358,18 +407,11 @@ export function StateAwareDashboard({ state, onNavigate }: StateAwareDashboardPr
         {/* State Indicator Strip */}
         <div
           className="mb-4 px-3 py-2 rounded-lg border border-[#e5e5e5] flex items-center justify-between"
-          style={{
-            backgroundColor:
-              state.score >= 80
-                ? 'rgba(255, 48, 0, 0.1)'
-                : state.score >= 60
-                  ? 'rgba(255, 48, 0, 0.1)'
-                  : 'rgba(255, 48, 0, 0.1)',
-          }}
+          style={{ backgroundColor: SCORE_STRIP_COLOR[state.label] ?? 'rgba(255,48,0,0.04)' }}
         >
           <div>
             <span style={{ fontSize: '13px', fontWeight: '500' }}>
-              Current State: {state.label}
+              Status: {state.label}
             </span>
             <p className="text-muted-foreground text-[#404040]" style={{ fontSize: '13px' }}>
               {state.description}
@@ -380,8 +422,7 @@ export function StateAwareDashboard({ state, onNavigate }: StateAwareDashboardPr
             style={{
               fontSize: '12px',
               fontWeight: '500',
-              backgroundColor:
-                state.score >= 80 ? '#FF3000' : state.score >= 60 ? '#FF3000' : '#FF3000',
+              backgroundColor: SCORE_BADGE_COLOR[state.label] ?? '#FF3000',
               color: 'white',
             }}
           >
@@ -392,12 +433,15 @@ export function StateAwareDashboard({ state, onNavigate }: StateAwareDashboardPr
         {/* Header */}
         <div className="mb-5">
           <h1 className="mb-1" style={{ fontSize: '24px', fontWeight: '500' }}>
-            Welcome back, Amaka
+            {getTimeGreeting()}, Amaka
           </h1>
           <p className="text-muted-foreground" style={{ fontSize: '13px' }}>
             Here's your compliance status for TechBuild Nigeria Ltd.
           </p>
         </div>
+
+        {/* Next Best Action */}
+        <NextBestAction state={state} onAction={onNavigate} />
 
         {/* Conditional Alerts */}
         {state.label === 'Attention Required' && (
@@ -466,7 +510,7 @@ export function StateAwareDashboard({ state, onNavigate }: StateAwareDashboardPr
         )}
 
         {/* Stats Row */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-5">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-5">
           <div className="bg-card border border-border rounded-lg p-3">
             <div className="flex items-center justify-between mb-2">
               <span className="text-muted-foreground text-[#404040]" style={{ fontSize: '12px' }}>
@@ -522,14 +566,14 @@ export function StateAwareDashboard({ state, onNavigate }: StateAwareDashboardPr
                 className="w-7 h-7 rounded-full flex items-center justify-center"
                 style={{
                   backgroundColor: isProcurementReady
-                    ? 'rgb(31, 193, 107, 0.2)'
-                    : 'rgba(255, 48, 0, 0.2)',
+                    ? 'rgba(31, 193, 107, 0.15)'
+                    : 'rgba(255, 48, 0, 0.12)',
                 }}
               >
                 <Building2
                   className="w-3.5 h-3.5"
                   style={{
-                    color: isProcurementReady ? '#FF3000' : '#FF3000',
+                    color: isProcurementReady ? '#1FC16B' : '#FF3000',
                   }}
                 />
               </div>
@@ -538,7 +582,7 @@ export function StateAwareDashboard({ state, onNavigate }: StateAwareDashboardPr
               style={{
                 fontSize: '15px',
                 fontWeight: '600',
-                color: isProcurementReady ? '#FF3000' : '#FF3000',
+                color: isProcurementReady ? '#1FC16B' : '#FF3000',
               }}
             >
               {isProcurementReady ? 'Procurement Ready' : state.label}
@@ -547,6 +591,37 @@ export function StateAwareDashboard({ state, onNavigate }: StateAwareDashboardPr
               CAC Verified
             </p>
           </div>
+
+          {/* Compliance Streak stat */}
+          {(() => {
+            const streak = STREAK_BY_STATE[state.label] ?? { days: 0, positive: false };
+            return (
+              <div className="bg-card border border-border rounded-lg p-3">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-muted-foreground text-[#404040]" style={{ fontSize: '12px' }}>
+                    {streak.positive ? 'Compliance Streak' : 'Days Since Issue'}
+                  </span>
+                  <div
+                    className="w-7 h-7 rounded-full flex items-center justify-center"
+                    style={{
+                      backgroundColor: streak.positive
+                        ? 'rgba(31,193,107,0.15)'
+                        : 'rgba(255,48,0,0.12)',
+                    }}
+                  >
+                    <Flame
+                      className="w-3.5 h-3.5"
+                      style={{ color: streak.positive ? '#1FC16B' : '#FF3000' }}
+                    />
+                  </div>
+                </div>
+                <p style={{ fontSize: '24px', fontWeight: '600' }}>{streak.days}</p>
+                <p className="text-muted-foreground text-[#404040]" style={{ fontSize: '13px' }}>
+                  {streak.days === 1 ? 'day' : 'days'}
+                </p>
+              </div>
+            );
+          })()}
         </div>
 
         {/* Compliance Score */}
@@ -554,6 +629,8 @@ export function StateAwareDashboard({ state, onNavigate }: StateAwareDashboardPr
           <ComplianceScore
             score={state.score}
             isProcurementReady={isProcurementReady}
+            activeCerts={activeCerts}
+            totalCerts={6}
             projectedScore={
               state.label === 'Attention Required'
                 ? {

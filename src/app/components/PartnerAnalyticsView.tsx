@@ -4,6 +4,7 @@ import { usePartnerAnalytics } from '../api';
 import type { PartnerAnalytics } from '../api';
 import { ApiState } from './ui';
 import { ChartSkeleton, StatCardGridSkeleton } from './ui/Skeleton';
+import { PortfolioProgressHook } from './NextBestAction';
 
 // Charts are lazy-loaded so recharts only ships when this view is visited
 // AND the user is past the KPI fold. Keeps initial paint fast.
@@ -46,6 +47,11 @@ export function PartnerAnalyticsView() {
         >
           {(analytics) => (
             <>
+              <PortfolioProgressHook
+                ready={Math.round(analytics.kpi.activeClients * 0.6)}
+                total={analytics.kpi.activeClients}
+                onAction={() => {}}
+              />
               <KpiRow analytics={analytics} />
               <Suspense
                 fallback={
