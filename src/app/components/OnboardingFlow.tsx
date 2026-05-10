@@ -11,7 +11,6 @@ import {
   BarChart3,
   Briefcase,
 } from 'lucide-react';
-import { MobileLogoPlaceholder } from './MobileLogoPlaceholder';
 
 type Persona = 'Business' | 'MDA' | 'Partner';
 
@@ -92,8 +91,7 @@ export function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
       {/* Top bar */}
       <div className="flex items-center justify-between px-6 py-4 border-b border-border">
         <div className="flex items-center gap-2">
-          <MobileLogoPlaceholder />
-          <img src="/clearpass-logo.svg" alt="ClearPass" className="h-9 w-auto hidden sm:block" />
+          <img src="/clearpass-logo.svg" alt="ClearPass" className="h-9 w-auto" />
         </div>
         <div className="flex gap-2" aria-hidden="true">
           {[0, 1, 2].map((i) => (

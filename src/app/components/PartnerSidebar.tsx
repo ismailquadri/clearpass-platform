@@ -1,7 +1,6 @@
 import { Users, FileText, TrendingUp, DollarSign, Settings, Briefcase, AlertCircle } from 'lucide-react';
 import { useState } from 'react';
 import { NotificationCenter, NotificationBell } from './NotificationCenter';
-import { MobileLogoPlaceholder } from './MobileLogoPlaceholder';
 
 interface PartnerSidebarProps {
   activeSection: string;
@@ -48,11 +47,7 @@ export function PartnerSidebar({
       <div className="px-4 py-4 border-b border-border">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <MobileLogoPlaceholder />
-            <img src="/clearpass-logo.svg" alt="ClearPass" className="h-9 w-auto hidden sm:block" />
-            <span className="font-medium block hidden sm:block" style={{ fontSize: '15px' }}>
-              ClearPass
-            </span>
+            <img src="/clearpass-logo.svg" alt="ClearPass" className="h-9 w-auto" />
           </div>
           <NotificationBell
             onClick={() => setIsNotificationOpen(true)}

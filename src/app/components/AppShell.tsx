@@ -91,9 +91,6 @@ export function AppShell({ persona, sidebar, drawerSidebar, children }: AppShell
             <Icon className="w-5 h-5 text-white" aria-hidden="true" />
           </div>
           <div className="leading-tight">
-            <span className="font-medium block" style={{ fontSize: '15px' }}>
-              ClearPass
-            </span>
             <span className="text-muted-foreground" style={{ fontSize: '11px' }}>
               {PERSONA_LABEL[persona]}
             </span>
