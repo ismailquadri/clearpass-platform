@@ -7,6 +7,7 @@ import {
   Activity,
   Download,
 } from 'lucide-react';
+import { MobileLogoPlaceholder } from './MobileLogoPlaceholder';
 
 interface SidebarProps {
   activeSection: string;
@@ -53,7 +54,8 @@ export function Sidebar({
     <aside className={`${fluid ? 'w-full' : 'w-56 lg:w-64'} h-full bg-card flex flex-col`}>
       <div className="px-4 py-4 border-b border-border">
         <div className="flex items-center gap-2">
-          <img src="/clearpass-logo.svg" alt="ClearPass" className="h-9 w-auto" />
+          <MobileLogoPlaceholder />
+          <img src="/clearpass-logo.svg" alt="ClearPass" className="h-9 w-auto hidden sm:block" />
         </div>
       </div>
 

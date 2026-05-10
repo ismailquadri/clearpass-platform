@@ -114,7 +114,7 @@ export function BusinessVerifyView() {
               disabled={isSearching || !searchQuery.trim()}
               aria-live="polite"
               aria-busy={isSearching}
-              className="px-6 py-3 rounded-md text-white flex items-center gap-2 hover:opacity-90 transition-opacity disabled:opacity-50"
+              className="shrink-0 px-6 py-3 rounded-md text-white flex items-center gap-2 hover:opacity-90 transition-opacity disabled:opacity-50"
               style={{ backgroundColor: '#FF3000' }}
             >
               <Search className="w-5 h-5" />
@@ -249,16 +249,16 @@ export function BusinessVerifyView() {
             </div>
 
             {/* Actions */}
-            <div className="flex gap-3 mt-6">
-              <button className="px-4 py-2 rounded-md border border-border hover:bg-muted transition-colors">
+            <div className="flex flex-col sm:flex-row gap-3 mt-6">
+              <button className="w-full sm:w-auto px-4 py-2.5 rounded-md border border-border hover:bg-muted transition-colors">
                 Download Verification Report
               </button>
-              <button className="px-4 py-2 rounded-md border border-border hover:bg-muted transition-colors">
+              <button className="w-full sm:w-auto px-4 py-2.5 rounded-md border border-border hover:bg-muted transition-colors">
                 Email Report
               </button>
               <button
                 onClick={() => setVerificationResult(null)}
-                className="px-4 py-2 rounded-md border border-border hover:bg-muted transition-colors ml-auto"
+                className="w-full sm:w-auto px-4 py-2.5 rounded-md border border-border hover:bg-muted transition-colors sm:ml-auto"
               >
                 Clear
               </button>

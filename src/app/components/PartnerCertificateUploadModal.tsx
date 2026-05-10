@@ -2,6 +2,7 @@ import { X, Upload, Users, FileText, CheckCircle2, AlertTriangle } from 'lucide-
 import { useState, useEffect } from 'react';
 import { useToast } from './ToastProvider';
 import { useFocusTrap } from '../hooks/useFocusTrap';
+import { validateFile, validateCertificateUploadForm, type CertificateUploadFormData } from '../utils/validation';
 
 interface Client {
   id: string;
@@ -115,11 +116,14 @@ export function PartnerCertificateUploadModal({
     setError(null);
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
-      if (file.type === 'application/pdf' || file.type.startsWith('image/')) {
+      const validation = validateFile(file);
+      
+      if (validation.isValid) {
         setSelectedFile(file);
       } else {
-        setError('Please upload a PDF or image file');
-        showToast('error', 'Invalid File Type', 'Please upload a PDF or image file');
+        setError(validation.error || 'Invalid file');
+        setSelectedFile(null);
+        showToast('error', 'Invalid File', validation.error || 'Please upload a valid file');
       }
     }
   };
@@ -127,18 +131,18 @@ export function PartnerCertificateUploadModal({
   const handleUpload = async () => {
     setError(null);
 
-    if (!selectedClient) {
-      setError('Please select a client first');
-      return;
-    }
+    const formData: CertificateUploadFormData = {
+      clientId: selectedClient?.id || '',
+      certificateType: selectedCertificate,
+      file: selectedFile,
+    };
 
-    if (!selectedCertificate) {
-      setError('Please select a certificate type first');
-      return;
-    }
-
-    if (!selectedFile) {
-      setError('Please select a file to upload');
+    const validation = validateCertificateUploadForm(formData);
+    
+    if (!validation.isValid) {
+      const firstError = Object.values(validation.errors)[0];
+      setError(firstError || 'Please correct the errors before uploading');
+      showToast('error', 'Validation Error', firstError || 'Please correct the errors before uploading');
       return;
     }
 
@@ -194,13 +198,13 @@ export function PartnerCertificateUploadModal({
       />
 
       {/* Modal */}
-      <div className="fixed inset-0 flex items-center justify-center z-50 p-4">
+      <div className="fixed inset-0 flex items-end sm:items-center justify-center z-50 p-0 sm:p-4">
         <div
           ref={modalRef}
           role="dialog"
           aria-modal="true"
           aria-labelledby="modal-title"
-          className="bg-card rounded-xl shadow-2xl w-full max-w-3xl max-h-[90vh] overflow-hidden flex flex-col"
+          className="bg-card rounded-t-2xl sm:rounded-xl shadow-2xl w-full max-w-3xl max-h-[95vh] sm:max-h-[90vh] overflow-hidden flex flex-col"
           onClick={(e) => e.stopPropagation()}
         >
           {/* Header */}
@@ -483,11 +487,11 @@ export function PartnerCertificateUploadModal({
 
           {/* Footer */}
           <div className="p-6 border-t border-border">
-            <div className="flex gap-3 justify-between">
+            <div className="flex flex-col-reverse sm:flex-row sm:justify-between gap-3">
               <button
                 onClick={step === 'client' ? handleClose : handleBack}
                 disabled={isUploading}
-                className="px-4 py-2 rounded-md border border-border hover:bg-muted transition-colors disabled:opacity-50"
+                className="w-full sm:w-auto px-4 py-2.5 rounded-md border border-border hover:bg-muted transition-colors disabled:opacity-50"
                 style={{ fontSize: '13px' }}
               >
                 {step === 'client' ? 'Cancel' : 'Back'}
@@ -498,7 +502,7 @@ export function PartnerCertificateUploadModal({
                   disabled={isUploading || !selectedFile}
                   aria-live="polite"
                   aria-busy={isUploading}
-                  className="px-4 py-2 rounded-md text-white flex items-center gap-2 disabled:opacity-50"
+                  className="w-full sm:w-auto px-4 py-2.5 rounded-md text-white flex items-center justify-center gap-2 disabled:opacity-50"
                   style={{ backgroundColor: '#FF3000', fontSize: '13px', fontWeight: '500' }}
                 >
                   {isUploading ? (

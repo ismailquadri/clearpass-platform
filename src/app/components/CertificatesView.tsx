@@ -2,6 +2,7 @@ import { Search, Filter, Plus, Download } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { CertificateCard } from './CertificateCard';
 import { CertificateDetailModal } from './CertificateDetailModal';
+import { CertificateUploadModal } from './CertificateUploadModal';
 import { useToast } from './ToastProvider';
 import { useCertificates } from '../api';
 import type { Certificate } from '../api';
@@ -15,6 +16,7 @@ export function CertificatesView() {
   const [searchQuery, setSearchQuery] = useState('');
   const [filterStatus, setFilterStatus] = useState<StatusFilter>('all');
   const [selectedCertificate, setSelectedCertificate] = useState<Certificate | null>(null);
+  const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
 
   const certificatesQuery = useCertificates();
 
@@ -27,9 +29,7 @@ export function CertificatesView() {
               My Certificates
             </h1>
             <button
-              onClick={() =>
-                showToast('success', 'Upload Certificate', 'Opening certificate upload form...')
-              }
+              onClick={() => setIsUploadModalOpen(true)}
               className="px-4 py-2 rounded-md text-white flex items-center justify-center gap-2 min-h-[44px] hover:opacity-90 transition-opacity"
               style={{ backgroundColor: '#FF3000' }}
               aria-label="Add new certificate"
@@ -89,6 +89,19 @@ export function CertificatesView() {
           certificate={selectedCertificate}
         />
       )}
+
+      <CertificateUploadModal
+        isOpen={isUploadModalOpen}
+        onClose={() => setIsUploadModalOpen(false)}
+        certificateType={{
+          name: 'Certificate',
+          shortName: 'CERT',
+        }}
+        onUploadSuccess={() => {
+          certificatesQuery.refetch();
+          setIsUploadModalOpen(false);
+        }}
+      />
     </div>
   );
 }

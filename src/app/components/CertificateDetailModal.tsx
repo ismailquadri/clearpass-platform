@@ -43,6 +43,18 @@ export function CertificateDetailModal({
 
   const modalRef = useFocusTrap(isOpen);
 
+  const handleViewDocument = () => {
+    if (certificate.documentUrl) {
+      window.open(certificate.documentUrl, '_blank');
+    } else {
+      alert('No document available for this certificate');
+    }
+  };
+
+  const handleStartRenewal = () => {
+    alert('Renewal process would start here. This would redirect to the issuing authority portal or open a renewal form.');
+  };
+
   if (!isOpen) return null;
 
   const getStatusColor = (status: string) => {
@@ -78,13 +90,13 @@ export function CertificateDetailModal({
       />
 
       {/* Modal */}
-      <div className="fixed inset-0 flex items-center justify-center z-50 p-4">
+      <div className="fixed inset-0 flex items-end sm:items-center justify-center z-50 p-0 sm:p-4">
         <div
           ref={modalRef}
           role="dialog"
           aria-modal="true"
           aria-labelledby="modal-title"
-          className="bg-card rounded-xl shadow-2xl w-full max-w-3xl max-h-[90vh] overflow-hidden flex flex-col"
+          className="bg-card rounded-t-2xl sm:rounded-xl shadow-2xl w-full max-w-3xl max-h-[95vh] sm:max-h-[90vh] overflow-hidden flex flex-col"
           onClick={(e) => e.stopPropagation()}
         >
           {/* Header */}
@@ -140,7 +152,7 @@ export function CertificateDetailModal({
               <h3 className="mb-4" style={{ fontSize: '16px', fontWeight: '500' }}>
                 Certificate Details
               </h3>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="bg-muted/50 rounded-lg p-4">
                   <p className="caption text-muted-foreground mb-1">Certificate Number</p>
                   <p style={{ fontSize: '14px', fontWeight: '500', fontFamily: 'monospace' }}>
@@ -208,8 +220,11 @@ export function CertificateDetailModal({
               <h3 className="mb-3" style={{ fontSize: '16px', fontWeight: '500' }}>
                 Actions
               </h3>
-              <div className="grid grid-cols-2 gap-3">
-                <button className="px-4 py-3 rounded-md border border-border hover:bg-muted transition-colors flex items-center gap-2">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <button
+                  onClick={handleViewDocument}
+                  className="px-4 py-3 rounded-md border border-border hover:bg-muted transition-colors flex items-center gap-2"
+                >
                   <Eye className="w-4 h-4" />
                   View Document
                 </button>
@@ -222,6 +237,7 @@ export function CertificateDetailModal({
                   Upload New Document
                 </button>
                 <button
+                  onClick={handleStartRenewal}
                   className="px-4 py-3 rounded-md text-white flex items-center gap-2"
                   style={{ backgroundColor: '#FF3000' }}
                 >
@@ -275,15 +291,15 @@ export function CertificateDetailModal({
           </div>
 
           {/* Footer */}
-          <div className="flex items-center justify-end gap-3 p-6 border-t border-border">
+          <div className="flex flex-col-reverse sm:flex-row sm:justify-end gap-3 p-6 border-t border-border">
             <button
               onClick={onClose}
-              className="px-4 py-2 rounded-md border border-border hover:bg-muted transition-colors"
+              className="w-full sm:w-auto px-4 py-2.5 rounded-md border border-border hover:bg-muted transition-colors"
             >
               Close
             </button>
             <button
-              className="px-4 py-2 rounded-md text-white"
+              className="w-full sm:w-auto px-4 py-2.5 rounded-md text-white"
               style={{ backgroundColor: '#FF3000' }}
             >
               Take Action

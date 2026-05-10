@@ -138,15 +138,15 @@ export function ReportsView() {
                 Create an official compliance report for federal procurement submission. Reports are
                 timestamped, digitally signed, and valid for 7 days.
               </p>
-              <div className="flex gap-3">
+              <div className="flex flex-col sm:flex-row gap-3">
                 <button
                   onClick={generateNewReport}
-                  className="px-4 py-2 rounded-md text-white"
+                  className="w-full sm:w-auto px-4 py-2.5 rounded-md text-white"
                   style={{ backgroundColor: '#FF3000' }}
                 >
                   Generate Full Report
                 </button>
-                <button className="px-4 py-2 rounded-md border border-border bg-card hover:bg-muted transition-colors">
+                <button className="w-full sm:w-auto px-4 py-2.5 rounded-md border border-border bg-card hover:bg-muted transition-colors">
                   Generate Provisional Report
                 </button>
               </div>

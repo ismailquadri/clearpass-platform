@@ -211,13 +211,13 @@ export function VendorVerificationModal({ isOpen, onClose }: VendorVerificationM
       />
 
       {/* Modal */}
-      <div className="fixed inset-0 flex items-center justify-center z-50 p-4">
+      <div className="fixed inset-0 flex items-end sm:items-center justify-center z-50 p-0 sm:p-4">
         <div
           ref={modalRef}
           role="dialog"
           aria-modal="true"
           aria-labelledby="modal-title"
-          className="bg-card rounded-xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col"
+          className="bg-card rounded-t-2xl sm:rounded-xl shadow-2xl w-full max-w-4xl max-h-[95vh] sm:max-h-[90vh] overflow-hidden flex flex-col"
           onClick={(e) => e.stopPropagation()}
         >
           {/* Header */}
@@ -287,7 +287,7 @@ export function VendorVerificationModal({ isOpen, onClose }: VendorVerificationM
                   disabled={isVerifying || !rcNumber}
                   aria-live="polite"
                   aria-busy={isVerifying}
-                  className="px-4 py-2 rounded-md text-white flex items-center gap-2 disabled:opacity-50"
+                  className="shrink-0 px-4 py-2 rounded-md text-white flex items-center gap-2 disabled:opacity-50"
                   style={{ backgroundColor: '#FF3000', fontSize: '13px', fontWeight: '500' }}
                 >
                   {isVerifying ? (
@@ -409,7 +409,7 @@ export function VendorVerificationModal({ isOpen, onClose }: VendorVerificationM
                   <h3 className="mb-3" style={{ fontSize: '16px', fontWeight: '500' }}>
                     Certificate Status
                   </h3>
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     {verificationResult.certificates.map((cert, index) => {
                       const certConfig = getCertStatusConfig(cert.status);
                       const CertIcon = certConfig.icon;
@@ -470,19 +470,19 @@ export function VendorVerificationModal({ isOpen, onClose }: VendorVerificationM
 
           {/* Footer */}
           <div className="p-6 border-t border-border">
-            <div className="flex gap-3 justify-end">
+            <div className="flex flex-col-reverse sm:flex-row sm:justify-end gap-3">
               {verificationResult ? (
                 <>
                   <button
                     onClick={handleReset}
-                    className="px-4 py-2 rounded-md border border-border hover:bg-muted transition-colors"
+                    className="w-full sm:w-auto px-4 py-2.5 rounded-md border border-border hover:bg-muted transition-colors"
                     style={{ fontSize: '13px' }}
                   >
                     Verify Another
                   </button>
                   <button
                     onClick={handleDownloadReport}
-                    className="px-4 py-2 rounded-md text-white flex items-center gap-2"
+                    className="w-full sm:w-auto px-4 py-2.5 rounded-md text-white flex items-center justify-center gap-2"
                     style={{ backgroundColor: '#FF3000', fontSize: '13px', fontWeight: '500' }}
                   >
                     <Download className="w-4 h-4" />
@@ -492,7 +492,7 @@ export function VendorVerificationModal({ isOpen, onClose }: VendorVerificationM
               ) : (
                 <button
                   onClick={onClose}
-                  className="px-4 py-2 rounded-md border border-border hover:bg-muted transition-colors"
+                  className="w-full sm:w-auto px-4 py-2.5 rounded-md border border-border hover:bg-muted transition-colors"
                   style={{ fontSize: '13px' }}
                 >
                   Close

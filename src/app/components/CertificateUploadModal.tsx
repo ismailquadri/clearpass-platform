@@ -299,13 +299,13 @@ export function CertificateUploadModal({
       />
 
       {/* Modal */}
-      <div className="fixed inset-0 flex items-center justify-center z-50 p-4">
+      <div className="fixed inset-0 flex items-end sm:items-center justify-center z-50 p-0 sm:p-4">
         <div
           ref={modalRef}
           role="dialog"
           aria-modal="true"
           aria-labelledby="modal-title"
-          className="bg-card rounded-xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden flex flex-col"
+          className="bg-card rounded-t-2xl sm:rounded-xl shadow-2xl w-full max-w-2xl max-h-[95vh] sm:max-h-[90vh] overflow-hidden flex flex-col"
           onClick={(e) => e.stopPropagation()}
         >
           {/* Header */}
@@ -565,7 +565,7 @@ export function CertificateUploadModal({
                     />
                   </div>
 
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                       <label
                         htmlFor="issue-date-file"
@@ -665,7 +665,7 @@ export function CertificateUploadModal({
                   )}
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <label
                       htmlFor="cert-issued-date"
@@ -832,11 +832,11 @@ export function CertificateUploadModal({
 
           {/* Footer */}
           <div className="p-6 border-t border-border">
-            <div className="flex gap-3 justify-end">
+            <div className="flex flex-col-reverse sm:flex-row sm:justify-end gap-3">
               <button
                 onClick={handleClose}
                 disabled={isUploading}
-                className="px-4 py-2 rounded-md border border-border hover:bg-muted transition-colors disabled:opacity-50"
+                className="w-full sm:w-auto px-4 py-2.5 rounded-md border border-border hover:bg-muted transition-colors disabled:opacity-50"
                 style={{ fontSize: '13px' }}
               >
                 Cancel
@@ -852,7 +852,7 @@ export function CertificateUploadModal({
                 disabled={isUploading}
                 aria-live="polite"
                 aria-busy={isUploading}
-                className="px-4 py-2 rounded-md text-white flex items-center gap-2 disabled:opacity-50"
+                className="w-full sm:w-auto px-4 py-2.5 rounded-md text-white flex items-center justify-center gap-2 disabled:opacity-50"
                 style={{ backgroundColor: '#FF3000', fontSize: '13px', fontWeight: '500' }}
               >
                 {isUploading ? (

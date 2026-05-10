@@ -21,6 +21,8 @@ import type {
   VendorVerification,
 } from './types';
 
+import type { ClientCertificate } from './types';
+
 // ─── Certificates ───────────────────────────────────────────────────────────
 
 export const mockCertificates: Certificate[] = [
@@ -396,6 +398,159 @@ export const mockPrequalification: PrequalificationApplicant[] = [
   },
 ];
 
+// ─── Client certificate data for partner portal ─────────────────────────────────
+
+export const mockClientCertificates: Record<string, ClientCertificate[]> = {
+  'client-1': [
+    {
+      id: 'cert-1-1',
+      name: 'National Health Insurance Authority Certificate',
+      shortName: 'NHIA',
+      status: 'active',
+      expiryDate: '15 Jan 2027',
+      daysToExpiry: 251,
+      certificateNumber: 'NHIA/2026/FCT/AB12345678',
+      isApiVerified: true,
+      issuingAuthority: 'National Health Insurance Authority',
+      issuedDate: '15 Jan 2026',
+    },
+    {
+      id: 'cert-1-2',
+      name: 'Pension Clearance Certificate',
+      shortName: 'PCC',
+      status: 'expiring-urgent',
+      expiryDate: '15 May 2026',
+      daysToExpiry: 6,
+      certificateNumber: 'PCC/2025/LAG/CD98765432',
+      isApiVerified: true,
+      issuingAuthority: 'National Pension Commission',
+      issuedDate: '15 May 2025',
+    },
+    {
+      id: 'cert-1-3',
+      name: 'Nigeria Social Insurance Trust Fund',
+      shortName: 'NSITF',
+      status: 'expiring-urgent',
+      expiryDate: '15 May 2026',
+      daysToExpiry: 6,
+      certificateNumber: 'NSITF/2025/EF45612378',
+      isApiVerified: false,
+      issuingAuthority: 'Nigeria Social Insurance Trust Fund',
+      issuedDate: '15 May 2025',
+    },
+    {
+      id: 'cert-1-4',
+      name: 'Federal Inland Revenue Service Tax Clearance',
+      shortName: 'FIRS TCC',
+      status: 'active',
+      expiryDate: '14 Nov 2026',
+      daysToExpiry: 189,
+      certificateNumber: 'TCC/2026/LAG/GH78945612',
+      isApiVerified: true,
+      issuingAuthority: 'Federal Inland Revenue Service',
+      issuedDate: '14 Nov 2025',
+    },
+    {
+      id: 'cert-1-5',
+      name: 'Bureau of Public Procurement Certificate',
+      shortName: 'BPP',
+      status: 'active',
+      expiryDate: '16 Mar 2027',
+      daysToExpiry: 312,
+      certificateNumber: 'BPP/2026/IJ12378945',
+      isApiVerified: true,
+      issuingAuthority: 'Bureau of Public Procurement',
+      issuedDate: '16 Mar 2026',
+    },
+    {
+      id: 'cert-1-6',
+      name: 'Industrial Training Fund Certificate',
+      shortName: 'ITF',
+      status: 'active',
+      expiryDate: '18 Dec 2026',
+      daysToExpiry: 253,
+      certificateNumber: 'ITF/2026/KL96325874',
+      isApiVerified: true,
+      issuingAuthority: 'Industrial Training Fund',
+      issuedDate: '18 Dec 2025',
+    },
+  ],
+  'client-2': [
+    {
+      id: 'cert-2-1',
+      name: 'National Health Insurance Authority Certificate',
+      shortName: 'NHIA',
+      status: 'active',
+      expiryDate: '20 Feb 2027',
+      daysToExpiry: 287,
+      certificateNumber: 'NHIA/2026/LAG/XY98765432',
+      isApiVerified: true,
+      issuingAuthority: 'National Health Insurance Authority',
+      issuedDate: '20 Feb 2026',
+    },
+    {
+      id: 'cert-2-2',
+      name: 'Pension Clearance Certificate',
+      shortName: 'PCC',
+      status: 'active',
+      expiryDate: '15 Jan 2027',
+      daysToExpiry: 251,
+      certificateNumber: 'PCC/2026/ABU/EF12345678',
+      isApiVerified: true,
+      issuingAuthority: 'National Pension Commission',
+      issuedDate: '15 Jan 2026',
+    },
+    {
+      id: 'cert-2-3',
+      name: 'Nigeria Social Insurance Trust Fund',
+      shortName: 'NSITF',
+      status: 'active',
+      expiryDate: '10 Dec 2026',
+      daysToExpiry: 245,
+      certificateNumber: 'NSITF/2026/LAG/GH45678901',
+      isApiVerified: true,
+      issuingAuthority: 'Nigeria Social Insurance Trust Fund',
+      issuedDate: '10 Dec 2025',
+    },
+    {
+      id: 'cert-2-4',
+      name: 'Federal Inland Revenue Service Tax Clearance',
+      shortName: 'FIRS TCC',
+      status: 'active',
+      expiryDate: '25 Nov 2026',
+      daysToExpiry: 200,
+      certificateNumber: 'TCC/2026/LAG/IJ23456789',
+      isApiVerified: true,
+      issuingAuthority: 'Federal Inland Revenue Service',
+      issuedDate: '25 Nov 2025',
+    },
+    {
+      id: 'cert-2-5',
+      name: 'Bureau of Public Procurement Certificate',
+      shortName: 'BPP',
+      status: 'active',
+      expiryDate: '08 Apr 2027',
+      daysToExpiry: 335,
+      certificateNumber: 'BPP/2026/ABU/KL34567890',
+      isApiVerified: true,
+      issuingAuthority: 'Bureau of Public Procurement',
+      issuedDate: '08 Apr 2026',
+    },
+    {
+      id: 'cert-2-6',
+      name: 'Industrial Training Fund Certificate',
+      shortName: 'ITF',
+      status: 'active',
+      expiryDate: '12 Jan 2027',
+      daysToExpiry: 248,
+      certificateNumber: 'ITF/2026/ABU/MN78901234',
+      isApiVerified: true,
+      issuingAuthority: 'Industrial Training Fund',
+      issuedDate: '12 Jan 2026',
+    },
+  ],
+};
+
 // ─── Partner portal ─────────────────────────────────────────────────────────
 
 export const mockPartnerClients: PartnerClient[] = [
@@ -407,9 +562,11 @@ export const mockPartnerClients: PartnerClient[] = [
     status: 'attention',
     activeCertificates: 5,
     totalCertificates: 6,
-    nextExpiry: 'NSITF',
+    nextExpiry: '15 May 2026',
     daysToExpiry: 6,
     monthlyFee: 45000,
+    sector: 'Construction',
+    createdAt: '2024-03-15T10:00:00Z',
   },
   {
     id: 'client-2',
@@ -419,9 +576,11 @@ export const mockPartnerClients: PartnerClient[] = [
     status: 'healthy',
     activeCertificates: 6,
     totalCertificates: 6,
-    nextExpiry: 'FIRS',
-    daysToExpiry: 89,
+    nextExpiry: '15 Jan 2027',
+    daysToExpiry: 251,
     monthlyFee: 65000,
+    sector: 'Construction',
+    createdAt: '2024-02-20T14:30:00Z',
   },
   {
     id: 'client-3',
@@ -431,9 +590,11 @@ export const mockPartnerClients: PartnerClient[] = [
     status: 'critical',
     activeCertificates: 2,
     totalCertificates: 6,
-    nextExpiry: 'NHIA',
+    nextExpiry: '15 Mar 2026',
     daysToExpiry: -55,
     monthlyFee: 45000,
+    sector: 'Professional Services',
+    createdAt: '2024-01-10T09:00:00Z',
   },
   {
     id: 'client-4',
@@ -443,9 +604,11 @@ export const mockPartnerClients: PartnerClient[] = [
     status: 'healthy',
     activeCertificates: 6,
     totalCertificates: 6,
-    nextExpiry: 'PCC',
-    daysToExpiry: 112,
+    nextExpiry: '20 Aug 2026',
+    daysToExpiry: 133,
     monthlyFee: 55000,
+    sector: 'Engineering',
+    createdAt: '2024-04-05T11:15:00Z',
   },
   {
     id: 'client-5',
@@ -455,9 +618,81 @@ export const mockPartnerClients: PartnerClient[] = [
     status: 'attention',
     activeCertificates: 4,
     totalCertificates: 6,
-    nextExpiry: 'ITF',
+    nextExpiry: '27 May 2026',
     daysToExpiry: 18,
     monthlyFee: 45000,
+    sector: 'Logistics',
+    createdAt: '2024-05-12T16:45:00Z',
+  },
+  {
+    id: 'client-6',
+    companyName: 'GreenEnergy Solutions',
+    rcNumber: 'RC9988776',
+    score: 95,
+    status: 'healthy',
+    activeCertificates: 6,
+    totalCertificates: 6,
+    nextExpiry: '30 Dec 2026',
+    daysToExpiry: 265,
+    monthlyFee: 50000,
+    sector: 'Energy',
+    createdAt: '2024-06-01T08:30:00Z',
+  },
+  {
+    id: 'client-7',
+    companyName: 'MediCare Health Services',
+    rcNumber: 'RC4455667',
+    score: 82,
+    status: 'healthy',
+    activeCertificates: 5,
+    totalCertificates: 6,
+    nextExpiry: '10 Jul 2026',
+    daysToExpiry: 62,
+    monthlyFee: 60000,
+    sector: 'Healthcare',
+    createdAt: '2024-07-20T13:20:00Z',
+  },
+  {
+    id: 'client-8',
+    companyName: 'FinTech Innovations Ltd',
+    rcNumber: 'RC3344556',
+    score: 78,
+    status: 'healthy',
+    activeCertificates: 6,
+    totalCertificates: 6,
+    nextExpiry: '25 Sep 2026',
+    daysToExpiry: 169,
+    monthlyFee: 70000,
+    sector: 'Technology',
+    createdAt: '2024-08-15T10:00:00Z',
+  },
+  {
+    id: 'client-9',
+    companyName: 'AgriGrow Nigeria',
+    rcNumber: 'RC2233445',
+    score: 45,
+    status: 'critical',
+    activeCertificates: 3,
+    totalCertificates: 6,
+    nextExpiry: '20 Apr 2026',
+    daysToExpiry: -19,
+    monthlyFee: 40000,
+    sector: 'Agriculture',
+    createdAt: '2024-09-10T14:00:00Z',
+  },
+  {
+    id: 'client-10',
+    companyName: 'EduPrime Schools Ltd',
+    rcNumber: 'RC7788990',
+    score: 89,
+    status: 'healthy',
+    activeCertificates: 6,
+    totalCertificates: 6,
+    nextExpiry: '15 Oct 2026',
+    daysToExpiry: 189,
+    monthlyFee: 55000,
+    sector: 'Education',
+    createdAt: '2024-10-05T09:30:00Z',
   },
 ];
 
@@ -521,3 +756,158 @@ export const mockNotificationPreferences: NotificationPreferences = {
   weeklyDigest: true,
   expiryReminderDays: [30, 14, 7, 1],
 };
+
+// ─── Activity Tracking ────────────────────────────────────────────────────────
+
+export interface ClientActivity {
+  id: string;
+  clientId: string;
+  clientName: string;
+  type: 'certificate_uploaded' | 'certificate_renewed' | 'certificate_expiring' | 'certificate_expired' | 
+        'score_change' | 'permission_updated' | 'client_added' | 'client_removed' | 
+        'report_generated' | 'reminder_sent' | 'api_verification_failed';
+  severity: 'info' | 'success' | 'warning' | 'critical';
+  title: string;
+  description: string;
+  timestamp: string;
+  daysAgo: number;
+  metadata?: {
+    certificateType?: string;
+    oldScore?: number;
+    newScore?: number;
+    permissions?: string[];
+    reportType?: string;
+  };
+}
+
+export const mockClientActivities: ClientActivity[] = [
+  {
+    id: 'act-1',
+    clientId: 'client-1',
+    clientName: 'BuildRight Construction Ltd',
+    type: 'certificate_renewed',
+    severity: 'success',
+    title: 'NHIA Certificate Renewed',
+    description: 'National Health Insurance Authority certificate renewed successfully',
+    timestamp: '2026-01-15T10:30:00Z',
+    daysAgo: 1,
+    metadata: { certificateType: 'NHIA' },
+  },
+  {
+    id: 'act-2',
+    clientId: 'client-1',
+    clientName: 'BuildRight Construction Ltd',
+    type: 'score_change',
+    severity: 'success',
+    title: 'Compliance Score Improved',
+    description: 'Score increased from 78 to 85 after certificate renewal',
+    timestamp: '2026-01-15T10:30:00Z',
+    daysAgo: 1,
+    metadata: { oldScore: 78, newScore: 85 },
+  },
+  {
+    id: 'act-3',
+    clientId: 'client-2',
+    clientName: 'ProServe Consulting',
+    type: 'certificate_expiring',
+    severity: 'warning',
+    title: 'PCC Expiring Soon',
+    description: 'Pension Clearance Certificate expires in 25 days',
+    timestamp: '2026-01-10T14:20:00Z',
+    daysAgo: 6,
+    metadata: { certificateType: 'PCC' },
+  },
+  {
+    id: 'act-4',
+    clientId: 'client-3',
+    clientName: 'EcoTech Engineering',
+    type: 'certificate_uploaded',
+    severity: 'success',
+    title: 'NSITF Certificate Uploaded',
+    description: 'Employee Compensation Certificate uploaded and verified',
+    timestamp: '2026-01-08T09:15:00Z',
+    daysAgo: 8,
+    metadata: { certificateType: 'NSITF' },
+  },
+  {
+    id: 'act-5',
+    clientId: 'client-4',
+    clientName: 'SwiftLogistics Nigeria',
+    type: 'permission_updated',
+    severity: 'info',
+    title: 'Permissions Updated',
+    description: 'View certificates and Generate reports permissions granted',
+    timestamp: '2026-01-05T16:45:00Z',
+    daysAgo: 11,
+    metadata: { permissions: ['view_certificates', 'generate_reports'] },
+  },
+  {
+    id: 'act-6',
+    clientId: 'client-5',
+    clientName: 'GreenEnergy Solutions',
+    type: 'certificate_expired',
+    severity: 'critical',
+    title: 'ITF Certificate Expired',
+    description: 'Industrial Training Fund certificate expired on 2026-01-01',
+    timestamp: '2026-01-01T00:00:00Z',
+    daysAgo: 15,
+    metadata: { certificateType: 'ITF' },
+  },
+  {
+    id: 'act-7',
+    clientId: 'client-6',
+    clientName: 'MedCare Health Systems',
+    type: 'client_added',
+    severity: 'success',
+    title: 'New Client Onboarded',
+    description: 'Client successfully added to partner portal',
+    timestamp: '2025-12-28T11:30:00Z',
+    daysAgo: 19,
+  },
+  {
+    id: 'act-8',
+    clientId: 'client-1',
+    clientName: 'BuildRight Construction Ltd',
+    type: 'report_generated',
+    severity: 'info',
+    title: 'Compliance Report Generated',
+    description: 'Monthly compliance report generated for January 2026',
+    timestamp: '2025-12-20T14:00:00Z',
+    daysAgo: 27,
+    metadata: { reportType: 'monthly_compliance' },
+  },
+  {
+    id: 'act-9',
+    clientId: 'client-7',
+    clientName: 'TechNova Innovations',
+    type: 'reminder_sent',
+    severity: 'info',
+    title: 'Expiry Reminder Sent',
+    description: 'Automatic reminder sent for certificate expiry',
+    timestamp: '2025-12-15T09:00:00Z',
+    daysAgo: 32,
+    metadata: { certificateType: 'PCC' },
+  },
+  {
+    id: 'act-10',
+    clientId: 'client-8',
+    clientName: 'AgriNigeria Farms',
+    type: 'api_verification_failed',
+    severity: 'warning',
+    title: 'API Verification Failed',
+    description: 'NHIA certificate verification failed - manual review required',
+    timestamp: '2025-12-10T13:20:00Z',
+    daysAgo: 37,
+    metadata: { certificateType: 'NHIA' },
+  },
+];
+
+export function getActivitiesForClient(clientId: string): ClientActivity[] {
+  return mockClientActivities.filter(activity => activity.clientId === clientId);
+}
+
+export function getRecentActivities(limit: number = 10): ClientActivity[] {
+  return mockClientActivities
+    .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
+    .slice(0, limit);
+}

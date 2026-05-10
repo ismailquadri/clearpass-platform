@@ -200,14 +200,7 @@ export function MDAVerifyView() {
             icon={Search}
             title="No Verification Results"
             description="Enter an RC number or company name to verify vendor compliance status."
-          >
-            <div className="mt-4 text-left max-w-xs mx-auto bg-muted rounded-md p-3">
-              <p style={{ fontSize: '14px', fontWeight: 500 }}>Try searching:</p>
-              <p className="caption text-muted-foreground">RC1234567</p>
-              <p className="caption text-muted-foreground">RC7654321</p>
-              <p className="caption text-muted-foreground">RC9876543</p>
-            </div>
-          </EmptyState>
+          />
         )}
       </div>
 

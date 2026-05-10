@@ -55,7 +55,7 @@
   /* The default font weight for normal text. */
   --font-weight-normal: 400;
   /* The color for focus rings, outlines, and other focus indicators. */
-  --ring: rgba(51, 92, 255, 1);
+  --ring: rgba(255, 48, 0, 0.2);
   /* Shadow for small elevations, such as cards or modals. */
   --elevation-sm: 0px 1px 2px 0px rgba(10, 13, 20, 0.03);
   /* The color for chart elements, such as a bar or line in a chart. */
@@ -126,7 +126,7 @@
   --border: rgba(92, 92, 92, 1);
   --input: rgba(92, 92, 92, 1);
   --input-background: rgba(23, 23, 23, 1);
-  --ring: rgba(71, 194, 255, 1);
+  --ring: rgba(255, 48, 0, 0.3);
   --sidebar: rgba(23, 23, 23, 1);
   --sidebar-foreground: rgba(255, 255, 255, 1);
   --sidebar-primary: rgba(255, 48, 0, 1);

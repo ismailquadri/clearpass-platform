@@ -383,10 +383,10 @@ export function SettingsView() {
               </div>
             </div>
 
-            <div className="flex justify-end gap-3">
+            <div className="flex flex-col-reverse sm:flex-row sm:justify-end gap-3">
               <button
                 onClick={() => showToast('info', 'Cancelled', 'Changes have been discarded')}
-                className="px-6 py-2 rounded-md border border-border hover:bg-muted transition-colors"
+                className="w-full sm:w-auto px-6 py-2.5 rounded-md border border-border hover:bg-muted transition-colors"
               >
                 Cancel
               </button>
@@ -395,7 +395,7 @@ export function SettingsView() {
                 disabled={isSaving}
                 aria-live="polite"
                 aria-busy={isSaving}
-                className="px-6 py-2 rounded-md text-white flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full sm:w-auto px-6 py-2.5 rounded-md text-white flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                 style={{ backgroundColor: '#FF3000' }}
               >
                 <Save className="w-4 h-4" />
@@ -529,10 +529,10 @@ export function SettingsView() {
               </div>
             </div>
 
-            <div className="flex justify-end gap-3">
+            <div className="flex flex-col-reverse sm:flex-row sm:justify-end gap-3">
               <button
                 onClick={() => showToast('info', 'Cancelled', 'Changes have been discarded')}
-                className="px-6 py-2 rounded-md border border-border hover:bg-muted transition-colors"
+                className="w-full sm:w-auto px-6 py-2.5 rounded-md border border-border hover:bg-muted transition-colors"
               >
                 Cancel
               </button>
@@ -541,7 +541,7 @@ export function SettingsView() {
                 disabled={isSavingNotifications}
                 aria-live="polite"
                 aria-busy={isSavingNotifications}
-                className="px-6 py-2 rounded-md text-white flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full sm:w-auto px-6 py-2.5 rounded-md text-white flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                 style={{ backgroundColor: '#FF3000' }}
               >
                 <Save className="w-4 h-4" />

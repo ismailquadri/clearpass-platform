@@ -168,6 +168,39 @@ export interface PartnerClient {
   nextExpiry: string;
   daysToExpiry: number;
   monthlyFee: number;
+  sector?: string;
+  createdAt?: string;
+}
+
+export type Permission = 'certificates.view' | 'certificates.edit' | 'reports.generate';
+
+export type LinkStatus = 'active' | 'revoked';
+
+export interface ClientCertificate {
+  id: ID;
+  name: string;
+  shortName: string;
+  status: 'active' | 'expiring-soon' | 'expiring-urgent' | 'expiring-critical' | 'expired' | 'pending';
+  expiryDate: string;
+  daysToExpiry: number;
+  certificateNumber: string;
+  isApiVerified: boolean;
+  issuingAuthority: string;
+  issuedDate: string;
+  documentUrl?: string;
+}
+
+export interface CompliancePartnerLink {
+  id: ID;
+  partnerUserId: ID;
+  clientCompanyId: ID;
+  permissions: Permission[];
+  linkedAt: string;
+  linkedByCompanyUserId: ID;
+  status: LinkStatus;
+  revokedAt?: string;
+  revokedBy?: ID;
+  createdAt: string;
 }
 
 export interface PartnerAnalytics {

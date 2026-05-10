@@ -60,18 +60,18 @@ class ErrorBoundary extends Component<Props, State> {
             <p className="text-muted-foreground mb-6">
               An error occurred while rendering this page. Please try refreshing.
             </p>
-            <div className="flex gap-3 justify-center">
-              <button
-                onClick={() => window.location.reload()}
-                className="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors"
-              >
-                Reload Page
-              </button>
+            <div className="flex flex-col-reverse sm:flex-row sm:justify-center gap-3">
               <button
                 onClick={() => this.setState({ hasError: false })}
-                className="px-4 py-2 border border-border rounded-md hover:bg-accent transition-colors"
+                className="w-full sm:w-auto px-4 py-2.5 border border-border rounded-md hover:bg-accent transition-colors"
               >
                 Try Again
+              </button>
+              <button
+                onClick={() => window.location.reload()}
+                className="w-full sm:w-auto px-4 py-2.5 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors"
+              >
+                Reload Page
               </button>
             </div>
             {import.meta.env.DEV && this.state.error && (

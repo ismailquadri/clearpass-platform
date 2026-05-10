@@ -1,4 +1,5 @@
 import { Search, FileCheck, Activity, BarChart3, Settings } from 'lucide-react';
+import { MobileLogoPlaceholder } from './MobileLogoPlaceholder';
 
 interface MDASidebarProps {
   activeSection: string;
@@ -38,15 +39,11 @@ export function MDASidebar({
     <aside className={`${fluid ? 'w-full' : 'w-56 lg:w-64'} h-full bg-card flex flex-col`}>
       <div className="px-4 py-4 border-b border-border">
         <div className="flex items-center gap-2">
-          <img src="/clearpass-logo.svg" alt="ClearPass" className="h-9 w-auto" />
-          <div>
-            <span className="font-medium block" style={{ fontSize: '15px' }}>
-              ClearPass
-            </span>
-            <span className="text-muted-foreground" style={{ fontSize: '13px' }}>
-              MDA Portal
-            </span>
-          </div>
+          <MobileLogoPlaceholder />
+          <img src="/clearpass-logo.svg" alt="ClearPass" className="h-9 w-auto hidden sm:block" />
+          <span className="font-medium block hidden sm:block" style={{ fontSize: '15px' }}>
+            ClearPass
+          </span>
         </div>
       </div>
 

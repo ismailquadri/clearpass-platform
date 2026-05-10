@@ -1,7 +1,6 @@
-import { AlertTriangle } from 'lucide-react';
 import type { ReactNode } from 'react';
 import type { UseApiResult } from '../../api';
-import { EmptyState } from './EmptyState';
+import { ErrorRecovery } from '../ErrorRecovery';
 
 interface ApiStateProps<T> {
   query: UseApiResult<T>;
@@ -30,11 +29,11 @@ export function ApiState<T>({ query, loading, children, errorFallback }: ApiStat
       return <>{errorFallback({ message: query.error.message }, query.refetch)}</>;
     }
     return (
-      <EmptyState
-        icon={AlertTriangle}
-        title="Couldn't load this data"
-        description={query.error?.message ?? 'Something went wrong while reaching the server.'}
-        action={{ label: 'Try again', onClick: query.refetch }}
+      <ErrorRecovery
+        error={query.error || new Error('Failed to load data')}
+        onRetry={query.refetch}
+        isRetrying={query.isLoading}
+        context="Failed to load data from the server"
       />
     );
   }

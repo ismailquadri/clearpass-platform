@@ -142,15 +142,15 @@ export function MDAPrequalificationView() {
       <div className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <div className="flex items-center justify-between mb-2">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-2">
             <h1 style={{ fontSize: '32px' }}>Pre-Qualification List</h1>
-            <div className="flex gap-3">
-              <button className="px-4 py-2 rounded-md border border-border hover:bg-muted transition-colors flex items-center gap-2">
+            <div className="flex flex-col sm:flex-row gap-3">
+              <button className="w-full sm:w-auto px-4 py-2.5 rounded-md border border-border hover:bg-muted transition-colors flex items-center justify-center gap-2">
                 <Upload className="w-4 h-4" />
                 Import Bidders
               </button>
               <button
-                className="px-4 py-2 rounded-md text-white flex items-center gap-2"
+                className="w-full sm:w-auto px-4 py-2.5 rounded-md text-white flex items-center justify-center gap-2"
                 style={{ backgroundColor: '#FF3000' }}
               >
                 <Plus className="w-4 h-4" />
@@ -416,17 +416,17 @@ export function MDAPrequalificationView() {
             Once you've reviewed all vendors, you can generate the official pre-qualification report
             for tender evaluation.
           </p>
-          <div className="flex gap-3">
+          <div className="flex flex-col sm:flex-row gap-3">
             <button
               onClick={handleGenerateReport}
-              className="px-6 py-2 rounded-md text-white"
+              className="w-full sm:w-auto px-6 py-2.5 rounded-md text-white"
               style={{ backgroundColor: '#FF3000' }}
             >
               Generate Pre-Qualification Report
             </button>
             <button
               onClick={handleGenerateReport}
-              className="px-6 py-2 rounded-md border border-border hover:bg-muted transition-colors"
+              className="w-full sm:w-auto px-6 py-2.5 rounded-md border border-border hover:bg-muted transition-colors"
             >
               Save as Draft
             </button>

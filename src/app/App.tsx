@@ -7,6 +7,8 @@ import { PartnerSidebar } from './components/PartnerSidebar';
 import { ToastProvider } from './components/ToastProvider';
 import { AppShell } from './components/AppShell';
 import { EmptyState } from './components/ui/EmptyState';
+import { OfflineBanner } from './components/OfflineBanner';
+import { useOnlineStatus } from './hooks/useOnlineStatus';
 import {
   PageHeaderSkeleton,
   StatCardGridSkeleton,
@@ -43,6 +45,26 @@ const MDAPrequalificationView = lazy(() =>
 const PartnerClientsView = lazy(() =>
   import('./components/PartnerClientsView').then((m) => ({
     default: m.PartnerClientsView,
+  }))
+);
+const PartnerActivityDigestView = lazy(() =>
+  import('./components/PartnerActivityDigestView').then((m) => ({
+    default: m.PartnerActivityDigestView,
+  }))
+);
+const PartnerPortfolioView = lazy(() =>
+  import('./components/PartnerPortfolioView').then((m) => ({
+    default: m.PartnerPortfolioView,
+  }))
+);
+const PartnerReportsView = lazy(() =>
+  import('./components/PartnerReportsView').then((m) => ({
+    default: m.PartnerReportsView,
+  }))
+);
+const PartnerSettingsView = lazy(() =>
+  import('./components/PartnerSettingsView').then((m) => ({
+    default: m.PartnerSettingsView,
   }))
 );
 const PartnerAnalyticsView = lazy(() =>
@@ -179,13 +201,16 @@ function SectionNotFound({
 // ─── App ────────────────────────────────────────────────────────────────────
 
 export default function App() {
-  const [showOnboarding, setShowOnboarding] = useState(false);
+  const [showOnboarding, setShowOnboarding] = useState(
+    () => !localStorage.getItem('clearpass_onboarded')
+  );
   const [activeSection, setActiveSection] = useState('overview');
   const [isTweaksPanelOpen, setIsTweaksPanelOpen] = useState(false);
   const [selectedPersona, setSelectedPersona] = useState<Persona>('Business');
   const [selectedState, setSelectedState] = useState<DashboardState>(
     DASHBOARD_STATES[1] // Attention Required
   );
+  const isOnline = useOnlineStatus();
 
   // One-shot setup on mount.
   useEffect(() => {
@@ -215,6 +240,12 @@ export default function App() {
     if (persona === 'Business') setActiveSection('overview');
     else if (persona === 'MDA') setActiveSection('verify');
     else setActiveSection('clients');
+  };
+
+  const handleOnboardingComplete = (persona: Persona) => {
+    localStorage.setItem('clearpass_onboarded', '1');
+    handlePersonaChange(persona);
+    setShowOnboarding(false);
   };
 
   const goHome = () => {
@@ -323,6 +354,24 @@ export default function App() {
             <PartnerClientsView />
           </Suspense>
         );
+      case 'portfolio':
+        return (
+          <Suspense fallback={<AnalyticsSkeleton />}>
+            <PartnerPortfolioView />
+          </Suspense>
+        );
+      case 'reports':
+        return (
+          <Suspense fallback={<ActivitySkeleton />}>
+            <PartnerReportsView />
+          </Suspense>
+        );
+      case 'activity-digest':
+        return (
+          <Suspense fallback={<ActivitySkeleton />}>
+            <PartnerActivityDigestView />
+          </Suspense>
+        );
       case 'analytics':
         return (
           <Suspense fallback={<AnalyticsSkeleton />}>
@@ -332,7 +381,7 @@ export default function App() {
       case 'settings':
         return (
           <Suspense fallback={<GenericSkeleton />}>
-            <SettingsView />
+            <PartnerSettingsView />
           </Suspense>
         );
       default:
@@ -350,6 +399,8 @@ export default function App() {
         >
           Skip to main content
         </a>
+
+        <OfflineBanner isOnline={isOnline} />
 
         <AppShell
           persona={selectedPersona}
@@ -371,7 +422,7 @@ export default function App() {
 
         {showOnboarding && (
           <Suspense fallback={null}>
-            <OnboardingFlow onComplete={() => setShowOnboarding(false)} />
+            <OnboardingFlow onComplete={handleOnboardingComplete} />
           </Suspense>
         )}
       </ToastProvider>

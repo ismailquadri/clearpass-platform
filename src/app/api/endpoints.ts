@@ -56,6 +56,7 @@ export const ENDPOINTS = {
     addClient: '/partner/clients',
     client: (id: string) => `/partner/clients/${id}`,
     analytics: '/partner/analytics',
+    permissions: (id: string) => `/partner/clients/${id}/permissions`,
   },
 
   // Settings

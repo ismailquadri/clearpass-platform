@@ -1,4 +1,7 @@
-import { Users, FileText, TrendingUp, DollarSign, Settings, Briefcase } from 'lucide-react';
+import { Users, FileText, TrendingUp, DollarSign, Settings, Briefcase, AlertCircle } from 'lucide-react';
+import { useState } from 'react';
+import { NotificationCenter, NotificationBell } from './NotificationCenter';
+import { MobileLogoPlaceholder } from './MobileLogoPlaceholder';
 
 interface PartnerSidebarProps {
   activeSection: string;
@@ -18,6 +21,9 @@ const CLIENT_ITEMS: MenuItem[] = [
   { id: 'portfolio', label: 'Portfolio Overview', icon: Briefcase },
   { id: 'reports', label: 'Client Reports', icon: FileText },
 ];
+const ALERT_ITEMS: MenuItem[] = [
+  { id: 'activity-digest', label: 'Activity Digest', icon: AlertCircle },
+];
 const BUSINESS_ITEMS: MenuItem[] = [
   { id: 'analytics', label: 'Analytics', icon: TrendingUp },
   { id: 'billing', label: 'Billing', icon: DollarSign },
@@ -30,6 +36,8 @@ export function PartnerSidebar({
   onItemSelect,
   fluid = false,
 }: PartnerSidebarProps) {
+  const [isNotificationOpen, setIsNotificationOpen] = useState(false);
+  
   const handleClick = (id: string) => {
     onSectionChange(id);
     onItemSelect?.();
@@ -38,16 +46,18 @@ export function PartnerSidebar({
   return (
     <aside className={`${fluid ? 'w-full' : 'w-56 lg:w-64'} h-full bg-card flex flex-col`}>
       <div className="px-4 py-4 border-b border-border">
-        <div className="flex items-center gap-2">
-          <img src="/clearpass-logo.svg" alt="ClearPass" className="h-9 w-auto" />
-          <div>
-            <span className="font-medium block" style={{ fontSize: '15px' }}>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <MobileLogoPlaceholder />
+            <img src="/clearpass-logo.svg" alt="ClearPass" className="h-9 w-auto hidden sm:block" />
+            <span className="font-medium block hidden sm:block" style={{ fontSize: '15px' }}>
               ClearPass
             </span>
-            <span className="text-muted-foreground" style={{ fontSize: '13px' }}>
-              Partner Portal
-            </span>
           </div>
+          <NotificationBell
+            onClick={() => setIsNotificationOpen(true)}
+            unreadCount={5}
+          />
         </div>
       </div>
 
@@ -57,6 +67,13 @@ export function PartnerSidebar({
           items={CLIENT_ITEMS}
           activeSection={activeSection}
           onSelect={handleClick}
+        />
+        <Group
+          label="Alerts"
+          items={ALERT_ITEMS}
+          activeSection={activeSection}
+          onSelect={handleClick}
+          className="mt-4"
         />
         <Group
           label="Business"
@@ -82,6 +99,11 @@ export function PartnerSidebar({
           </div>
         </div>
       </div>
+      
+      <NotificationCenter
+        isOpen={isNotificationOpen}
+        onClose={() => setIsNotificationOpen(false)}
+      />
     </aside>
   );
 }
