@@ -109,6 +109,7 @@ export function ProfileModal({
           <button
             onClick={onClose}
             className="p-2 hover:bg-muted rounded-md transition-colors"
+            aria-label="Close profile modal"
           >
             <X className="w-5 h-5" />
           </button>

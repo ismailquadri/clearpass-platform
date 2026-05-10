@@ -2,6 +2,11 @@ import { ComplianceScore } from './ComplianceScore';
 import { CertificateCard } from './CertificateCard';
 import { AlertCard } from './AlertCard';
 import { NextBestAction } from './NextBestAction';
+import { AchievementsPanel } from './AchievementsPanel';
+import { Leaderboard } from './Leaderboard';
+import { ActivityFeed } from './ActivityFeed';
+import { useGamification } from '../contexts/GamificationContext';
+import { GamificationAction } from '../utils/gamification';
 import { Calendar, TrendingUp, Building2, Flame } from 'lucide-react';
 import type { DashboardState } from './TweaksPanel';
 import { useToast } from './ToastProvider';
@@ -46,6 +51,32 @@ const SCORE_BADGE_COLOR: Record<string, string> = {
 export function StateAwareDashboard({ state, onNavigate }: StateAwareDashboardProps) {
   const { showToast } = useToast();
   const milestoneFiredRef = useRef(false);
+  const { awardXP, newlyUnlocked, clearNewlyUnlocked } = useGamification();
+
+  // Award XP for daily login
+  useEffect(() => {
+    const lastLogin = localStorage.getItem('clearpass_last_login');
+    const today = new Date().toDateString();
+
+    if (lastLogin !== today) {
+      awardXP(GamificationAction.DAILY_LOGIN, { streak: 1 });
+      localStorage.setItem('clearpass_last_login', today);
+    }
+  }, [awardXP]);
+
+  // Award XP for score updates
+  useEffect(() => {
+    awardXP(GamificationAction.SCORE_UPDATE, { score: state.score });
+  }, [state.score, awardXP]);
+
+  // Show achievement notifications
+  useEffect(() => {
+    if (newlyUnlocked.length > 0) {
+      // Pass to parent App component to show notification
+      // For now, we'll just clear them since the notification is in App.tsx
+      clearNewlyUnlocked();
+    }
+  }, [newlyUnlocked, clearNewlyUnlocked]);
 
   // Milestone celebration — fires once when score reaches 100 / Procurement Ready
   useEffect(() => {
@@ -709,6 +740,17 @@ export function StateAwareDashboard({ state, onNavigate }: StateAwareDashboardPr
               </p>
             </button>
           </div>
+        </div>
+
+        {/* Achievements Panel */}
+        <div className="mt-5">
+          <AchievementsPanel />
+        </div>
+
+        {/* Social Mechanics - Leaderboard and Activity Feed */}
+        <div className="mt-5 grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <Leaderboard />
+          <ActivityFeed />
         </div>
       </div>
     </div>

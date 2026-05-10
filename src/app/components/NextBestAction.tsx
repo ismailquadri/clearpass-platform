@@ -101,13 +101,10 @@ export function NextBestAction({ state, onAction }: NextBestActionProps) {
 
   return (
     <div
-      className="rounded-lg p-4 border-l-4 border mb-5 flex flex-col sm:flex-row sm:items-center gap-4"
+      className="rounded-lg p-4 border mb-5 flex flex-col sm:flex-row sm:items-center gap-4"
       style={{
         backgroundColor: style.bg,
-        borderLeftColor: style.borderColor,
-        borderTopColor: 'var(--border)',
-        borderRightColor: 'var(--border)',
-        borderBottomColor: 'var(--border)',
+        borderColor: 'var(--border)',
       }}
     >
       <div

@@ -11,7 +11,7 @@ import {
   Upload,
   Save,
 } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useToast } from './ToastProvider';
 
 export function SettingsView() {
@@ -33,6 +33,23 @@ export function SettingsView() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSaving, setIsSaving] = useState(false);
   const [isSavingNotifications, setIsSavingNotifications] = useState(false);
+
+  // Auto-save form data to localStorage
+  useEffect(() => {
+    const savedData = localStorage.getItem('clearpass_settings_form');
+    if (savedData) {
+      try {
+        setFormData(JSON.parse(savedData));
+      } catch (e) {
+        // Ignore parse errors
+      }
+    }
+  }, []);
+
+  // Save form data on change
+  useEffect(() => {
+    localStorage.setItem('clearpass_settings_form', JSON.stringify(formData));
+  }, [formData]);
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
@@ -69,6 +86,8 @@ export function SettingsView() {
       // Simulate API call
       await new Promise((resolve) => setTimeout(resolve, 1000));
       showToast('success', 'Changes Saved', 'Company profile updated successfully');
+      // Clear auto-saved data after successful save
+      localStorage.removeItem('clearpass_settings_form');
     } catch {
       showToast('error', 'Save Failed', 'Failed to save changes. Please try again.');
     } finally {

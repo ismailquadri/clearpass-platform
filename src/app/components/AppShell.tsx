@@ -1,4 +1,4 @@
-import { CheckCircle2, Menu, Shield, Briefcase, X } from 'lucide-react';
+import { CheckCircle2, Menu, Shield, Briefcase, X, HeartPulse, Building } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import type { ReactNode } from 'react';
 import type { Persona } from './TweaksPanel';
@@ -17,12 +17,16 @@ const PERSONA_ICON: Record<Persona, typeof CheckCircle2> = {
   Business: CheckCircle2,
   MDA: Shield,
   Partner: Briefcase,
+  HMO: HeartPulse,
+  Admin: Building,
 };
 
 const PERSONA_LABEL: Record<Persona, string> = {
   Business: 'Business Portal',
   MDA: 'MDA Portal',
   Partner: 'Partner Portal',
+  HMO: 'HMO Portal',
+  Admin: 'Admin Portal',
 };
 
 /**

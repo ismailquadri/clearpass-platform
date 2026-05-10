@@ -1,7 +1,7 @@
 import { X, Settings2 } from 'lucide-react';
 import { useState } from 'react';
 
-export type Persona = 'Business' | 'MDA' | 'Partner';
+export type Persona = 'Business' | 'MDA' | 'Partner' | 'HMO' | 'Admin';
 
 export interface DashboardState {
   label: string;
@@ -95,16 +95,16 @@ export function TweaksPanel({
             <h3 className="mb-3" style={{ fontSize: '16px', fontWeight: '500' }}>
               Persona
             </h3>
-            <div className="flex gap-2 p-1 bg-muted rounded-lg">
-              {(['Business', 'MDA', 'Partner'] as Persona[]).map((persona) => (
+            <div className="grid grid-cols-5 gap-1 p-1 bg-muted rounded-lg">
+              {(['Business', 'MDA', 'Partner', 'HMO', 'Admin'] as Persona[]).map((persona) => (
                 <button
                   key={persona}
                   onClick={() => onPersonaChange(persona)}
-                  className={`flex-1 px-4 py-2 rounded-md transition-colors ${
+                  className={`px-2 py-2 rounded-md transition-colors ${
                     selectedPersona === persona ? 'bg-card shadow-sm' : 'hover:bg-card/50'
                   }`}
                   style={{
-                    fontSize: '14px',
+                    fontSize: '12px',
                     fontWeight: selectedPersona === persona ? '500' : '400',
                   }}
                 >
@@ -116,7 +116,7 @@ export function TweaksPanel({
               className="mt-3 text-muted-foreground"
               style={{ fontSize: '14px', lineHeight: '1.5' }}
             >
-              Switch between the three production portals. Each has its own information
+              Switch between the five production portals. Each has its own information
               architecture, sidebar, and task ergonomics.
             </p>
           </div>

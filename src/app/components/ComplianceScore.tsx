@@ -11,6 +11,12 @@ interface ComplianceScoreProps {
     date: string;
     certificate: string;
   };
+  /** If true, score is capped at 49 because NHIA is missing */
+  nhiaHardBlock?: boolean;
+  /** If true, CAC is unverified — show "Not Available" instead of score */
+  cacUnverified?: boolean;
+  /** If true, at least one cert is expired — Ineligible to Bid */
+  hasExpiredCert?: boolean;
 }
 
 export const ComplianceScore = memo(function ComplianceScore({
@@ -19,18 +25,25 @@ export const ComplianceScore = memo(function ComplianceScore({
   activeCerts,
   totalCerts = 6,
   projectedScore,
+  nhiaHardBlock = false,
+  cacUnverified = false,
+  hasExpiredCert = false,
 }: ComplianceScoreProps) {
   const scoreColor = useMemo(() => {
+    if (cacUnverified) return '#9CA3AF';
     if (score >= 80) return '#1FC16B';
     if (score >= 60) return '#F59E0B';
     return '#FF3000';
-  }, [score]);
+  }, [score, cacUnverified]);
 
   const scoreLabel = useMemo(() => {
+    if (cacUnverified) return 'Not Available';
+    if (nhiaHardBlock) return 'NHIA Required';
+    if (hasExpiredCert) return 'Ineligible';
     if (score >= 80) return 'Excellent';
     if (score >= 60) return 'Needs Attention';
     return 'Action Required';
-  }, [score]);
+  }, [score, cacUnverified, nhiaHardBlock, hasExpiredCert]);
 
   const goalText = useMemo(() => {
     if (isProcurementReady) return null;
@@ -50,26 +63,30 @@ export const ComplianceScore = memo(function ComplianceScore({
         {/* Score Circle */}
         <div className="relative">
           <svg width="120" height="120" viewBox="0 0 120 120">
-            {/* Background circle */}
             <circle cx="60" cy="60" r="52" fill="none" stroke="var(--border)" strokeWidth="10" />
-            {/* Progress circle */}
-            <circle
-              cx="60"
-              cy="60"
-              r="52"
-              fill="none"
-              stroke={scoreColor}
-              strokeWidth="10"
-              strokeLinecap="round"
-              strokeDasharray={`${(score / 100) * 327} 327`}
-              transform="rotate(-90 60 60)"
-            />
+            {!cacUnverified && (
+              <circle
+                cx="60"
+                cy="60"
+                r="52"
+                fill="none"
+                stroke={scoreColor}
+                strokeWidth="10"
+                strokeLinecap="round"
+                strokeDasharray={`${(score / 100) * 327} 327`}
+                transform="rotate(-90 60 60)"
+              />
+            )}
           </svg>
           <div className="absolute inset-0 flex flex-col items-center justify-center">
-            <span style={{ fontSize: '36px', fontWeight: '600', lineHeight: '1' }}>{score}</span>
-            <span className="text-muted-foreground" style={{ fontSize: '13px' }}>
-              / 100
-            </span>
+            {cacUnverified ? (
+              <span style={{ fontSize: '22px', fontWeight: '600', color: '#9CA3AF', textAlign: 'center', lineHeight: '1.2' }}>N/A</span>
+            ) : (
+              <>
+                <span style={{ fontSize: '36px', fontWeight: '600', lineHeight: '1' }}>{score}</span>
+                <span className="text-muted-foreground" style={{ fontSize: '13px' }}>/ 100</span>
+              </>
+            )}
           </div>
         </div>
 
@@ -94,6 +111,26 @@ export const ComplianceScore = memo(function ComplianceScore({
               verification quality.
             </p>
           </div>
+
+          {/* Hard block alerts */}
+          {cacUnverified && (
+            <div className="flex items-start gap-2 px-3 py-2 rounded-md" style={{ backgroundColor: 'rgba(156,163,175,0.12)', border: '1px solid #9CA3AF' }}>
+              <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" style={{ color: '#9CA3AF' }} />
+              <div>
+                <p style={{ fontSize: '13px', fontWeight: 500, color: '#6B7280' }}>Score Not Available</p>
+                <p className="text-muted-foreground" style={{ fontSize: '12px' }}>Complete CAC verification to unlock your compliance score</p>
+              </div>
+            </div>
+          )}
+          {nhiaHardBlock && !cacUnverified && (
+            <div className="flex items-start gap-2 px-3 py-2 rounded-md" style={{ backgroundColor: 'rgba(255,48,0,0.08)', border: '1px solid rgba(255,48,0,0.3)' }}>
+              <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" style={{ color: '#FF3000' }} />
+              <div>
+                <p style={{ fontSize: '13px', fontWeight: 500, color: '#FF3000' }}>Score capped at 49 — NHIA required</p>
+                <p className="text-muted-foreground" style={{ fontSize: '12px' }}>NHIA enrollment is mandatory for federal procurement eligibility</p>
+              </div>
+            </div>
+          )}
 
           {/* Procurement Ready Badge */}
           {isProcurementReady ? (

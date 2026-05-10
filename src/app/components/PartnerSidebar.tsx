@@ -138,6 +138,29 @@ interface GroupProps {
 }
 
 function Group({ label, items, activeSection, onSelect, className = '' }: GroupProps) {
+  const handleKeyDown = (e: React.KeyboardEvent, currentIndex: number) => {
+    switch (e.key) {
+      case 'ArrowDown':
+        e.preventDefault();
+        const nextIndex = (currentIndex + 1) % items.length;
+        (e.target as HTMLElement).parentElement?.children[nextIndex]?.querySelector('button')?.focus();
+        break;
+      case 'ArrowUp':
+        e.preventDefault();
+        const prevIndex = (currentIndex - 1 + items.length) % items.length;
+        (e.target as HTMLElement).parentElement?.children[prevIndex]?.querySelector('button')?.focus();
+        break;
+      case 'Home':
+        e.preventDefault();
+        (e.target as HTMLElement).parentElement?.children[0]?.querySelector('button')?.focus();
+        break;
+      case 'End':
+        e.preventDefault();
+        (e.target as HTMLElement).parentElement?.children[items.length - 1]?.querySelector('button')?.focus();
+        break;
+    }
+  };
+
   return (
     <div className={className}>
       <div className="px-2 py-1.5 mb-1">
@@ -148,16 +171,17 @@ function Group({ label, items, activeSection, onSelect, className = '' }: GroupP
           {label}
         </p>
       </div>
-      <div className="space-y-0.5">
-        {items.map((item) => {
+      <div className="space-y-0.5" role="group" aria-label={`${label} navigation`}>
+        {items.map((item, index) => {
           const Icon = item.icon;
           const isActive = activeSection === item.id;
           return (
             <button
               key={item.id}
               onClick={() => onSelect(item.id)}
+              onKeyDown={(e) => handleKeyDown(e, index)}
               aria-current={isActive ? 'page' : undefined}
-              className={`w-full flex items-center gap-2 px-2 py-2 sm:py-1.5 rounded-md transition-all min-h-[40px] ${
+              className={`w-full flex items-center gap-2 px-2 py-2 sm:py-1.5 rounded-md transition-all min-h-[40px] outline-none focus-visible:ring-2 focus-visible:ring-[#FF3000] focus-visible:ring-offset-2 ${
                 isActive
                   ? 'bg-[#ffe6e6] text-[#FF3000] dark:bg-[#3a1010] dark:text-[#ff6b6b]'
                   : 'hover:bg-[#f5f5f5] dark:hover:bg-[#2a2a2a] text-foreground/80'

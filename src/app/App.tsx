@@ -8,7 +8,34 @@ import { ToastProvider } from './components/ToastProvider';
 import { AppShell } from './components/AppShell';
 import { EmptyState } from './components/ui/EmptyState';
 import { OfflineBanner } from './components/OfflineBanner';
+import { AchievementNotification } from './components/AchievementNotification';
+import { GamificationProvider, useGamification } from './contexts/GamificationContext';
 import { useOnlineStatus } from './hooks/useOnlineStatus';
+
+// Inner component that uses the gamification context
+function AppContent() {
+  const { newlyUnlocked, clearNewlyUnlocked } = useGamification();
+  const [unlockedAchievements, setUnlockedAchievements] = useState<any[]>([]);
+
+  // Update unlocked achievements when context changes
+  useEffect(() => {
+    if (newlyUnlocked.length > 0) {
+      setUnlockedAchievements(newlyUnlocked);
+      clearNewlyUnlocked();
+    }
+  }, [newlyUnlocked, clearNewlyUnlocked]);
+
+  return (
+    <>
+      {unlockedAchievements.length > 0 && (
+        <AchievementNotification
+          achievements={unlockedAchievements}
+          onClose={() => setUnlockedAchievements([])}
+        />
+      )}
+    </>
+  );
+}
 import {
   PageHeaderSkeleton,
   StatCardGridSkeleton,
@@ -105,6 +132,14 @@ const SettingsView = lazy(() =>
 const OnboardingFlow = lazy(() =>
   import('./components/OnboardingFlow').then((m) => ({
     default: m.OnboardingFlow,
+  }))
+);
+const BillingView = lazy(() =>
+  import('./components/BillingView').then((m) => ({ default: m.BillingView }))
+);
+const PartnerBillingView = lazy(() =>
+  import('./components/PartnerBillingView').then((m) => ({
+    default: m.PartnerBillingView,
   }))
 );
 
@@ -316,6 +351,12 @@ export default function App() {
               <AlertsView />
             </Suspense>
           );
+        case 'billing':
+          return (
+            <Suspense fallback={<GenericSkeleton />}>
+              <BillingView />
+            </Suspense>
+          );
         case 'settings':
           return (
             <Suspense fallback={<GenericSkeleton />}>
@@ -396,6 +437,12 @@ export default function App() {
             <PartnerAnalyticsView />
           </Suspense>
         );
+      case 'billing':
+        return (
+          <Suspense fallback={<GenericSkeleton />}>
+            <PartnerBillingView />
+          </Suspense>
+        );
       case 'settings':
         return (
           <Suspense fallback={<GenericSkeleton />}>
@@ -409,7 +456,8 @@ export default function App() {
 
   return (
     <ErrorBoundary>
-      <ToastProvider>
+      <GamificationProvider>
+        <ToastProvider>
         {/* Skip to main content link for keyboard users */}
         <a
           href="#main-content"
@@ -443,7 +491,10 @@ export default function App() {
             <OnboardingFlow onComplete={handleOnboardingComplete} />
           </Suspense>
         )}
+
+        <AppContent />
       </ToastProvider>
+      </GamificationProvider>
     </ErrorBoundary>
   );
 }

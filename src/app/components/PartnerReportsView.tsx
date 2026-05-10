@@ -23,6 +23,7 @@ export function PartnerReportsView() {
   const [searchQuery, setSearchQuery] = useState('');
   const [filterType, setFilterType] = useState<'all' | PartnerReport['reportType']>('all');
   const [isGenerateModalOpen, setIsGenerateModalOpen] = useState(false);
+  const [deleteReport, setDeleteReport] = useState<PartnerReport | null>(null);
 
   // Mock reports data - in real implementation, this would come from the backend
   const mockReports: PartnerReport[] = [
@@ -93,7 +94,14 @@ export function PartnerReportsView() {
   };
 
   const handleDeleteReport = (report: PartnerReport) => {
-    showToast('success', 'Report Deleted', `${report.title} has been deleted`);
+    setDeleteReport(report);
+  };
+
+  const confirmDeleteReport = () => {
+    if (deleteReport) {
+      showToast('success', 'Report Deleted', `${deleteReport.title} has been deleted`);
+      setDeleteReport(null);
+    }
   };
 
   const handleGenerateReport = () => {
@@ -132,6 +140,50 @@ export function PartnerReportsView() {
             void reportConfig;
           }}
         />
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {deleteReport && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
+          <div className="bg-card rounded-lg shadow-xl max-w-md w-full p-6">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-12 h-12 rounded-full bg-red-50 flex items-center justify-center">
+                <Trash2 className="w-6 h-6 text-red-600" />
+              </div>
+              <div>
+                <h2 className="text-xl font-bold">Delete Report</h2>
+                <p className="text-muted-foreground text-sm">This action cannot be undone</p>
+              </div>
+            </div>
+
+            <div className="bg-muted p-4 rounded-md mb-6">
+              <p className="font-medium">{deleteReport.title}</p>
+              <p className="text-sm text-muted-foreground mt-1">
+                {deleteReport.clientName} ({deleteReport.rcNumber})
+              </p>
+            </div>
+
+            <p className="text-sm text-muted-foreground mb-6">
+              Are you sure you want to delete this report? This will permanently remove the report from your account.
+            </p>
+
+            <div className="flex gap-3">
+              <button
+                onClick={() => setDeleteReport(null)}
+                className="flex-1 px-4 py-2 min-h-[44px] rounded-md border border-border hover:bg-muted transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={confirmDeleteReport}
+                className="flex-1 px-4 py-2 min-h-[44px] rounded-md text-white hover:opacity-90 transition-opacity"
+                style={{ backgroundColor: '#FF3000' }}
+              >
+                Delete Report
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

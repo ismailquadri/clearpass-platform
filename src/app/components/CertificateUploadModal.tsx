@@ -63,6 +63,36 @@ export function CertificateUploadModal({
     };
   }, [isOpen, isUploading, onClose]);
 
+  // Auto-save form data to localStorage
+  useEffect(() => {
+    if (!isOpen) return;
+    const storageKey = `clearpass_cert_upload_${certificateType.shortName}`;
+    const savedData = localStorage.getItem(storageKey);
+    if (savedData) {
+      try {
+        const data = JSON.parse(savedData);
+        setCertificateNumber(data.certificateNumber || '');
+        setIssuedDate(data.issuedDate || '');
+        setExpiryDate(data.expiryDate || '');
+        setIssuingAuthority(data.issuingAuthority || '');
+      } catch (_e) {
+        // Ignore parse errors
+      }
+    }
+  }, [isOpen, certificateType.shortName]);
+
+  // Save form data on change
+  useEffect(() => {
+    if (!isOpen) return;
+    const storageKey = `clearpass_cert_upload_${certificateType.shortName}`;
+    localStorage.setItem(storageKey, JSON.stringify({
+      certificateNumber,
+      issuedDate,
+      expiryDate,
+      issuingAuthority,
+    }));
+  }, [isOpen, certificateType.shortName, certificateNumber, issuedDate, expiryDate, issuingAuthority]);
+
   const modalRef = useFocusTrap(isOpen);
 
   if (!isOpen) return null;
@@ -147,6 +177,8 @@ export function CertificateUploadModal({
       onUploadSuccess();
       onClose();
       resetForm();
+      // Clear auto-saved data after successful upload
+      localStorage.removeItem(`clearpass_cert_upload_${certificateType.shortName}`);
     } catch (error) {
       showToast(
         'error',
@@ -233,6 +265,8 @@ export function CertificateUploadModal({
       onUploadSuccess();
       onClose();
       resetForm();
+      // Clear auto-saved data after successful upload
+      localStorage.removeItem(`clearpass_cert_upload_${certificateType.shortName}`);
     } catch (error) {
       showToast(
         'error',
