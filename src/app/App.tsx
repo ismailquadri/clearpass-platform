@@ -45,6 +45,9 @@ const MDAPrequalificationView = lazy(() =>
 const MDAReportsView = lazy(() =>
   import('./components/MDAReportsView').then((m) => ({ default: m.MDAReportsView }))
 );
+const MDAAuditTrailView = lazy(() =>
+  import('./components/MDAAuditTrailView').then((m) => ({ default: m.MDAAuditTrailView }))
+);
 const PartnerClientsView = lazy(() =>
   import('./components/PartnerClientsView').then((m) => ({
     default: m.PartnerClientsView,
@@ -342,6 +345,12 @@ export default function App() {
           return (
             <Suspense fallback={<ActivitySkeleton />}>
               <MDAReportsView />
+            </Suspense>
+          );
+        case 'audit':
+          return (
+            <Suspense fallback={<ActivitySkeleton />}>
+              <MDAAuditTrailView />
             </Suspense>
           );
         case 'settings':
