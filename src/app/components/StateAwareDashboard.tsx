@@ -478,16 +478,6 @@ export function StateAwareDashboard({ state, onNavigate }: StateAwareDashboardPr
         {state.label === 'Attention Required' && (
           <div className="mb-4 space-y-2">
             <AlertCard
-              type="warning"
-              title="Certificate Expiring Soon"
-              message="Your NSITF certificate expires in 6 days. Renew now to maintain your Procurement Ready status."
-              actionLabel="Renew Now"
-              onAction={() => {
-                showToast('info', 'Opening Renewal', 'Redirecting to NSITF renewal portal...');
-                onNavigate('certificates');
-              }}
-            />
-            <AlertCard
               type="info"
               title="Verification Pending"
               message="Your ITF certificate is pending admin review. Expected completion within 1-2 business days."
