@@ -30,11 +30,7 @@ const TOOLTIP_STYLE = {
 
 const AXIS_STYLE = { fontSize: '12px' } as const;
 
-export function PartnerAnalyticsCharts({
-  analytics,
-}: {
-  analytics: PartnerAnalytics;
-}) {
+export function PartnerAnalyticsCharts({ analytics }: { analytics: PartnerAnalytics }) {
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -42,15 +38,8 @@ export function PartnerAnalyticsCharts({
           <ResponsiveContainer width="100%" height={280}>
             <LineChart data={analytics.revenueTrend}>
               <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
-              <XAxis
-                dataKey="month"
-                stroke="var(--muted-foreground)"
-                style={AXIS_STYLE}
-              />
-              <YAxis
-                stroke="var(--muted-foreground)"
-                style={AXIS_STYLE}
-              />
+              <XAxis dataKey="month" stroke="var(--muted-foreground)" style={AXIS_STYLE} />
+              <YAxis stroke="var(--muted-foreground)" style={AXIS_STYLE} />
               <Tooltip contentStyle={TOOLTIP_STYLE} />
               <Legend />
               <Line
@@ -88,10 +77,7 @@ export function PartnerAnalyticsCharts({
           <div className="flex justify-center gap-4 sm:gap-6 mt-3 flex-wrap">
             {analytics.complianceDistribution.map((item) => (
               <div key={item.name} className="flex items-center gap-2">
-                <div
-                  className="w-3 h-3 rounded-full"
-                  style={{ backgroundColor: item.color }}
-                />
+                <div className="w-3 h-3 rounded-full" style={{ backgroundColor: item.color }} />
                 <span className="caption">{item.name}</span>
               </div>
             ))}
@@ -104,15 +90,8 @@ export function PartnerAnalyticsCharts({
           <ResponsiveContainer width="100%" height={280}>
             <BarChart data={analytics.expiryTimeline}>
               <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
-              <XAxis
-                dataKey="period"
-                stroke="var(--muted-foreground)"
-                style={AXIS_STYLE}
-              />
-              <YAxis
-                stroke="var(--muted-foreground)"
-                style={AXIS_STYLE}
-              />
+              <XAxis dataKey="period" stroke="var(--muted-foreground)" style={AXIS_STYLE} />
+              <YAxis stroke="var(--muted-foreground)" style={AXIS_STYLE} />
               <Tooltip contentStyle={TOOLTIP_STYLE} />
               <Bar dataKey="count" fill="#FF3000" radius={[8, 8, 0, 0]} />
             </BarChart>
@@ -123,11 +102,7 @@ export function PartnerAnalyticsCharts({
           <ResponsiveContainer width="100%" height={280}>
             <BarChart data={analytics.certificateTypes} layout="vertical">
               <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
-              <XAxis
-                type="number"
-                stroke="var(--muted-foreground)"
-                style={AXIS_STYLE}
-              />
+              <XAxis type="number" stroke="var(--muted-foreground)" style={AXIS_STYLE} />
               <YAxis
                 type="category"
                 dataKey="name"
@@ -135,11 +110,7 @@ export function PartnerAnalyticsCharts({
                 style={AXIS_STYLE}
               />
               <Tooltip contentStyle={TOOLTIP_STYLE} />
-              <Bar
-                dataKey="renewals"
-                fill="#FF3000"
-                radius={[0, 8, 8, 0]}
-              />
+              <Bar dataKey="renewals" fill="#FF3000" radius={[0, 8, 8, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </ChartCard>
@@ -148,13 +119,7 @@ export function PartnerAnalyticsCharts({
   );
 }
 
-function ChartCard({
-  title,
-  children,
-}: {
-  title: string;
-  children: React.ReactNode;
-}) {
+function ChartCard({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div className="bg-card border border-border rounded-lg p-4 sm:p-6">
       <h3 className="mb-4" style={{ fontSize: '18px', fontWeight: 500 }}>

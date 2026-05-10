@@ -1,11 +1,5 @@
 import { lazy, Suspense } from 'react';
-import {
-  TrendingUp,
-  TrendingDown,
-  Users,
-  DollarSign,
-  Calendar,
-} from 'lucide-react';
+import { TrendingUp, TrendingDown, Users, DollarSign, Calendar } from 'lucide-react';
 import { usePartnerAnalytics } from '../api';
 import type { PartnerAnalytics } from '../api';
 import { ApiState } from './ui';
@@ -135,10 +129,7 @@ function KpiCard({
         <span className="text-muted-foreground" style={{ fontSize: '13px' }}>
           {label}
         </span>
-        <Icon
-          className="w-5 h-5 text-muted-foreground"
-          aria-hidden="true"
-        />
+        <Icon className="w-5 h-5 text-muted-foreground" aria-hidden="true" />
       </div>
       <p style={{ fontSize: '26px', fontWeight: 600 }}>{value}</p>
       <div className="flex items-center gap-1 mt-2">
@@ -176,15 +167,7 @@ function Insights() {
   );
 }
 
-function InsightCard({
-  color,
-  label,
-  message,
-}: {
-  color: string;
-  label: string;
-  message: string;
-}) {
+function InsightCard({ color, label, message }: { color: string; label: string; message: string }) {
   return (
     <div
       className="px-4 py-3 rounded-lg border border-border"
@@ -195,4 +178,3 @@ function InsightCard({
     </div>
   );
 }
-

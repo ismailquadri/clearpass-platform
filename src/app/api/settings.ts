@@ -29,9 +29,7 @@ export function useUpdateProfile() {
   return useMutation<Partial<UserProfile>, UserProfile>(updateProfile);
 }
 
-export function getNotificationPreferences(
-  signal?: AbortSignal
-): Promise<NotificationPreferences> {
+export function getNotificationPreferences(signal?: AbortSignal): Promise<NotificationPreferences> {
   if (env.useMocks) return mockResponse(mockNotificationPreferences, signal);
   return request<NotificationPreferences>(ENDPOINTS.settings.notifications, {
     signal,
@@ -39,9 +37,7 @@ export function getNotificationPreferences(
 }
 
 export function useNotificationPreferences() {
-  return useApi<NotificationPreferences>((signal) =>
-    getNotificationPreferences(signal)
-  );
+  return useApi<NotificationPreferences>((signal) => getNotificationPreferences(signal));
 }
 
 export async function updateNotificationPreferences(

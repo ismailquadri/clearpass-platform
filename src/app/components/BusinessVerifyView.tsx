@@ -234,10 +234,7 @@ export function BusinessVerifyView() {
               style={{ backgroundColor: 'rgba(255, 48, 0, 0.1)' }}
             >
               <div className="flex items-start gap-2">
-                <FileText
-                  className="w-4 h-4 flex-shrink-0 mt-0.5"
-                  style={{ color: '#FF3000' }}
-                />
+                <FileText className="w-4 h-4 flex-shrink-0 mt-0.5" style={{ color: '#FF3000' }} />
                 <div>
                   <p style={{ fontSize: '14px', fontWeight: '500', color: '#FF3000' }}>
                     Verification Audit Trail

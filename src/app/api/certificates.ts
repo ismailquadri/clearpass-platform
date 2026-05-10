@@ -24,10 +24,7 @@ export function useCertificates() {
 
 // ─── Detail ─────────────────────────────────────────────────────────────────
 
-export function getCertificate(
-  id: string,
-  signal?: AbortSignal
-): Promise<Certificate> {
+export function getCertificate(id: string, signal?: AbortSignal): Promise<Certificate> {
   if (env.useMocks) {
     const found = mockCertificates.find((c) => c.id === id);
     if (!found) {
@@ -50,9 +47,7 @@ export function useCertificate(id: string | undefined) {
 
 // ─── Upload ─────────────────────────────────────────────────────────────────
 
-export async function uploadCertificate(
-  input: CertificateUploadInput
-): Promise<Certificate> {
+export async function uploadCertificate(input: CertificateUploadInput): Promise<Certificate> {
   if (env.useMocks) {
     const fake: Certificate = {
       id: `cert-${crypto.randomUUID()}`,
@@ -62,6 +57,7 @@ export async function uploadCertificate(
       expiryDate: input.expiryDate,
       issuedDate: input.issuedDate,
       certificateNumber: input.certificateNumber,
+      issuingAuthority: input.issuingAuthority,
       isApiVerified: false,
     };
     return mockResponse(fake);
@@ -71,6 +67,7 @@ export async function uploadCertificate(
   fd.append('certificateNumber', input.certificateNumber);
   fd.append('issuedDate', input.issuedDate);
   fd.append('expiryDate', input.expiryDate);
+  fd.append('issuingAuthority', input.issuingAuthority);
   fd.append('file', input.file);
   return request<Certificate>(ENDPOINTS.certificates.upload, {
     method: 'POST',

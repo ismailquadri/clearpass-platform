@@ -1,21 +1,7 @@
-import {
-  Bell,
-  AlertTriangle,
-  CheckCircle2,
-  Clock,
-  XCircle,
-  X,
-  RefreshCw,
-  Eye,
-} from 'lucide-react';
+import { Bell, AlertTriangle, CheckCircle2, Clock, XCircle, X, RefreshCw, Eye } from 'lucide-react';
 import { useState } from 'react';
 import { useToast } from './ToastProvider';
-import {
-  useAlerts,
-  useDismissAlert,
-  useMarkAlertRead,
-  useMarkAllAlertsRead,
-} from '../api';
+import { useAlerts, useDismissAlert, useMarkAlertRead, useMarkAllAlertsRead } from '../api';
 import type { Alert, AlertType } from '../api';
 import { ApiState, EmptyState } from './ui';
 import { TableSkeleton } from './ui/Skeleton';
@@ -83,11 +69,7 @@ export function AlertsView() {
               setOverrides((p) => ({ ...p, allRead: true }));
               try {
                 await markAllRead.mutate();
-                showToast(
-                  'success',
-                  'All Alerts Read',
-                  'All alerts have been marked as read'
-                );
+                showToast('success', 'All Alerts Read', 'All alerts have been marked as read');
               } catch {
                 showToast('error', 'Could not mark all read', 'Please try again.');
               }
@@ -130,17 +112,8 @@ export function AlertsView() {
                 </header>
 
                 <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6">
-                  <KpiCard
-                    label="Total Alerts"
-                    value={alerts.length}
-                    icon={Bell}
-                  />
-                  <KpiCard
-                    label="Unread"
-                    value={unreadCount}
-                    icon={Bell}
-                    color="#FF3000"
-                  />
+                  <KpiCard label="Total Alerts" value={alerts.length} icon={Bell} />
+                  <KpiCard label="Unread" value={unreadCount} icon={Bell} color="#FF3000" />
                   <KpiCard
                     label="Critical"
                     value={criticalCount}
@@ -162,26 +135,22 @@ export function AlertsView() {
                       role="group"
                       aria-label="Alert type filters"
                     >
-                      {(['all', 'critical', 'warning', 'info', 'success'] as const).map(
-                        (type) => (
-                          <button
-                            key={type}
-                            onClick={() => setFilterType(type)}
-                            aria-pressed={filterType === type}
-                            className={`px-3 sm:px-4 py-2 min-h-[40px] rounded-md transition-colors whitespace-nowrap ${
-                              filterType === type
-                                ? 'bg-card shadow-sm'
-                                : 'hover:bg-card/50'
-                            }`}
-                            style={{
-                              fontSize: '14px',
-                              fontWeight: filterType === type ? 500 : 400,
-                            }}
-                          >
-                            {type.charAt(0).toUpperCase() + type.slice(1)}
-                          </button>
-                        )
-                      )}
+                      {(['all', 'critical', 'warning', 'info', 'success'] as const).map((type) => (
+                        <button
+                          key={type}
+                          onClick={() => setFilterType(type)}
+                          aria-pressed={filterType === type}
+                          className={`px-3 sm:px-4 py-2 min-h-[40px] rounded-md transition-colors whitespace-nowrap ${
+                            filterType === type ? 'bg-card shadow-sm' : 'hover:bg-card/50'
+                          }`}
+                          style={{
+                            fontSize: '14px',
+                            fontWeight: filterType === type ? 500 : 400,
+                          }}
+                        >
+                          {type.charAt(0).toUpperCase() + type.slice(1)}
+                        </button>
+                      ))}
                     </div>
                     <label
                       htmlFor="unread-only-filter"
@@ -227,11 +196,7 @@ export function AlertsView() {
                           )
                         }
                         onView={() =>
-                          showToast(
-                            'success',
-                            'View Certificate',
-                            'Opening certificate details...'
-                          )
+                          showToast('success', 'View Certificate', 'Opening certificate details...')
                         }
                       />
                     ))}
@@ -255,10 +220,7 @@ function AlertsLoadingState() {
       </div>
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         {Array.from({ length: 4 }).map((_, i) => (
-          <div
-            key={i}
-            className="bg-card border border-border rounded-lg p-5 animate-pulse"
-          >
+          <div key={i} className="bg-card border border-border rounded-lg p-5 animate-pulse">
             <div className="h-3 w-24 bg-muted rounded mb-3" />
             <div className="h-8 w-12 bg-muted rounded" />
           </div>
@@ -275,9 +237,7 @@ function applyOverrides(
 ): Alert[] {
   return alerts
     .filter((a) => !overrides.dismissed.has(a.id))
-    .map((a) =>
-      overrides.allRead || overrides.read.has(a.id) ? { ...a, isRead: true } : a
-    );
+    .map((a) => (overrides.allRead || overrides.read.has(a.id) ? { ...a, isRead: true } : a));
 }
 
 function KpiCard({
@@ -324,13 +284,7 @@ interface AlertRowProps {
   onView: () => void;
 }
 
-function AlertRow({
-  alert,
-  onMarkRead,
-  onDismiss,
-  onTakeAction,
-  onView,
-}: AlertRowProps) {
+function AlertRow({ alert, onMarkRead, onDismiss, onTakeAction, onView }: AlertRowProps) {
   const config = getAlertConfig(alert.type);
   const Icon = config.icon;
 
@@ -341,11 +295,7 @@ function AlertRow({
           className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0"
           style={{ backgroundColor: config.bgColor }}
         >
-          <Icon
-            className="w-5 h-5"
-            style={{ color: config.color }}
-            aria-hidden="true"
-          />
+          <Icon className="w-5 h-5" style={{ color: config.color }} aria-hidden="true" />
         </div>
         <div className="flex-1 min-w-0">
           <div className="flex items-start justify-between gap-3 mb-2">
@@ -373,16 +323,11 @@ function AlertRow({
                   </span>
                 )}
               </div>
-              <p
-                className="text-muted-foreground mb-2"
-                style={{ fontSize: '14px' }}
-              >
+              <p className="text-muted-foreground mb-2" style={{ fontSize: '14px' }}>
                 {alert.message}
               </p>
               <div className="flex items-center gap-2 sm:gap-4 flex-wrap">
-                <span className="caption text-muted-foreground">
-                  {alert.timestamp}
-                </span>
+                <span className="caption text-muted-foreground">{alert.timestamp}</span>
                 {alert.certificateName && (
                   <>
                     <span className="caption">•</span>

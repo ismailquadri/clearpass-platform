@@ -1,4 +1,12 @@
-import { CheckCircle2, Building2, FileText, Users, ArrowRight, Check, AlertTriangle } from 'lucide-react';
+import {
+  CheckCircle2,
+  Building2,
+  FileText,
+  Users,
+  ArrowRight,
+  Check,
+  AlertTriangle,
+} from 'lucide-react';
 import { useState } from 'react';
 
 interface OnboardingFlowProps {
@@ -66,10 +74,10 @@ export function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
   };
 
   const handleInputChange = (field: string, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+    setFormData((prev) => ({ ...prev, [field]: value }));
     // Clear error for this field when user starts typing
     if (errors[field]) {
-      setErrors(prev => ({ ...prev, [field]: '' }));
+      setErrors((prev) => ({ ...prev, [field]: '' }));
     }
   };
 
@@ -162,7 +170,11 @@ export function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
             >
               <Icon className="w-10 h-10" style={{ color: '#FF3000' }} />
             </div>
-            <h2 id="onboarding-title" className="mb-3" style={{ fontSize: '28px', fontWeight: '600' }}>
+            <h2
+              id="onboarding-title"
+              className="mb-3"
+              style={{ fontSize: '28px', fontWeight: '600' }}
+            >
               {currentStepData.title}
             </h2>
             <p className="text-muted-foreground" style={{ fontSize: '16px' }}>
@@ -211,7 +223,10 @@ export function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
                   className="block mb-2"
                   style={{ fontSize: '14px', fontWeight: '500' }}
                 >
-                  RC Number <span className="text-red-500" aria-hidden="true">*</span>
+                  RC Number{' '}
+                  <span className="text-red-500" aria-hidden="true">
+                    *
+                  </span>
                 </label>
                 <input
                   id="onboarding-rc-number"
@@ -244,7 +259,10 @@ export function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
                   className="block mb-2"
                   style={{ fontSize: '14px', fontWeight: '500' }}
                 >
-                  Company Name <span className="text-red-500" aria-hidden="true">*</span>
+                  Company Name{' '}
+                  <span className="text-red-500" aria-hidden="true">
+                    *
+                  </span>
                 </label>
                 <input
                   id="onboarding-company-name"
@@ -278,7 +296,10 @@ export function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
                     className="block mb-2"
                     style={{ fontSize: '14px', fontWeight: '500' }}
                   >
-                    Industry Sector <span className="text-red-500" aria-hidden="true">*</span>
+                    Industry Sector{' '}
+                    <span className="text-red-500" aria-hidden="true">
+                      *
+                    </span>
                   </label>
                   <select
                     id="onboarding-industry-sector"
@@ -301,7 +322,7 @@ export function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
                       id="onboarding-sector-error"
                       className="text-red-500 text-sm mt-1 flex items-center gap-2"
                       role="alert"
-                    aria-live="assertive"
+                      aria-live="assertive"
                     >
                       <AlertTriangle className="w-4 h-4" />
                       {errors.industrySector}
@@ -314,7 +335,10 @@ export function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
                     className="block mb-2"
                     style={{ fontSize: '14px', fontWeight: '500' }}
                   >
-                    Number of Employees <span className="text-red-500" aria-hidden="true">*</span>
+                    Number of Employees{' '}
+                    <span className="text-red-500" aria-hidden="true">
+                      *
+                    </span>
                   </label>
                   <select
                     id="onboarding-employee-count"
@@ -322,7 +346,9 @@ export function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
                     onChange={(e) => handleInputChange('employeeCount', e.target.value)}
                     required
                     aria-invalid={!!errors.employeeCount}
-                    aria-describedby={errors.employeeCount ? 'onboarding-employee-error' : undefined}
+                    aria-describedby={
+                      errors.employeeCount ? 'onboarding-employee-error' : undefined
+                    }
                     className={`w-full px-4 py-3 bg-input-background border rounded-md ${
                       errors.employeeCount ? 'border-red-500' : 'border-border'
                     }`}
@@ -337,7 +363,7 @@ export function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
                       id="onboarding-employee-error"
                       className="text-red-500 text-sm mt-1 flex items-center gap-2"
                       role="alert"
-                    aria-live="assertive"
+                      aria-live="assertive"
                     >
                       <AlertTriangle className="w-4 h-4" />
                       {errors.employeeCount}

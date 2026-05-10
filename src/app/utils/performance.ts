@@ -230,8 +230,10 @@ export function setupMemoryMonitoring(): void {
 
     if (import.meta.env.DEV) {
       console.log(
-        `[Memory] ${((memory.usedJSHeapSize / 1024 / 1024).toFixed(2))}MB / ${(
-          memory.jsHeapSizeLimit / 1024 / 1024
+        `[Memory] ${(memory.usedJSHeapSize / 1024 / 1024).toFixed(2)}MB / ${(
+          memory.jsHeapSizeLimit /
+          1024 /
+          1024
         ).toFixed(2)}MB (${((memory.usedJSHeapSize / memory.jsHeapSizeLimit) * 100).toFixed(2)}%)`
       );
     }

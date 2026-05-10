@@ -21,12 +21,7 @@ interface ApiStateProps<T> {
  *     {(certificates) => <CertificatesGrid items={certificates} />}
  *   </ApiState>
  */
-export function ApiState<T>({
-  query,
-  loading,
-  children,
-  errorFallback,
-}: ApiStateProps<T>) {
+export function ApiState<T>({ query, loading, children, errorFallback }: ApiStateProps<T>) {
   if (query.isLoading && query.data === undefined) {
     return <>{loading}</>;
   }
@@ -38,10 +33,7 @@ export function ApiState<T>({
       <EmptyState
         icon={AlertTriangle}
         title="Couldn't load this data"
-        description={
-          query.error?.message ??
-          'Something went wrong while reaching the server.'
-        }
+        description={query.error?.message ?? 'Something went wrong while reaching the server.'}
         action={{ label: 'Try again', onClick: query.refetch }}
       />
     );

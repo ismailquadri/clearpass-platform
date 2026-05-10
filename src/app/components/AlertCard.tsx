@@ -64,7 +64,11 @@ export const AlertCard = memo(function AlertCard({
         </button>
       )}
       {onDismiss && (
-        <button onClick={onDismiss} aria-label="Dismiss alert" className="p-0.5 hover:bg-black/5 rounded flex-shrink-0">
+        <button
+          onClick={onDismiss}
+          aria-label="Dismiss alert"
+          className="p-0.5 hover:bg-black/5 rounded flex-shrink-0"
+        >
           <X className="w-3.5 h-3.5" style={{ color: config.color }} />
         </button>
       )}

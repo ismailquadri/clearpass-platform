@@ -247,10 +247,7 @@ export function ReportsView() {
                         style={{ backgroundColor: 'rgba(255, 48, 0, 0.1)' }}
                       >
                         <div className="flex items-center gap-2">
-                          <AlertTriangle
-                            className="w-4 h-4"
-                            style={{ color: '#FF3000' }}
-                          />
+                          <AlertTriangle className="w-4 h-4" style={{ color: '#FF3000' }} />
                           <p className="caption" style={{ color: '#FF3000' }}>
                             Report locked: Score must be ≥80 with all certificates active to
                             generate Procurement Ready report

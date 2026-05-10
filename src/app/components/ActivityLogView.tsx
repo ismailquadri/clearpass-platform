@@ -77,11 +77,7 @@ export function ActivityLogView() {
             </div>
             <button
               onClick={() =>
-                showToast(
-                  'success',
-                  'Export Log',
-                  'Downloading activity log as CSV...'
-                )
+                showToast('success', 'Export Log', 'Downloading activity log as CSV...')
               }
               className="px-4 py-2 min-h-[44px] rounded-md border border-border hover:bg-muted transition-colors flex items-center justify-center gap-2 shrink-0"
             >
@@ -94,12 +90,8 @@ export function ActivityLogView() {
         <ApiState query={activityQuery} loading={<TableSkeleton rows={8} />}>
           {(activities) => (
             <ActivityTimeline
-              activities={activities.filter(
-                (a) => typeFilter === 'all' || a.type === typeFilter
-              )}
-              onLoadMore={() =>
-                showToast('success', 'Load More', 'Loading more activities...')
-              }
+              activities={activities.filter((a) => typeFilter === 'all' || a.type === typeFilter)}
+              onLoadMore={() => showToast('success', 'Load More', 'Loading more activities...')}
             />
           )}
         </ApiState>
@@ -167,17 +159,12 @@ function ActivityTimeline({
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-1 mb-1">
-                          <h4 style={{ fontSize: '16px', fontWeight: 500 }}>
-                            {activity.title}
-                          </h4>
+                          <h4 style={{ fontSize: '16px', fontWeight: 500 }}>{activity.title}</h4>
                           <span className="caption text-muted-foreground whitespace-nowrap sm:ml-4">
                             {activity.timestamp.split(',')[1]?.trim()}
                           </span>
                         </div>
-                        <p
-                          className="text-muted-foreground"
-                          style={{ fontSize: '14px' }}
-                        >
+                        <p className="text-muted-foreground" style={{ fontSize: '14px' }}>
                           {activity.description}
                         </p>
                       </div>

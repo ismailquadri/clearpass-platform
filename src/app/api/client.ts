@@ -17,15 +17,11 @@ interface Env {
 }
 
 function readEnv(): Env {
-  const apiBaseUrl =
-    (import.meta.env.VITE_API_BASE_URL as string | undefined) ?? '/api';
+  const apiBaseUrl = (import.meta.env.VITE_API_BASE_URL as string | undefined) ?? '/api';
   const useMocksRaw = import.meta.env.VITE_USE_MOCKS as string | undefined;
   // Default to mocks in dev, real API in production unless explicitly opted in/out.
-  const useMocks =
-    useMocksRaw === undefined ? import.meta.env.DEV : useMocksRaw === 'true';
-  const mockLatencyMs = Number(
-    (import.meta.env.VITE_MOCK_LATENCY_MS as string | undefined) ?? 350
-  );
+  const useMocks = useMocksRaw === undefined ? import.meta.env.DEV : useMocksRaw === 'true';
+  const mockLatencyMs = Number((import.meta.env.VITE_MOCK_LATENCY_MS as string | undefined) ?? 350);
   return { apiBaseUrl, useMocks, mockLatencyMs };
 }
 
@@ -102,20 +98,12 @@ async function parseError(res: Response): Promise<ApiClientError> {
   } catch {
     // not JSON
   }
-  const code =
-    (body as { code?: string })?.code ??
-    `HTTP_${res.status}`;
-  const message =
-    (body as { message?: string })?.message ??
-    res.statusText ??
-    'Request failed';
+  const code = (body as { code?: string })?.code ?? `HTTP_${res.status}`;
+  const message = (body as { message?: string })?.message ?? res.statusText ?? 'Request failed';
   return new ApiClientError(res.status, code, message, body);
 }
 
-export async function request<T>(
-  path: string,
-  options: RequestOptions = {}
-): Promise<T> {
+export async function request<T>(path: string, options: RequestOptions = {}): Promise<T> {
   const { method = 'GET', body, query, headers = {}, signal, retries = 1 } = options;
 
   const url = buildUrl(path, query);

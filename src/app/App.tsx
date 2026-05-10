@@ -246,10 +246,7 @@ export default function App() {
         case 'overview':
           return (
             <Suspense fallback={<DashboardSkeleton />}>
-              <StateAwareDashboard
-                state={selectedState}
-                onNavigate={setActiveSection}
-              />
+              <StateAwareDashboard state={selectedState} onNavigate={setActiveSection} />
             </Suspense>
           );
         case 'certificates':
@@ -289,13 +286,7 @@ export default function App() {
             </Suspense>
           );
         default:
-          return (
-            <SectionNotFound
-              persona="Business"
-              section={activeSection}
-              onHome={goHome}
-            />
-          );
+          return <SectionNotFound persona="Business" section={activeSection} onHome={goHome} />;
       }
     }
 
@@ -320,13 +311,7 @@ export default function App() {
             </Suspense>
           );
         default:
-          return (
-            <SectionNotFound
-              persona="MDA"
-              section={activeSection}
-              onHome={goHome}
-            />
-          );
+          return <SectionNotFound persona="MDA" section={activeSection} onHome={goHome} />;
       }
     }
 
@@ -351,13 +336,7 @@ export default function App() {
           </Suspense>
         );
       default:
-        return (
-          <SectionNotFound
-            persona="Partner"
-            section={activeSection}
-            onHome={goHome}
-          />
-        );
+        return <SectionNotFound persona="Partner" section={activeSection} onHome={goHome} />;
     }
   };
 

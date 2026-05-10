@@ -172,7 +172,10 @@ export function MDAPrequalificationView() {
                 className="block mb-2"
                 style={{ fontSize: '14px', fontWeight: '500' }}
               >
-                Pre-Qualification List Name <span className="text-red-500" aria-hidden="true">*</span>
+                Pre-Qualification List Name{' '}
+                <span className="text-red-500" aria-hidden="true">
+                  *
+                </span>
               </label>
               <input
                 id="list-name-input"
@@ -190,7 +193,12 @@ export function MDAPrequalificationView() {
                 }`}
               />
               {errors.listName && (
-                <p id="list-name-error" className="text-red-500 text-sm mt-1" role="alert" aria-live="assertive">
+                <p
+                  id="list-name-error"
+                  className="text-red-500 text-sm mt-1"
+                  role="alert"
+                  aria-live="assertive"
+                >
                   {errors.listName}
                 </p>
               )}
@@ -201,7 +209,10 @@ export function MDAPrequalificationView() {
                 className="block mb-2"
                 style={{ fontSize: '14px', fontWeight: '500' }}
               >
-                Tender Number <span className="text-red-500" aria-hidden="true">*</span>
+                Tender Number{' '}
+                <span className="text-red-500" aria-hidden="true">
+                  *
+                </span>
               </label>
               <input
                 id="tender-number-input"
@@ -219,7 +230,12 @@ export function MDAPrequalificationView() {
                 }`}
               />
               {errors.tenderNumber && (
-                <p id="tender-number-error" className="text-red-500 text-sm mt-1" role="alert" aria-live="assertive">
+                <p
+                  id="tender-number-error"
+                  className="text-red-500 text-sm mt-1"
+                  role="alert"
+                  aria-live="assertive"
+                >
                   {errors.tenderNumber}
                 </p>
               )}
@@ -269,7 +285,10 @@ export function MDAPrequalificationView() {
 
           <div className="overflow-x-auto">
             <table className="w-full">
-              <caption className="sr-only">List of vendors in pre-qualification with their RC numbers, company names, submission dates, and scores</caption>
+              <caption className="sr-only">
+                List of vendors in pre-qualification with their RC numbers, company names,
+                submission dates, and scores
+              </caption>
               <thead className="bg-muted/50">
                 <tr>
                   <th

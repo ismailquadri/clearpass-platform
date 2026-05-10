@@ -122,6 +122,10 @@ export function CertificateUploadModal({
       showToast('error', 'Missing Information', 'Please enter the expiry date');
       return;
     }
+    if (!issuingAuthority.trim()) {
+      showToast('error', 'Missing Information', 'Please enter the issuing authority');
+      return;
+    }
 
     setIsUploading(true);
 
@@ -131,6 +135,7 @@ export function CertificateUploadModal({
         certificateNumber: certificateNumber.trim(),
         issuedDate: issuedDate,
         expiryDate: expiryDate,
+        issuingAuthority: issuingAuthority.trim(),
         file: selectedFile,
       });
 
@@ -216,6 +221,7 @@ export function CertificateUploadModal({
         certificateNumber: certificateNumber.trim(),
         issuedDate: issuedDate,
         expiryDate: expiryDate,
+        issuingAuthority: issuingAuthority.trim(),
         file: placeholderFile,
       });
 
@@ -596,6 +602,25 @@ export function CertificateUploadModal({
                       />
                     </div>
                   </div>
+
+                  <div>
+                    <label
+                      htmlFor="issuing-authority-file"
+                      className="block mb-2"
+                      style={{ fontSize: '13px', fontWeight: '500' }}
+                    >
+                      Issuing Authority *
+                    </label>
+                    <input
+                      type="text"
+                      id="issuing-authority-file"
+                      value={issuingAuthority}
+                      onChange={(e) => setIssuingAuthority(e.target.value)}
+                      placeholder="e.g., National Pension Commission, Federal Government of Nigeria"
+                      className="w-full pl-10 pr-4 py-2 bg-input-background border border-border rounded-md"
+                      style={{ fontSize: '14px' }}
+                    />
+                  </div>
                 </div>
               </div>
             )}
@@ -670,7 +695,7 @@ export function CertificateUploadModal({
                         id="cert-issued-date-error"
                         className="text-red-500 text-xs mt-1"
                         role="alert"
-                      aria-live="assertive"
+                        aria-live="assertive"
                       >
                         {errors.issuedDate}
                       </p>
@@ -706,7 +731,7 @@ export function CertificateUploadModal({
                         id="cert-expiry-date-error"
                         className="text-red-500 text-xs mt-1"
                         role="alert"
-                      aria-live="assertive"
+                        aria-live="assertive"
                       >
                         {errors.expiryDate}
                       </p>
@@ -733,7 +758,9 @@ export function CertificateUploadModal({
                     placeholder="e.g., Federal Government of Nigeria"
                     required
                     aria-invalid={!!errors.issuingAuthority}
-                    aria-describedby={errors.issuingAuthority ? 'cert-issuing-authority-error' : undefined}
+                    aria-describedby={
+                      errors.issuingAuthority ? 'cert-issuing-authority-error' : undefined
+                    }
                     className={`w-full px-3 py-2 rounded-md border bg-background ${
                       errors.issuingAuthority ? 'border-red-500' : 'border-border'
                     }`}
@@ -833,7 +860,9 @@ export function CertificateUploadModal({
                     <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
                     {uploadMethod === 'api' ? 'Verifying...' : 'Uploading...'}
                     <span className="sr-only" aria-live="polite">
-                      {uploadMethod === 'api' ? 'Verifying certificate, please wait' : 'Uploading certificate, please wait'}
+                      {uploadMethod === 'api'
+                        ? 'Verifying certificate, please wait'
+                        : 'Uploading certificate, please wait'}
                     </span>
                   </>
                 ) : (

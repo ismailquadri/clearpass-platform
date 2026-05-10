@@ -8,9 +8,7 @@ import { mockPrequalification, mockVendorVerifications } from './mocks';
 import type { PrequalificationApplicant, VendorVerification } from './types';
 import { useApi, useMutation } from './useApi';
 
-export async function verifyVendor(
-  rcNumber: string
-): Promise<VendorVerification> {
+export async function verifyVendor(rcNumber: string): Promise<VendorVerification> {
   if (env.useMocks) {
     const found = mockVendorVerifications.find(
       (v) => v.rcNumber.toUpperCase() === rcNumber.toUpperCase()
@@ -36,9 +34,7 @@ export function useVerifyVendor() {
   return useMutation<string, VendorVerification>(verifyVendor);
 }
 
-export function listPrequalification(
-  signal?: AbortSignal
-): Promise<PrequalificationApplicant[]> {
+export function listPrequalification(signal?: AbortSignal): Promise<PrequalificationApplicant[]> {
   if (env.useMocks) return mockResponse(mockPrequalification, signal);
   return request<PrequalificationApplicant[]>(ENDPOINTS.mda.prequalification, {
     signal,
@@ -46,9 +42,7 @@ export function listPrequalification(
 }
 
 export function usePrequalification() {
-  return useApi<PrequalificationApplicant[]>((signal) =>
-    listPrequalification(signal)
-  );
+  return useApi<PrequalificationApplicant[]>((signal) => listPrequalification(signal));
 }
 
 export async function approveApplicant(id: string): Promise<void> {
@@ -63,10 +57,7 @@ export function useApproveApplicant() {
   return useMutation<string, void>(approveApplicant);
 }
 
-export async function rejectApplicant(input: {
-  id: string;
-  reason?: string;
-}): Promise<void> {
+export async function rejectApplicant(input: { id: string; reason?: string }): Promise<void> {
   if (env.useMocks) {
     await mockResponse(undefined);
     return;

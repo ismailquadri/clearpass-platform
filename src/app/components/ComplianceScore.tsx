@@ -122,9 +122,7 @@ export const ComplianceScore = memo(function ComplianceScore({
               className="px-3 py-2 rounded-md border border-[#e5e5e5]"
               style={{ backgroundColor: 'rgba(255, 48, 0, 0.08)' }}
             >
-              <p style={{ fontSize: '12px', fontWeight: '500', color: '#FF3000' }}>
-                Score at Risk
-              </p>
+              <p style={{ fontSize: '12px', fontWeight: '500', color: '#FF3000' }}>Score at Risk</p>
               <p
                 className="text-muted-foreground mt-0.5 text-[#404040]"
                 style={{ fontSize: '13px' }}

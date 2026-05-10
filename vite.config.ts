@@ -1,22 +1,21 @@
-import { defineConfig } from 'vite'
-import path from 'path'
-import tailwindcss from '@tailwindcss/vite'
-import react from '@vitejs/plugin-react'
-import { visualizer } from 'rollup-plugin-visualizer'
-import { VitePWA } from 'vite-plugin-pwa'
-import compression from 'vite-plugin-compression'
-
+import { defineConfig } from 'vite';
+import path from 'path';
+import tailwindcss from '@tailwindcss/vite';
+import react from '@vitejs/plugin-react';
+import { visualizer } from 'rollup-plugin-visualizer';
+import { VitePWA } from 'vite-plugin-pwa';
+import compression from 'vite-plugin-compression';
 
 function figmaAssetResolver() {
   return {
     name: 'figma-asset-resolver',
     resolveId(id) {
       if (id.startsWith('figma:asset/')) {
-        const filename = id.replace('figma:asset/', '')
-        return path.resolve(__dirname, 'src/assets', filename)
+        const filename = id.replace('figma:asset/', '');
+        return path.resolve(__dirname, 'src/assets', filename);
       }
     },
-  }
+  };
 }
 
 export default defineConfig({
@@ -97,12 +96,13 @@ export default defineConfig({
       algorithm: 'gzip',
       ext: '.gz',
     }),
-    process.env.ANALYZE === 'true' && visualizer({
-      filename: 'bundle-analysis.html',
-      open: true,
-      gzipSize: true,
-      template: 'treemap',
-    }),
+    process.env.ANALYZE === 'true' &&
+      visualizer({
+        filename: 'bundle-analysis.html',
+        open: true,
+        gzipSize: true,
+        template: 'treemap',
+      }),
   ].filter(Boolean),
   resolve: {
     alias: {
@@ -121,12 +121,7 @@ export default defineConfig({
         manualChunks: {
           // Separate vendor chunks for better caching.
           'react-vendor': ['react', 'react-dom'],
-          'ui-vendor': [
-            'lucide-react',
-            'class-variance-authority',
-            'clsx',
-            'tailwind-merge',
-          ],
+          'ui-vendor': ['lucide-react', 'class-variance-authority', 'clsx', 'tailwind-merge'],
           // Heavy chart library — only loaded when a chart-bearing view is visited.
           'charts-vendor': ['recharts'],
           // Form / motion / overlay libs — rarely all needed at once.
@@ -147,4 +142,4 @@ export default defineConfig({
       },
     },
   },
-})
+});

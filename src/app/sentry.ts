@@ -5,8 +5,12 @@ const APP_ENV = import.meta.env.VITE_APP_ENV || 'development';
 
 // Parse sampling rates from environment variables
 const TRACES_SAMPLE_RATE = parseFloat(import.meta.env.VITE_SENTRY_TRACES_SAMPLE_RATE || '0.1');
-const REPLAY_SESSION_SAMPLE_RATE = parseFloat(import.meta.env.VITE_SENTRY_REPLAY_SESSION_SAMPLE_RATE || '0.1');
-const REPLAY_ERROR_SAMPLE_RATE = parseFloat(import.meta.env.VITE_SENTRY_REPLAY_ERROR_SAMPLE_RATE || '1.0');
+const REPLAY_SESSION_SAMPLE_RATE = parseFloat(
+  import.meta.env.VITE_SENTRY_REPLAY_SESSION_SAMPLE_RATE || '0.1'
+);
+const REPLAY_ERROR_SAMPLE_RATE = parseFloat(
+  import.meta.env.VITE_SENTRY_REPLAY_ERROR_SAMPLE_RATE || '1.0'
+);
 
 // Only initialize Sentry if DSN is provided
 if (SENTRY_DSN && SENTRY_DSN !== 'https://examplePublicKey@o0.ingest.sentry.io/0') {

@@ -95,8 +95,13 @@ export function DashboardOverview() {
         </div>
 
         {/* Stats Row */}
-        <section className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8" aria-labelledby="stats-heading">
-          <div className="sr-only" id="stats-heading">Statistics Overview</div>
+        <section
+          className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8"
+          aria-labelledby="stats-heading"
+        >
+          <div className="sr-only" id="stats-heading">
+            Statistics Overview
+          </div>
           <div className="bg-card border border-border rounded-lg p-5">
             <div className="flex items-center justify-between mb-3">
               <span className="text-muted-foreground" style={{ fontSize: '14px' }}>
@@ -141,7 +146,9 @@ export function DashboardOverview() {
 
         {/* Compliance Score */}
         <section className="mb-8" aria-labelledby="compliance-score-heading">
-          <h2 id="compliance-score-heading" className="sr-only">Compliance Score</h2>
+          <h2 id="compliance-score-heading" className="sr-only">
+            Compliance Score
+          </h2>
           <ComplianceScore
             score={73}
             isProcurementReady={false}
@@ -156,7 +163,9 @@ export function DashboardOverview() {
         {/* Certificates Grid */}
         <section className="mb-8" aria-labelledby="certificates-heading">
           <div className="flex items-center justify-between mb-4">
-            <h2 id="certificates-heading" style={{ fontSize: '20px' }}>My Certificates</h2>
+            <h2 id="certificates-heading" style={{ fontSize: '20px' }}>
+              My Certificates
+            </h2>
             <button
               onClick={() =>
                 showToast('success', 'Navigate to Certificates', 'Opening certificates view...')
@@ -175,7 +184,10 @@ export function DashboardOverview() {
         </section>
 
         {/* Quick Actions */}
-        <section className="bg-card border border-border rounded-lg p-6" aria-labelledby="quick-actions-heading">
+        <section
+          className="bg-card border border-border rounded-lg p-6"
+          aria-labelledby="quick-actions-heading"
+        >
           <h2 id="quick-actions-heading" className="mb-4" style={{ fontSize: '18px' }}>
             Quick Actions
           </h2>

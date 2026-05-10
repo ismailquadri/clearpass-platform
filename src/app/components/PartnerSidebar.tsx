@@ -36,16 +36,10 @@ export function PartnerSidebar({
   };
 
   return (
-    <aside
-      className={`${fluid ? 'w-full' : 'w-56 lg:w-64'} h-full bg-card flex flex-col`}
-    >
+    <aside className={`${fluid ? 'w-full' : 'w-56 lg:w-64'} h-full bg-card flex flex-col`}>
       <div className="px-4 py-4 border-b border-border">
         <div className="flex items-center gap-2">
-          <img
-            src="/clearpass-logo.svg"
-            alt="ClearPass"
-            className="h-9 w-auto"
-          />
+          <img src="/clearpass-logo.svg" alt="ClearPass" className="h-9 w-auto" />
           <div>
             <span className="font-medium block" style={{ fontSize: '15px' }}>
               ClearPass
@@ -57,10 +51,7 @@ export function PartnerSidebar({
         </div>
       </div>
 
-      <nav
-        aria-label="Partner portal navigation"
-        className="flex-1 p-3 overflow-y-auto"
-      >
+      <nav aria-label="Partner portal navigation" className="flex-1 p-3 overflow-y-auto">
         <Group
           label="Client Management"
           items={CLIENT_ITEMS}
@@ -85,10 +76,7 @@ export function PartnerSidebar({
             <p style={{ fontSize: '12px' }} className="truncate">
               Chisom Okafor
             </p>
-            <p
-              className="text-muted-foreground truncate"
-              style={{ fontSize: '13px' }}
-            >
+            <p className="text-muted-foreground truncate" style={{ fontSize: '13px' }}>
               Compliance Consultant
             </p>
           </div>

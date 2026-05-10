@@ -67,7 +67,7 @@ export function SettingsView() {
     setIsSaving(true);
     try {
       // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await new Promise((resolve) => setTimeout(resolve, 1000));
       showToast('success', 'Changes Saved', 'Company profile updated successfully');
     } catch {
       showToast('error', 'Save Failed', 'Failed to save changes. Please try again.');
@@ -77,10 +77,10 @@ export function SettingsView() {
   };
 
   const handleInputChange = (field: string, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+    setFormData((prev) => ({ ...prev, [field]: value }));
     // Clear error for this field when user starts typing
     if (errors[field]) {
-      setErrors(prev => ({ ...prev, [field]: '' }));
+      setErrors((prev) => ({ ...prev, [field]: '' }));
     }
   };
 
@@ -88,10 +88,14 @@ export function SettingsView() {
     setIsSavingNotifications(true);
     try {
       // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await new Promise((resolve) => setTimeout(resolve, 1000));
       showToast('success', 'Notifications Saved', 'Notification preferences updated successfully');
     } catch {
-      showToast('error', 'Save Failed', 'Failed to save notification preferences. Please try again.');
+      showToast(
+        'error',
+        'Save Failed',
+        'Failed to save notification preferences. Please try again.'
+      );
     } finally {
       setIsSavingNotifications(false);
     }
@@ -166,7 +170,10 @@ export function SettingsView() {
                     className="block mb-2"
                     style={{ fontSize: '14px', fontWeight: '500' }}
                   >
-                    Company Name <span className="text-red-500" aria-hidden="true">*</span>
+                    Company Name{' '}
+                    <span className="text-red-500" aria-hidden="true">
+                      *
+                    </span>
                   </label>
                   <input
                     id="company-name"
@@ -310,7 +317,10 @@ export function SettingsView() {
                     style={{ fontSize: '14px', fontWeight: '500' }}
                   >
                     <Mail className="w-4 h-4 inline mr-1" />
-                    Email Address <span className="text-red-500" aria-hidden="true">*</span>
+                    Email Address{' '}
+                    <span className="text-red-500" aria-hidden="true">
+                      *
+                    </span>
                   </label>
                   <input
                     id="email-address"
@@ -342,7 +352,10 @@ export function SettingsView() {
                     style={{ fontSize: '14px', fontWeight: '500' }}
                   >
                     <Phone className="w-4 h-4 inline mr-1" />
-                    Phone Number <span className="text-red-500" aria-hidden="true">*</span>
+                    Phone Number{' '}
+                    <span className="text-red-500" aria-hidden="true">
+                      *
+                    </span>
                   </label>
                   <input
                     id="phone-number"
@@ -445,7 +458,10 @@ export function SettingsView() {
                       <p style={{ fontSize: '14px', fontWeight: '500' }}>{item.label}</p>
                       <p className="caption text-muted-foreground">{item.description}</p>
                     </div>
-                    <label htmlFor={item.id} className="relative inline-flex items-center cursor-pointer">
+                    <label
+                      htmlFor={item.id}
+                      className="relative inline-flex items-center cursor-pointer"
+                    >
                       <input
                         id={item.id}
                         type="checkbox"
@@ -455,9 +471,7 @@ export function SettingsView() {
                       <div
                         className="w-11 h-6 rounded-full peer peer-focus:ring-4 peer-focus:ring-orange-300 dark:peer-focus:ring-orange-800 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all"
                         style={{
-                          backgroundColor: item.enabled
-                            ? '#FF3000'
-                            : 'rgb(209, 209, 209)',
+                          backgroundColor: item.enabled ? '#FF3000' : 'rgb(209, 209, 209)',
                         }}
                       />
                     </label>
@@ -493,7 +507,10 @@ export function SettingsView() {
                       <p style={{ fontSize: '14px', fontWeight: '500' }}>{item.label}</p>
                       <p className="caption text-muted-foreground">{item.description}</p>
                     </div>
-                    <label htmlFor={item.id} className="relative inline-flex items-center cursor-pointer">
+                    <label
+                      htmlFor={item.id}
+                      className="relative inline-flex items-center cursor-pointer"
+                    >
                       <input
                         id={item.id}
                         type="checkbox"
@@ -503,9 +520,7 @@ export function SettingsView() {
                       <div
                         className="w-11 h-6 rounded-full peer peer-focus:ring-4 peer-focus:ring-orange-300 dark:peer-focus:ring-orange-800 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all"
                         style={{
-                          backgroundColor: item.enabled
-                            ? '#FF3000'
-                            : 'rgb(209, 209, 209)',
+                          backgroundColor: item.enabled ? '#FF3000' : 'rgb(209, 209, 209)',
                         }}
                       />
                     </label>
@@ -626,9 +641,7 @@ export function SettingsView() {
                   </div>
                 </button>
                 <button
-                  onClick={() =>
-                    showToast('success', 'Data Import', 'Opening data import form...')
-                  }
+                  onClick={() => showToast('success', 'Data Import', 'Opening data import form...')}
                   className="w-full px-4 py-3 rounded-md border border-border hover:bg-muted transition-colors text-left flex items-center justify-between"
                 >
                   <div>
@@ -670,11 +683,7 @@ export function SettingsView() {
                 </button>
                 <button
                   onClick={() =>
-                    showToast(
-                      'success',
-                      'Two-Factor Authentication',
-                      'Opening 2FA setup wizard...'
-                    )
+                    showToast('success', 'Two-Factor Authentication', 'Opening 2FA setup wizard...')
                   }
                   className="w-full px-4 py-3 rounded-md border border-border hover:bg-muted transition-colors text-left"
                 >

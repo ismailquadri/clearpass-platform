@@ -16,13 +16,7 @@ interface EmptyStateProps {
  * Shared empty / not-found / fallback state with optional icon + CTA.
  * Replaces the duplicated "Section Not Found" blocks in App.tsx.
  */
-export function EmptyState({
-  icon: Icon,
-  title,
-  description,
-  action,
-  children,
-}: EmptyStateProps) {
+export function EmptyState({ icon: Icon, title, description, action, children }: EmptyStateProps) {
   return (
     <div className="bg-card border border-border rounded-lg p-8 sm:p-12 text-center">
       {Icon && (
@@ -34,10 +28,7 @@ export function EmptyState({
         {title}
       </h3>
       {description && (
-        <p
-          className="text-muted-foreground max-w-md mx-auto"
-          style={{ fontSize: '14px' }}
-        >
+        <p className="text-muted-foreground max-w-md mx-auto" style={{ fontSize: '14px' }}>
           {description}
         </p>
       )}

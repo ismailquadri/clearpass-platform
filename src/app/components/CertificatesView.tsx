@@ -14,9 +14,7 @@ export function CertificatesView() {
   const { showToast } = useToast();
   const [searchQuery, setSearchQuery] = useState('');
   const [filterStatus, setFilterStatus] = useState<StatusFilter>('all');
-  const [selectedCertificate, setSelectedCertificate] = useState<Certificate | null>(
-    null
-  );
+  const [selectedCertificate, setSelectedCertificate] = useState<Certificate | null>(null);
 
   const certificatesQuery = useCertificates();
 
@@ -30,11 +28,7 @@ export function CertificatesView() {
             </h1>
             <button
               onClick={() =>
-                showToast(
-                  'success',
-                  'Upload Certificate',
-                  'Opening certificate upload form...'
-                )
+                showToast('success', 'Upload Certificate', 'Opening certificate upload form...')
               }
               className="px-4 py-2 rounded-md text-white flex items-center justify-center gap-2 min-h-[44px] hover:opacity-90 transition-opacity"
               style={{ backgroundColor: '#FF3000' }}
@@ -44,10 +38,7 @@ export function CertificatesView() {
               <span>Add Certificate</span>
             </button>
           </div>
-          <p
-            className="text-muted-foreground"
-            style={{ fontSize: '16px' }}
-          >
+          <p className="text-muted-foreground" style={{ fontSize: '16px' }}>
             Manage all your compliance certificates in one place
           </p>
         </header>
@@ -153,9 +144,8 @@ function CertificatesContent({
           c.status === 'expiring-critical' ||
           c.status === 'expiring-urgent'
       ).length,
-      pending: certificates.filter(
-        (c) => c.status === 'pending' || c.status === 'not-connected'
-      ).length,
+      pending: certificates.filter((c) => c.status === 'pending' || c.status === 'not-connected')
+        .length,
     };
   }, [certificates]);
 
@@ -170,11 +160,7 @@ function CertificatesContent({
         </div>
         <StatCard label="Total Certificates" value={counts.total} />
         <StatCard label="Active" value={counts.active} color="#FF3000" />
-        <StatCard
-          label="Expiring Soon"
-          value={counts.expiring}
-          color="#FF3000"
-        />
+        <StatCard label="Expiring Soon" value={counts.expiring} color="#FF3000" />
         <StatCard label="Pending" value={counts.pending} color="rgb(92, 92, 92)" />
       </section>
 
@@ -209,9 +195,7 @@ function CertificatesContent({
                 onClick={() => setFilterStatus(status)}
                 aria-pressed={filterStatus === status}
                 className={`px-3 sm:px-4 py-2 rounded-md transition-colors min-h-[40px] whitespace-nowrap ${
-                  filterStatus === status
-                    ? 'bg-card shadow-sm'
-                    : 'hover:bg-card/50'
+                  filterStatus === status ? 'bg-card shadow-sm' : 'hover:bg-card/50'
                 }`}
                 style={{
                   fontSize: '14px',
@@ -272,21 +256,11 @@ function CertificatesContent({
   );
 }
 
-function StatCard({
-  label,
-  value,
-  color,
-}: {
-  label: string;
-  value: number;
-  color?: string;
-}) {
+function StatCard({ label, value, color }: { label: string; value: number; color?: string }) {
   return (
     <div className="bg-card border border-border rounded-lg p-4 sm:p-5">
       <p className="caption text-muted-foreground mb-1">{label}</p>
-      <p style={{ fontSize: '28px', fontWeight: 600, color: color ?? undefined }}>
-        {value}
-      </p>
+      <p style={{ fontSize: '28px', fontWeight: 600, color: color ?? undefined }}>{value}</p>
     </div>
   );
 }

@@ -1,11 +1,4 @@
-import {
-  Search,
-  Upload,
-  Download,
-  CheckCircle2,
-  XCircle,
-  AlertTriangle,
-} from 'lucide-react';
+import { Search, Upload, Download, CheckCircle2, XCircle, AlertTriangle } from 'lucide-react';
 import { useState } from 'react';
 import { VendorVerificationModal } from './VendorVerificationModal';
 import { useToast } from './ToastProvider';
@@ -17,9 +10,7 @@ export function MDAVerifyView() {
   const { showToast } = useToast();
   const verify = useVerifyVendor();
   const [searchQuery, setSearchQuery] = useState('');
-  const [verificationResults, setVerificationResults] = useState<VendorVerification[]>(
-    []
-  );
+  const [verificationResults, setVerificationResults] = useState<VendorVerification[]>([]);
   const [isVerificationModalOpen, setIsVerificationModalOpen] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -55,8 +46,7 @@ export function MDAVerifyView() {
         `Found ${results.length} verification result${results.length === 1 ? '' : 's'}`
       );
     } catch (err) {
-      const message =
-        err instanceof Error ? err.message : 'Verification failed. Try again.';
+      const message = err instanceof Error ? err.message : 'Verification failed. Try again.';
       setError(message);
       showToast('error', 'Verification Failed', message);
     }
@@ -158,41 +148,28 @@ export function MDAVerifyView() {
             </div>
           </div>
           <p className="caption text-muted-foreground mt-3">
-            Search for single vendor or upload CSV file with multiple RC numbers
-            for batch verification
+            Search for single vendor or upload CSV file with multiple RC numbers for batch
+            verification
           </p>
         </div>
 
         {verificationResults.length > 0 && (
           <>
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6">
-              <StatTile
-                label="Total Verified"
-                value={verificationResults.length}
-              />
+              <StatTile label="Total Verified" value={verificationResults.length} />
               <StatTile
                 label="Procurement Ready"
-                value={
-                  verificationResults.filter(
-                    (r) => r.status === 'procurement-ready'
-                  ).length
-                }
+                value={verificationResults.filter((r) => r.status === 'procurement-ready').length}
                 color="#FF3000"
               />
               <StatTile
                 label="Attention Required"
-                value={
-                  verificationResults.filter(
-                    (r) => r.status === 'attention-required'
-                  ).length
-                }
+                value={verificationResults.filter((r) => r.status === 'attention-required').length}
                 color="#FF3000"
               />
               <StatTile
                 label="Ineligible"
-                value={
-                  verificationResults.filter((r) => r.status === 'ineligible').length
-                }
+                value={verificationResults.filter((r) => r.status === 'ineligible').length}
                 color="#FF3000"
               />
             </div>
@@ -202,11 +179,7 @@ export function MDAVerifyView() {
               <button
                 className="px-4 py-2 min-h-[40px] rounded-md border border-border hover:bg-muted transition-colors flex items-center justify-center gap-2"
                 onClick={() =>
-                  showToast(
-                    'success',
-                    'Export Started',
-                    'Generating verification report PDF...'
-                  )
+                  showToast('success', 'Export Started', 'Generating verification report PDF...')
                 }
               >
                 <Download className="w-4 h-4" aria-hidden="true" />
@@ -246,23 +219,11 @@ export function MDAVerifyView() {
   );
 }
 
-function StatTile({
-  label,
-  value,
-  color,
-}: {
-  label: string;
-  value: number;
-  color?: string;
-}) {
+function StatTile({ label, value, color }: { label: string; value: number; color?: string }) {
   return (
     <div className="bg-card border border-border rounded-lg p-4">
       <p className="caption text-muted-foreground mb-1">{label}</p>
-      <p
-        style={{ fontSize: '24px', fontWeight: 600, color: color ?? undefined }}
-      >
-        {value}
-      </p>
+      <p style={{ fontSize: '24px', fontWeight: 600, color: color ?? undefined }}>{value}</p>
     </div>
   );
 }
@@ -275,9 +236,7 @@ function ResultCard({ result }: { result: VendorVerification }) {
       <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4 mb-4">
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-3 mb-2 flex-wrap">
-            <h4 style={{ fontSize: '18px', fontWeight: 500 }}>
-              {result.companyName}
-            </h4>
+            <h4 style={{ fontSize: '18px', fontWeight: 500 }}>{result.companyName}</h4>
             <span
               className="px-3 py-1 rounded-full flex items-center gap-2"
               style={{
@@ -328,11 +287,7 @@ function ResultCard({ result }: { result: VendorVerification }) {
                   ? 'rgba(255, 48, 0, 0.1)'
                   : 'rgba(255, 48, 0, 0.1)';
             return (
-              <div
-                key={idx}
-                className="px-3 py-2 rounded-md"
-                style={{ backgroundColor: certBg }}
-              >
+              <div key={idx} className="px-3 py-2 rounded-md" style={{ backgroundColor: certBg }}>
                 <p
                   style={{
                     fontSize: '12px',
@@ -342,9 +297,7 @@ function ResultCard({ result }: { result: VendorVerification }) {
                 >
                   {cert.name}
                 </p>
-                <p className="caption text-muted-foreground mt-1">
-                  {cert.expiryDate}
-                </p>
+                <p className="caption text-muted-foreground mt-1">{cert.expiryDate}</p>
               </div>
             );
           })}

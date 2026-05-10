@@ -73,10 +73,10 @@
    * ClearPass brand identity — use these tokens (or the equivalent
    * Tailwind arbitrary `#FF3000` values) instead of hand-rolling shades.
    */
-  --brand: #FF3000;
-  --brand-tint: #FFE4DC;
-  --brand-tint-strong: #FFD0C2;
-  --brand-dark: #B22200;
+  --brand: #ff3000;
+  --brand-tint: #ffe4dc;
+  --brand-tint-strong: #ffd0c2;
+  --brand-dark: #b22200;
   /* The default border radius for elements such as buttons, cards, and other containers. */
   --radius: 8px;
   /* Card border radius for container elements. */
@@ -103,7 +103,7 @@
 
 .dark {
   /* Brand tokens — same hue, dark-mode-tuned tints. */
-  --brand: #FF3000;
+  --brand: #ff3000;
   --brand-tint: #3a1010;
   --brand-tint-strong: #5a1818;
   --brand-dark: #ff6b6b;

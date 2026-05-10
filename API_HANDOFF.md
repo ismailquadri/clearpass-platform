@@ -28,13 +28,13 @@ at the backend, and ensure the backend returns the shapes documented below.
 
 ## Environment variables
 
-| Var | Default | What it does |
-|---|---|---|
-| `VITE_API_BASE_URL` | `/api` | Base URL for all requests. Use a proxy or full origin. |
-| `VITE_USE_MOCKS` | `true` in dev, `false` in prod | When true, hooks short-circuit to local fixtures. |
-| `VITE_MOCK_LATENCY_MS` | `350` | Simulated latency in mock mode — keep loading states honest. |
-| `VITE_SENTRY_DSN` | (unset) | Sentry crash reporting. |
-| `VITE_APP_ENV` | `development` | Sentry environment tag. |
+| Var                    | Default                        | What it does                                                 |
+| ---------------------- | ------------------------------ | ------------------------------------------------------------ |
+| `VITE_API_BASE_URL`    | `/api`                         | Base URL for all requests. Use a proxy or full origin.       |
+| `VITE_USE_MOCKS`       | `true` in dev, `false` in prod | When true, hooks short-circuit to local fixtures.            |
+| `VITE_MOCK_LATENCY_MS` | `350`                          | Simulated latency in mock mode — keep loading states honest. |
+| `VITE_SENTRY_DSN`      | (unset)                        | Sentry crash reporting.                                      |
+| `VITE_APP_ENV`         | `development`                  | Sentry environment tag.                                      |
 
 Copy `.env.example` to `.env` and fill in.
 
@@ -60,38 +60,38 @@ REST conventions: `200/201` on success, `204` for empty responses,
 
 ### Certificates
 
-| Method | Path | Hook / function | Response |
-|---|---|---|---|
-| GET | `/certificates` | `useCertificates()` | `Certificate[]` |
-| GET | `/certificates/:id` | `useCertificate(id)` | `Certificate` |
-| POST | `/certificates` | `useUploadCertificate()` | `Certificate` (sends `multipart/form-data`) |
-| DELETE | `/certificates/:id` | `useDeleteCertificate()` | `204` |
-| GET | `/certificates/:id/download` | (link) | binary PDF |
-| GET | `/certificates/export` | (link) | binary ZIP |
+| Method | Path                         | Hook / function          | Response                                    |
+| ------ | ---------------------------- | ------------------------ | ------------------------------------------- |
+| GET    | `/certificates`              | `useCertificates()`      | `Certificate[]`                             |
+| GET    | `/certificates/:id`          | `useCertificate(id)`     | `Certificate`                               |
+| POST   | `/certificates`              | `useUploadCertificate()` | `Certificate` (sends `multipart/form-data`) |
+| DELETE | `/certificates/:id`          | `useDeleteCertificate()` | `204`                                       |
+| GET    | `/certificates/:id/download` | (link)                   | binary PDF                                  |
+| GET    | `/certificates/export`       | (link)                   | binary ZIP                                  |
 
 `POST /certificates` body fields (multipart): `shortName`, `certificateNumber`,
 `issuedDate`, `expiryDate`, `file`.
 
 ### Alerts
 
-| Method | Path | Hook | Response |
-|---|---|---|---|
-| GET | `/alerts` | `useAlerts()` | `Alert[]` |
-| POST | `/alerts/:id/read` | `useMarkAlertRead()` | `204` |
-| POST | `/alerts/read-all` | `useMarkAllAlertsRead()` | `204` |
-| DELETE | `/alerts/:id` | `useDismissAlert()` | `204` |
+| Method | Path               | Hook                     | Response  |
+| ------ | ------------------ | ------------------------ | --------- |
+| GET    | `/alerts`          | `useAlerts()`            | `Alert[]` |
+| POST   | `/alerts/:id/read` | `useMarkAlertRead()`     | `204`     |
+| POST   | `/alerts/read-all` | `useMarkAllAlertsRead()` | `204`     |
+| DELETE | `/alerts/:id`      | `useDismissAlert()`      | `204`     |
 
 ### Activity log
 
-| Method | Path | Hook | Response |
-|---|---|---|---|
-| GET | `/activity` | `useActivity()` | `ActivityItem[]` |
+| Method | Path        | Hook            | Response         |
+| ------ | ----------- | --------------- | ---------------- |
+| GET    | `/activity` | `useActivity()` | `ActivityItem[]` |
 
 ### Dashboard
 
-| Method | Path | Hook | Response |
-|---|---|---|---|
-| GET | `/dashboard?state=<label>` | `useDashboard(state)` | `DashboardSnapshot` |
+| Method | Path                       | Hook                  | Response            |
+| ------ | -------------------------- | --------------------- | ------------------- |
+| GET    | `/dashboard?state=<label>` | `useDashboard(state)` | `DashboardSnapshot` |
 
 `state` query is the Tweaks Panel state label (e.g. `Healthy`,
 `Attention Required`). Production can ignore the query and return the real
@@ -99,35 +99,35 @@ state — this is just demo plumbing.
 
 ### MDA portal
 
-| Method | Path | Hook | Response |
-|---|---|---|---|
-| GET | `/mda/verify/:rcNumber` | `useVerifyVendor()` | `VendorVerification` |
-| GET | `/mda/prequalification` | `usePrequalification()` | `PrequalificationApplicant[]` |
-| POST | `/mda/prequalification/:id/approve` | `useApproveApplicant()` | `204` |
-| POST | `/mda/prequalification/:id/reject` | `useRejectApplicant()` | `204` (body: `{ reason?: string }`) |
+| Method | Path                                | Hook                    | Response                            |
+| ------ | ----------------------------------- | ----------------------- | ----------------------------------- |
+| GET    | `/mda/verify/:rcNumber`             | `useVerifyVendor()`     | `VendorVerification`                |
+| GET    | `/mda/prequalification`             | `usePrequalification()` | `PrequalificationApplicant[]`       |
+| POST   | `/mda/prequalification/:id/approve` | `useApproveApplicant()` | `204`                               |
+| POST   | `/mda/prequalification/:id/reject`  | `useRejectApplicant()`  | `204` (body: `{ reason?: string }`) |
 
 ### Partner portal
 
-| Method | Path | Hook | Response |
-|---|---|---|---|
-| GET | `/partner/clients` | `usePartnerClients()` | `PartnerClient[]` |
-| GET | `/partner/analytics` | `usePartnerAnalytics()` | `PartnerAnalytics` |
+| Method | Path                 | Hook                    | Response           |
+| ------ | -------------------- | ----------------------- | ------------------ |
+| GET    | `/partner/clients`   | `usePartnerClients()`   | `PartnerClient[]`  |
+| GET    | `/partner/analytics` | `usePartnerAnalytics()` | `PartnerAnalytics` |
 
 ### Settings
 
-| Method | Path | Hook | Response |
-|---|---|---|---|
-| GET | `/settings/profile` | `useProfile()` | `UserProfile` |
-| PATCH | `/settings/profile` | `useUpdateProfile()` | `UserProfile` |
-| GET | `/settings/notifications` | `useNotificationPreferences()` | `NotificationPreferences` |
-| PUT | `/settings/notifications` | `useUpdateNotificationPreferences()` | `NotificationPreferences` |
+| Method | Path                      | Hook                                 | Response                  |
+| ------ | ------------------------- | ------------------------------------ | ------------------------- |
+| GET    | `/settings/profile`       | `useProfile()`                       | `UserProfile`             |
+| PATCH  | `/settings/profile`       | `useUpdateProfile()`                 | `UserProfile`             |
+| GET    | `/settings/notifications` | `useNotificationPreferences()`       | `NotificationPreferences` |
+| PUT    | `/settings/notifications` | `useUpdateNotificationPreferences()` | `NotificationPreferences` |
 
 ### Reports
 
-| Method | Path | Notes |
-|---|---|---|
-| POST | `/reports/generate` | (used from Reports view) |
-| GET | `/reports/:id/download` | (used from Reports view) |
+| Method | Path                    | Notes                    |
+| ------ | ----------------------- | ------------------------ |
+| POST   | `/reports/generate`     | (used from Reports view) |
+| GET    | `/reports/:id/download` | (used from Reports view) |
 
 These are wired as constants in `endpoints.ts` but not yet exposed via a
 typed hook — we can add `useReports` once the spec is final.
@@ -220,14 +220,15 @@ of each shape; see the file for full JSDoc.
 {
   rcNumber: string;
   companyName: string;
-  score: number;                 // 0..100
+  score: number; // 0..100
   status: 'procurement-ready' | 'attention-required' | 'ineligible';
   lastVerified: string;
   certificates: {
-    name: string;                // short code
+    name: string; // short code
     status: 'active' | 'expired' | 'expiring';
     expiryDate: string;
-  }[];
+  }
+  [];
 }
 ```
 
@@ -256,8 +257,8 @@ of each shape; see the file for full JSDoc.
   status: 'healthy' | 'attention' | 'critical';
   activeCertificates: number;
   totalCertificates: number;
-  nextExpiry: string;            // short code of next-to-expire cert
-  daysToExpiry: number;          // negative when overdue
+  nextExpiry: string; // short code of next-to-expire cert
+  daysToExpiry: number; // negative when overdue
   monthlyFee: number;
 }
 ```
@@ -266,10 +267,28 @@ of each shape; see the file for full JSDoc.
 
 ```ts
 {
-  revenueTrend: { month: string; revenue: number; clients: number }[];
-  complianceDistribution: { name: string; value: number; color: string }[];
-  expiryTimeline: { period: string; count: number }[];
-  certificateTypes: { name: string; renewals: number }[];
+  revenueTrend: {
+    month: string;
+    revenue: number;
+    clients: number;
+  }
+  [];
+  complianceDistribution: {
+    name: string;
+    value: number;
+    color: string;
+  }
+  [];
+  expiryTimeline: {
+    period: string;
+    count: number;
+  }
+  [];
+  certificateTypes: {
+    name: string;
+    renewals: number;
+  }
+  [];
   kpi: {
     monthlyRevenue: number;
     monthlyRevenueDeltaPct: number;
@@ -279,7 +298,7 @@ of each shape; see the file for full JSDoc.
     avgComplianceScoreDelta: number;
     renewalsThisMonth: number;
     renewalsPendingAction: number;
-  };
+  }
 }
 ```
 
@@ -326,11 +345,11 @@ The frontend expects errors in the following JSON shape:
 
 The HTTP status drives behaviour:
 
-| Status | Behaviour |
-|---|---|
-| `4xx` | Surfaces immediately as `ApiClientError`. UI shows `message` inline. |
-| `5xx` | Auto-retried once with 250ms backoff before surfacing. |
-| Network failure | Auto-retried once, then surfaces as `code: NETWORK`. |
+| Status          | Behaviour                                                            |
+| --------------- | -------------------------------------------------------------------- |
+| `4xx`           | Surfaces immediately as `ApiClientError`. UI shows `message` inline. |
+| `5xx`           | Auto-retried once with 250ms backoff before surfacing.               |
+| Network failure | Auto-retried once, then surfaces as `code: NETWORK`.                 |
 
 ---
 
@@ -339,15 +358,15 @@ The HTTP status drives behaviour:
 Each domain module has the same shape. To swap an endpoint, edit the `if
 (env.useMocks)` branch — or just leave it and flip `VITE_USE_MOCKS=false`.
 
-| Domain | File |
-|---|---|
-| Certificates | `src/app/api/certificates.ts` |
-| Alerts | `src/app/api/alerts.ts` |
-| Activity log | `src/app/api/activity.ts` |
-| Dashboard | `src/app/api/dashboard.ts` |
-| MDA portal | `src/app/api/mda.ts` |
-| Partner portal | `src/app/api/partner.ts` |
-| Settings | `src/app/api/settings.ts` |
+| Domain         | File                          |
+| -------------- | ----------------------------- |
+| Certificates   | `src/app/api/certificates.ts` |
+| Alerts         | `src/app/api/alerts.ts`       |
+| Activity log   | `src/app/api/activity.ts`     |
+| Dashboard      | `src/app/api/dashboard.ts`    |
+| MDA portal     | `src/app/api/mda.ts`          |
+| Partner portal | `src/app/api/partner.ts`      |
+| Settings       | `src/app/api/settings.ts`     |
 
 Public surface area is exported from `src/app/api/index.ts` (the barrel).
 Components only ever import from `'../api'`, never reach into individual files.

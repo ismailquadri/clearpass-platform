@@ -56,6 +56,7 @@ export interface CertificateUploadInput {
   certificateNumber: string;
   issuedDate: string;
   expiryDate: string;
+  issuingAuthority: string;
   file: File;
 }
 
@@ -125,10 +126,7 @@ export interface DashboardSnapshot {
 
 // ─── MDA portal ─────────────────────────────────────────────────────────────
 
-export type VendorEligibilityStatus =
-  | 'procurement-ready'
-  | 'attention-required'
-  | 'ineligible';
+export type VendorEligibilityStatus = 'procurement-ready' | 'attention-required' | 'ineligible';
 
 export interface VendorCertificate {
   name: string;

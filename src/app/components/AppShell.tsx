@@ -134,11 +134,7 @@ export function AppShell({ persona, sidebar, drawerSidebar, children }: AppShell
       )}
 
       {/* Main content */}
-      <main
-        id="main-content"
-        role="main"
-        className="flex-1 min-w-0 overflow-hidden"
-      >
+      <main id="main-content" role="main" className="flex-1 min-w-0 overflow-hidden">
         {children}
       </main>
     </div>

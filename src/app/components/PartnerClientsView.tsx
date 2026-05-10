@@ -1,11 +1,4 @@
-import {
-  Users,
-  Search,
-  Plus,
-  AlertCircle,
-  TrendingUp,
-  Upload,
-} from 'lucide-react';
+import { Users, Search, Plus, AlertCircle, TrendingUp, Upload } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { PartnerCertificateUploadModal } from './PartnerCertificateUploadModal';
 import { useToast } from './ToastProvider';
@@ -36,32 +29,16 @@ export function PartnerClientsView() {
               setFilterStatus={setFilterStatus}
               onUploadCertificate={() => {
                 setIsUploadModalOpen(true);
-                showToast(
-                  'success',
-                  'Upload Certificate',
-                  'Opening certificate upload form...'
-                );
+                showToast('success', 'Upload Certificate', 'Opening certificate upload form...');
               }}
               onAddClient={() =>
-                showToast(
-                  'success',
-                  'Add Client',
-                  'Opening new client registration form...'
-                )
+                showToast('success', 'Add Client', 'Opening new client registration form...')
               }
               onViewDashboard={() =>
-                showToast(
-                  'success',
-                  'Client Dashboard',
-                  'Opening client compliance dashboard...'
-                )
+                showToast('success', 'Client Dashboard', 'Opening client compliance dashboard...')
               }
               onManage={() =>
-                showToast(
-                  'success',
-                  'Client Management',
-                  'Opening client management panel...'
-                )
+                showToast('success', 'Client Management', 'Opening client management panel...')
               }
             />
           )}
@@ -103,9 +80,7 @@ function ClientsContent({
     const q = searchQuery.toLowerCase();
     return clients.filter((c) => {
       const matchesSearch =
-        !q ||
-        c.companyName.toLowerCase().includes(q) ||
-        c.rcNumber.toLowerCase().includes(q);
+        !q || c.companyName.toLowerCase().includes(q) || c.rcNumber.toLowerCase().includes(q);
       const matchesFilter = filterStatus === 'all' || c.status === filterStatus;
       return matchesSearch && matchesFilter;
     });
@@ -199,26 +174,22 @@ function ClientsContent({
             role="group"
             aria-label="Client status filters"
           >
-            {(['all', 'healthy', 'attention', 'critical'] as const).map(
-              (status) => (
-                <button
-                  key={status}
-                  onClick={() => setFilterStatus(status)}
-                  aria-pressed={filterStatus === status}
-                  className={`px-3 sm:px-4 py-2 min-h-[40px] rounded-md transition-colors whitespace-nowrap ${
-                    filterStatus === status
-                      ? 'bg-card shadow-sm'
-                      : 'hover:bg-card/50'
-                  }`}
-                  style={{
-                    fontSize: '14px',
-                    fontWeight: filterStatus === status ? 500 : 400,
-                  }}
-                >
-                  {status.charAt(0).toUpperCase() + status.slice(1)}
-                </button>
-              )
-            )}
+            {(['all', 'healthy', 'attention', 'critical'] as const).map((status) => (
+              <button
+                key={status}
+                onClick={() => setFilterStatus(status)}
+                aria-pressed={filterStatus === status}
+                className={`px-3 sm:px-4 py-2 min-h-[40px] rounded-md transition-colors whitespace-nowrap ${
+                  filterStatus === status ? 'bg-card shadow-sm' : 'hover:bg-card/50'
+                }`}
+                style={{
+                  fontSize: '14px',
+                  fontWeight: filterStatus === status ? 500 : 400,
+                }}
+              >
+                {status.charAt(0).toUpperCase() + status.slice(1)}
+              </button>
+            ))}
           </div>
         </div>
       </div>
@@ -274,12 +245,8 @@ function KpiCard({
           aria-hidden="true"
         />
       </div>
-      <p style={{ fontSize: '28px', fontWeight: 600, color: color ?? undefined }}>
-        {value}
-      </p>
-      {subtitle && (
-        <p className="caption text-muted-foreground mt-1">{subtitle}</p>
-      )}
+      <p style={{ fontSize: '28px', fontWeight: 600, color: color ?? undefined }}>{value}</p>
+      {subtitle && <p className="caption text-muted-foreground mt-1">{subtitle}</p>}
     </div>
   );
 }
@@ -295,20 +262,14 @@ function ClientRow({
 }) {
   const statusConfig = getStatusConfig(client.status);
   const expiryColor =
-    client.daysToExpiry < 0
-      ? '#FF3000'
-      : client.daysToExpiry < 15
-        ? '#FF3000'
-        : 'inherit';
+    client.daysToExpiry < 0 ? '#FF3000' : client.daysToExpiry < 15 ? '#FF3000' : 'inherit';
 
   return (
     <div className="bg-card border border-border rounded-lg p-4 sm:p-5">
       <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-3 mb-2 flex-wrap">
-            <h4 style={{ fontSize: '18px', fontWeight: 500 }}>
-              {client.companyName}
-            </h4>
+            <h4 style={{ fontSize: '18px', fontWeight: 500 }}>{client.companyName}</h4>
             <span
               className="px-3 py-1 rounded-full"
               style={{

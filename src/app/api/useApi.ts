@@ -142,11 +142,7 @@ export function useMutation<TInput, TOutput>(
       const apiErr =
         err instanceof ApiClientError
           ? err
-          : new ApiClientError(
-              0,
-              'UNKNOWN',
-              err instanceof Error ? err.message : 'Request failed'
-            );
+          : new ApiClientError(0, 'UNKNOWN', err instanceof Error ? err.message : 'Request failed');
       setError(apiErr);
       setStatus('error');
       throw apiErr;

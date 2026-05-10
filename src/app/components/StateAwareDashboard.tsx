@@ -381,11 +381,7 @@ export function StateAwareDashboard({ state, onNavigate }: StateAwareDashboardPr
               fontSize: '12px',
               fontWeight: '500',
               backgroundColor:
-                state.score >= 80
-                  ? '#FF3000'
-                  : state.score >= 60
-                    ? '#FF3000'
-                    : '#FF3000',
+                state.score >= 80 ? '#FF3000' : state.score >= 60 ? '#FF3000' : '#FF3000',
               color: 'white',
             }}
           >
@@ -506,11 +502,7 @@ export function StateAwareDashboard({ state, onNavigate }: StateAwareDashboardPr
                   className="w-3.5 h-3.5"
                   style={{
                     color:
-                      state.score >= 80
-                        ? '#FF3000'
-                        : state.score >= 60
-                          ? '#FF3000'
-                          : '#FF3000',
+                      state.score >= 80 ? '#FF3000' : state.score >= 60 ? '#FF3000' : '#FF3000',
                   }}
                 />
               </div>

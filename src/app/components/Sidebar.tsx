@@ -50,23 +50,14 @@ export function Sidebar({
   };
 
   return (
-    <aside
-      className={`${fluid ? 'w-full' : 'w-56 lg:w-64'} h-full bg-card flex flex-col`}
-    >
+    <aside className={`${fluid ? 'w-full' : 'w-56 lg:w-64'} h-full bg-card flex flex-col`}>
       <div className="px-4 py-4 border-b border-border">
         <div className="flex items-center gap-2">
-          <img
-            src="/clearpass-logo.svg"
-            alt="ClearPass"
-            className="h-9 w-auto"
-          />
+          <img src="/clearpass-logo.svg" alt="ClearPass" className="h-9 w-auto" />
         </div>
       </div>
 
-      <nav
-        aria-label="Business portal navigation"
-        className="flex-1 p-3 overflow-y-auto"
-      >
+      <nav aria-label="Business portal navigation" className="flex-1 p-3 overflow-y-auto">
         <SidebarGroup
           label="Main"
           items={MAIN_ITEMS}
@@ -98,10 +89,7 @@ export function Sidebar({
             <p style={{ fontSize: '12px' }} className="truncate">
               Amaka Okoro
             </p>
-            <p
-              className="text-muted-foreground truncate"
-              style={{ fontSize: '13px' }}
-            >
+            <p className="text-muted-foreground truncate" style={{ fontSize: '13px' }}>
               amaka@company.ng
             </p>
           </div>

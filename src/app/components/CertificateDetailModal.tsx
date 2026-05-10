@@ -190,8 +190,7 @@ export function CertificateDetailModal({
                     style={{
                       fontSize: '14px',
                       fontWeight: '500',
-                      color:
-                        certificate.daysToExpiry < 7 ? '#FF3000' : '#FF3000',
+                      color: certificate.daysToExpiry < 7 ? '#FF3000' : '#FF3000',
                     }}
                   >
                     {certificate.daysToExpiry < 7 ? 'Urgent Action Required' : 'Renewal Reminder'}
