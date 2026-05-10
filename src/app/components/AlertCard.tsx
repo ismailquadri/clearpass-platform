@@ -1,4 +1,5 @@
 import { AlertTriangle, Info, X } from 'lucide-react';
+import { memo } from 'react';
 
 interface AlertCardProps {
   type: 'warning' | 'info';
@@ -9,7 +10,7 @@ interface AlertCardProps {
   onDismiss?: () => void;
 }
 
-export function AlertCard({
+export const AlertCard = memo(function AlertCard({
   type,
   title,
   message,
@@ -21,15 +22,15 @@ export function AlertCard({
     type === 'warning'
       ? {
           icon: AlertTriangle,
-          color: 'rgb(250, 115, 25)',
-          bgColor: 'rgb(250, 115, 25, 0.1)',
-          borderColor: 'rgb(250, 115, 25)',
+          color: '#FF3000',
+          bgColor: 'rgba(255, 48, 0, 0.1)',
+          borderColor: '#FF3000',
         }
       : {
           icon: Info,
-          color: 'rgb(71, 194, 255)',
-          bgColor: 'rgb(71, 194, 255, 0.1)',
-          borderColor: 'rgb(71, 194, 255)',
+          color: '#FF3000',
+          bgColor: 'rgb(71, 194, 255, 0.08)',
+          borderColor: '#FF3000',
         };
 
   const Icon = config.icon;
@@ -63,10 +64,10 @@ export function AlertCard({
         </button>
       )}
       {onDismiss && (
-        <button onClick={onDismiss} className="p-0.5 hover:bg-black/5 rounded flex-shrink-0">
+        <button onClick={onDismiss} aria-label="Dismiss alert" className="p-0.5 hover:bg-black/5 rounded flex-shrink-0">
           <X className="w-3.5 h-3.5" style={{ color: config.color }} />
         </button>
       )}
     </div>
   );
-}
+});

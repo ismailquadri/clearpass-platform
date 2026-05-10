@@ -1,4 +1,5 @@
 import { CheckCircle2, AlertTriangle } from 'lucide-react';
+import { memo, useMemo } from 'react';
 
 interface ComplianceScoreProps {
   score: number;
@@ -10,31 +11,28 @@ interface ComplianceScoreProps {
   };
 }
 
-export function ComplianceScore({
+export const ComplianceScore = memo(function ComplianceScore({
   score,
   isProcurementReady,
   projectedScore,
 }: ComplianceScoreProps) {
-  const getScoreColor = (score: number) => {
-    if (score >= 80) return 'rgb(31, 193, 107)'; // green
-    if (score >= 60) return 'rgb(250, 115, 25)'; // orange
-    return 'rgb(251, 55, 72)'; // red
-  };
+  const scoreColor = useMemo(() => {
+    if (score >= 80) return '#FF3000'; // green
+    if (score >= 60) return '#FF3000'; // orange
+    return '#FF3000'; // red
+  }, [score]);
 
-  const getScoreLabel = (score: number) => {
+  const scoreLabel = useMemo(() => {
     if (score >= 80) return 'Excellent';
     if (score >= 60) return 'Attention Required';
     return 'Action Needed';
-  };
-
-  const scoreColor = getScoreColor(score);
-  const scoreLabel = getScoreLabel(score);
+  }, [score]);
 
   return (
     <div className="bg-card border border-border rounded-lg p-4">
-      <h3 className="mb-4" style={{ fontSize: '16px', fontWeight: '600' }}>
+      <p className="mb-4" style={{ fontSize: '16px', fontWeight: '600' }}>
         Compliance Health Score
-      </h3>
+      </p>
 
       <div className="flex items-start gap-6">
         {/* Score Circle */}
@@ -89,11 +87,11 @@ export function ComplianceScore({
           {isProcurementReady ? (
             <div
               className="flex items-center gap-2 px-3 py-2 rounded-md"
-              style={{ backgroundColor: 'rgb(31, 193, 107, 0.1)' }}
+              style={{ backgroundColor: 'rgba(255, 48, 0, 0.1)' }}
             >
-              <CheckCircle2 className="w-4 h-4" style={{ color: 'rgb(31, 193, 107)' }} />
+              <CheckCircle2 className="w-4 h-4" style={{ color: '#FF3000' }} />
               <div>
-                <p style={{ fontSize: '13px', fontWeight: '500', color: 'rgb(31, 193, 107)' }}>
+                <p style={{ fontSize: '13px', fontWeight: '500', color: '#FF3000' }}>
                   Procurement Ready
                 </p>
                 <p className="text-muted-foreground text-[#404040]" style={{ fontSize: '13px' }}>
@@ -104,11 +102,11 @@ export function ComplianceScore({
           ) : (
             <div
               className="flex items-center gap-2 px-3 py-2 rounded-md"
-              style={{ backgroundColor: 'rgb(251, 55, 72, 0.1)' }}
+              style={{ backgroundColor: 'rgba(255, 48, 0, 0.1)' }}
             >
-              <AlertTriangle className="w-4 h-4" style={{ color: 'rgb(251, 55, 72)' }} />
+              <AlertTriangle className="w-4 h-4" style={{ color: '#FF3000' }} />
               <div>
-                <p style={{ fontSize: '13px', fontWeight: '500', color: 'rgb(251, 55, 72)' }}>
+                <p style={{ fontSize: '13px', fontWeight: '500', color: '#FF3000' }}>
                   Ineligible to Bid
                 </p>
                 <p className="text-muted-foreground text-[#404040]" style={{ fontSize: '13px' }}>
@@ -122,9 +120,9 @@ export function ComplianceScore({
           {projectedScore && (
             <div
               className="px-3 py-2 rounded-md border border-[#e5e5e5]"
-              style={{ backgroundColor: 'rgb(250, 115, 25, 0.1)' }}
+              style={{ backgroundColor: 'rgba(255, 48, 0, 0.08)' }}
             >
-              <p style={{ fontSize: '12px', fontWeight: '500', color: 'rgb(250, 115, 25)' }}>
+              <p style={{ fontSize: '12px', fontWeight: '500', color: '#FF3000' }}>
                 Score at Risk
               </p>
               <p
@@ -141,4 +139,4 @@ export function ComplianceScore({
       </div>
     </div>
   );
-}
+});

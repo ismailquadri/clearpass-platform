@@ -98,6 +98,21 @@ export default [
     },
   },
   {
+    files: ['scripts/**/*.{js,mjs,cjs}'],
+    languageOptions: {
+      parserOptions: {
+        ecmaVersion: 2022,
+        sourceType: 'module',
+      },
+      globals: {
+        ...globals.node,
+      },
+    },
+    rules: {
+      'no-undef': 'off',
+    },
+  },
+  {
     ignores: ['dist', 'node_modules'],
   },
 ];

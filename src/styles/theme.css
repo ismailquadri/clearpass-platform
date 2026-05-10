@@ -25,17 +25,17 @@
   /* The default color for text or elements that appear on top of dropdowns and tooltips. */
   --popover-foreground: rgba(23, 23, 23, 1);
   /* The primary color used for buttons, links, and other interactive elements. */
-  --primary: rgba(51, 92, 255, 1);
+  --primary: rgba(255, 48, 0, 1);
   /* The default color for text or elements that appear on top of primary colored elements. */
   --primary-foreground: rgba(255, 255, 255, 1);
   /* The secondary color used for secondary(but NOT-DESTRUCTIVE) buttons and interactive elements. */
   --secondary: rgba(235, 235, 235, 1);
   /* The default color for text or elements that appear on top of secondary colored elements. */
-  --secondary-foreground: rgba(92, 92, 92, 1);
+  --secondary-foreground: rgba(75, 85, 99, 1);
   /* The muted color used for less prominent elements, such as disabled buttons or disabled text. */
   --muted: rgba(235, 235, 235, 1);
   /* The default color for text or elements that appear on top of muted colored elements. */
-  --muted-foreground: rgba(209, 209, 209, 1);
+  --muted-foreground: rgba(75, 85, 99, 1);
   /* The accent color used for highlights, links, and other interactive elements. */
   --accent: rgba(71, 194, 255, 1);
   /* The default color for text or elements that appear on top of accent colored elements. */
@@ -67,7 +67,16 @@
   /* The color for another chart element, such as a bar or line in a chart. */
   --chart-4: rgba(31, 193, 107, 1);
   /* The color for another chart element, such as a bar or line in a chart. */
-  --chart-5: rgba(250, 115, 25, 1);
+  --chart-5: rgba(255, 48, 0, 1);
+
+  /* ─── Brand ─────────────────────────────────────────────────────────────
+   * ClearPass brand identity — use these tokens (or the equivalent
+   * Tailwind arbitrary `#FF3000` values) instead of hand-rolling shades.
+   */
+  --brand: #FF3000;
+  --brand-tint: #FFE4DC;
+  --brand-tint-strong: #FFD0C2;
+  --brand-dark: #B22200;
   /* The default border radius for elements such as buttons, cards, and other containers. */
   --radius: 8px;
   /* Card border radius for container elements. */
@@ -79,7 +88,7 @@
   /* The default color for text or elements that appear on top of sidebars, navigation menus, and other persistent elements. */
   --sidebar-foreground: rgba(23, 23, 23, 1);
   /* The primary color used for buttons, links, and other interactive elements in sidebars and navigation menus. */
-  --sidebar-primary: rgba(51, 92, 255, 1);
+  --sidebar-primary: rgba(255, 48, 0, 1);
   /* The default color for text or elements that appear on top of primary colored elements in sidebars and navigation menus. */
   --sidebar-primary-foreground: rgba(255, 255, 255, 1);
   /* The accent color used for highlights, links, and other interactive elements in sidebars and navigation menus. */
@@ -93,18 +102,23 @@
 }
 
 .dark {
+  /* Brand tokens — same hue, dark-mode-tuned tints. */
+  --brand: #FF3000;
+  --brand-tint: #3a1010;
+  --brand-tint-strong: #5a1818;
+  --brand-dark: #ff6b6b;
   --background: rgba(23, 23, 23, 1);
   --foreground: rgba(255, 255, 255, 1);
   --card: rgba(23, 23, 23, 1);
   --card-foreground: rgba(255, 255, 255, 1);
   --popover: rgba(23, 23, 23, 1);
   --popover-foreground: rgba(255, 255, 255, 1);
-  --primary: rgba(71, 194, 255, 1);
+  --primary: rgba(255, 48, 0, 1);
   --primary-foreground: rgba(23, 23, 23, 1);
   --secondary: rgba(92, 92, 92, 1);
   --secondary-foreground: rgba(255, 255, 255, 1);
   --muted: rgba(92, 92, 92, 1);
-  --muted-foreground: rgba(209, 209, 209, 1);
+  --muted-foreground: rgba(163, 163, 163, 1);
   --accent: rgba(51, 92, 255, 1);
   --accent-foreground: rgba(255, 255, 255, 1);
   --destructive: rgba(251, 55, 72, 1);
@@ -115,7 +129,7 @@
   --ring: rgba(71, 194, 255, 1);
   --sidebar: rgba(23, 23, 23, 1);
   --sidebar-foreground: rgba(255, 255, 255, 1);
-  --sidebar-primary: rgba(71, 194, 255, 1);
+  --sidebar-primary: rgba(255, 48, 0, 1);
   --sidebar-primary-foreground: rgba(23, 23, 23, 1);
   --sidebar-accent: rgba(51, 92, 255, 1);
   --sidebar-accent-foreground: rgba(255, 255, 255, 1);
@@ -166,12 +180,23 @@
 
 @layer base {
   * {
-    @apply border-border outline-ring/50;
+    @apply outline-ring/50;
   }
 
   *:focus-visible {
-    outline: 2px solid var(--ring);
+    outline: 3px solid var(--ring);
     outline-offset: 2px;
+  }
+
+  /* Enhanced focus for better visibility */
+  button:focus-visible,
+  a:focus-visible,
+  input:focus-visible,
+  textarea:focus-visible,
+  select:focus-visible {
+    outline: 3px solid var(--ring);
+    outline-offset: 2px;
+    box-shadow: 0 0 0 4px rgba(51, 92, 255, 0.2);
   }
 
   body {
@@ -261,4 +286,16 @@
 html {
   font-size: var(--font-size);
   font-family: 'Geist', sans-serif;
+}
+
+/* Respect user's motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

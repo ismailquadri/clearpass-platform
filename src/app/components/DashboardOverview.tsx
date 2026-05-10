@@ -64,8 +64,8 @@ export function DashboardOverview() {
   ];
 
   return (
-    <div className="flex-1 h-screen overflow-y-auto bg-background">
-      <div className="p-8 max-w-[1400px] mx-auto">
+    <div className="flex-1 h-full overflow-y-auto bg-background">
+      <div className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">
           <h1 className="mb-2" style={{ fontSize: '32px' }}>
@@ -95,7 +95,8 @@ export function DashboardOverview() {
         </div>
 
         {/* Stats Row */}
-        <div className="grid grid-cols-3 gap-4 mb-8">
+        <section className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8" aria-labelledby="stats-heading">
+          <div className="sr-only" id="stats-heading">Statistics Overview</div>
           <div className="bg-card border border-border rounded-lg p-5">
             <div className="flex items-center justify-between mb-3">
               <span className="text-muted-foreground" style={{ fontSize: '14px' }}>
@@ -131,15 +132,16 @@ export function DashboardOverview() {
                 <Building2 className="w-5 h-5 text-orange-600" />
               </div>
             </div>
-            <p style={{ fontSize: '18px', fontWeight: '600', color: 'rgb(250, 115, 25)' }}>
+            <p style={{ fontSize: '18px', fontWeight: '600', color: '#FF3000' }}>
               Attention Required
             </p>
             <p className="caption text-muted-foreground">CAC Verified</p>
           </div>
-        </div>
+        </section>
 
         {/* Compliance Score */}
-        <div className="mb-8">
+        <section className="mb-8" aria-labelledby="compliance-score-heading">
+          <h2 id="compliance-score-heading" className="sr-only">Compliance Score</h2>
           <ComplianceScore
             score={73}
             isProcurementReady={false}
@@ -149,47 +151,73 @@ export function DashboardOverview() {
               certificate: 'NSITF',
             }}
           />
-        </div>
+        </section>
 
         {/* Certificates Grid */}
-        <div className="mb-8">
+        <section className="mb-8" aria-labelledby="certificates-heading">
           <div className="flex items-center justify-between mb-4">
-            <h3 style={{ fontSize: '20px' }}>My Certificates</h3>
-            <button className="px-4 py-2 rounded-md border border-border hover:bg-muted transition-colors">
+            <h2 id="certificates-heading" style={{ fontSize: '20px' }}>My Certificates</h2>
+            <button
+              onClick={() =>
+                showToast('success', 'Navigate to Certificates', 'Opening certificates view...')
+              }
+              className="px-4 py-2 rounded-md border border-border hover:bg-muted transition-colors"
+              aria-label="View all certificates"
+            >
               View All
             </button>
           </div>
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {certificates.map((cert, index) => (
               <CertificateCard key={index} {...cert} />
             ))}
           </div>
-        </div>
+        </section>
 
         {/* Quick Actions */}
-        <div className="bg-card border border-border rounded-lg p-6">
-          <h3 className="mb-4" style={{ fontSize: '18px' }}>
+        <section className="bg-card border border-border rounded-lg p-6" aria-labelledby="quick-actions-heading">
+          <h2 id="quick-actions-heading" className="mb-4" style={{ fontSize: '18px' }}>
             Quick Actions
-          </h3>
+          </h2>
           <div className="grid grid-cols-4 gap-3">
-            <button className="px-4 py-3 rounded-md border border-border hover:bg-muted transition-colors text-left">
+            <button
+              onClick={() =>
+                showToast('success', 'Generate Report', 'Opening report generation form...')
+              }
+              className="px-4 py-3 rounded-md border border-border hover:bg-muted transition-colors text-left"
+            >
               <p style={{ fontSize: '14px', fontWeight: '500' }}>Generate Report</p>
               <p className="caption text-muted-foreground">Download compliance PDF</p>
             </button>
-            <button className="px-4 py-3 rounded-md border border-border hover:bg-muted transition-colors text-left">
+            <button
+              onClick={() =>
+                showToast('success', 'Verify Company', 'Opening company verification form...')
+              }
+              className="px-4 py-3 rounded-md border border-border hover:bg-muted transition-colors text-left"
+            >
               <p style={{ fontSize: '14px', fontWeight: '500' }}>Verify Company</p>
               <p className="caption text-muted-foreground">Check another company's status</p>
             </button>
-            <button className="px-4 py-3 rounded-md border border-border hover:bg-muted transition-colors text-left">
+            <button
+              onClick={() =>
+                showToast('success', 'Upload Certificate', 'Opening certificate upload form...')
+              }
+              className="px-4 py-3 rounded-md border border-border hover:bg-muted transition-colors text-left"
+            >
               <p style={{ fontSize: '14px', fontWeight: '500' }}>Upload Certificate</p>
               <p className="caption text-muted-foreground">Add new certification</p>
             </button>
-            <button className="px-4 py-3 rounded-md border border-border hover:bg-muted transition-colors text-left">
+            <button
+              onClick={() =>
+                showToast('success', 'Contact Support', 'Opening support contact form...')
+              }
+              className="px-4 py-3 rounded-md border border-border hover:bg-muted transition-colors text-left"
+            >
               <p style={{ fontSize: '14px', fontWeight: '500' }}>Contact Support</p>
               <p className="caption text-muted-foreground">Get help with compliance</p>
             </button>
           </div>
-        </div>
+        </section>
       </div>
     </div>
   );

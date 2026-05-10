@@ -28,7 +28,10 @@ export function ToastProvider({ children }: { children: ReactNode }) {
   const [toasts, setToasts] = useState<Toast[]>([]);
 
   const showToast = (type: ToastType, title: string, message?: string) => {
-    const id = Math.random().toString(36).substring(7);
+    const id =
+      typeof crypto !== 'undefined' && 'randomUUID' in crypto
+        ? crypto.randomUUID()
+        : `toast-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
     const toast: Toast = { id, type, title, message };
 
     setToasts((prev) => [...prev, toast]);
@@ -88,6 +91,9 @@ export function ToastProvider({ children }: { children: ReactNode }) {
       <div
         className="fixed bottom-4 right-4 z-[100] flex flex-col gap-2"
         style={{ maxWidth: '390px' }}
+        role="region"
+        aria-live="polite"
+        aria-label="Notifications"
       >
         {toasts.map((toast) => {
           const config = getToastConfig(toast.type);

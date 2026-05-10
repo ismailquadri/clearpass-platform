@@ -70,6 +70,9 @@ export function TweaksPanel({
 
       {/* Panel */}
       <div
+        role="dialog"
+        aria-label="Settings and configuration panel"
+        aria-modal="true"
         className="fixed bottom-6 right-6 w-[520px] bg-card border border-border rounded-xl shadow-2xl z-50"
         style={{ maxHeight: 'calc(100vh - 100px)' }}
       >
@@ -168,16 +171,16 @@ export function TweaksPanel({
                             fontSize: '12px',
                             backgroundColor:
                               state.score >= 80
-                                ? 'rgb(31, 193, 107, 0.1)'
+                                ? 'rgba(255, 48, 0, 0.1)'
                                 : state.score >= 60
-                                  ? 'rgb(250, 115, 25, 0.1)'
-                                  : 'rgb(251, 55, 72, 0.1)',
+                                  ? 'rgba(255, 48, 0, 0.1)'
+                                  : 'rgba(255, 48, 0, 0.1)',
                             color:
                               state.score >= 80
-                                ? 'rgb(31, 193, 107)'
+                                ? '#FF3000'
                                 : state.score >= 60
-                                  ? 'rgb(250, 115, 25)'
-                                  : 'rgb(251, 55, 72)',
+                                  ? '#FF3000'
+                                  : '#FF3000',
                           }}
                         >
                           {state.score}/100
@@ -207,8 +210,9 @@ export function TweaksButton({ onClick }: { onClick: () => void }) {
   return (
     <button
       onClick={onClick}
+      aria-label="Open settings panel"
       className="fixed bottom-4 right-4 w-10 h-10 rounded-full shadow-lg flex items-center justify-center hover:shadow-xl transition-all z-30"
-      style={{ backgroundColor: 'rgb(251, 115, 25)' }}
+      style={{ backgroundColor: '#FF3000' }}
     >
       <Settings2 className="w-4 h-4 text-white" />
     </button>

@@ -88,21 +88,21 @@ export function ReportsView() {
   const getReportColor = (type: Report['type']) => {
     switch (type) {
       case 'procurement-ready':
-        return 'rgb(31, 193, 107)';
+        return '#FF3000';
       case 'provisional':
-        return 'rgb(250, 115, 25)';
+        return '#FF3000';
       case 'monthly':
-        return 'rgb(71, 194, 255)';
+        return '#FF3000';
       case 'audit-trail':
-        return 'rgb(125, 82, 244)';
+        return '#FF3000';
       default:
         return 'rgb(92, 92, 92)';
     }
   };
 
   return (
-    <div className="flex-1 h-screen overflow-y-auto bg-background">
-      <div className="p-8 max-w-[1200px] mx-auto">
+    <div className="flex-1 h-full overflow-y-auto bg-background">
+      <div className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">
           <div className="flex items-center justify-between mb-2">
@@ -110,7 +110,7 @@ export function ReportsView() {
             <button
               onClick={generateNewReport}
               className="px-4 py-2 rounded-md text-white flex items-center gap-2"
-              style={{ backgroundColor: 'rgb(251, 115, 25)' }}
+              style={{ backgroundColor: '#FF3000' }}
             >
               <FileText className="w-5 h-5" />
               Generate New Report
@@ -126,7 +126,7 @@ export function ReportsView() {
           <div className="flex items-start gap-4">
             <div
               className="w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0"
-              style={{ backgroundColor: 'rgb(251, 115, 25)' }}
+              style={{ backgroundColor: '#FF3000' }}
             >
               <FileText className="w-6 h-6 text-white" />
             </div>
@@ -142,7 +142,7 @@ export function ReportsView() {
                 <button
                   onClick={generateNewReport}
                   className="px-4 py-2 rounded-md text-white"
-                  style={{ backgroundColor: 'rgb(251, 115, 25)' }}
+                  style={{ backgroundColor: '#FF3000' }}
                 >
                   Generate Full Report
                 </button>
@@ -158,12 +158,12 @@ export function ReportsView() {
         <div
           className="px-4 py-3 rounded-lg border border-[#e5e5e5] flex items-start gap-3 mb-6"
           style={{
-            backgroundColor: 'rgb(71, 194, 255, 0.1)',
+            backgroundColor: 'rgba(255, 48, 0, 0.1)',
           }}
         >
-          <CheckCircle2 className="w-5 h-5 flex-shrink-0" style={{ color: 'rgb(71, 194, 255)' }} />
+          <CheckCircle2 className="w-5 h-5 flex-shrink-0" style={{ color: '#FF3000' }} />
           <div>
-            <p style={{ fontSize: '14px', fontWeight: '500', color: 'rgb(71, 194, 255)' }}>
+            <p style={{ fontSize: '14px', fontWeight: '500', color: '#FF3000' }}>
               Report Requirements
             </p>
             <p className="caption text-muted-foreground mt-1">
@@ -204,8 +204,8 @@ export function ReportsView() {
                             <span
                               className="px-2 py-0.5 rounded-full flex items-center gap-1"
                               style={{
-                                backgroundColor: 'rgb(251, 55, 72, 0.1)',
-                                color: 'rgb(251, 55, 72)',
+                                backgroundColor: 'rgba(255, 48, 0, 0.1)',
+                                color: '#FF3000',
                                 fontSize: '13px',
                               }}
                             >
@@ -244,14 +244,14 @@ export function ReportsView() {
                     {report.status === 'locked' && (
                       <div
                         className="px-3 py-2 rounded-md mb-3"
-                        style={{ backgroundColor: 'rgb(251, 55, 72, 0.1)' }}
+                        style={{ backgroundColor: 'rgba(255, 48, 0, 0.1)' }}
                       >
                         <div className="flex items-center gap-2">
                           <AlertTriangle
                             className="w-4 h-4"
-                            style={{ color: 'rgb(251, 55, 72)' }}
+                            style={{ color: '#FF3000' }}
                           />
-                          <p className="caption" style={{ color: 'rgb(251, 55, 72)' }}>
+                          <p className="caption" style={{ color: '#FF3000' }}>
                             Report locked: Score must be ≥80 with all certificates active to
                             generate Procurement Ready report
                           </p>
@@ -298,11 +298,11 @@ export function ReportsView() {
           <h3 className="mb-4" style={{ fontSize: '16px', fontWeight: '500' }}>
             About Compliance Reports
           </h3>
-          <div className="grid grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <div>
               <h4
                 className="mb-2"
-                style={{ fontSize: '14px', fontWeight: '500', color: 'rgb(31, 193, 107)' }}
+                style={{ fontSize: '14px', fontWeight: '500', color: '#FF3000' }}
               >
                 Procurement Ready Report
               </h4>
@@ -314,7 +314,7 @@ export function ReportsView() {
             <div>
               <h4
                 className="mb-2"
-                style={{ fontSize: '14px', fontWeight: '500', color: 'rgb(250, 115, 25)' }}
+                style={{ fontSize: '14px', fontWeight: '500', color: '#FF3000' }}
               >
                 Provisional Report
               </h4>
@@ -326,7 +326,7 @@ export function ReportsView() {
             <div>
               <h4
                 className="mb-2"
-                style={{ fontSize: '14px', fontWeight: '500', color: 'rgb(71, 194, 255)' }}
+                style={{ fontSize: '14px', fontWeight: '500', color: '#FF3000' }}
               >
                 Monthly Summary
               </h4>
@@ -338,7 +338,7 @@ export function ReportsView() {
             <div>
               <h4
                 className="mb-2"
-                style={{ fontSize: '14px', fontWeight: '500', color: 'rgb(125, 82, 244)' }}
+                style={{ fontSize: '14px', fontWeight: '500', color: '#FF3000' }}
               >
                 Audit Trail Report
               </h4>

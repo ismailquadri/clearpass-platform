@@ -7,257 +7,239 @@ import {
   Mail,
   FileText,
   Clock,
+  Activity,
 } from 'lucide-react';
+import { useMemo, useState } from 'react';
+import { useToast } from './ToastProvider';
+import { useActivity } from '../api';
+import type { ActivityItem, ActivityType } from '../api';
+import { ApiState, EmptyState } from './ui';
+import { TableSkeleton } from './ui/Skeleton';
 
-interface ActivityItem {
-  id: string;
-  type: 'verification' | 'upload' | 'download' | 'renewal' | 'alert' | 'email' | 'report';
-  title: string;
-  description: string;
-  timestamp: string;
-  status?: 'success' | 'warning' | 'info';
-}
+type TypeFilter = 'all' | ActivityType;
+type PeriodFilter = '7d' | '30d' | '90d' | 'all';
 
 export function ActivityLogView() {
-  const activities: ActivityItem[] = [
-    {
-      id: '1',
-      type: 'verification',
-      title: 'NHIA Certificate Verified',
-      description: 'Certificate verified successfully via government API',
-      timestamp: '9 May 2026, 10:23 AM',
-      status: 'success',
-    },
-    {
-      id: '2',
-      type: 'alert',
-      title: 'NSITF Certificate Expiring Soon',
-      description: 'Your NSITF certificate will expire in 6 days',
-      timestamp: '9 May 2026, 8:00 AM',
-      status: 'warning',
-    },
-    {
-      id: '3',
-      type: 'email',
-      title: 'Compliance Alert Sent',
-      description: 'Email notification sent regarding PCC renewal',
-      timestamp: '8 May 2026, 6:15 PM',
-      status: 'info',
-    },
-    {
-      id: '4',
-      type: 'report',
-      title: 'Compliance Report Generated',
-      description: 'Monthly compliance report downloaded',
-      timestamp: '8 May 2026, 2:30 PM',
-      status: 'success',
-    },
-    {
-      id: '5',
-      type: 'upload',
-      title: 'ITF Certificate Uploaded',
-      description: 'New certificate document uploaded for verification',
-      timestamp: '7 May 2026, 11:45 AM',
-      status: 'info',
-    },
-    {
-      id: '6',
-      type: 'verification',
-      title: 'PCC Verification Completed',
-      description: 'Admin reviewed and approved PCC certificate',
-      timestamp: '6 May 2026, 4:20 PM',
-      status: 'success',
-    },
-    {
-      id: '7',
-      type: 'renewal',
-      title: 'FIRS TCC Renewal Started',
-      description: 'Renewal process initiated for tax clearance certificate',
-      timestamp: '5 May 2026, 9:15 AM',
-      status: 'info',
-    },
-    {
-      id: '8',
-      type: 'download',
-      title: 'Certificate Bundle Downloaded',
-      description: 'All active certificates downloaded as PDF bundle',
-      timestamp: '4 May 2026, 3:45 PM',
-      status: 'success',
-    },
-    {
-      id: '9',
-      type: 'alert',
-      title: 'Score Drop Warning',
-      description: 'Compliance score may drop to 41/100 if NSITF expires',
-      timestamp: '3 May 2026, 7:30 AM',
-      status: 'warning',
-    },
-    {
-      id: '10',
-      type: 'verification',
-      title: 'BPP Certificate Re-verified',
-      description: 'Automated monthly verification check completed',
-      timestamp: '1 May 2026, 12:00 PM',
-      status: 'success',
-    },
-  ];
-
-  const getActivityIcon = (type: ActivityItem['type']) => {
-    switch (type) {
-      case 'verification':
-        return CheckCircle2;
-      case 'upload':
-        return Upload;
-      case 'download':
-        return Download;
-      case 'renewal':
-        return RefreshCw;
-      case 'alert':
-        return AlertTriangle;
-      case 'email':
-        return Mail;
-      case 'report':
-        return FileText;
-      default:
-        return Clock;
-    }
-  };
-
-  const getStatusConfig = (status?: ActivityItem['status']) => {
-    switch (status) {
-      case 'success':
-        return {
-          color: 'rgb(31, 193, 107)',
-          bgColor: 'rgb(31, 193, 107, 0.1)',
-        };
-      case 'warning':
-        return {
-          color: 'rgb(250, 115, 25)',
-          bgColor: 'rgb(250, 115, 25, 0.1)',
-        };
-      case 'info':
-      default:
-        return {
-          color: 'rgb(71, 194, 255)',
-          bgColor: 'rgb(71, 194, 255, 0.1)',
-        };
-    }
-  };
-
-  // Group activities by date
-  const groupedActivities: { [key: string]: ActivityItem[] } = {};
-  activities.forEach((activity) => {
-    const date = activity.timestamp.split(',')[0];
-    if (!groupedActivities[date]) {
-      groupedActivities[date] = [];
-    }
-    groupedActivities[date].push(activity);
-  });
+  const { showToast } = useToast();
+  const activityQuery = useActivity();
+  const [typeFilter, setTypeFilter] = useState<TypeFilter>('all');
+  const [periodFilter, setPeriodFilter] = useState<PeriodFilter>('all');
 
   return (
-    <div className="flex-1 h-screen overflow-y-auto bg-background">
-      <div className="p-8 max-w-[1200px] mx-auto">
-        {/* Header */}
-        <div className="mb-8">
-          <h1 className="mb-2" style={{ fontSize: '32px' }}>
+    <div className="flex-1 h-full overflow-y-auto bg-background">
+      <div className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto">
+        <header className="mb-6 sm:mb-8">
+          <h1 className="mb-2" style={{ fontSize: '28px' }}>
             Activity Log
           </h1>
           <p className="text-muted-foreground" style={{ fontSize: '16px' }}>
             Track all compliance activities and system events
           </p>
-        </div>
+        </header>
 
-        {/* Filter Bar */}
-        <div className="bg-card border border-border rounded-lg p-4 mb-6">
-          <div className="flex items-center gap-4">
+        <div className="bg-card border border-border rounded-lg p-3 sm:p-4 mb-6">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
             <div className="flex-1">
-              <label htmlFor="activity-type-filter" className="sr-only mb-2">Filter by activity type</label>
+              <label htmlFor="activity-type-filter" className="sr-only">
+                Filter by activity type
+              </label>
               <select
                 id="activity-type-filter"
-                className="w-full px-4 py-2 bg-input-background border border-border rounded-md"
+                value={typeFilter}
+                onChange={(e) => setTypeFilter(e.target.value as TypeFilter)}
+                className="w-full px-4 py-2 min-h-[44px] bg-input-background border border-border rounded-md"
               >
-                <option>All Activities</option>
-                <option>Verifications</option>
-                <option>Uploads</option>
-                <option>Downloads</option>
-                <option>Renewals</option>
-                <option>Alerts</option>
+                <option value="all">All Activities</option>
+                <option value="verification">Verifications</option>
+                <option value="upload">Uploads</option>
+                <option value="download">Downloads</option>
+                <option value="renewal">Renewals</option>
+                <option value="alert">Alerts</option>
+                <option value="email">Emails</option>
+                <option value="report">Reports</option>
               </select>
             </div>
             <div className="flex-1">
-              <label htmlFor="time-period-filter" className="sr-only mb-2">Filter by time period</label>
+              <label htmlFor="time-period-filter" className="sr-only">
+                Filter by time period
+              </label>
               <select
                 id="time-period-filter"
-                className="w-full px-4 py-2 bg-input-background border border-border rounded-md"
+                value={periodFilter}
+                onChange={(e) => setPeriodFilter(e.target.value as PeriodFilter)}
+                className="w-full px-4 py-2 min-h-[44px] bg-input-background border border-border rounded-md"
               >
-                <option>Last 7 Days</option>
-                <option>Last 30 Days</option>
-                <option>Last 3 Months</option>
-                <option>All Time</option>
+                <option value="7d">Last 7 Days</option>
+                <option value="30d">Last 30 Days</option>
+                <option value="90d">Last 3 Months</option>
+                <option value="all">All Time</option>
               </select>
             </div>
-            <button className="px-4 py-2 rounded-md border border-border hover:bg-muted transition-colors flex items-center gap-2">
-              <Download className="w-4 h-4" />
-              Export Log
+            <button
+              onClick={() =>
+                showToast(
+                  'success',
+                  'Export Log',
+                  'Downloading activity log as CSV...'
+                )
+              }
+              className="px-4 py-2 min-h-[44px] rounded-md border border-border hover:bg-muted transition-colors flex items-center justify-center gap-2 shrink-0"
+            >
+              <Download className="w-4 h-4" aria-hidden="true" />
+              <span>Export Log</span>
             </button>
           </div>
         </div>
 
-        {/* Activity Timeline */}
-        <div className="space-y-6">
-          {Object.entries(groupedActivities).map(([date, items]) => (
-            <div key={date}>
-              <div className="flex items-center gap-3 mb-4">
-                <h3 style={{ fontSize: '16px', fontWeight: '500' }}>{date}</h3>
-                <div className="flex-1 h-px bg-border" />
-              </div>
-
-              <div className="space-y-3">
-                {items.map((activity) => {
-                  const Icon = getActivityIcon(activity.type);
-                  const statusConfig = getStatusConfig(activity.status);
-
-                  return (
-                    <div
-                      key={activity.id}
-                      className="bg-card border border border-border rounded-lg p-4 transition-shadow"
-                    >
-                      <div className="flex items-start gap-4">
-                        <div
-                          className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0"
-                          style={{ backgroundColor: statusConfig.bgColor }}
-                        >
-                          <Icon className="w-5 h-5" style={{ color: statusConfig.color }} />
-                        </div>
-                        <div className="flex-1">
-                          <div className="flex items-start justify-between mb-1">
-                            <h4 style={{ fontSize: '16px', fontWeight: '500' }}>
-                              {activity.title}
-                            </h4>
-                            <span className="caption text-muted-foreground whitespace-nowrap ml-4">
-                              {activity.timestamp.split(',')[1]}
-                            </span>
-                          </div>
-                          <p className="text-muted-foreground" style={{ fontSize: '14px' }}>
-                            {activity.description}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* Load More */}
-        <div className="mt-8 text-center">
-          <button className="px-6 py-3 rounded-md border border-border hover:bg-muted transition-colors">
-            Load More Activities
-          </button>
-        </div>
+        <ApiState query={activityQuery} loading={<TableSkeleton rows={8} />}>
+          {(activities) => (
+            <ActivityTimeline
+              activities={activities.filter(
+                (a) => typeFilter === 'all' || a.type === typeFilter
+              )}
+              onLoadMore={() =>
+                showToast('success', 'Load More', 'Loading more activities...')
+              }
+            />
+          )}
+        </ApiState>
       </div>
     </div>
   );
+}
+
+function ActivityTimeline({
+  activities,
+  onLoadMore,
+}: {
+  activities: ActivityItem[];
+  onLoadMore: () => void;
+}) {
+  const grouped = useMemo(() => {
+    const map = new Map<string, ActivityItem[]>();
+    for (const a of activities) {
+      const date = a.timestamp.split(',')[0];
+      const list = map.get(date) ?? [];
+      list.push(a);
+      map.set(date, list);
+    }
+    return Array.from(map.entries());
+  }, [activities]);
+
+  if (activities.length === 0) {
+    return (
+      <EmptyState
+        icon={Activity}
+        title="No Activity Yet"
+        description="Once you upload certificates or take compliance actions, they'll show up here."
+      />
+    );
+  }
+
+  return (
+    <>
+      <div className="space-y-6">
+        {grouped.map(([date, items]) => (
+          <div key={date}>
+            <div className="flex items-center gap-3 mb-4">
+              <h3 style={{ fontSize: '16px', fontWeight: 500 }}>{date}</h3>
+              <div className="flex-1 h-px bg-border" />
+            </div>
+            <div className="space-y-3">
+              {items.map((activity) => {
+                const Icon = getActivityIcon(activity.type);
+                const statusConfig = getStatusConfig(activity.status);
+                return (
+                  <div
+                    key={activity.id}
+                    className="bg-card border border-border rounded-lg p-3 sm:p-4"
+                  >
+                    <div className="flex items-start gap-3 sm:gap-4">
+                      <div
+                        className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0"
+                        style={{ backgroundColor: statusConfig.bgColor }}
+                      >
+                        <Icon
+                          className="w-5 h-5"
+                          style={{ color: statusConfig.color }}
+                          aria-hidden="true"
+                        />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-1 mb-1">
+                          <h4 style={{ fontSize: '16px', fontWeight: 500 }}>
+                            {activity.title}
+                          </h4>
+                          <span className="caption text-muted-foreground whitespace-nowrap sm:ml-4">
+                            {activity.timestamp.split(',')[1]?.trim()}
+                          </span>
+                        </div>
+                        <p
+                          className="text-muted-foreground"
+                          style={{ fontSize: '14px' }}
+                        >
+                          {activity.description}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div className="mt-8 text-center">
+        <button
+          onClick={onLoadMore}
+          className="px-6 py-3 min-h-[44px] rounded-md border border-border hover:bg-muted transition-colors"
+        >
+          Load More Activities
+        </button>
+      </div>
+    </>
+  );
+}
+
+function getActivityIcon(type: ActivityType) {
+  switch (type) {
+    case 'verification':
+      return CheckCircle2;
+    case 'upload':
+      return Upload;
+    case 'download':
+      return Download;
+    case 'renewal':
+      return RefreshCw;
+    case 'alert':
+      return AlertTriangle;
+    case 'email':
+      return Mail;
+    case 'report':
+      return FileText;
+    default:
+      return Clock;
+  }
+}
+
+function getStatusConfig(status?: ActivityItem['status']) {
+  switch (status) {
+    case 'success':
+      return {
+        color: '#FF3000',
+        bgColor: 'rgba(255, 48, 0, 0.1)',
+      };
+    case 'warning':
+      return {
+        color: '#FF3000',
+        bgColor: 'rgba(255, 48, 0, 0.1)',
+      };
+    case 'info':
+    default:
+      return {
+        color: '#FF3000',
+        bgColor: 'rgba(255, 48, 0, 0.1)',
+      };
+  }
 }

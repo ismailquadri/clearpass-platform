@@ -1,21 +1,19 @@
-import { useState } from 'react';
+import { useEffect, useState, lazy, Suspense } from 'react';
+import { FileQuestion } from 'lucide-react';
 import ErrorBoundary from './components/ErrorBoundary';
 import { Sidebar } from './components/Sidebar';
 import { MDASidebar } from './components/MDASidebar';
 import { PartnerSidebar } from './components/PartnerSidebar';
-import { StateAwareDashboard } from './components/StateAwareDashboard';
-import { MDAVerifyView } from './components/MDAVerifyView';
-import { MDAPrequalificationView } from './components/MDAPrequalificationView';
-import { PartnerClientsView } from './components/PartnerClientsView';
-import { PartnerAnalyticsView } from './components/PartnerAnalyticsView';
-import { CertificatesView } from './components/CertificatesView';
-import { ActivityLogView } from './components/ActivityLogView';
-import { BusinessVerifyView } from './components/BusinessVerifyView';
-import { ReportsView } from './components/ReportsView';
-import { AlertsView } from './components/AlertsView';
-import { SettingsView } from './components/SettingsView';
 import { ToastProvider } from './components/ToastProvider';
-import { OnboardingFlow } from './components/OnboardingFlow';
+import { AppShell } from './components/AppShell';
+import { EmptyState } from './components/ui/EmptyState';
+import {
+  PageHeaderSkeleton,
+  StatCardGridSkeleton,
+  CertificateGridSkeleton,
+  TableSkeleton,
+  ChartSkeleton,
+} from './components/ui/Skeleton';
 import {
   TweaksPanel,
   TweaksButton,
@@ -23,130 +21,344 @@ import {
   type Persona,
   type DashboardState,
 } from './components/TweaksPanel';
+import './sentry';
+import { setupCoreWebVitals, setupMemoryMonitoring } from './utils/performance';
+import { registerSW } from 'virtual:pwa-register';
+import { prefetchLikelyRoutes, setupLinkPrefetching } from './utils/prefetch';
+
+// Lazy-loaded views — each becomes its own JS chunk.
+const StateAwareDashboard = lazy(() =>
+  import('./components/StateAwareDashboard').then((m) => ({
+    default: m.StateAwareDashboard,
+  }))
+);
+const MDAVerifyView = lazy(() =>
+  import('./components/MDAVerifyView').then((m) => ({ default: m.MDAVerifyView }))
+);
+const MDAPrequalificationView = lazy(() =>
+  import('./components/MDAPrequalificationView').then((m) => ({
+    default: m.MDAPrequalificationView,
+  }))
+);
+const PartnerClientsView = lazy(() =>
+  import('./components/PartnerClientsView').then((m) => ({
+    default: m.PartnerClientsView,
+  }))
+);
+const PartnerAnalyticsView = lazy(() =>
+  import('./components/PartnerAnalyticsView').then((m) => ({
+    default: m.PartnerAnalyticsView,
+  }))
+);
+const CertificatesView = lazy(() =>
+  import('./components/CertificatesView').then((m) => ({
+    default: m.CertificatesView,
+  }))
+);
+const ActivityLogView = lazy(() =>
+  import('./components/ActivityLogView').then((m) => ({
+    default: m.ActivityLogView,
+  }))
+);
+const BusinessVerifyView = lazy(() =>
+  import('./components/BusinessVerifyView').then((m) => ({
+    default: m.BusinessVerifyView,
+  }))
+);
+const ReportsView = lazy(() =>
+  import('./components/ReportsView').then((m) => ({ default: m.ReportsView }))
+);
+const AlertsView = lazy(() =>
+  import('./components/AlertsView').then((m) => ({ default: m.AlertsView }))
+);
+const SettingsView = lazy(() =>
+  import('./components/SettingsView').then((m) => ({ default: m.SettingsView }))
+);
+const OnboardingFlow = lazy(() =>
+  import('./components/OnboardingFlow').then((m) => ({
+    default: m.OnboardingFlow,
+  }))
+);
+
+// ─── Per-route skeleton fallbacks ───────────────────────────────────────────
+// Pick a fallback that mirrors the destination view so the layout doesn't
+// jump when the chunk arrives.
+
+function ViewShell({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="flex-1 h-full overflow-y-auto bg-background">
+      <div className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto">{children}</div>
+    </div>
+  );
+}
+
+function DashboardSkeleton() {
+  return (
+    <ViewShell>
+      <PageHeaderSkeleton />
+      <div className="space-y-6">
+        <StatCardGridSkeleton />
+        <CertificateGridSkeleton count={6} />
+      </div>
+    </ViewShell>
+  );
+}
+
+function CertificatesSkeleton() {
+  return (
+    <ViewShell>
+      <PageHeaderSkeleton />
+      <div className="space-y-6">
+        <StatCardGridSkeleton />
+        <CertificateGridSkeleton count={6} />
+      </div>
+    </ViewShell>
+  );
+}
+
+function ActivitySkeleton() {
+  return (
+    <ViewShell>
+      <PageHeaderSkeleton />
+      <TableSkeleton rows={8} />
+    </ViewShell>
+  );
+}
+
+function AnalyticsSkeleton() {
+  return (
+    <ViewShell>
+      <PageHeaderSkeleton />
+      <div className="space-y-6">
+        <StatCardGridSkeleton />
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <ChartSkeleton />
+          <ChartSkeleton />
+        </div>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <ChartSkeleton />
+          <ChartSkeleton />
+        </div>
+      </div>
+    </ViewShell>
+  );
+}
+
+function GenericSkeleton() {
+  return (
+    <ViewShell>
+      <PageHeaderSkeleton />
+      <TableSkeleton rows={5} />
+    </ViewShell>
+  );
+}
+
+// ─── Section-not-found fallback ─────────────────────────────────────────────
+
+function SectionNotFound({
+  persona,
+  section,
+  onHome,
+}: {
+  persona: Persona;
+  section: string;
+  onHome: () => void;
+}) {
+  return (
+    <ViewShell>
+      <EmptyState
+        icon={FileQuestion}
+        title="Section Not Available"
+        description={`"${section}" isn't part of the ${persona} portal yet. We'll let you know when it ships.`}
+        action={{ label: 'Back to home', onClick: onHome }}
+      />
+    </ViewShell>
+  );
+}
+
+// ─── App ────────────────────────────────────────────────────────────────────
 
 export default function App() {
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [activeSection, setActiveSection] = useState('overview');
   const [isTweaksPanelOpen, setIsTweaksPanelOpen] = useState(false);
   const [selectedPersona, setSelectedPersona] = useState<Persona>('Business');
-  const [selectedState, setSelectedState] = useState<DashboardState>(DASHBOARD_STATES[1]); // Attention Required
+  const [selectedState, setSelectedState] = useState<DashboardState>(
+    DASHBOARD_STATES[1] // Attention Required
+  );
 
-  // Reset active section when persona changes
+  // One-shot setup on mount.
+  useEffect(() => {
+    setupCoreWebVitals();
+    setupMemoryMonitoring();
+    setupLinkPrefetching();
+
+    if (import.meta.env.PROD) {
+      registerSW({
+        onNeedRefresh() {
+          // SW: a fresh build is available. Hard reload picks it up next nav.
+        },
+        onOfflineReady() {
+          // SW: app is now usable offline.
+        },
+      });
+    }
+  }, []);
+
+  // Re-run prefetch when the user navigates.
+  useEffect(() => {
+    prefetchLikelyRoutes(`/${activeSection}`);
+  }, [activeSection]);
+
   const handlePersonaChange = (persona: Persona) => {
     setSelectedPersona(persona);
-    if (persona === 'Business') {
-      setActiveSection('overview');
-    } else if (persona === 'MDA') {
-      setActiveSection('verify');
-    } else {
-      setActiveSection('clients');
-    }
+    if (persona === 'Business') setActiveSection('overview');
+    else if (persona === 'MDA') setActiveSection('verify');
+    else setActiveSection('clients');
   };
 
-  // Render appropriate sidebar based on persona
-  const renderSidebar = () => {
+  const goHome = () => {
+    if (selectedPersona === 'Business') setActiveSection('overview');
+    else if (selectedPersona === 'MDA') setActiveSection('verify');
+    else setActiveSection('clients');
+  };
+
+  // Sidebar factory (one for desktop, one for the drawer that closes itself).
+  const renderSidebar = (onItemSelect?: () => void) => {
+    const props = {
+      activeSection,
+      onSectionChange: setActiveSection,
+      onItemSelect,
+    };
     switch (selectedPersona) {
       case 'Business':
-        return <Sidebar activeSection={activeSection} onSectionChange={setActiveSection} />;
+        return <Sidebar {...props} fluid={!!onItemSelect} />;
       case 'MDA':
-        return <MDASidebar activeSection={activeSection} onSectionChange={setActiveSection} />;
+        return <MDASidebar {...props} fluid={!!onItemSelect} />;
       case 'Partner':
-        return <PartnerSidebar activeSection={activeSection} onSectionChange={setActiveSection} />;
+        return <PartnerSidebar {...props} fluid={!!onItemSelect} />;
     }
   };
 
-  // Render main content based on persona and active section
   const renderMainContent = () => {
-    // Business Portal Routes
     if (selectedPersona === 'Business') {
       switch (activeSection) {
         case 'overview':
-          return <StateAwareDashboard state={selectedState} onNavigate={setActiveSection} />;
-        case 'certificates':
-          return <CertificatesView />;
-        case 'verify':
-          return <BusinessVerifyView />;
-        case 'activity':
-          return <ActivityLogView />;
-        case 'reports':
-          return <ReportsView />;
-        case 'alerts':
-          return <AlertsView />;
-        case 'settings':
-          return <SettingsView />;
-        default:
-          console.warn(`Unknown Business section: ${activeSection}`);
           return (
-            <div className="flex-1 h-screen overflow-y-auto bg-background flex items-center justify-center">
-              <div className="text-center">
-                <h2 className="text-2xl mb-2">Section Not Found</h2>
-                <p className="text-muted-foreground">
-                  The section "{activeSection}" is not available in the Business Portal.
-                </p>
-              </div>
-            </div>
+            <Suspense fallback={<DashboardSkeleton />}>
+              <StateAwareDashboard
+                state={selectedState}
+                onNavigate={setActiveSection}
+              />
+            </Suspense>
+          );
+        case 'certificates':
+          return (
+            <Suspense fallback={<CertificatesSkeleton />}>
+              <CertificatesView />
+            </Suspense>
+          );
+        case 'verify':
+          return (
+            <Suspense fallback={<GenericSkeleton />}>
+              <BusinessVerifyView />
+            </Suspense>
+          );
+        case 'activity':
+          return (
+            <Suspense fallback={<ActivitySkeleton />}>
+              <ActivityLogView />
+            </Suspense>
+          );
+        case 'reports':
+          return (
+            <Suspense fallback={<GenericSkeleton />}>
+              <ReportsView />
+            </Suspense>
+          );
+        case 'alerts':
+          return (
+            <Suspense fallback={<ActivitySkeleton />}>
+              <AlertsView />
+            </Suspense>
+          );
+        case 'settings':
+          return (
+            <Suspense fallback={<GenericSkeleton />}>
+              <SettingsView />
+            </Suspense>
+          );
+        default:
+          return (
+            <SectionNotFound
+              persona="Business"
+              section={activeSection}
+              onHome={goHome}
+            />
           );
       }
     }
 
-    // MDA Portal Routes
     if (selectedPersona === 'MDA') {
       switch (activeSection) {
         case 'verify':
-          return <MDAVerifyView />;
+          return (
+            <Suspense fallback={<GenericSkeleton />}>
+              <MDAVerifyView />
+            </Suspense>
+          );
         case 'prequalification':
-          return <MDAPrequalificationView />;
-        case 'settings':
-          return <SettingsView />;
-        default:
-          console.warn(`Unknown MDA section: ${activeSection}`);
           return (
-            <div className="flex-1 h-screen overflow-y-auto bg-background flex items-center justify-center">
-              <div className="text-center">
-                <h2 className="text-2xl mb-2">Section Not Found</h2>
-                <p className="text-muted-foreground">
-                  The section "{activeSection}" is not available in the MDA Portal.
-                </p>
-              </div>
-            </div>
+            <Suspense fallback={<ActivitySkeleton />}>
+              <MDAPrequalificationView />
+            </Suspense>
+          );
+        case 'settings':
+          return (
+            <Suspense fallback={<GenericSkeleton />}>
+              <SettingsView />
+            </Suspense>
+          );
+        default:
+          return (
+            <SectionNotFound
+              persona="MDA"
+              section={activeSection}
+              onHome={goHome}
+            />
           );
       }
     }
 
-    // Partner Portal Routes
-    if (selectedPersona === 'Partner') {
-      switch (activeSection) {
-        case 'clients':
-          return <PartnerClientsView />;
-        case 'analytics':
-          return <PartnerAnalyticsView />;
-        case 'settings':
-          return <SettingsView />;
-        default:
-          console.warn(`Unknown Partner section: ${activeSection}`);
-          return (
-            <div className="flex-1 h-screen overflow-y-auto bg-background flex items-center justify-center">
-              <div className="text-center">
-                <h2 className="text-2xl mb-2">Section Not Found</h2>
-                <p className="text-muted-foreground">
-                  The section "{activeSection}" is not available in the Partner Portal.
-                </p>
-              </div>
-            </div>
-          );
-      }
+    // Partner
+    switch (activeSection) {
+      case 'clients':
+        return (
+          <Suspense fallback={<ActivitySkeleton />}>
+            <PartnerClientsView />
+          </Suspense>
+        );
+      case 'analytics':
+        return (
+          <Suspense fallback={<AnalyticsSkeleton />}>
+            <PartnerAnalyticsView />
+          </Suspense>
+        );
+      case 'settings':
+        return (
+          <Suspense fallback={<GenericSkeleton />}>
+            <SettingsView />
+          </Suspense>
+        );
+      default:
+        return (
+          <SectionNotFound
+            persona="Partner"
+            section={activeSection}
+            onHome={goHome}
+          />
+        );
     }
-
-    // Fallback for unknown persona
-    console.warn(`Unknown persona: ${selectedPersona}`);
-    return (
-      <div className="flex-1 h-screen overflow-y-auto bg-background flex items-center justify-center">
-        <div className="text-center">
-          <h2 className="text-2xl mb-2">Portal Not Found</h2>
-          <p className="text-muted-foreground">The portal "{selectedPersona}" is not available.</p>
-        </div>
-      </div>
-    );
   };
 
   return (
@@ -159,24 +371,30 @@ export default function App() {
         >
           Skip to main content
         </a>
-        <div id="main-content" className="size-full flex">
-          {renderSidebar()}
+
+        <AppShell
+          persona={selectedPersona}
+          sidebar={renderSidebar()}
+          drawerSidebar={(close) => renderSidebar(close)}
+        >
           {renderMainContent()}
+        </AppShell>
 
-          {/* Tweaks Panel */}
-          <TweaksButton onClick={() => setIsTweaksPanelOpen(true)} />
-          <TweaksPanel
-            isOpen={isTweaksPanelOpen}
-            onClose={() => setIsTweaksPanelOpen(false)}
-            selectedPersona={selectedPersona}
-            onPersonaChange={handlePersonaChange}
-            selectedState={selectedState}
-            onStateChange={setSelectedState}
-          />
+        <TweaksButton onClick={() => setIsTweaksPanelOpen(true)} />
+        <TweaksPanel
+          isOpen={isTweaksPanelOpen}
+          onClose={() => setIsTweaksPanelOpen(false)}
+          selectedPersona={selectedPersona}
+          onPersonaChange={handlePersonaChange}
+          selectedState={selectedState}
+          onStateChange={setSelectedState}
+        />
 
-          {/* Onboarding Flow */}
-          {showOnboarding && <OnboardingFlow onComplete={() => setShowOnboarding(false)} />}
-        </div>
+        {showOnboarding && (
+          <Suspense fallback={null}>
+            <OnboardingFlow onComplete={() => setShowOnboarding(false)} />
+          </Suspense>
+        )}
       </ToastProvider>
     </ErrorBoundary>
   );

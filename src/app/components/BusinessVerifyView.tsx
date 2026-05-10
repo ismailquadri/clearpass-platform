@@ -7,9 +7,22 @@ export function BusinessVerifyView() {
   const [searchQuery, setSearchQuery] = useState('');
   const [verificationResult, setVerificationResult] = useState<any>(null);
   const [isSearching, setIsSearching] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handleVerify = () => {
-    if (!searchQuery.trim()) return;
+    setError(null);
+
+    if (!searchQuery.trim()) {
+      setError('Please enter an RC number to verify');
+      return;
+    }
+
+    // Basic RC number format validation (RC followed by numbers)
+    const rcPattern = /^RC\d{7,}$/i;
+    if (!rcPattern.test(searchQuery.trim())) {
+      setError('Please enter a valid RC number (e.g., RC1234567)');
+      return;
+    }
 
     setIsSearching(true);
     setTimeout(() => {
@@ -35,8 +48,8 @@ export function BusinessVerifyView() {
   };
 
   return (
-    <div className="flex-1 h-screen overflow-y-auto bg-background">
-      <div className="p-8 max-w-[1000px] mx-auto">
+    <div className="flex-1 h-full overflow-y-auto bg-background">
+      <div className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">
           <h1 className="mb-2" style={{ fontSize: '32px' }}>
@@ -51,12 +64,12 @@ export function BusinessVerifyView() {
         <div
           className="px-4 py-3 rounded-lg border border-[#e5e5e5] flex items-start gap-3 mb-6"
           style={{
-            backgroundColor: 'rgb(71, 194, 255, 0.1)',
+            backgroundColor: 'rgba(255, 48, 0, 0.1)',
           }}
         >
-          <Building2 className="w-5 h-5 flex-shrink-0" style={{ color: 'rgb(71, 194, 255)' }} />
+          <Building2 className="w-5 h-5 flex-shrink-0" style={{ color: '#FF3000' }} />
           <div>
-            <p style={{ fontSize: '14px', fontWeight: '500', color: 'rgb(71, 194, 255)' }}>
+            <p style={{ fontSize: '14px', fontWeight: '500', color: '#FF3000' }}>
               Public Verification Service
             </p>
             <p className="caption text-muted-foreground mt-1">
@@ -68,7 +81,11 @@ export function BusinessVerifyView() {
 
         {/* Search Section */}
         <div className="bg-card border border-border rounded-lg p-6 mb-6">
-          <label htmlFor="business-search-input" className="block mb-3" style={{ fontSize: '14px', fontWeight: '500' }}>
+          <label
+            htmlFor="business-search-input"
+            className="block mb-3"
+            style={{ fontSize: '14px', fontWeight: '500' }}
+          >
             Company RC Number
           </label>
           <div className="flex gap-3">
@@ -78,18 +95,27 @@ export function BusinessVerifyView() {
                 id="business-search-input"
                 type="text"
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={(e) => {
+                  setSearchQuery(e.target.value);
+                  setError(null); // Clear error on input
+                }}
                 onKeyDown={(e) => e.key === 'Enter' && handleVerify()}
                 placeholder="Enter RC number (e.g., RC1234567)"
-                className="w-full pl-10 pr-4 py-3 bg-input-background border border-border rounded-md"
+                aria-invalid={!!error}
+                aria-describedby={error ? 'business-search-error' : undefined}
+                className={`w-full pl-10 pr-4 py-3 bg-input-background border rounded-md ${
+                  error ? 'border-red-500' : 'border-border'
+                }`}
                 style={{ fontSize: '16px' }}
               />
             </div>
             <button
               onClick={handleVerify}
               disabled={isSearching || !searchQuery.trim()}
+              aria-live="polite"
+              aria-busy={isSearching}
               className="px-6 py-3 rounded-md text-white flex items-center gap-2 hover:opacity-90 transition-opacity disabled:opacity-50"
-              style={{ backgroundColor: 'rgb(251, 115, 25)' }}
+              style={{ backgroundColor: '#FF3000' }}
             >
               <Search className="w-5 h-5" />
               {isSearching ? 'Verifying...' : 'Verify'}
@@ -99,6 +125,16 @@ export function BusinessVerifyView() {
             Enter the company's RC (Registration Certificate) number to check their compliance
             status
           </p>
+          {error && (
+            <p
+              id="business-search-error"
+              className="text-red-500 text-sm mt-2 flex items-center gap-2"
+              role="alert"
+            >
+              <AlertTriangle className="w-4 h-4" />
+              {error}
+            </p>
+          )}
         </div>
 
         {/* Verification Result */}
@@ -108,14 +144,14 @@ export function BusinessVerifyView() {
             <div className="flex items-start justify-between mb-6 pb-6 border-b border-border">
               <div>
                 <div className="flex items-center gap-3 mb-2">
-                  <h3 style={{ fontSize: '24px', fontWeight: '600' }}>
+                  <h2 style={{ fontSize: '24px', fontWeight: '600' }}>
                     {verificationResult.companyName}
-                  </h3>
+                  </h2>
                   <span
                     className="px-3 py-1 rounded-full flex items-center gap-2"
                     style={{
-                      backgroundColor: 'rgb(31, 193, 107, 0.1)',
-                      color: 'rgb(31, 193, 107)',
+                      backgroundColor: 'rgba(255, 48, 0, 0.1)',
+                      color: '#FF3000',
                       fontSize: '12px',
                       fontWeight: '500',
                     }}
@@ -136,7 +172,7 @@ export function BusinessVerifyView() {
                   style={{
                     fontSize: '48px',
                     fontWeight: '600',
-                    color: 'rgb(31, 193, 107)',
+                    color: '#FF3000',
                     lineHeight: '1',
                   }}
                 >
@@ -151,20 +187,20 @@ export function BusinessVerifyView() {
               <h4 className="mb-3" style={{ fontSize: '16px', fontWeight: '500' }}>
                 Certificate Status
               </h4>
-              <div className="grid grid-cols-3 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 {verificationResult.certificates.map((cert: any, index: number) => {
                   const certStatusColor =
                     cert.status === 'active'
-                      ? 'rgb(31, 193, 107)'
+                      ? '#FF3000'
                       : cert.status === 'expiring'
-                        ? 'rgb(250, 115, 25)'
-                        : 'rgb(251, 55, 72)';
+                        ? '#FF3000'
+                        : '#FF3000';
                   const certStatusBg =
                     cert.status === 'active'
-                      ? 'rgb(31, 193, 107, 0.1)'
+                      ? 'rgba(255, 48, 0, 0.1)'
                       : cert.status === 'expiring'
-                        ? 'rgb(250, 115, 25, 0.1)'
-                        : 'rgb(251, 55, 72, 0.1)';
+                        ? 'rgba(255, 48, 0, 0.1)'
+                        : 'rgba(255, 48, 0, 0.1)';
 
                   const StatusIcon =
                     cert.status === 'active'
@@ -195,15 +231,15 @@ export function BusinessVerifyView() {
             {/* Verification Notice */}
             <div
               className="px-4 py-3 rounded-lg"
-              style={{ backgroundColor: 'rgb(71, 194, 255, 0.1)' }}
+              style={{ backgroundColor: 'rgba(255, 48, 0, 0.1)' }}
             >
               <div className="flex items-start gap-2">
                 <FileText
                   className="w-4 h-4 flex-shrink-0 mt-0.5"
-                  style={{ color: 'rgb(71, 194, 255)' }}
+                  style={{ color: '#FF3000' }}
                 />
                 <div>
-                  <p style={{ fontSize: '14px', fontWeight: '500', color: 'rgb(71, 194, 255)' }}>
+                  <p style={{ fontSize: '14px', fontWeight: '500', color: '#FF3000' }}>
                     Verification Audit Trail
                   </p>
                   <p className="caption text-muted-foreground mt-1">

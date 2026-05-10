@@ -353,18 +353,18 @@ export function StateAwareDashboard({ state, onNavigate }: StateAwareDashboardPr
   const isProcurementReady = state.score >= 80;
 
   return (
-    <div className="flex-1 h-screen overflow-y-auto bg-background">
-      <div className="p-6 max-w-[1400px] mx-auto">
+    <div className="flex-1 h-full overflow-y-auto bg-background">
+      <div className="p-4 sm:p-6 max-w-7xl mx-auto">
         {/* State Indicator Strip */}
         <div
           className="mb-4 px-3 py-2 rounded-lg border border-[#e5e5e5] flex items-center justify-between"
           style={{
             backgroundColor:
               state.score >= 80
-                ? 'rgb(31, 193, 107, 0.1)'
+                ? 'rgba(255, 48, 0, 0.1)'
                 : state.score >= 60
-                  ? 'rgb(250, 115, 25, 0.1)'
-                  : 'rgb(251, 55, 72, 0.1)',
+                  ? 'rgba(255, 48, 0, 0.1)'
+                  : 'rgba(255, 48, 0, 0.1)',
           }}
         >
           <div>
@@ -382,10 +382,10 @@ export function StateAwareDashboard({ state, onNavigate }: StateAwareDashboardPr
               fontWeight: '500',
               backgroundColor:
                 state.score >= 80
-                  ? 'rgb(31, 193, 107)'
+                  ? '#FF3000'
                   : state.score >= 60
-                    ? 'rgb(250, 115, 25)'
-                    : 'rgb(251, 55, 72)',
+                    ? '#FF3000'
+                    : '#FF3000',
               color: 'white',
             }}
           >
@@ -470,7 +470,7 @@ export function StateAwareDashboard({ state, onNavigate }: StateAwareDashboardPr
         )}
 
         {/* Stats Row */}
-        <div className="grid grid-cols-3 gap-3 mb-5">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-5">
           <div className="bg-card border border-border rounded-lg p-3">
             <div className="flex items-center justify-between mb-2">
               <span className="text-muted-foreground text-[#404040]" style={{ fontSize: '12px' }}>
@@ -498,7 +498,7 @@ export function StateAwareDashboard({ state, onNavigate }: StateAwareDashboardPr
                     state.score >= 80
                       ? 'rgb(31, 193, 107, 0.2)'
                       : state.score >= 60
-                        ? 'rgb(250, 115, 25, 0.2)'
+                        ? 'rgba(255, 48, 0, 0.2)'
                         : 'rgb(251, 55, 72, 0.2)',
                 }}
               >
@@ -507,10 +507,10 @@ export function StateAwareDashboard({ state, onNavigate }: StateAwareDashboardPr
                   style={{
                     color:
                       state.score >= 80
-                        ? 'rgb(31, 193, 107)'
+                        ? '#FF3000'
                         : state.score >= 60
-                          ? 'rgb(250, 115, 25)'
-                          : 'rgb(251, 55, 72)',
+                          ? '#FF3000'
+                          : '#FF3000',
                   }}
                 />
               </div>
@@ -531,13 +531,13 @@ export function StateAwareDashboard({ state, onNavigate }: StateAwareDashboardPr
                 style={{
                   backgroundColor: isProcurementReady
                     ? 'rgb(31, 193, 107, 0.2)'
-                    : 'rgb(250, 115, 25, 0.2)',
+                    : 'rgba(255, 48, 0, 0.2)',
                 }}
               >
                 <Building2
                   className="w-3.5 h-3.5"
                   style={{
-                    color: isProcurementReady ? 'rgb(31, 193, 107)' : 'rgb(250, 115, 25)',
+                    color: isProcurementReady ? '#FF3000' : '#FF3000',
                   }}
                 />
               </div>
@@ -546,7 +546,7 @@ export function StateAwareDashboard({ state, onNavigate }: StateAwareDashboardPr
               style={{
                 fontSize: '15px',
                 fontWeight: '600',
-                color: isProcurementReady ? 'rgb(31, 193, 107)' : 'rgb(250, 115, 25)',
+                color: isProcurementReady ? '#FF3000' : '#FF3000',
               }}
             >
               {isProcurementReady ? 'Procurement Ready' : state.label}
@@ -577,7 +577,7 @@ export function StateAwareDashboard({ state, onNavigate }: StateAwareDashboardPr
         {/* Certificates Grid */}
         <div className="mb-5">
           <div className="flex items-center justify-between mb-3">
-            <h3 style={{ fontSize: '16px', fontWeight: '500' }}>My Certificates</h3>
+            <h2 style={{ fontSize: '16px', fontWeight: '500' }}>My Certificates</h2>
             <button
               onClick={() => onNavigate('certificates')}
               className="px-3 py-1.5 rounded-md border border-border hover:bg-[#fafafa] transition-all duration-200 ease-in-out text-sm"
@@ -585,7 +585,7 @@ export function StateAwareDashboard({ state, onNavigate }: StateAwareDashboardPr
               View All
             </button>
           </div>
-          <div className="grid grid-cols-3 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
             {certificates.map((cert, index) => (
               <CertificateCard
                 key={index}
@@ -599,10 +599,10 @@ export function StateAwareDashboard({ state, onNavigate }: StateAwareDashboardPr
 
         {/* Quick Actions */}
         <div className="bg-card border border-border rounded-lg p-4">
-          <h3 className="mb-3" style={{ fontSize: '15px', fontWeight: '500' }}>
+          <h2 className="mb-3" style={{ fontSize: '15px', fontWeight: '500' }}>
             Quick Actions
-          </h3>
-          <div className="grid grid-cols-4 gap-2">
+          </h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2">
             <button
               onClick={() => onNavigate('reports')}
               className="px-3 py-2 rounded-md border border-border hover:bg-[#fafafa] hover:border-[#e5e5e5] transition-all duration-200 ease-in-out text-left"

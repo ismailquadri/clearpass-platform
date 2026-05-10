@@ -1,5 +1,6 @@
 import { X, CheckCircle2, Clock, Download, Upload, RefreshCw, Eye } from 'lucide-react';
 import { useEffect } from 'react';
+import { useFocusTrap } from '../hooks/useFocusTrap';
 
 interface CertificateDetailModalProps {
   isOpen: boolean;
@@ -40,18 +41,20 @@ export function CertificateDetailModal({
     };
   }, [isOpen, onClose]);
 
+  const modalRef = useFocusTrap(isOpen);
+
   if (!isOpen) return null;
 
   const getStatusColor = (status: string) => {
-    if (status === 'active') return 'rgb(31, 193, 107)';
+    if (status === 'active') return '#FF3000';
     if (
       status === 'expiring-soon' ||
       status === 'expiring-critical' ||
       status === 'expiring-urgent'
     )
-      return 'rgb(250, 115, 25)';
-    if (status === 'expired') return 'rgb(251, 55, 72)';
-    if (status === 'pending') return 'rgb(71, 194, 255)';
+      return '#FF3000';
+    if (status === 'expired') return '#FF3000';
+    if (status === 'pending') return '#FF3000';
     return 'rgb(92, 92, 92)';
   };
 
@@ -66,12 +69,21 @@ export function CertificateDetailModal({
 
   return (
     <>
-      {/* Backdrop */}
-      <div className="fixed inset-0 bg-black/50 z-50" onClick={onClose} />
+      {/* Backdrop - non-focusable */}
+      <div
+        className="fixed inset-0 bg-black/50 z-50"
+        onClick={onClose}
+        tabIndex={-1}
+        aria-hidden="true"
+      />
 
       {/* Modal */}
       <div className="fixed inset-0 flex items-center justify-center z-50 p-4">
         <div
+          ref={modalRef}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="modal-title"
           className="bg-card rounded-xl shadow-2xl w-full max-w-3xl max-h-[90vh] overflow-hidden flex flex-col"
           onClick={(e) => e.stopPropagation()}
         >
@@ -79,7 +91,9 @@ export function CertificateDetailModal({
           <div className="flex items-start justify-between p-6 border-b border-border">
             <div className="flex-1">
               <div className="flex items-center gap-3 mb-2">
-                <h2 style={{ fontSize: '24px', fontWeight: '600' }}>{certificate.shortName}</h2>
+                <h2 id="modal-title" style={{ fontSize: '24px', fontWeight: '600' }}>
+                  {certificate.shortName}
+                </h2>
                 <span
                   className="px-3 py-1 rounded-full"
                   style={{
@@ -95,8 +109,8 @@ export function CertificateDetailModal({
                   <span
                     className="px-2 py-1 rounded-full flex items-center gap-1"
                     style={{
-                      backgroundColor: 'rgb(71, 194, 255, 0.1)',
-                      color: 'rgb(71, 194, 255)',
+                      backgroundColor: 'rgba(255, 48, 0, 0.1)',
+                      color: '#FF3000',
                       fontSize: '13px',
                     }}
                   >
@@ -112,6 +126,7 @@ export function CertificateDetailModal({
             <button
               onClick={onClose}
               aria-label="Close modal"
+              autoFocus={isOpen}
               className="w-11 h-11 rounded-md hover:bg-muted flex items-center justify-center transition-colors min-w-[44px] min-h-[44px]"
             >
               <X className="w-5 h-5" />
@@ -160,14 +175,14 @@ export function CertificateDetailModal({
                 style={{
                   backgroundColor:
                     certificate.daysToExpiry < 7
-                      ? 'rgb(251, 55, 72, 0.1)'
-                      : 'rgb(250, 115, 25, 0.1)',
+                      ? 'rgba(255, 48, 0, 0.1)'
+                      : 'rgba(255, 48, 0, 0.1)',
                 }}
               >
                 <Clock
                   className="w-5 h-5 flex-shrink-0"
                   style={{
-                    color: certificate.daysToExpiry < 7 ? 'rgb(251, 55, 72)' : 'rgb(250, 115, 25)',
+                    color: certificate.daysToExpiry < 7 ? '#FF3000' : '#FF3000',
                   }}
                 />
                 <div>
@@ -176,7 +191,7 @@ export function CertificateDetailModal({
                       fontSize: '14px',
                       fontWeight: '500',
                       color:
-                        certificate.daysToExpiry < 7 ? 'rgb(251, 55, 72)' : 'rgb(250, 115, 25)',
+                        certificate.daysToExpiry < 7 ? '#FF3000' : '#FF3000',
                     }}
                   >
                     {certificate.daysToExpiry < 7 ? 'Urgent Action Required' : 'Renewal Reminder'}
@@ -209,7 +224,7 @@ export function CertificateDetailModal({
                 </button>
                 <button
                   className="px-4 py-3 rounded-md text-white flex items-center gap-2"
-                  style={{ backgroundColor: 'rgb(251, 115, 25)' }}
+                  style={{ backgroundColor: '#FF3000' }}
                 >
                   <RefreshCw className="w-4 h-4" />
                   Start Renewal
@@ -230,9 +245,9 @@ export function CertificateDetailModal({
                   >
                     <div
                       className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0"
-                      style={{ backgroundColor: 'rgb(71, 194, 255, 0.1)' }}
+                      style={{ backgroundColor: 'rgba(255, 48, 0, 0.1)' }}
                     >
-                      <CheckCircle2 className="w-4 h-4" style={{ color: 'rgb(71, 194, 255)' }} />
+                      <CheckCircle2 className="w-4 h-4" style={{ color: '#FF3000' }} />
                     </div>
                     <div className="flex-1">
                       <p style={{ fontSize: '14px', fontWeight: '500' }}>{item.event}</p>
@@ -248,9 +263,9 @@ export function CertificateDetailModal({
             {/* Compliance Impact */}
             <div
               className="px-4 py-3 rounded-lg"
-              style={{ backgroundColor: 'rgb(71, 194, 255, 0.1)' }}
+              style={{ backgroundColor: 'rgba(255, 48, 0, 0.1)' }}
             >
-              <h4 style={{ fontSize: '14px', fontWeight: '500', color: 'rgb(71, 194, 255)' }}>
+              <h4 style={{ fontSize: '14px', fontWeight: '500', color: '#FF3000' }}>
                 Compliance Impact
               </h4>
               <p className="caption text-muted-foreground mt-1">
@@ -270,7 +285,7 @@ export function CertificateDetailModal({
             </button>
             <button
               className="px-4 py-2 rounded-md text-white"
-              style={{ backgroundColor: 'rgb(251, 115, 25)' }}
+              style={{ backgroundColor: '#FF3000' }}
             >
               Take Action
             </button>

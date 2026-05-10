@@ -10,6 +10,7 @@ import {
 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { useToast } from './ToastProvider';
+import { useFocusTrap } from '../hooks/useFocusTrap';
 
 interface VendorVerificationModalProps {
   isOpen: boolean;
@@ -36,6 +37,7 @@ export function VendorVerificationModal({ isOpen, onClose }: VendorVerificationM
   const [rcNumber, setRcNumber] = useState('');
   const [isVerifying, setIsVerifying] = useState(false);
   const [verificationResult, setVerificationResult] = useState<VerificationResult | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   // Handle Escape key to close modal
   useEffect(() => {
@@ -54,11 +56,22 @@ export function VendorVerificationModal({ isOpen, onClose }: VendorVerificationM
     };
   }, [isOpen, isVerifying, onClose]);
 
+  const modalRef = useFocusTrap(isOpen);
+
   if (!isOpen) return null;
 
   const handleVerify = async () => {
-    if (!rcNumber || rcNumber.length < 6) {
-      showToast('error', 'Invalid RC Number', 'Please enter a valid RC number');
+    setError(null);
+
+    if (!rcNumber.trim()) {
+      setError('Please enter an RC number to verify');
+      return;
+    }
+
+    // Basic RC number format validation
+    const rcPattern = /^RC\d{7,}$/i;
+    if (!rcPattern.test(rcNumber.trim())) {
+      setError('Please enter a valid RC number (e.g., RC1234567)');
       return;
     }
 
@@ -151,22 +164,22 @@ export function VendorVerificationModal({ isOpen, onClose }: VendorVerificationM
     switch (status) {
       case 'procurement-ready':
         return {
-          color: 'rgb(31, 193, 107)',
-          bgColor: 'rgb(31, 193, 107, 0.1)',
+          color: '#FF3000',
+          bgColor: 'rgba(255, 48, 0, 0.1)',
           label: 'Procurement Ready',
           icon: CheckCircle2,
         };
       case 'attention-required':
         return {
-          color: 'rgb(250, 115, 25)',
-          bgColor: 'rgb(250, 115, 25, 0.1)',
+          color: '#FF3000',
+          bgColor: 'rgba(255, 48, 0, 0.1)',
           label: 'Attention Required',
           icon: AlertTriangle,
         };
       case 'non-compliant':
         return {
-          color: 'rgb(251, 55, 72)',
-          bgColor: 'rgb(251, 55, 72, 0.1)',
+          color: '#FF3000',
+          bgColor: 'rgba(255, 48, 0, 0.1)',
           label: 'Non-Compliant',
           icon: XCircle,
         };
@@ -176,9 +189,9 @@ export function VendorVerificationModal({ isOpen, onClose }: VendorVerificationM
   const getCertStatusConfig = (status: 'active' | 'expired' | 'missing') => {
     switch (status) {
       case 'active':
-        return { color: 'rgb(31, 193, 107)', label: 'Active', icon: CheckCircle2 };
+        return { color: '#FF3000', label: 'Active', icon: CheckCircle2 };
       case 'expired':
-        return { color: 'rgb(251, 55, 72)', label: 'Expired', icon: XCircle };
+        return { color: '#FF3000', label: 'Expired', icon: XCircle };
       case 'missing':
         return { color: 'rgb(92, 92, 92)', label: 'Missing', icon: AlertTriangle };
     }
@@ -189,12 +202,21 @@ export function VendorVerificationModal({ isOpen, onClose }: VendorVerificationM
 
   return (
     <>
-      {/* Backdrop */}
-      <div className="fixed inset-0 bg-black/50 z-50" onClick={onClose} />
+      {/* Backdrop - non-focusable */}
+      <div
+        className="fixed inset-0 bg-black/50 z-50"
+        onClick={onClose}
+        tabIndex={-1}
+        aria-hidden="true"
+      />
 
       {/* Modal */}
       <div className="fixed inset-0 flex items-center justify-center z-50 p-4">
         <div
+          ref={modalRef}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="modal-title"
           className="bg-card rounded-xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col"
           onClick={(e) => e.stopPropagation()}
         >
@@ -203,12 +225,14 @@ export function VendorVerificationModal({ isOpen, onClose }: VendorVerificationM
             <div className="flex items-center gap-3">
               <div
                 className="w-10 h-10 rounded-lg flex items-center justify-center"
-                style={{ backgroundColor: 'rgb(251, 115, 25, 0.1)' }}
+                style={{ backgroundColor: 'rgba(255, 48, 0, 0.1)' }}
               >
-                <Shield className="w-5 h-5" style={{ color: '#fb7319' }} />
+                <Shield className="w-5 h-5" style={{ color: '#FF3000' }} />
               </div>
               <div>
-                <h2 style={{ fontSize: '24px', fontWeight: '600' }}>Vendor Verification</h2>
+                <h2 id="modal-title" style={{ fontSize: '24px', fontWeight: '600' }}>
+                  Vendor Verification
+                </h2>
                 <p
                   className="text-muted-foreground text-[#404040] mt-1"
                   style={{ fontSize: '14px' }}
@@ -220,6 +244,7 @@ export function VendorVerificationModal({ isOpen, onClose }: VendorVerificationM
             <button
               onClick={onClose}
               aria-label="Close modal"
+              autoFocus={!isVerifying}
               className="w-11 h-11 rounded-md hover:bg-muted flex items-center justify-center transition-colors min-w-[44px] min-h-[44px]"
             >
               <X className="w-5 h-5" />
@@ -230,31 +255,48 @@ export function VendorVerificationModal({ isOpen, onClose }: VendorVerificationM
           <div className="flex-1 overflow-y-auto p-6">
             {/* Search Section */}
             <div className="mb-6">
-              <label htmlFor="vendor-rc-input" className="block mb-2" style={{ fontSize: '13px', fontWeight: '500' }}>
-                RC Number
+              <label
+                htmlFor="vendor-rc-input"
+                className="block mb-2"
+                style={{ fontSize: '13px', fontWeight: '500' }}
+              >
+                RC Number *
               </label>
               <div className="flex gap-3">
                 <input
                   id="vendor-rc-input"
                   type="text"
                   value={rcNumber}
-                  onChange={(e) => setRcNumber(e.target.value.toUpperCase())}
+                  onChange={(e) => {
+                    setRcNumber(e.target.value.toUpperCase());
+                    setError(null);
+                  }}
                   onKeyDown={(e) => e.key === 'Enter' && handleVerify()}
                   placeholder="e.g., RC1234567"
+                  required
                   disabled={isVerifying}
-                  className="flex-1 px-3 py-2 rounded-md border border-border bg-background disabled:opacity-50"
+                  aria-invalid={!!error}
+                  aria-describedby={error ? 'vendor-rc-error' : undefined}
+                  className={`flex-1 px-3 py-2 rounded-md border bg-background disabled:opacity-50 ${
+                    error ? 'border-red-500' : 'border-border'
+                  }`}
                   style={{ fontSize: '13px' }}
                 />
                 <button
                   onClick={handleVerify}
                   disabled={isVerifying || !rcNumber}
+                  aria-live="polite"
+                  aria-busy={isVerifying}
                   className="px-4 py-2 rounded-md text-white flex items-center gap-2 disabled:opacity-50"
-                  style={{ backgroundColor: '#fb7319', fontSize: '13px', fontWeight: '500' }}
+                  style={{ backgroundColor: '#FF3000', fontSize: '13px', fontWeight: '500' }}
                 >
                   {isVerifying ? (
                     <>
                       <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
                       Verifying...
+                      <span className="sr-only" aria-live="polite">
+                        Verifying vendor information, please wait
+                      </span>
                     </>
                   ) : (
                     <>
@@ -264,6 +306,17 @@ export function VendorVerificationModal({ isOpen, onClose }: VendorVerificationM
                   )}
                 </button>
               </div>
+              {error && (
+                <p
+                  id="vendor-rc-error"
+                  className="text-red-500 text-sm mt-2 flex items-center gap-2"
+                  role="alert"
+                  aria-live="assertive"
+                >
+                  <AlertTriangle className="w-4 h-4" />
+                  {error}
+                </p>
+              )}
             </div>
 
             {/* Verification Result */}
@@ -325,12 +378,12 @@ export function VendorVerificationModal({ isOpen, onClose }: VendorVerificationM
                         CAC Status
                       </p>
                       <div className="flex items-center gap-1.5">
-                        <CheckCircle2 className="w-4 h-4" style={{ color: 'rgb(31, 193, 107)' }} />
+                        <CheckCircle2 className="w-4 h-4" style={{ color: '#FF3000' }} />
                         <p
                           style={{
                             fontSize: '13px',
                             fontWeight: '500',
-                            color: 'rgb(31, 193, 107)',
+                            color: '#FF3000',
                           }}
                         >
                           Verified
@@ -394,11 +447,11 @@ export function VendorVerificationModal({ isOpen, onClose }: VendorVerificationM
                 </div>
 
                 {/* Verification Note */}
-                <div className="px-4 py-3 rounded-lg border border-[#e5e5e5] bg-[#c4edff] bg-opacity-30">
+                <div className="px-4 py-3 rounded-lg border border-[#e5e5e5] bg-[#ffe6e6] bg-opacity-30">
                   <div className="flex items-start gap-3">
-                    <FileText className="w-5 h-5 flex-shrink-0" style={{ color: '#47c2ff' }} />
+                    <FileText className="w-5 h-5 flex-shrink-0" style={{ color: '#FF3000' }} />
                     <div>
-                      <p style={{ fontSize: '14px', fontWeight: '500', color: '#47c2ff' }}>
+                      <p style={{ fontSize: '14px', fontWeight: '500', color: '#FF3000' }}>
                         Official Verification Record
                       </p>
                       <p
@@ -430,7 +483,7 @@ export function VendorVerificationModal({ isOpen, onClose }: VendorVerificationM
                   <button
                     onClick={handleDownloadReport}
                     className="px-4 py-2 rounded-md text-white flex items-center gap-2"
-                    style={{ backgroundColor: '#fb7319', fontSize: '13px', fontWeight: '500' }}
+                    style={{ backgroundColor: '#FF3000', fontSize: '13px', fontWeight: '500' }}
                   >
                     <Download className="w-4 h-4" />
                     Download Report

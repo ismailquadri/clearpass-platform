@@ -8,7 +8,7 @@ import {
   Copy,
   RefreshCw,
 } from 'lucide-react';
-import { useState } from 'react';
+import { useState, memo, useMemo, useCallback } from 'react';
 import { CertificateUploadModal } from './CertificateUploadModal';
 import { CertificateDetailModal } from './CertificateDetailModal';
 import { useToast } from './ToastProvider';
@@ -35,7 +35,7 @@ interface CertificateCardProps {
   urgencyLevel?: 'low' | 'medium' | 'high' | 'critical';
 }
 
-export function CertificateCard({
+export const CertificateCard = memo(function CertificateCard({
   name,
   shortName,
   status,
@@ -55,58 +55,65 @@ export function CertificateCard({
       case 'active':
         return {
           icon: CheckCircle2,
-          color: 'rgb(31, 193, 107)',
-          bgColor: 'rgb(31, 193, 107, 0.1)',
+          color: '#FF3000',
+          bgColor: 'rgba(255, 48, 0, 0.1)',
           label: 'Active',
           showDays: true,
+          hasBorder: false,
         };
       case 'expiring-soon':
         return {
           icon: Clock,
-          color: 'rgb(250, 115, 25)',
-          bgColor: 'rgb(250, 115, 25, 0.1)',
+          color: '#FF3000',
+          bgColor: 'rgba(255, 48, 0, 0.08)',
           label: 'Expiring Soon',
           showDays: true,
+          hasBorder: false,
         };
       case 'expiring-critical':
         return {
           icon: AlertCircle,
-          color: 'rgb(250, 115, 25)',
-          bgColor: 'rgb(250, 115, 25, 0.1)',
+          color: '#FF3000',
+          bgColor: 'rgba(255, 48, 0, 0.08)',
           label: 'Expiring Critical',
           showDays: true,
+          hasBorder: false,
         };
       case 'expiring-urgent':
         return {
           icon: AlertCircle,
-          color: 'rgb(251, 55, 72)',
-          bgColor: 'rgb(251, 55, 72, 0.1)',
+          color: '#FF3000',
+          bgColor: 'rgba(255, 48, 0, 0.1)',
           label: 'Expiring Urgent',
           showDays: true,
+          hasBorder: false,
         };
       case 'expired':
         return {
           icon: XCircle,
-          color: 'rgb(251, 55, 72)',
-          bgColor: 'rgb(251, 55, 72, 0.1)',
+          color: '#FF3000',
+          bgColor: 'rgba(255, 48, 0, 0.1)',
           label: 'Expired',
           showDays: false,
+          hasBorder: false,
         };
       case 'pending':
         return {
           icon: Clock,
-          color: 'rgb(250, 115, 25)',
-          bgColor: 'rgb(250, 115, 25, 0.1)',
+          color: '#FF3000',
+          bgColor: 'rgba(255, 48, 0, 0.08)',
           label: 'Pending Verification',
           showDays: false,
+          hasBorder: false,
         };
       case 'renewal-in-progress':
         return {
           icon: RefreshCw,
-          color: 'rgb(71, 194, 255)',
-          bgColor: 'rgb(71, 194, 255, 0.1)',
+          color: '#FF3000',
+          bgColor: 'transparent',
           label: 'Renewal In Progress',
           showDays: false,
+          hasBorder: true,
         };
       case 'not-connected':
       default:
@@ -116,12 +123,44 @@ export function CertificateCard({
           bgColor: 'rgb(235, 235, 235)',
           label: 'Not Connected',
           showDays: false,
+          hasBorder: false,
         };
     }
   };
 
-  const config = getStatusConfig();
+  // getStatusConfig is a stable closure; status is the only reactive dependency.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const config = useMemo(() => getStatusConfig(), [status]);
   const Icon = config.icon;
+
+  const handleCopy = useCallback(() => {
+    navigator.clipboard.writeText(certificateNumber || '');
+    showToast('success', 'Copied', 'Certificate number copied to clipboard');
+  }, [certificateNumber, showToast]);
+
+  const handleView = useCallback(() => {
+    setIsDetailModalOpen(true);
+  }, []);
+
+  const handleUpload = useCallback(() => {
+    setIsUploadModalOpen(true);
+  }, []);
+
+  const handleUploadClose = useCallback(() => {
+    setIsUploadModalOpen(false);
+  }, []);
+
+  const handleViewClose = useCallback(() => {
+    setIsDetailModalOpen(false);
+  }, []);
+
+  const handleUploadSuccess = useCallback(() => {
+    showToast(
+      'success',
+      'Certificate Updated',
+      `${shortName} certificate has been updated successfully`
+    );
+  }, [shortName, showToast]);
 
   return (
     <div className="bg-card border border-border rounded-lg p-3">
@@ -129,13 +168,14 @@ export function CertificateCard({
       <div className="flex items-start justify-between mb-3">
         <div className="flex-1">
           <div className="flex items-center gap-1.5 mb-0.5">
-            <h4 style={{ fontSize: '14px', fontWeight: '500' }}>{shortName}</h4>
+            <div style={{ fontSize: '14px', fontWeight: '500' }}>{shortName}</div>
             {isApiVerified && (
               <span
                 className="px-1.5 py-0.5 rounded-full flex items-center gap-0.5"
                 style={{
-                  backgroundColor: 'rgb(71, 194, 255, 0.1)',
-                  color: 'rgb(71, 194, 255)',
+                  backgroundColor: 'transparent',
+                  border: '1px solid #FF3000',
+                  color: '#FF3000',
                   fontSize: '13px',
                 }}
               >
@@ -169,6 +209,7 @@ export function CertificateCard({
               color: config.color,
               fontSize: '13px',
               fontWeight: '500',
+              border: config.hasBorder ? `1px solid ${config.color}` : 'none',
             }}
           >
             {config.label}
@@ -195,10 +236,7 @@ export function CertificateCard({
             <div className="flex items-center gap-1">
               <span className="text-xs font-mono">{certificateNumber.slice(0, 12)}...</span>
               <button
-                onClick={() => {
-                  navigator.clipboard.writeText(certificateNumber || '');
-                  showToast('success', 'Copied', 'Certificate number copied to clipboard');
-                }}
+                onClick={handleCopy}
                 aria-label="Copy certificate number"
                 className="p-2.5 rounded hover:bg-muted transition-colors min-w-[44px] min-h-[44px] flex items-center justify-center"
               >
@@ -213,7 +251,7 @@ export function CertificateCard({
       <div className="flex gap-1.5 mt-3 pt-3 border-t border-border">
         {status === 'not-connected' ? (
           <button
-            onClick={() => setIsUploadModalOpen(true)}
+            onClick={handleUpload}
             className="flex-1 px-3 py-1.5 rounded-md flex items-center justify-center gap-1.5 bg-orange-500 text-white text-xs hover:bg-orange-600 transition-colors"
           >
             <Upload className="w-3 h-3" />
@@ -222,7 +260,7 @@ export function CertificateCard({
         ) : (
           <>
             <button
-              onClick={() => setIsDetailModalOpen(true)}
+              onClick={handleView}
               className="flex-1 px-3 py-1.5 rounded-md border border-border flex items-center justify-center gap-1.5 hover:bg-muted transition-colors"
               style={{ fontSize: '12px' }}
             >
@@ -234,9 +272,9 @@ export function CertificateCard({
               status === 'expiring-urgent' ||
               status === 'expired') && (
               <button
-                onClick={() => setIsUploadModalOpen(true)}
+                onClick={handleUpload}
                 className="flex-1 px-3 py-1.5 rounded-md flex items-center justify-center gap-1.5 hover:opacity-90 transition-opacity"
-                style={{ backgroundColor: 'rgb(251, 115, 25)', color: 'white', fontSize: '12px' }}
+                style={{ backgroundColor: '#FF3000', color: 'white', fontSize: '12px' }}
               >
                 <RefreshCw className="w-3 h-3" />
                 Renew
@@ -249,23 +287,17 @@ export function CertificateCard({
       {/* Upload Modal */}
       <CertificateUploadModal
         isOpen={isUploadModalOpen}
-        onClose={() => setIsUploadModalOpen(false)}
+        onClose={handleUploadClose}
         certificateType={{ name, shortName }}
         dashboardState={dashboardState}
         urgencyLevel={urgencyLevel}
-        onUploadSuccess={() => {
-          showToast(
-            'success',
-            'Certificate Updated',
-            `${shortName} certificate has been updated successfully`
-          );
-        }}
+        onUploadSuccess={handleUploadSuccess}
       />
 
       {/* Detail Modal */}
       <CertificateDetailModal
         isOpen={isDetailModalOpen}
-        onClose={() => setIsDetailModalOpen(false)}
+        onClose={handleViewClose}
         certificate={{
           name,
           shortName,
@@ -278,4 +310,4 @@ export function CertificateCard({
       />
     </div>
   );
-}
+});

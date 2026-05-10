@@ -1,6 +1,8 @@
 import { X, Upload, Link as LinkIcon, FileText, CheckCircle2, AlertCircle } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { useToast } from './ToastProvider';
+import { useFocusTrap } from '../hooks/useFocusTrap';
+import { uploadCertificate } from '../api/certificates';
 
 interface CertificateUploadModalProps {
   isOpen: boolean;
@@ -36,6 +38,14 @@ export function CertificateUploadModal({
   const [expiryDate, setExpiryDate] = useState('');
   const [issuingAuthority, setIssuingAuthority] = useState('');
 
+  // Form validation errors
+  const [errors, setErrors] = useState<{
+    certificateNumber?: string;
+    issuedDate?: string;
+    expiryDate?: string;
+    issuingAuthority?: string;
+  }>({});
+
   // Handle Escape key to close modal
   useEffect(() => {
     const handleEscapeKey = (e: KeyboardEvent) => {
@@ -52,6 +62,8 @@ export function CertificateUploadModal({
       document.removeEventListener('keydown', handleEscapeKey);
     };
   }, [isOpen, isUploading, onClose]);
+
+  const modalRef = useFocusTrap(isOpen);
 
   if (!isOpen) return null;
 
@@ -97,11 +109,31 @@ export function CertificateUploadModal({
       return;
     }
 
+    // Validate required fields
+    if (!certificateNumber.trim()) {
+      showToast('error', 'Missing Information', 'Please enter the certificate number');
+      return;
+    }
+    if (!issuedDate) {
+      showToast('error', 'Missing Information', 'Please enter the issue date');
+      return;
+    }
+    if (!expiryDate) {
+      showToast('error', 'Missing Information', 'Please enter the expiry date');
+      return;
+    }
+
     setIsUploading(true);
 
-    // Simulate file upload
-    setTimeout(() => {
-      setIsUploading(false);
+    try {
+      await uploadCertificate({
+        shortName: certificateType.shortName,
+        certificateNumber: certificateNumber.trim(),
+        issuedDate: issuedDate,
+        expiryDate: expiryDate,
+        file: selectedFile,
+      });
+
       showToast(
         'success',
         'Certificate Uploaded',
@@ -110,20 +142,83 @@ export function CertificateUploadModal({
       onUploadSuccess();
       onClose();
       resetForm();
-    }, 2000);
+    } catch (error) {
+      showToast(
+        'error',
+        'Upload Failed',
+        error instanceof Error ? error.message : 'Failed to upload certificate'
+      );
+    } finally {
+      setIsUploading(false);
+    }
   };
 
   const handleManualSubmit = async () => {
-    if (!certificateNumber || !issuedDate || !expiryDate) {
-      showToast('error', 'Missing Information', 'Please fill in all required fields');
+    const newErrors: typeof errors = {};
+
+    // Validate certificate number
+    if (!certificateNumber.trim()) {
+      newErrors.certificateNumber = 'Certificate number is required';
+    } else if (certificateNumber.length < 5) {
+      newErrors.certificateNumber = 'Certificate number must be at least 5 characters';
+    }
+
+    // Validate issued date
+    if (!issuedDate) {
+      newErrors.issuedDate = 'Issued date is required';
+    } else {
+      const issued = new Date(issuedDate);
+      if (isNaN(issued.getTime()) || issued > new Date()) {
+        newErrors.issuedDate = 'Please enter a valid past date';
+      }
+    }
+
+    // Validate expiry date
+    if (!expiryDate) {
+      newErrors.expiryDate = 'Expiry date is required';
+    } else {
+      const expiry = new Date(expiryDate);
+      if (isNaN(expiry.getTime())) {
+        newErrors.expiryDate = 'Please enter a valid date';
+      } else if (expiry <= new Date()) {
+        newErrors.expiryDate = 'Expiry date must be in the future';
+      } else if (issuedDate && new Date(issuedDate) >= expiry) {
+        newErrors.expiryDate = 'Expiry date must be after issued date';
+      }
+    }
+
+    // Validate issuing authority
+    if (!issuingAuthority.trim()) {
+      newErrors.issuingAuthority = 'Issuing authority is required';
+    } else if (issuingAuthority.length < 3) {
+      newErrors.issuingAuthority = 'Please enter a valid issuing authority name';
+    }
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      showToast('error', 'Validation Error', 'Please correct the errors in the form');
       return;
     }
 
+    setErrors({});
     setIsUploading(true);
 
-    // Simulate manual entry submission
-    setTimeout(() => {
-      setIsUploading(false);
+    try {
+      // Create a placeholder file for manual entry
+      const placeholderFile = new File(
+        [`Manual entry: ${certificateNumber}`],
+        `${certificateType.shortName}_manual_entry.txt`,
+        { type: 'text/plain' }
+      );
+
+      await uploadCertificate({
+        shortName: certificateType.shortName,
+        certificateNumber: certificateNumber.trim(),
+        issuedDate: issuedDate,
+        expiryDate: expiryDate,
+        file: placeholderFile,
+      });
+
       showToast(
         'success',
         'Certificate Added',
@@ -132,7 +227,15 @@ export function CertificateUploadModal({
       onUploadSuccess();
       onClose();
       resetForm();
-    }, 1500);
+    } catch (error) {
+      showToast(
+        'error',
+        'Submission Failed',
+        error instanceof Error ? error.message : 'Failed to add certificate'
+      );
+    } finally {
+      setIsUploading(false);
+    }
   };
 
   const handleApiConnect = async () => {
@@ -169,6 +272,7 @@ export function CertificateUploadModal({
     setExpiryDate('');
     setIssuingAuthority('');
     setUploadMethod('file');
+    setErrors({});
   };
 
   const handleClose = () => {
@@ -180,19 +284,28 @@ export function CertificateUploadModal({
 
   return (
     <>
-      {/* Backdrop */}
-      <div className="fixed inset-0 bg-black/50 z-50" onClick={handleClose} />
+      {/* Backdrop - non-focusable */}
+      <div
+        className="fixed inset-0 bg-black/50 z-50"
+        onClick={handleClose}
+        tabIndex={-1}
+        aria-hidden="true"
+      />
 
       {/* Modal */}
       <div className="fixed inset-0 flex items-center justify-center z-50 p-4">
         <div
+          ref={modalRef}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="modal-title"
           className="bg-card rounded-xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden flex flex-col"
           onClick={(e) => e.stopPropagation()}
         >
           {/* Header */}
           <div className="flex items-start justify-between p-6 border-b border-border">
             <div>
-              <h2 style={{ fontSize: '24px', fontWeight: '600' }}>
+              <h2 id="modal-title" style={{ fontSize: '24px', fontWeight: '600' }}>
                 Connect {certificateType.shortName}
               </h2>
               <p className="text-muted-foreground text-[#404040] mt-1" style={{ fontSize: '14px' }}>
@@ -203,6 +316,7 @@ export function CertificateUploadModal({
               onClick={handleClose}
               disabled={isUploading}
               aria-label="Close modal"
+              autoFocus={!isUploading}
               className="w-11 h-11 rounded-md hover:bg-muted flex items-center justify-center transition-colors disabled:opacity-50 min-w-[44px] min-h-[44px]"
             >
               <X className="w-5 h-5" />
@@ -218,10 +332,10 @@ export function CertificateUploadModal({
                 style={{
                   backgroundColor:
                     urgencyLevel === 'critical'
-                      ? 'rgb(251, 55, 72, 0.1)'
+                      ? 'rgba(255, 48, 0, 0.1)'
                       : urgencyLevel === 'high'
-                        ? 'rgb(250, 115, 25, 0.1)'
-                        : 'rgb(71, 194, 255, 0.1)',
+                        ? 'rgba(255, 48, 0, 0.1)'
+                        : 'rgba(255, 48, 0, 0.1)',
                 }}
               >
                 <AlertCircle
@@ -229,10 +343,10 @@ export function CertificateUploadModal({
                   style={{
                     color:
                       urgencyLevel === 'critical'
-                        ? 'rgb(251, 55, 72)'
+                        ? '#FF3000'
                         : urgencyLevel === 'high'
-                          ? 'rgb(250, 115, 25)'
-                          : 'rgb(71, 194, 255)',
+                          ? '#FF3000'
+                          : '#FF3000',
                   }}
                 />
                 <div>
@@ -242,10 +356,10 @@ export function CertificateUploadModal({
                       fontWeight: '500',
                       color:
                         urgencyLevel === 'critical'
-                          ? 'rgb(251, 55, 72)'
+                          ? '#FF3000'
                           : urgencyLevel === 'high'
-                            ? 'rgb(250, 115, 25)'
-                            : 'rgb(71, 194, 255)',
+                            ? '#FF3000'
+                            : '#FF3000',
                     }}
                   >
                     {urgencyLevel === 'critical' && 'Critical: Immediate Action Required'}
@@ -276,19 +390,19 @@ export function CertificateUploadModal({
                 disabled={isUploading}
                 className={`p-4 rounded-lg border-2 transition-all ${
                   uploadMethod === 'file'
-                    ? 'border-[#fb7319] bg-[#ffeee6]'
+                    ? 'border-[#FF3000] bg-[#ffe6e6]'
                     : 'border-border hover:border-[#e5e5e5]'
                 }`}
               >
                 <Upload
                   className="w-6 h-6 mx-auto mb-2"
-                  style={{ color: uploadMethod === 'file' ? '#fb7319' : '#5c5c5c' }}
+                  style={{ color: uploadMethod === 'file' ? '#FF3000' : '#5c5c5c' }}
                 />
                 <p
                   style={{
                     fontSize: '13px',
                     fontWeight: '500',
-                    color: uploadMethod === 'file' ? '#fb7319' : '#171717',
+                    color: uploadMethod === 'file' ? '#FF3000' : '#171717',
                   }}
                 >
                   Upload File
@@ -306,19 +420,19 @@ export function CertificateUploadModal({
                 disabled={isUploading}
                 className={`p-4 rounded-lg border-2 transition-all ${
                   uploadMethod === 'manual'
-                    ? 'border-[#fb7319] bg-[#ffeee6]'
+                    ? 'border-[#FF3000] bg-[#ffe6e6]'
                     : 'border-border hover:border-[#e5e5e5]'
                 }`}
               >
                 <FileText
                   className="w-6 h-6 mx-auto mb-2"
-                  style={{ color: uploadMethod === 'manual' ? '#fb7319' : '#5c5c5c' }}
+                  style={{ color: uploadMethod === 'manual' ? '#FF3000' : '#5c5c5c' }}
                 />
                 <p
                   style={{
                     fontSize: '13px',
                     fontWeight: '500',
-                    color: uploadMethod === 'manual' ? '#fb7319' : '#171717',
+                    color: uploadMethod === 'manual' ? '#FF3000' : '#171717',
                   }}
                 >
                   Manual Entry
@@ -336,19 +450,19 @@ export function CertificateUploadModal({
                 disabled={isUploading}
                 className={`p-4 rounded-lg border-2 transition-all ${
                   uploadMethod === 'api'
-                    ? 'border-[#fb7319] bg-[#ffeee6]'
+                    ? 'border-[#FF3000] bg-[#ffe6e6]'
                     : 'border-border hover:border-[#e5e5e5]'
                 }`}
               >
                 <LinkIcon
                   className="w-6 h-6 mx-auto mb-2"
-                  style={{ color: uploadMethod === 'api' ? '#fb7319' : '#5c5c5c' }}
+                  style={{ color: uploadMethod === 'api' ? '#FF3000' : '#5c5c5c' }}
                 />
                 <p
                   style={{
                     fontSize: '13px',
                     fontWeight: '500',
-                    color: uploadMethod === 'api' ? '#fb7319' : '#171717',
+                    color: uploadMethod === 'api' ? '#FF3000' : '#171717',
                   }}
                 >
                   API Connect
@@ -367,7 +481,7 @@ export function CertificateUploadModal({
               <div className="space-y-4">
                 <div
                   className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors ${
-                    dragActive ? 'border-[#fb7319] bg-[#ffeee6]' : 'border-border'
+                    dragActive ? 'border-[#FF3000] bg-[#ffe6e6]' : 'border-border'
                   }`}
                   onDragEnter={handleDrag}
                   onDragLeave={handleDrag}
@@ -376,7 +490,7 @@ export function CertificateUploadModal({
                 >
                   {selectedFile ? (
                     <div className="flex items-center justify-center gap-3">
-                      <FileText className="w-8 h-8" style={{ color: '#fb7319' }} />
+                      <FileText className="w-8 h-8" style={{ color: '#FF3000' }} />
                       <div className="text-left">
                         <p style={{ fontSize: '14px', fontWeight: '500' }}>{selectedFile.name}</p>
                         <p
@@ -423,6 +537,66 @@ export function CertificateUploadModal({
                     </>
                   )}
                 </div>
+
+                {/* Required fields for file upload */}
+                <div className="space-y-4">
+                  <div>
+                    <label
+                      htmlFor="cert-number-file"
+                      className="block mb-2"
+                      style={{ fontSize: '13px', fontWeight: '500' }}
+                    >
+                      Certificate Number *
+                    </label>
+                    <input
+                      type="text"
+                      id="cert-number-file"
+                      value={certificateNumber}
+                      onChange={(e) => setCertificateNumber(e.target.value)}
+                      placeholder="e.g., NHIA/2026/FCT/AB12345678"
+                      className="w-full pl-10 pr-4 py-2 bg-input-background border border-border rounded-md"
+                      style={{ fontSize: '14px' }}
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label
+                        htmlFor="issue-date-file"
+                        className="block mb-2"
+                        style={{ fontSize: '13px', fontWeight: '500' }}
+                      >
+                        Issue Date *
+                      </label>
+                      <input
+                        type="date"
+                        id="issue-date-file"
+                        value={issuedDate}
+                        onChange={(e) => setIssuedDate(e.target.value)}
+                        className="w-full pl-10 pr-4 py-2 bg-input-background border border-border rounded-md"
+                        style={{ fontSize: '14px' }}
+                      />
+                    </div>
+
+                    <div>
+                      <label
+                        htmlFor="expiry-date-file"
+                        className="block mb-2"
+                        style={{ fontSize: '13px', fontWeight: '500' }}
+                      >
+                        Expiry Date *
+                      </label>
+                      <input
+                        type="date"
+                        id="expiry-date-file"
+                        value={expiryDate}
+                        onChange={(e) => setExpiryDate(e.target.value)}
+                        className="w-full pl-10 pr-4 py-2 bg-input-background border border-border rounded-md"
+                        style={{ fontSize: '14px' }}
+                      />
+                    </div>
+                  </div>
+                </div>
               </div>
             )}
 
@@ -430,63 +604,151 @@ export function CertificateUploadModal({
             {uploadMethod === 'manual' && (
               <div className="space-y-4">
                 <div>
-                  <label htmlFor="cert-number" className="block mb-2" style={{ fontSize: '13px', fontWeight: '500' }}>
+                  <label
+                    htmlFor="cert-number"
+                    className="block mb-2"
+                    style={{ fontSize: '13px', fontWeight: '500' }}
+                  >
                     Certificate Number *
                   </label>
                   <input
                     id="cert-number"
                     type="text"
                     value={certificateNumber}
-                    onChange={(e) => setCertificateNumber(e.target.value)}
+                    onChange={(e) => {
+                      setCertificateNumber(e.target.value);
+                      setErrors({ ...errors, certificateNumber: undefined });
+                    }}
                     placeholder="e.g., NHIA/2026/FCT/AB12345678"
-                    className="w-full px-3 py-2 rounded-md border border-border bg-background"
+                    required
+                    aria-invalid={!!errors.certificateNumber}
+                    aria-describedby={errors.certificateNumber ? 'cert-number-error' : undefined}
+                    className={`w-full px-3 py-2 rounded-md border bg-background ${
+                      errors.certificateNumber ? 'border-red-500' : 'border-border'
+                    }`}
                     style={{ fontSize: '13px' }}
                   />
+                  {errors.certificateNumber && (
+                    <p
+                      id="cert-number-error"
+                      className="text-red-500 text-xs mt-1"
+                      role="alert"
+                      aria-live="assertive"
+                    >
+                      {errors.certificateNumber}
+                    </p>
+                  )}
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label htmlFor="cert-issued-date" className="block mb-2" style={{ fontSize: '13px', fontWeight: '500' }}>
+                    <label
+                      htmlFor="cert-issued-date"
+                      className="block mb-2"
+                      style={{ fontSize: '13px', fontWeight: '500' }}
+                    >
                       Issued Date *
                     </label>
                     <input
                       id="cert-issued-date"
                       type="date"
                       value={issuedDate}
-                      onChange={(e) => setIssuedDate(e.target.value)}
-                      className="w-full px-3 py-2 rounded-md border border-border bg-background"
+                      onChange={(e) => {
+                        setIssuedDate(e.target.value);
+                        setErrors({ ...errors, issuedDate: undefined });
+                      }}
+                      required
+                      aria-invalid={!!errors.issuedDate}
+                      aria-describedby={errors.issuedDate ? 'cert-issued-date-error' : undefined}
+                      className={`w-full px-3 py-2 rounded-md border bg-background ${
+                        errors.issuedDate ? 'border-red-500' : 'border-border'
+                      }`}
                       style={{ fontSize: '13px' }}
                     />
+                    {errors.issuedDate && (
+                      <p
+                        id="cert-issued-date-error"
+                        className="text-red-500 text-xs mt-1"
+                        role="alert"
+                      aria-live="assertive"
+                      >
+                        {errors.issuedDate}
+                      </p>
+                    )}
                   </div>
 
                   <div>
-                    <label htmlFor="cert-expiry-date" className="block mb-2" style={{ fontSize: '13px', fontWeight: '500' }}>
+                    <label
+                      htmlFor="cert-expiry-date"
+                      className="block mb-2"
+                      style={{ fontSize: '13px', fontWeight: '500' }}
+                    >
                       Expiry Date *
                     </label>
                     <input
                       id="cert-expiry-date"
                       type="date"
                       value={expiryDate}
-                      onChange={(e) => setExpiryDate(e.target.value)}
-                      className="w-full px-3 py-2 rounded-md border border-border bg-background"
+                      onChange={(e) => {
+                        setExpiryDate(e.target.value);
+                        setErrors({ ...errors, expiryDate: undefined });
+                      }}
+                      required
+                      aria-invalid={!!errors.expiryDate}
+                      aria-describedby={errors.expiryDate ? 'cert-expiry-date-error' : undefined}
+                      className={`w-full px-3 py-2 rounded-md border bg-background ${
+                        errors.expiryDate ? 'border-red-500' : 'border-border'
+                      }`}
                       style={{ fontSize: '13px' }}
                     />
+                    {errors.expiryDate && (
+                      <p
+                        id="cert-expiry-date-error"
+                        className="text-red-500 text-xs mt-1"
+                        role="alert"
+                      aria-live="assertive"
+                      >
+                        {errors.expiryDate}
+                      </p>
+                    )}
                   </div>
                 </div>
 
                 <div>
-                  <label htmlFor="cert-issuing-authority" className="block mb-2" style={{ fontSize: '13px', fontWeight: '500' }}>
-                    Issuing Authority
+                  <label
+                    htmlFor="cert-issuing-authority"
+                    className="block mb-2"
+                    style={{ fontSize: '13px', fontWeight: '500' }}
+                  >
+                    Issuing Authority *
                   </label>
                   <input
                     id="cert-issuing-authority"
                     type="text"
                     value={issuingAuthority}
-                    onChange={(e) => setIssuingAuthority(e.target.value)}
+                    onChange={(e) => {
+                      setIssuingAuthority(e.target.value);
+                      setErrors({ ...errors, issuingAuthority: undefined });
+                    }}
                     placeholder="e.g., Federal Government of Nigeria"
-                    className="w-full px-3 py-2 rounded-md border border-border bg-background"
+                    required
+                    aria-invalid={!!errors.issuingAuthority}
+                    aria-describedby={errors.issuingAuthority ? 'cert-issuing-authority-error' : undefined}
+                    className={`w-full px-3 py-2 rounded-md border bg-background ${
+                      errors.issuingAuthority ? 'border-red-500' : 'border-border'
+                    }`}
                     style={{ fontSize: '13px' }}
                   />
+                  {errors.issuingAuthority && (
+                    <p
+                      id="cert-issuing-authority-error"
+                      className="text-red-500 text-xs mt-1"
+                      role="alert"
+                      aria-live="assertive"
+                    >
+                      {errors.issuingAuthority}
+                    </p>
+                  )}
                 </div>
               </div>
             )}
@@ -494,11 +756,11 @@ export function CertificateUploadModal({
             {/* API Connect */}
             {uploadMethod === 'api' && (
               <div className="space-y-4">
-                <div className="p-4 rounded-lg border border-[#e5e5e5] bg-[#c4edff] bg-opacity-30">
+                <div className="p-4 rounded-lg border border-[#e5e5e5] bg-[#ffe6e6] bg-opacity-30">
                   <div className="flex items-start gap-3">
-                    <CheckCircle2 className="w-5 h-5 flex-shrink-0" style={{ color: '#47c2ff' }} />
+                    <CheckCircle2 className="w-5 h-5 flex-shrink-0" style={{ color: '#FF3000' }} />
                     <div>
-                      <p style={{ fontSize: '14px', fontWeight: '500', color: '#47c2ff' }}>
+                      <p style={{ fontSize: '14px', fontWeight: '500', color: '#FF3000' }}>
                         Auto-Verification Available
                       </p>
                       <p
@@ -514,7 +776,11 @@ export function CertificateUploadModal({
                 </div>
 
                 <div>
-                  <label htmlFor="api-cert-number" className="block mb-2" style={{ fontSize: '13px', fontWeight: '500' }}>
+                  <label
+                    htmlFor="api-cert-number"
+                    className="block mb-2"
+                    style={{ fontSize: '13px', fontWeight: '500' }}
+                  >
                     Certificate Number
                   </label>
                   <input
@@ -557,13 +823,18 @@ export function CertificateUploadModal({
                       : handleApiConnect
                 }
                 disabled={isUploading}
+                aria-live="polite"
+                aria-busy={isUploading}
                 className="px-4 py-2 rounded-md text-white flex items-center gap-2 disabled:opacity-50"
-                style={{ backgroundColor: '#fb7319', fontSize: '13px', fontWeight: '500' }}
+                style={{ backgroundColor: '#FF3000', fontSize: '13px', fontWeight: '500' }}
               >
                 {isUploading ? (
                   <>
                     <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
                     {uploadMethod === 'api' ? 'Verifying...' : 'Uploading...'}
+                    <span className="sr-only" aria-live="polite">
+                      {uploadMethod === 'api' ? 'Verifying certificate, please wait' : 'Uploading certificate, please wait'}
+                    </span>
                   </>
                 ) : (
                   <>{uploadMethod === 'api' ? 'Connect & Verify' : 'Upload Certificate'}</>

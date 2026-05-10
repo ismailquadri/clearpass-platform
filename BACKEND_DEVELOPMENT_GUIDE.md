@@ -1,4 +1,5 @@
 # ClearPass Backend Development Guide
+
 ## Complete Technical Specification & Team Handbook
 
 **Version:** 1.0  
@@ -32,6 +33,7 @@
 ### What We're Building
 
 ClearPass is a **federal contractor compliance verification platform** for Nigeria. It enables:
+
 - **Contractors** to manage 6 compliance certificates, get a real-time health score, and submit bid-ready reports
 - **Government MDAs** to verify contractor compliance in real-time for procurement
 - **Consultants** to manage multiple contractor clients and generate referral revenue
@@ -47,6 +49,7 @@ ClearPass is a **federal contractor compliance verification platform** for Niger
 ### What Backend Team Is Building
 
 A **REST API** that:
+
 1. Manages user authentication (registration, login, JWT tokens)
 2. Stores real certificate data in PostgreSQL
 3. Calculates compliance health scores
@@ -61,6 +64,7 @@ A **REST API** that:
 **MVP Backend** = Enough to make the frontend work with real data.
 
 **NOT included yet:**
+
 - Full government API integrations (scaffold only)
 - SMS notifications (email only)
 - Advanced analytics
@@ -152,20 +156,20 @@ A **REST API** that:
 
 ### Required Technologies
 
-| Layer | Technology | Version | Why |
-|-------|-----------|---------|-----|
-| **Runtime** | Node.js | 18+ | Fast, async, JavaScript |
-| **Framework** | Express.js | 4.18+ | Lightweight, mature, industry standard |
-| **Database** | PostgreSQL | 14+ | Relational, reliable, JSONB support |
-| **Authentication** | JWT | — | Stateless, scalable, secure |
-| **Password Hashing** | bcryptjs | 2.4.3+ | Industry standard |
-| **Environment** | dotenv | 16+ | Config management |
-| **HTTP Client** | axios | 1.4+ | API calls to gov services |
-| **Email** | Postmark SDK | 3.0+ | Email delivery |
-| **Payment** | Paystack SDK | via axios | Payment processing |
-| **Deployment** | Railway/Render | — | Free tier, managed Postgres |
-| **Database Migration** | Knex.js | 2.5+ | Schema versioning |
-| **Validation** | Joi / Zod | — | Input validation |
+| Layer                  | Technology     | Version   | Why                                    |
+| ---------------------- | -------------- | --------- | -------------------------------------- |
+| **Runtime**            | Node.js        | 18+       | Fast, async, JavaScript                |
+| **Framework**          | Express.js     | 4.18+     | Lightweight, mature, industry standard |
+| **Database**           | PostgreSQL     | 14+       | Relational, reliable, JSONB support    |
+| **Authentication**     | JWT            | —         | Stateless, scalable, secure            |
+| **Password Hashing**   | bcryptjs       | 2.4.3+    | Industry standard                      |
+| **Environment**        | dotenv         | 16+       | Config management                      |
+| **HTTP Client**        | axios          | 1.4+      | API calls to gov services              |
+| **Email**              | Postmark SDK   | 3.0+      | Email delivery                         |
+| **Payment**            | Paystack SDK   | via axios | Payment processing                     |
+| **Deployment**         | Railway/Render | —         | Free tier, managed Postgres            |
+| **Database Migration** | Knex.js        | 2.5+      | Schema versioning                      |
+| **Validation**         | Joi / Zod      | —         | Input validation                       |
 
 ### Recommended Project Structure
 
@@ -435,18 +439,18 @@ CREATE INDEX idx_certificates_expiry_date ON certificates(expiry_date);
 CREATE TABLE compliance_scores (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   company_id UUID NOT NULL UNIQUE REFERENCES companies(id) ON DELETE CASCADE,
-  
+
   -- Components (PRD specified)
   component_a INT DEFAULT 0, -- Coverage (0-50): % of required certs present
   component_b INT DEFAULT 0, -- Freshness (0-30): % of certs not expiring soon
   component_c INT DEFAULT 0, -- Quality (0-20): % of certs verified via API
-  
+
   total_score INT DEFAULT 0, -- Sum of components (0-100)
   procurement_ready BOOLEAN DEFAULT FALSE, -- score >= 80 AND nhia active
-  
+
   last_calculated TIMESTAMP,
   calculation_details JSONB, -- Detailed breakdown of score
-  
+
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
@@ -461,32 +465,32 @@ CREATE INDEX idx_compliance_scores_procurement_ready ON compliance_scores(procur
 CREATE TABLE subscriptions (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   company_id UUID NOT NULL REFERENCES companies(id) ON DELETE CASCADE,
-  
+
   -- Subscription details
   tier VARCHAR(50) NOT NULL, -- 'starter', 'professional', 'enterprise'
   monthly_amount DECIMAL(10, 2),
   annual_amount DECIMAL(10, 2),
   billing_cycle VARCHAR(50), -- 'monthly', 'annual'
-  
+
   -- Payment info
   paystack_customer_code VARCHAR(100), -- For recurring charges
   paystack_authorization_code VARCHAR(100), -- For auto-renew
   last_payment_reference VARCHAR(100),
   last_payment_date TIMESTAMP,
   next_billing_date TIMESTAMP,
-  
+
   -- Status
   status VARCHAR(50) DEFAULT 'active', -- 'active', 'paused', 'cancelled', 'past_due'
   started_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   ended_at TIMESTAMP,
-  
+
   -- Features (based on tier)
   max_profiles INT, -- Number of company profiles
   max_bulk_verifications INT DEFAULT 100, -- Per month
   api_access BOOLEAN DEFAULT FALSE,
   team_members INT DEFAULT 1,
   white_label BOOLEAN DEFAULT FALSE,
-  
+
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
@@ -502,20 +506,20 @@ CREATE TABLE audit_trail (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id UUID REFERENCES users(id) ON DELETE SET NULL,
   company_id UUID REFERENCES companies(id) ON DELETE SET NULL,
-  
+
   action VARCHAR(100) NOT NULL, -- 'login', 'cert_upload', 'cert_verify', 'payment', 'score_update'
   resource VARCHAR(100), -- 'user', 'certificate', 'company', 'subscription'
   resource_id UUID,
-  
+
   old_values JSONB, -- Before change
   new_values JSONB, -- After change
   changes TEXT, -- Human-readable description
-  
+
   ip_address INET,
   user_agent TEXT,
   status VARCHAR(50), -- 'success', 'failure'
   error_message TEXT,
-  
+
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -530,18 +534,18 @@ CREATE INDEX idx_audit_trail_action ON audit_trail(action);
 CREATE TABLE government_api_logs (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   certificate_id UUID REFERENCES certificates(id) ON DELETE SET NULL,
-  
+
   api_endpoint VARCHAR(255), -- 'nhia', 'cac', 'firs', etc.
   request_type VARCHAR(50), -- 'verification', 'lookup', 'batch'
   request_payload JSONB,
-  
+
   response_status INT, -- HTTP status code
   response_body JSONB,
-  
+
   processing_time_ms INT, -- Latency
   success BOOLEAN,
   error_message TEXT,
-  
+
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -555,18 +559,18 @@ CREATE INDEX idx_gov_api_logs_created_at ON government_api_logs(created_at);
 CREATE TABLE reports (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   company_id UUID NOT NULL REFERENCES companies(id) ON DELETE CASCADE,
-  
+
   report_type VARCHAR(50), -- 'compliance', 'audit', 'pre_qual'
   generated_by UUID REFERENCES users(id),
-  
+
   pdf_url VARCHAR(500), -- S3/CloudflareR2 URL
   pdf_hash VARCHAR(255),
-  
+
   included_certificates TEXT[], -- Array of cert types
   compliance_score INT,
   generated_at TIMESTAMP NOT NULL,
   valid_until TIMESTAMP, -- Expiry for bid submission
-  
+
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -587,6 +591,7 @@ CREATE INDEX idx_reports_report_type ON reports(report_type);
 ### Authentication Header
 
 All protected endpoints require:
+
 ```
 Authorization: Bearer {jwt_token}
 ```
@@ -626,6 +631,7 @@ Authorization: Bearer {jwt_token}
 **Purpose:** Create a new user account
 
 **Request:**
+
 ```json
 {
   "email": "amaka@techbuild.com",
@@ -640,6 +646,7 @@ Authorization: Bearer {jwt_token}
 ```
 
 **Response (201):**
+
 ```json
 {
   "success": true,
@@ -661,6 +668,7 @@ Authorization: Bearer {jwt_token}
 ```
 
 **Error Cases:**
+
 - 400: Invalid email format
 - 409: Email already exists
 - 400: Password too weak
@@ -672,6 +680,7 @@ Authorization: Bearer {jwt_token}
 **Purpose:** Authenticate user and return JWT token
 
 **Request:**
+
 ```json
 {
   "email": "amaka@techbuild.com",
@@ -680,6 +689,7 @@ Authorization: Bearer {jwt_token}
 ```
 
 **Response (200):**
+
 ```json
 {
   "success": true,
@@ -697,6 +707,7 @@ Authorization: Bearer {jwt_token}
 ```
 
 **Error Cases:**
+
 - 401: Invalid credentials
 - 429: Too many login attempts (rate limit)
 
@@ -707,6 +718,7 @@ Authorization: Bearer {jwt_token}
 **Purpose:** Get a new token using refresh token
 
 **Request:**
+
 ```json
 {
   "refresh_token": "..."
@@ -714,6 +726,7 @@ Authorization: Bearer {jwt_token}
 ```
 
 **Response (200):**
+
 ```json
 {
   "success": true,
@@ -730,12 +743,14 @@ Authorization: Bearer {jwt_token}
 
 **Purpose:** Invalidate current token
 
-**Request:** 
+**Request:**
+
 ```
 Authorization: Bearer {token}
 ```
 
 **Response (200):**
+
 ```json
 {
   "success": true,
@@ -752,6 +767,7 @@ Authorization: Bearer {token}
 **Purpose:** Upload a new certificate
 
 **Request (multipart/form-data):**
+
 ```
 Authorization: Bearer {token}
 Content-Type: multipart/form-data
@@ -765,6 +781,7 @@ document: [PDF file]
 ```
 
 **Response (201):**
+
 ```json
 {
   "success": true,
@@ -786,6 +803,7 @@ document: [PDF file]
 **Purpose:** List all certificates for a company
 
 **Query Parameters:**
+
 ```
 ?status=active
 &cert_type=nhia
@@ -794,6 +812,7 @@ document: [PDF file]
 ```
 
 **Response (200):**
+
 ```json
 {
   "success": true,
@@ -825,6 +844,7 @@ document: [PDF file]
 **Purpose:** Get details of a specific certificate
 
 **Response (200):**
+
 ```json
 {
   "success": true,
@@ -853,6 +873,7 @@ document: [PDF file]
 **Purpose:** Update certificate details
 
 **Request:**
+
 ```json
 {
   "cert_number": "NHIA/2026/FC654321",
@@ -861,6 +882,7 @@ document: [PDF file]
 ```
 
 **Response (200):**
+
 ```json
 {
   "success": true,
@@ -875,6 +897,7 @@ document: [PDF file]
 **Purpose:** Delete a certificate
 
 **Response (200):**
+
 ```json
 {
   "success": true,
@@ -891,15 +914,16 @@ document: [PDF file]
 **Purpose:** Get the current compliance health score for a company
 
 **Response (200):**
+
 ```json
 {
   "success": true,
   "data": {
     "company_id": "uuid",
     "total_score": 73,
-    "component_a": 30,  // Coverage (out of 50)
-    "component_b": 25,  // Freshness (out of 30)
-    "component_c": 18,  // Quality (out of 20)
+    "component_a": 30, // Coverage (out of 50)
+    "component_b": 25, // Freshness (out of 30)
+    "component_c": 18, // Quality (out of 20)
     "procurement_ready": false,
     "breakdown": {
       "total_certificates": 6,
@@ -931,6 +955,7 @@ document: [PDF file]
 **Purpose:** Manually recalculate compliance score
 
 **Response (200):**
+
 ```json
 {
   "success": true,
@@ -948,6 +973,7 @@ document: [PDF file]
 **Purpose:** Get available subscription tiers
 
 **Response (200):**
+
 ```json
 {
   "success": true,
@@ -1012,6 +1038,7 @@ document: [PDF file]
 **Purpose:** Start a subscription and initialize payment
 
 **Request:**
+
 ```json
 {
   "plan_id": "professional",
@@ -1021,6 +1048,7 @@ document: [PDF file]
 ```
 
 **Response (200):**
+
 ```json
 {
   "success": true,
@@ -1044,6 +1072,7 @@ document: [PDF file]
 **Purpose:** Verify Paystack payment and activate subscription
 
 **Request:**
+
 ```json
 {
   "reference": "paystack_reference"
@@ -1051,6 +1080,7 @@ document: [PDF file]
 ```
 
 **Response (200):**
+
 ```json
 {
   "success": true,
@@ -1074,6 +1104,7 @@ document: [PDF file]
 **Purpose:** Get current subscription details
 
 **Response (200):**
+
 ```json
 {
   "success": true,
@@ -1100,6 +1131,7 @@ document: [PDF file]
 **Purpose:** Cancel subscription
 
 **Request:**
+
 ```json
 {
   "reason": "Optional cancellation reason"
@@ -1107,6 +1139,7 @@ document: [PDF file]
 ```
 
 **Response (200):**
+
 ```json
 {
   "success": true,
@@ -1127,6 +1160,7 @@ document: [PDF file]
 **Purpose:** Generate a PDF compliance report
 
 **Request:**
+
 ```json
 {
   "report_type": "compliance",
@@ -1135,6 +1169,7 @@ document: [PDF file]
 ```
 
 **Response (201):**
+
 ```json
 {
   "success": true,
@@ -1156,6 +1191,7 @@ document: [PDF file]
 **Purpose:** List all reports for a company
 
 **Query Parameters:**
+
 ```
 ?report_type=compliance
 &page=1
@@ -1163,6 +1199,7 @@ document: [PDF file]
 ```
 
 **Response (200):**
+
 ```json
 {
   "success": true,
@@ -1189,6 +1226,7 @@ document: [PDF file]
 **Purpose:** Verify a certificate against government API
 
 **Request:**
+
 ```json
 {
   "certificate_id": "uuid",
@@ -1197,6 +1235,7 @@ document: [PDF file]
 ```
 
 **Response (202 - Processing):**
+
 ```json
 {
   "success": true,
@@ -1217,6 +1256,7 @@ document: [PDF file]
 **Purpose:** Get verification status
 
 **Response (200):**
+
 ```json
 {
   "success": true,
@@ -1242,6 +1282,7 @@ document: [PDF file]
 **Purpose:** Get activity log for a company
 
 **Query Parameters:**
+
 ```
 ?action=cert_upload
 &days=30
@@ -1249,6 +1290,7 @@ document: [PDF file]
 ```
 
 **Response (200):**
+
 ```json
 {
   "success": true,
@@ -1276,6 +1318,7 @@ document: [PDF file]
 **Purpose:** Get company profile
 
 **Response (200):**
+
 ```json
 {
   "success": true,
@@ -1305,6 +1348,7 @@ document: [PDF file]
 **Purpose:** Update company profile
 
 **Request:**
+
 ```json
 {
   "name": "TechBuild Nigeria Ltd",
@@ -1315,6 +1359,7 @@ document: [PDF file]
 ```
 
 **Response (200):**
+
 ```json
 {
   "success": true,
@@ -1331,6 +1376,7 @@ document: [PDF file]
 **Purpose:** List all companies (admin only)
 
 **Query Parameters:**
+
 ```
 ?status=active
 &subscription_tier=enterprise
@@ -1338,6 +1384,7 @@ document: [PDF file]
 ```
 
 **Response (200):**
+
 ```json
 {
   "success": true,
@@ -1356,6 +1403,7 @@ document: [PDF file]
 **Purpose:** Manually verify a certificate (admin)
 
 **Request:**
+
 ```json
 {
   "certificate_id": "uuid",
@@ -1365,6 +1413,7 @@ document: [PDF file]
 ```
 
 **Response (200):**
+
 ```json
 {
   "success": true,
@@ -1408,7 +1457,7 @@ Signature: HMACSHA256(base64(header) + "." + base64(payload), secret)
 - At least 1 uppercase letter
 - At least 1 lowercase letter
 - At least 1 number
-- At least 1 special character (!@#$%^&*)
+- At least 1 special character (!@#$%^&\*)
 
 ### Security Headers (All Responses)
 
@@ -1434,11 +1483,11 @@ const corsOptions = {
     'https://clearpass-seven.vercel.app',
     'https://staging.clearpass.com.ng',
     'http://localhost:3000', // development
-    'http://localhost:5173'   // Vite dev
+    'http://localhost:5173', // Vite dev
   ],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
+  allowedHeaders: ['Content-Type', 'Authorization'],
 };
 ```
 
@@ -1508,6 +1557,7 @@ Secret Key: sk_test_xxxxxxxxxxxxx
 ```
 
 Available test cards:
+
 ```
 4084084084084081 (Success)
 5060666666666666 (Error)
@@ -1524,6 +1574,7 @@ Available test cards:
 **Method:** REST API
 
 **Request:**
+
 ```json
 {
   "enrollment_number": "NHIA/2026/FC123456",
@@ -1532,6 +1583,7 @@ Available test cards:
 ```
 
 **Response:**
+
 ```json
 {
   "status": "success",
@@ -1551,6 +1603,7 @@ Available test cards:
 **Method:** REST API or SFTP batch
 
 **Implementation Note:**
+
 > For MVP, we scaffold the integration. Full implementation happens in Week 1 post-launch based on CAC's API specs.
 
 ### FIRS Integration
@@ -1559,6 +1612,7 @@ Available test cards:
 **Method:** Web service or batch
 
 **Implementation Note:**
+
 > Similar to CAC—scaffold now, integrate Week 1.
 
 ---
@@ -1584,6 +1638,7 @@ Available test cards:
 #### Production Deployment Steps
 
 1. **Create Railway Account**
+
    ```
    1. Go to railway.app
    2. Sign up with GitHub
@@ -1596,6 +1651,7 @@ Available test cards:
    ```
 
 2. **Environment Variables (Production)**
+
    ```
    DATABASE_URL=postgresql://...
    JWT_SECRET=very-long-random-string
@@ -1609,6 +1665,7 @@ Available test cards:
    ```
 
 3. **Database Migrations (Production)**
+
    ```bash
    npm run migrate:latest  # From CI/CD pipeline
    ```
@@ -1622,17 +1679,20 @@ Available test cards:
 ### Monitoring & Logging
 
 **Logging Service:** Winston or Pino
+
 - Log all API requests (method, path, duration, status)
 - Log errors with stack traces
 - Log government API calls and responses
 - Store in CloudWatch or similar
 
 **Error Tracking:** Sentry (free tier)
+
 - Capture exceptions automatically
 - Real-time alerts for critical errors
 - Source map support
 
 **Uptime Monitoring:** UptimeRobot (free)
+
 - Monitor API health endpoint
 - Alert if down for >5 min
 - Historical uptime tracking
@@ -1656,13 +1716,11 @@ Available test cards:
 // Example: authController.test.js
 describe('Auth Controller', () => {
   it('should register a new user', async () => {
-    const response = await request(app)
-      .post('/api/auth/register')
-      .send({
-        email: 'test@example.com',
-        password: 'SecurePass123!'
-      });
-    
+    const response = await request(app).post('/api/auth/register').send({
+      email: 'test@example.com',
+      password: 'SecurePass123!',
+    });
+
     expect(response.status).toBe(201);
     expect(response.body.data.user.email).toBe('test@example.com');
   });
@@ -1703,6 +1761,7 @@ describe('Certificate Flow', () => {
 ### Load Testing (Week 0)
 
 Use Apache JMeter or k6:
+
 ```bash
 # Test that API handles 100 concurrent users
 # Without response time > 2 seconds
@@ -1711,12 +1770,12 @@ k6 run load-test.js
 
 ### Test Coverage Target
 
-| Layer | Target |
-|-------|--------|
-| Controllers | 80% |
-| Services | 90% |
-| Models | 85% |
-| Middleware | 80% |
+| Layer       | Target  |
+| ----------- | ------- |
+| Controllers | 80%     |
+| Services    | 90%     |
+| Models      | 85%     |
+| Middleware  | 80%     |
 | **Overall** | **80%** |
 
 ---
@@ -1726,6 +1785,7 @@ k6 run load-test.js
 ### Phase 1 Success Criteria (Week 0 Launch)
 
 ✅ **Functionality:**
+
 - [ ] All 25+ API endpoints functional and tested
 - [ ] Authentication working (register, login, token refresh)
 - [ ] Certificate upload, verification, and storage working
@@ -1735,6 +1795,7 @@ k6 run load-test.js
 - [ ] PDF report generation working
 
 ✅ **Quality:**
+
 - [ ] 80% test coverage
 - [ ] Zero critical bugs
 - [ ] <500ms response time on 95th percentile
@@ -1742,6 +1803,7 @@ k6 run load-test.js
 - [ ] All security headers in place
 
 ✅ **Security:**
+
 - [ ] Passwords hashed with bcrypt
 - [ ] JWT tokens properly validated
 - [ ] SQL injection prevention (parameterized queries)
@@ -1750,6 +1812,7 @@ k6 run load-test.js
 - [ ] Rate limiting working
 
 ✅ **Operations:**
+
 - [ ] Deployment automated (GitHub Actions)
 - [ ] Database backups automated
 - [ ] Monitoring and alerts active
@@ -1759,12 +1822,14 @@ k6 run load-test.js
 ### Key Metrics to Track
 
 **Performance:**
+
 - API response time (target: <500ms)
 - Database query time (target: <100ms)
 - Error rate (target: <0.1%)
 - Uptime (target: 99.5%)
 
 **User Metrics (Week 1-2):**
+
 - Registration rate
 - Certificate uploads per user
 - Subscription conversion rate
@@ -1772,6 +1837,7 @@ k6 run load-test.js
 - Report generation rate
 
 **Business Metrics (Week 1-4):**
+
 - Paying customers
 - MRR (Monthly Recurring Revenue)
 - CAC (Customer Acquisition Cost)
@@ -1829,6 +1895,7 @@ k6 run load-test.js
 ### Backend Lead
 
 **Responsible for:**
+
 - Overall architecture and design
 - Code quality and standards
 - API specification adherence
@@ -1837,6 +1904,7 @@ k6 run load-test.js
 - Team coordination
 
 **Deliverables:**
+
 - Working API deployed to production
 - All tests passing
 - Documentation complete
@@ -1845,6 +1913,7 @@ k6 run load-test.js
 ### Backend Engineers (2-3 needed)
 
 **Responsibilities:**
+
 1. **Engineer 1:** Authentication + Core Infrastructure
    - User registration, login, JWT
    - Middleware setup
@@ -1866,6 +1935,7 @@ k6 run load-test.js
 ### QA/Testing
 
 **Responsible for:**
+
 - Writing test cases
 - Running integration tests
 - Load testing
@@ -1873,6 +1943,7 @@ k6 run load-test.js
 - Bug reporting and tracking
 
 **Deliverables:**
+
 - Test report with 80% coverage
 - Load test results
 - Bug list (P0/P1/P2 classification)
@@ -1880,6 +1951,7 @@ k6 run load-test.js
 ### DevOps/Infrastructure
 
 **Responsible for:**
+
 - PostgreSQL setup and optimization
 - API deployment pipeline
 - Monitoring and alerting
@@ -1887,6 +1959,7 @@ k6 run load-test.js
 - Performance optimization
 
 **Deliverables:**
+
 - Production API live
 - Automated backups
 - Monitoring dashboard
@@ -1899,6 +1972,7 @@ k6 run load-test.js
 ### Q: How do I set up the database locally?
 
 **A:** Use Docker:
+
 ```bash
 docker run --name clearpass-postgres \
   -e POSTGRES_USER=clearpass \
@@ -1916,12 +1990,14 @@ npm run migrate:latest
 ### Q: How do I test the API locally?
 
 **A:** Use Postman or Insomnia:
+
 1. Import the OpenAPI spec (provided separately)
 2. Set environment variables (BASE_URL, TOKEN)
 3. Run requests
 4. Use the test suite included
 
 Or run automated tests:
+
 ```bash
 npm run test          # Unit tests
 npm run test:integration  # Integration tests
@@ -1933,15 +2009,17 @@ npm run test:coverage     # Coverage report
 ### Q: How do I debug a failed government API call?
 
 **A:** Check the logs:
+
 ```bash
 # View government_api_logs table
-SELECT * FROM government_api_logs 
-WHERE success = false 
-ORDER BY created_at DESC 
+SELECT * FROM government_api_logs
+WHERE success = false
+ORDER BY created_at DESC
 LIMIT 10;
 ```
 
 Also check:
+
 - API key is correct
 - Endpoint is accessible
 - Request payload matches spec
@@ -1951,7 +2029,8 @@ Also check:
 
 ### Q: What do I do if the database is down?
 
-**A:** 
+**A:**
+
 1. Check Railway dashboard for status
 2. Check backup age
 3. Restore from latest backup
@@ -1963,6 +2042,7 @@ Also check:
 ### Q: How do I handle payment failures?
 
 **A:** Paystack automatically retries failed payments 3 times. For manual intervention:
+
 1. Check Paystack dashboard
 2. Verify customer has valid card
 3. Send email to customer requesting update
@@ -1972,7 +2052,8 @@ Also check:
 
 ### Q: How do I scale the API if we get 1000 concurrent users?
 
-**A:** 
+**A:**
+
 1. Enable database connection pooling (pgBouncer)
 2. Add caching layer (Redis)
 3. Optimize N+1 queries
@@ -2016,6 +2097,7 @@ Build it like you're building it for production (because you are).
 ### For Product Team
 
 This backend is designed to:
+
 1. **Validate the market** (Week 1-2: measure conversion)
 2. **Close government deals** (Week 2-4: pilot MDAs)
 3. **Scale to Series A** (Month 3: ₦1-2M MRR)
@@ -2046,6 +2128,7 @@ Backend delivery is **critical path** for launch. Everything else (landing pages
 ## SUPPORT & QUESTIONS
 
 For clarifications on this specification:
+
 - **Product questions:** Contact Quadri (Product Strategy)
 - **Technical questions:** Create GitHub issue with [BACKEND] tag
 - **Urgent blockers:** Slack #backend-team

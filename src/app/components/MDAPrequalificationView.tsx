@@ -58,33 +58,64 @@ export function MDAPrequalificationView() {
 
   const [listName, setListName] = useState('Infrastructure Project Q2 2026');
   const [tenderNumber, setTenderNumber] = useState('FGN/MDA/2026/045');
+  const [errors, setErrors] = useState<{
+    listName?: string;
+    tenderNumber?: string;
+  }>({});
 
   const qualifiedCount = vendors.filter((v) => v.status === 'qualified').length;
   const attentionCount = vendors.filter((v) => v.status === 'attention').length;
   const disqualifiedCount = vendors.filter((v) => v.status === 'disqualified').length;
   const avgScore = Math.round(vendors.reduce((sum, v) => sum + v.score, 0) / vendors.length);
 
+  const validateForm = () => {
+    const newErrors: typeof errors = {};
+
+    if (!listName.trim()) {
+      newErrors.listName = 'List name is required';
+    } else if (listName.length < 5) {
+      newErrors.listName = 'List name must be at least 5 characters';
+    }
+
+    if (!tenderNumber.trim()) {
+      newErrors.tenderNumber = 'Tender number is required';
+    } else if (!tenderNumber.includes('/')) {
+      newErrors.tenderNumber = 'Please enter a valid tender number format (e.g., FGN/MDA/2026/045)';
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleGenerateReport = () => {
+    if (!validateForm()) {
+      showToast('error', 'Validation Error', 'Please correct the errors in the form');
+      return;
+    }
+    // ... existing generate logic
+  };
+
   const getStatusConfig = (status: Vendor['status']) => {
     switch (status) {
       case 'qualified':
         return {
           icon: CheckCircle2,
-          color: 'rgb(31, 193, 107)',
-          bgColor: 'rgb(31, 193, 107, 0.1)',
+          color: '#FF3000',
+          bgColor: 'rgba(255, 48, 0, 0.1)',
           label: 'Pre-Qualified',
         };
       case 'attention':
         return {
           icon: AlertTriangle,
-          color: 'rgb(250, 115, 25)',
-          bgColor: 'rgb(250, 115, 25, 0.1)',
+          color: '#FF3000',
+          bgColor: 'rgba(255, 48, 0, 0.1)',
           label: 'Needs Review',
         };
       case 'disqualified':
         return {
           icon: XCircle,
-          color: 'rgb(251, 55, 72)',
-          bgColor: 'rgb(251, 55, 72, 0.1)',
+          color: '#FF3000',
+          bgColor: 'rgba(255, 48, 0, 0.1)',
           label: 'Disqualified',
         };
     }
@@ -107,8 +138,8 @@ export function MDAPrequalificationView() {
   };
 
   return (
-    <div className="flex-1 h-screen overflow-y-auto bg-background">
-      <div className="p-8 max-w-[1400px] mx-auto">
+    <div className="flex-1 h-full overflow-y-auto bg-background">
+      <div className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">
           <div className="flex items-center justify-between mb-2">
@@ -120,7 +151,7 @@ export function MDAPrequalificationView() {
               </button>
               <button
                 className="px-4 py-2 rounded-md text-white flex items-center gap-2"
-                style={{ backgroundColor: 'rgb(251, 115, 25)' }}
+                style={{ backgroundColor: '#FF3000' }}
               >
                 <Plus className="w-4 h-4" />
                 Add Vendor
@@ -134,55 +165,89 @@ export function MDAPrequalificationView() {
 
         {/* List Details */}
         <div className="bg-card border border-border rounded-lg p-6 mb-6">
-          <div className="grid grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <div>
-              <label htmlFor="list-name-input" className="block mb-2" style={{ fontSize: '14px', fontWeight: '500' }}>
-                Pre-Qualification List Name
+              <label
+                htmlFor="list-name-input"
+                className="block mb-2"
+                style={{ fontSize: '14px', fontWeight: '500' }}
+              >
+                Pre-Qualification List Name <span className="text-red-500" aria-hidden="true">*</span>
               </label>
               <input
                 id="list-name-input"
                 type="text"
                 value={listName}
-                onChange={(e) => setListName(e.target.value)}
-                className="w-full px-4 py-2 bg-input-background border border-border rounded-md"
+                onChange={(e) => {
+                  setListName(e.target.value);
+                  setErrors({ ...errors, listName: undefined });
+                }}
+                required
+                aria-invalid={!!errors.listName}
+                aria-describedby={errors.listName ? 'list-name-error' : undefined}
+                className={`w-full px-4 py-2 bg-input-background border rounded-md ${
+                  errors.listName ? 'border-red-500' : 'border-border'
+                }`}
               />
+              {errors.listName && (
+                <p id="list-name-error" className="text-red-500 text-sm mt-1" role="alert" aria-live="assertive">
+                  {errors.listName}
+                </p>
+              )}
             </div>
             <div>
-              <label htmlFor="tender-number-input" className="block mb-2" style={{ fontSize: '14px', fontWeight: '500' }}>
-                Tender Number
+              <label
+                htmlFor="tender-number-input"
+                className="block mb-2"
+                style={{ fontSize: '14px', fontWeight: '500' }}
+              >
+                Tender Number <span className="text-red-500" aria-hidden="true">*</span>
               </label>
               <input
                 id="tender-number-input"
                 type="text"
                 value={tenderNumber}
-                onChange={(e) => setTenderNumber(e.target.value)}
-                className="w-full px-4 py-2 bg-input-background border border-border rounded-md"
+                onChange={(e) => {
+                  setTenderNumber(e.target.value);
+                  setErrors({ ...errors, tenderNumber: undefined });
+                }}
+                required
+                aria-invalid={!!errors.tenderNumber}
+                aria-describedby={errors.tenderNumber ? 'tender-number-error' : undefined}
+                className={`w-full px-4 py-2 bg-input-background border rounded-md ${
+                  errors.tenderNumber ? 'border-red-500' : 'border-border'
+                }`}
               />
+              {errors.tenderNumber && (
+                <p id="tender-number-error" className="text-red-500 text-sm mt-1" role="alert" aria-live="assertive">
+                  {errors.tenderNumber}
+                </p>
+              )}
             </div>
           </div>
         </div>
 
         {/* Stats Row */}
-        <div className="grid grid-cols-5 gap-4 mb-6">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4 mb-6">
           <div className="bg-card border border-border rounded-lg p-5">
             <p className="caption text-muted-foreground mb-1">Total Vendors</p>
             <p style={{ fontSize: '32px', fontWeight: '600' }}>{vendors.length}</p>
           </div>
           <div className="bg-card border border-border rounded-lg p-5">
             <p className="caption text-muted-foreground mb-1">Pre-Qualified</p>
-            <p style={{ fontSize: '32px', fontWeight: '600', color: 'rgb(31, 193, 107)' }}>
+            <p style={{ fontSize: '32px', fontWeight: '600', color: '#FF3000' }}>
               {qualifiedCount}
             </p>
           </div>
           <div className="bg-card border border-border rounded-lg p-5">
             <p className="caption text-muted-foreground mb-1">Needs Review</p>
-            <p style={{ fontSize: '32px', fontWeight: '600', color: 'rgb(250, 115, 25)' }}>
+            <p style={{ fontSize: '32px', fontWeight: '600', color: '#FF3000' }}>
               {attentionCount}
             </p>
           </div>
           <div className="bg-card border border-border rounded-lg p-5">
             <p className="caption text-muted-foreground mb-1">Disqualified</p>
-            <p style={{ fontSize: '32px', fontWeight: '600', color: 'rgb(251, 55, 72)' }}>
+            <p style={{ fontSize: '32px', fontWeight: '600', color: '#FF3000' }}>
               {disqualifiedCount}
             </p>
           </div>
@@ -195,7 +260,7 @@ export function MDAPrequalificationView() {
         {/* Vendors Table */}
         <div className="bg-card border border-border rounded-lg overflow-hidden">
           <div className="p-4 border-b border-border flex items-center justify-between">
-            <h3 style={{ fontSize: '18px', fontWeight: '500' }}>Vendors ({vendors.length})</h3>
+            <h2 style={{ fontSize: '18px', fontWeight: '500' }}>Vendors ({vendors.length})</h2>
             <button className="px-4 py-2 rounded-md border border-border hover:bg-muted transition-colors flex items-center gap-2">
               <Download className="w-4 h-4" />
               Export List
@@ -204,41 +269,48 @@ export function MDAPrequalificationView() {
 
           <div className="overflow-x-auto">
             <table className="w-full">
+              <caption className="sr-only">List of vendors in pre-qualification with their RC numbers, company names, submission dates, and scores</caption>
               <thead className="bg-muted/50">
                 <tr>
                   <th
                     className="px-6 py-3 text-left"
                     style={{ fontSize: '12px', fontWeight: '500' }}
+                    scope="col"
                   >
                     RC NUMBER
                   </th>
                   <th
                     className="px-6 py-3 text-left"
                     style={{ fontSize: '12px', fontWeight: '500' }}
+                    scope="col"
                   >
                     COMPANY NAME
                   </th>
                   <th
                     className="px-6 py-3 text-left"
                     style={{ fontSize: '12px', fontWeight: '500' }}
+                    scope="col"
                   >
                     SUBMISSION DATE
                   </th>
                   <th
                     className="px-6 py-3 text-left"
                     style={{ fontSize: '12px', fontWeight: '500' }}
+                    scope="col"
                   >
                     SCORE
                   </th>
                   <th
                     className="px-6 py-3 text-left"
                     style={{ fontSize: '12px', fontWeight: '500' }}
+                    scope="col"
                   >
                     STATUS
                   </th>
                   <th
                     className="px-6 py-3 text-left"
                     style={{ fontSize: '12px', fontWeight: '500' }}
+                    scope="col"
                   >
                     ACTIONS
                   </th>
@@ -318,21 +390,25 @@ export function MDAPrequalificationView() {
 
         {/* Actions */}
         <div className="mt-6 bg-card border border-border rounded-lg p-6">
-          <h3 className="mb-4" style={{ fontSize: '18px', fontWeight: '500' }}>
+          <h2 className="mb-4" style={{ fontSize: '18px', fontWeight: '500' }}>
             Finalize Pre-Qualification
-          </h3>
+          </h2>
           <p className="text-muted-foreground mb-4" style={{ fontSize: '14px' }}>
             Once you've reviewed all vendors, you can generate the official pre-qualification report
             for tender evaluation.
           </p>
           <div className="flex gap-3">
             <button
+              onClick={handleGenerateReport}
               className="px-6 py-2 rounded-md text-white"
-              style={{ backgroundColor: 'rgb(251, 115, 25)' }}
+              style={{ backgroundColor: '#FF3000' }}
             >
               Generate Pre-Qualification Report
             </button>
-            <button className="px-6 py-2 rounded-md border border-border hover:bg-muted transition-colors">
+            <button
+              onClick={handleGenerateReport}
+              className="px-6 py-2 rounded-md border border-border hover:bg-muted transition-colors"
+            >
               Save as Draft
             </button>
           </div>

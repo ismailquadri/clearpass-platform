@@ -1,6 +1,7 @@
-import { X, Upload, Users, FileText, CheckCircle2 } from 'lucide-react';
+import { X, Upload, Users, FileText, CheckCircle2, AlertTriangle } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { useToast } from './ToastProvider';
+import { useFocusTrap } from '../hooks/useFocusTrap';
 
 interface Client {
   id: string;
@@ -71,6 +72,7 @@ export function PartnerCertificateUploadModal({
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [error, setError] = useState<string | null>(null);
 
   // Handle Escape key to close modal
   useEffect(() => {
@@ -88,6 +90,8 @@ export function PartnerCertificateUploadModal({
       document.removeEventListener('keydown', handleEscapeKey);
     };
   }, [isOpen, isUploading, onClose]);
+
+  const modalRef = useFocusTrap(isOpen);
 
   if (!isOpen) return null;
 
@@ -108,19 +112,33 @@ export function PartnerCertificateUploadModal({
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setError(null);
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
       if (file.type === 'application/pdf' || file.type.startsWith('image/')) {
         setSelectedFile(file);
       } else {
+        setError('Please upload a PDF or image file');
         showToast('error', 'Invalid File Type', 'Please upload a PDF or image file');
       }
     }
   };
 
   const handleUpload = async () => {
+    setError(null);
+
+    if (!selectedClient) {
+      setError('Please select a client first');
+      return;
+    }
+
+    if (!selectedCertificate) {
+      setError('Please select a certificate type first');
+      return;
+    }
+
     if (!selectedFile) {
-      showToast('error', 'No File Selected', 'Please select a file to upload');
+      setError('Please select a file to upload');
       return;
     }
 
@@ -145,6 +163,7 @@ export function PartnerCertificateUploadModal({
     setSelectedCertificate('');
     setSelectedFile(null);
     setSearchQuery('');
+    setError(null);
   };
 
   const handleClose = () => {
@@ -166,19 +185,30 @@ export function PartnerCertificateUploadModal({
 
   return (
     <>
-      {/* Backdrop */}
-      <div className="fixed inset-0 bg-black/50 z-50" onClick={handleClose} />
+      {/* Backdrop - non-focusable */}
+      <div
+        className="fixed inset-0 bg-black/50 z-50"
+        onClick={handleClose}
+        tabIndex={-1}
+        aria-hidden="true"
+      />
 
       {/* Modal */}
       <div className="fixed inset-0 flex items-center justify-center z-50 p-4">
         <div
+          ref={modalRef}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="modal-title"
           className="bg-card rounded-xl shadow-2xl w-full max-w-3xl max-h-[90vh] overflow-hidden flex flex-col"
           onClick={(e) => e.stopPropagation()}
         >
           {/* Header */}
           <div className="flex items-start justify-between p-6 border-b border-border">
             <div>
-              <h2 style={{ fontSize: '24px', fontWeight: '600' }}>Upload Client Certificate</h2>
+              <h2 id="modal-title" style={{ fontSize: '24px', fontWeight: '600' }}>
+                Upload Client Certificate
+              </h2>
               <p className="text-muted-foreground text-[#404040] mt-1" style={{ fontSize: '14px' }}>
                 {step === 'client' && 'Step 1 of 3: Select client'}
                 {step === 'certificate' && 'Step 2 of 3: Select certificate type'}
@@ -189,6 +219,7 @@ export function PartnerCertificateUploadModal({
               onClick={handleClose}
               disabled={isUploading}
               aria-label="Close modal"
+              autoFocus={!isUploading}
               className="w-11 h-11 rounded-md hover:bg-muted flex items-center justify-center transition-colors disabled:opacity-50 min-w-[44px] min-h-[44px]"
             >
               <X className="w-5 h-5" />
@@ -201,7 +232,7 @@ export function PartnerCertificateUploadModal({
               <button
                 onClick={() => step !== 'client' && setStep('client')}
                 className={`${
-                  step === 'client' ? 'text-[#fb7319] font-medium' : 'text-muted-foreground'
+                  step === 'client' ? 'text-[#FF3000] font-medium' : 'text-muted-foreground'
                 }`}
                 style={{ fontSize: '13px' }}
               >
@@ -211,7 +242,7 @@ export function PartnerCertificateUploadModal({
               <button
                 onClick={() => step === 'upload' && setStep('certificate')}
                 className={`${
-                  step === 'certificate' ? 'text-[#fb7319] font-medium' : 'text-muted-foreground'
+                  step === 'certificate' ? 'text-[#FF3000] font-medium' : 'text-muted-foreground'
                 }`}
                 style={{ fontSize: '13px' }}
                 disabled={!selectedClient}
@@ -220,7 +251,7 @@ export function PartnerCertificateUploadModal({
               </button>
               <span className="text-muted-foreground">›</span>
               <span
-                className={`${step === 'upload' ? 'text-[#fb7319] font-medium' : 'text-muted-foreground'}`}
+                className={`${step === 'upload' ? 'text-[#FF3000] font-medium' : 'text-muted-foreground'}`}
                 style={{ fontSize: '13px' }}
               >
                 Upload
@@ -234,7 +265,11 @@ export function PartnerCertificateUploadModal({
             {step === 'client' && (
               <div className="space-y-4">
                 <div>
-                  <label htmlFor="partner-search-input" className="block mb-2" style={{ fontSize: '13px', fontWeight: '500' }}>
+                  <label
+                    htmlFor="partner-search-input"
+                    className="block mb-2"
+                    style={{ fontSize: '13px', fontWeight: '500' }}
+                  >
                     Search Clients
                   </label>
                   <input
@@ -253,7 +288,7 @@ export function PartnerCertificateUploadModal({
                     <button
                       key={client.id}
                       onClick={() => handleClientSelect(client)}
-                      className="w-full p-4 rounded-lg border border-border hover:border-[#fb7319] hover:bg-[#ffeee6] transition-all text-left"
+                      className="w-full p-4 rounded-lg border border-border hover:border-[#FF3000] hover:bg-[#ffe6e6] transition-all text-left"
                     >
                       <div className="flex items-start justify-between mb-2">
                         <div className="flex-1">
@@ -272,16 +307,16 @@ export function PartnerCertificateUploadModal({
                           style={{
                             backgroundColor:
                               client.complianceScore >= 80
-                                ? 'rgb(31, 193, 107, 0.1)'
+                                ? 'rgba(255, 48, 0, 0.1)'
                                 : client.complianceScore >= 60
-                                  ? 'rgb(250, 115, 25, 0.1)'
-                                  : 'rgb(251, 55, 72, 0.1)',
+                                  ? 'rgba(255, 48, 0, 0.1)'
+                                  : 'rgba(255, 48, 0, 0.1)',
                             color:
                               client.complianceScore >= 80
-                                ? 'rgb(31, 193, 107)'
+                                ? '#FF3000'
                                 : client.complianceScore >= 60
-                                  ? 'rgb(250, 115, 25)'
-                                  : 'rgb(251, 55, 72)',
+                                  ? '#FF3000'
+                                  : '#FF3000',
                             fontSize: '13px',
                             fontWeight: '500',
                           }}
@@ -307,9 +342,9 @@ export function PartnerCertificateUploadModal({
                   <div className="flex items-center gap-3">
                     <div
                       className="w-10 h-10 rounded-full flex items-center justify-center"
-                      style={{ backgroundColor: 'rgb(251, 115, 25, 0.1)' }}
+                      style={{ backgroundColor: 'rgba(255, 48, 0, 0.1)' }}
                     >
-                      <Users className="w-5 h-5" style={{ color: '#fb7319' }} />
+                      <Users className="w-5 h-5" style={{ color: '#FF3000' }} />
                     </div>
                     <div>
                       <p style={{ fontSize: '14px', fontWeight: '500' }}>
@@ -334,7 +369,7 @@ export function PartnerCertificateUploadModal({
                       <button
                         key={cert}
                         onClick={() => handleCertificateSelect(cert)}
-                        className="p-3 rounded-lg border border-border hover:border-[#fb7319] hover:bg-[#ffeee6] transition-all text-left flex items-center gap-3"
+                        className="p-3 rounded-lg border border-border hover:border-[#FF3000] hover:bg-[#ffe6e6] transition-all text-left flex items-center gap-3"
                       >
                         <FileText className="w-5 h-5 text-muted-foreground" />
                         <span style={{ fontSize: '13px', fontWeight: '500' }}>{cert}</span>
@@ -375,10 +410,16 @@ export function PartnerCertificateUploadModal({
                   </div>
                 </div>
 
-                <div className="border-2 border-dashed border-border rounded-lg p-8 text-center">
+                <div
+                  className={`border-2 border-dashed rounded-lg p-8 text-center ${
+                    error ? 'border-red-500' : 'border-border'
+                  }`}
+                  aria-invalid={!!error}
+                  aria-describedby={error ? 'partner-upload-error' : undefined}
+                >
                   {selectedFile ? (
                     <div className="flex items-center justify-center gap-3">
-                      <FileText className="w-8 h-8" style={{ color: '#fb7319' }} />
+                      <FileText className="w-8 h-8" style={{ color: '#FF3000' }} />
                       <div className="text-left">
                         <p style={{ fontSize: '14px', fontWeight: '500' }}>{selectedFile.name}</p>
                         <p
@@ -425,6 +466,17 @@ export function PartnerCertificateUploadModal({
                     </>
                   )}
                 </div>
+                {error && (
+                  <p
+                    id="partner-upload-error"
+                    className="text-red-500 text-sm mt-3 flex items-center gap-2"
+                    role="alert"
+                    aria-live="assertive"
+                  >
+                    <AlertTriangle className="w-4 h-4" />
+                    {error}
+                  </p>
+                )}
               </div>
             )}
           </div>
@@ -444,13 +496,18 @@ export function PartnerCertificateUploadModal({
                 <button
                   onClick={handleUpload}
                   disabled={isUploading || !selectedFile}
+                  aria-live="polite"
+                  aria-busy={isUploading}
                   className="px-4 py-2 rounded-md text-white flex items-center gap-2 disabled:opacity-50"
-                  style={{ backgroundColor: '#fb7319', fontSize: '13px', fontWeight: '500' }}
+                  style={{ backgroundColor: '#FF3000', fontSize: '13px', fontWeight: '500' }}
                 >
                   {isUploading ? (
                     <>
                       <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
                       Uploading...
+                      <span className="sr-only" aria-live="polite">
+                        Uploading certificate, please wait
+                      </span>
                     </>
                   ) : (
                     <>
