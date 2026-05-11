@@ -17,7 +17,7 @@ import { useToast } from './ToastProvider';
 export function SettingsView() {
   const { showToast } = useToast();
   const [activeTab, setActiveTab] = useState<
-    'company' | 'notifications' | 'preferences' | 'security'
+    'company' | 'team' | 'notifications' | 'preferences' | 'security'
   >('company');
 
   // Form state
@@ -28,19 +28,36 @@ export function SettingsView() {
     address: '123 Business District, Lagos',
     taxId: '12345678-0001',
     website: 'https://clearpass.com',
+    sector: 'ICT',
+    employeeBand: '11-50',
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSaving, setIsSaving] = useState(false);
   const [isSavingNotifications, setIsSavingNotifications] = useState(false);
+  const [teamMembers] = useState([
+    { id: 't1', name: 'Amaka Okoro', email: 'amaka@techventures.ng', role: 'Admin', status: 'active' as const },
+    { id: 't2', name: 'Chidi Obi', email: 'chidi@techventures.ng', role: 'Viewer', status: 'active' as const },
+    { id: 't3', name: 'Ngozi Eze', email: 'ngozi@techventures.ng', role: 'Editor', status: 'pending' as const },
+  ]);
+  const [inviteEmail, setInviteEmail] = useState('');
+  const [inviteRole, setInviteRole] = useState('Viewer');
+  const [certAlerts, setCertAlerts] = useState({
+    nhia: true, pcc: true, nsitf: true, firs: true, bpp: false, itf: false,
+  });
+  const [alertChannels, setAlertChannels] = useState({
+    email: true, sms: false, inApp: true,
+  });
+  const shareableLink = 'https://clearpass.com.ng/verify/RC1234567?token=abc123xyz';
 
   // Auto-save form data to localStorage
   useEffect(() => {
     const savedData = localStorage.getItem('clearpass_settings_form');
     if (savedData) {
       try {
-        setFormData(JSON.parse(savedData));
-      } catch (e) {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        setFormData(() => JSON.parse(savedData));
+      } catch {
         // Ignore parse errors
       }
     }
@@ -122,6 +139,7 @@ export function SettingsView() {
 
   const tabs = [
     { id: 'company', label: 'Company Profile', icon: Building2 },
+    { id: 'team', label: 'Team', icon: User },
     { id: 'notifications', label: 'Notifications', icon: Bell },
     { id: 'preferences', label: 'Preferences', icon: Palette },
     { id: 'security', label: 'Security', icon: Shield },
@@ -424,6 +442,125 @@ export function SettingsView() {
           </div>
         )}
 
+        {/* Team Management Tab */}
+        {activeTab === 'team' && (
+          <div role="tabpanel" id="team-panel" aria-labelledby="team-tab" className="space-y-6">
+            {/* Invite member */}
+            <div className="bg-card border border-border rounded-lg p-4 sm:p-6">
+              <h2 className="mb-4" style={{ fontSize: '18px', fontWeight: 500 }}>Invite Team Member</h2>
+              <div className="flex flex-col sm:flex-row gap-3">
+                <input
+                  type="email"
+                  value={inviteEmail}
+                  onChange={(e) => setInviteEmail(e.target.value)}
+                  placeholder="colleague@company.ng"
+                  className="flex-1 px-4 py-2.5 border border-border rounded-md bg-input-background"
+                  style={{ fontSize: '14px' }}
+                />
+                <select
+                  value={inviteRole}
+                  onChange={(e) => setInviteRole(e.target.value)}
+                  className="px-3 py-2.5 border border-border rounded-md bg-input-background"
+                  style={{ fontSize: '14px' }}
+                >
+                  <option>Viewer</option>
+                  <option>Editor</option>
+                  <option>Admin</option>
+                </select>
+                <button
+                  onClick={() => {
+                    if (!inviteEmail.trim()) return;
+                    showToast('success', 'Invite Sent', `Invitation sent to ${inviteEmail}`);
+                    setInviteEmail('');
+                  }}
+                  className="px-5 py-2.5 min-h-[44px] rounded-md text-white hover:opacity-90 transition-opacity w-full sm:w-auto"
+                  style={{ backgroundColor: '#FF3000', fontSize: '14px' }}
+                >
+                  Send Invite
+                </button>
+              </div>
+              <p className="text-muted-foreground mt-2" style={{ fontSize: '13px' }}>
+                Viewer: read-only · Editor: can upload certs · Admin: full access
+              </p>
+            </div>
+
+            {/* Member list */}
+            <div className="bg-card border border-border rounded-lg p-4 sm:p-6">
+              <h2 className="mb-4" style={{ fontSize: '18px', fontWeight: 500 }}>Team Members</h2>
+              <div className="space-y-3">
+                {teamMembers.map((m) => (
+                  <div key={m.id} className="flex items-center justify-between gap-3 py-2 border-b border-border last:border-0">
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 rounded-full bg-[#FF3000] flex items-center justify-center text-white shrink-0" style={{ fontSize: '12px', fontWeight: 700 }}>
+                        {m.name.split(' ').map((n) => n[0]).join('')}
+                      </div>
+                      <div>
+                        <p style={{ fontSize: '14px', fontWeight: 500 }}>{m.name}</p>
+                        <p className="text-muted-foreground" style={{ fontSize: '12px' }}>{m.email}</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2 shrink-0">
+                      <span className="px-2 py-0.5 rounded-full" style={{ fontSize: '11px', backgroundColor: m.status === 'pending' ? '#fef3c7' : '#dcfce7', color: m.status === 'pending' ? '#F59E0B' : '#1FC16B', fontWeight: 500 }}>
+                        {m.status === 'pending' ? 'Pending' : m.role}
+                      </span>
+                      {m.status === 'active' && (
+                        <button
+                          onClick={() => showToast('info', 'Removed', `${m.name} removed from team`)}
+                          className="text-muted-foreground hover:text-foreground transition-colors"
+                          style={{ fontSize: '12px' }}
+                        >
+                          Remove
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Shareable compliance link */}
+            <div className="bg-card border border-border rounded-lg p-4 sm:p-6">
+              <h2 className="mb-2" style={{ fontSize: '18px', fontWeight: 500 }}>Shareable Compliance Link</h2>
+              <p className="text-muted-foreground mb-3" style={{ fontSize: '14px' }}>
+                Share this link with MDAs to let them verify your compliance status without logging in.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-2">
+                <input
+                  readOnly
+                  value={shareableLink}
+                  className="flex-1 px-3 py-2 border border-border rounded-md bg-muted/30 text-muted-foreground"
+                  style={{ fontSize: '13px' }}
+                />
+                <button
+                  onClick={() => {
+                    navigator.clipboard.writeText(shareableLink).catch(() => {});
+                    showToast('success', 'Copied', 'Shareable link copied to clipboard');
+                  }}
+                  className="px-4 py-2 rounded-md border border-border hover:bg-muted transition-colors w-full sm:w-auto"
+                  style={{ fontSize: '13px' }}
+                >
+                  Copy Link
+                </button>
+              </div>
+            </div>
+
+            {/* Data deletion */}
+            <div className="bg-card border border-red-200 rounded-lg p-4 sm:p-6">
+              <h2 className="mb-2 text-red-600" style={{ fontSize: '18px', fontWeight: 500 }}>Danger Zone</h2>
+              <p className="text-muted-foreground mb-4" style={{ fontSize: '14px' }}>
+                Requesting data deletion will remove all certificates, reports, and company data permanently after a 30-day grace period.
+              </p>
+              <button
+                onClick={() => showToast('info', 'Request Submitted', 'A data deletion request has been submitted. Our team will contact you within 2 business days.')}
+                className="px-4 py-2.5 min-h-[44px] rounded-md border border-red-300 text-red-600 hover:bg-red-50 transition-colors"
+                style={{ fontSize: '14px' }}
+              >
+                Request Data Deletion
+              </button>
+            </div>
+          </div>
+        )}
+
         {/* Notifications Tab */}
         {activeTab === 'notifications' && (
           <div
@@ -544,6 +681,50 @@ export function SettingsView() {
                       />
                     </label>
                   </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Per-cert alert routing */}
+            <div className="bg-card border border-border rounded-lg p-4 sm:p-6">
+              <h2 className="mb-4" style={{ fontSize: '18px', fontWeight: 500 }}>Per-Certificate Alerts</h2>
+              <p className="text-muted-foreground mb-3" style={{ fontSize: '14px' }}>Choose which certificates trigger expiry notifications.</p>
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                {(Object.keys(certAlerts) as Array<keyof typeof certAlerts>).map((cert) => (
+                  <label key={cert} className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={certAlerts[cert]}
+                      onChange={() => setCertAlerts((prev) => ({ ...prev, [cert]: !prev[cert] }))}
+                      className="w-4 h-4 accent-[#FF3000]"
+                    />
+                    <span style={{ fontSize: '13px', fontWeight: 500 }}>{cert.toUpperCase()}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+
+            {/* Channel routing */}
+            <div className="bg-card border border-border rounded-lg p-4 sm:p-6">
+              <h2 className="mb-4" style={{ fontSize: '18px', fontWeight: 500 }}>Alert Channels</h2>
+              <div className="space-y-3">
+                {([
+                  { key: 'email', label: 'Email notifications' },
+                  { key: 'sms', label: 'SMS notifications (₦2/alert)' },
+                  { key: 'inApp', label: 'In-app notifications' },
+                ] as const).map(({ key, label }) => (
+                  <label key={key} className="flex items-center justify-between cursor-pointer">
+                    <span style={{ fontSize: '14px' }}>{label}</span>
+                    <div
+                      className={`relative w-10 h-5 rounded-full transition-colors cursor-pointer ${alertChannels[key] ? 'bg-[#FF3000]' : 'bg-muted'}`}
+                      onClick={() => setAlertChannels((prev) => ({ ...prev, [key]: !prev[key] }))}
+                      role="switch"
+                      aria-checked={alertChannels[key]}
+                      tabIndex={0}
+                    >
+                      <span className={`absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-white shadow transition-transform ${alertChannels[key] ? 'translate-x-5' : 'translate-x-0'}`} />
+                    </div>
+                  </label>
                 ))}
               </div>
             </div>

@@ -13,6 +13,10 @@ import {
   RefreshCw,
   FileText,
   Activity,
+  Globe,
+  Zap,
+  Send,
+  Settings,
 } from 'lucide-react';
 import { useState } from 'react';
 import { useToast } from './ToastProvider';
@@ -514,6 +518,310 @@ function PlatformAnalytics() {
   );
 }
 
+// ─── SYSTEM SETTINGS ─────────────────────────────────────────────────────────
+
+type SettingsTab = 'apis' | 'sla' | 'flags' | 'announcements';
+
+interface ApiService {
+  id: string;
+  name: string;
+  endpoint: string;
+  status: 'online' | 'degraded' | 'offline' | 'manual';
+  rateLimit: number;
+}
+
+function SystemSettings() {
+  const { showToast } = useToast();
+  const [activeTab, setActiveTab] = useState<SettingsTab>('apis');
+
+  const [apis, setApis] = useState<ApiService[]>([
+    { id: 'cac', name: 'CAC RC Validation', endpoint: 'https://api.cac.gov.ng/v1', status: 'degraded', rateLimit: 500 },
+    { id: 'nhia', name: 'NHIA Enrollment API', endpoint: 'https://api.nhia.gov.ng/v1', status: 'online', rateLimit: 1000 },
+    { id: 'firs', name: 'FIRS TIN API', endpoint: 'https://api.firs.gov.ng/v1', status: 'online', rateLimit: 2000 },
+    { id: 'pencom', name: 'PenCom PCC API', endpoint: 'https://api.pencom.gov.ng/v1', status: 'online', rateLimit: 800 },
+    { id: 'bpp', name: 'BPP Database Feed', endpoint: 'https://api.bpp.gov.ng/v1', status: 'offline', rateLimit: 300 },
+    { id: 'nsitf', name: 'NSITF API', endpoint: '', status: 'manual', rateLimit: 0 },
+    { id: 'itf', name: 'ITF API', endpoint: '', status: 'manual', rateLimit: 0 },
+  ]);
+
+  const [sla, setSla] = useState<Record<string, number>>({
+    NSITF: 24, ITF: 24, NHIA: 24, BPP: 48, PCC: 12, FIRS: 12,
+  });
+
+  const [flags, setFlags] = useState<Record<string, boolean>>({
+    'Bulk Upload (Business Portal)': true,
+    'Partner Portal': true,
+    'HMO Integration': true,
+    'MDA API Access': true,
+    'AI Score Explanation': false,
+    'Dark Mode': true,
+    'Maintenance Mode': false,
+    'New Onboarding Flow': true,
+  });
+
+  const [announcement, setAnnouncement] = useState('');
+  const [announcementType, setAnnouncementType] = useState<'info' | 'warning'>('info');
+
+  const STATUS_COLOR: Record<string, string> = {
+    online: '#1FC16B', degraded: '#F59E0B', offline: '#DC2626', manual: '#9CA3AF',
+  };
+
+  const tabs: { id: SettingsTab; label: string; icon: typeof Settings }[] = [
+    { id: 'apis', label: 'API Integrations', icon: Globe },
+    { id: 'sla', label: 'SLA Thresholds', icon: Clock },
+    { id: 'flags', label: 'Feature Flags', icon: Zap },
+    { id: 'announcements', label: 'Announcements', icon: Send },
+  ];
+
+  return (
+    <div>
+      <div className="flex gap-1 mb-6 overflow-x-auto pb-1">
+        {tabs.map((t) => {
+          const Icon = t.icon;
+          return (
+            <button
+              key={t.id}
+              onClick={() => setActiveTab(t.id)}
+              className={`flex items-center gap-2 px-4 py-2 rounded-lg whitespace-nowrap transition-colors ${
+                activeTab === t.id
+                  ? 'bg-[#FF3000] text-white'
+                  : 'bg-muted text-muted-foreground hover:text-foreground'
+              }`}
+              style={{ fontSize: '13px', fontWeight: 500 }}
+            >
+              <Icon className="w-4 h-4" aria-hidden="true" />
+              {t.label}
+            </button>
+          );
+        })}
+      </div>
+
+      {/* API Integrations */}
+      {activeTab === 'apis' && (
+        <div className="space-y-3">
+          {apis.map((api) => (
+            <div key={api.id} className="bg-card border border-border rounded-lg p-4">
+              <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
+                <div className="flex items-center gap-2 sm:w-48 shrink-0">
+                  <div className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: STATUS_COLOR[api.status] }} />
+                  <p style={{ fontSize: '14px', fontWeight: 600 }}>{api.name}</p>
+                </div>
+                <input
+                  type="text"
+                  value={api.endpoint}
+                  onChange={(e) =>
+                    setApis((prev) => prev.map((a) => a.id === api.id ? { ...a, endpoint: e.target.value } : a))
+                  }
+                  placeholder="https://api.example.gov.ng/v1"
+                  className="flex-1 px-3 py-1.5 border border-border rounded-md bg-input-background"
+                  style={{ fontSize: '13px' }}
+                />
+                <div className="flex items-center gap-2 shrink-0">
+                  <input
+                    type="number"
+                    value={api.rateLimit}
+                    onChange={(e) =>
+                      setApis((prev) => prev.map((a) => a.id === api.id ? { ...a, rateLimit: Number(e.target.value) } : a))
+                    }
+                    className="w-20 px-2 py-1.5 border border-border rounded-md bg-input-background text-center"
+                    style={{ fontSize: '13px' }}
+                  />
+                  <span className="text-muted-foreground" style={{ fontSize: '12px' }}>req/hr</span>
+                </div>
+                <select
+                  value={api.status}
+                  onChange={(e) =>
+                    setApis((prev) => prev.map((a) => a.id === api.id ? { ...a, status: e.target.value as ApiService['status'] } : a))
+                  }
+                  className="px-2 py-1.5 border border-border rounded-md bg-input-background"
+                  style={{ fontSize: '12px' }}
+                >
+                  <option value="online">Online</option>
+                  <option value="degraded">Degraded</option>
+                  <option value="offline">Offline</option>
+                  <option value="manual">Manual Review</option>
+                </select>
+              </div>
+            </div>
+          ))}
+          <div className="flex justify-end pt-2">
+            <button
+              onClick={() => showToast('success', 'Saved', 'API integration settings updated')}
+              className="px-5 py-2.5 rounded-lg text-white"
+              style={{ backgroundColor: '#FF3000', fontSize: '14px' }}
+            >
+              Save API Settings
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* SLA Thresholds */}
+      {activeTab === 'sla' && (
+        <div>
+          <p className="text-muted-foreground mb-4" style={{ fontSize: '14px' }}>
+            Set the maximum hours allowed for certificate review per type. Queued items exceeding this will be flagged as SLA breaches.
+          </p>
+          <div className="space-y-4 bg-card border border-border rounded-lg p-4 sm:p-6">
+            {Object.entries(sla).map(([cert, hours]) => (
+              <div key={cert} className="flex items-center gap-4">
+                <label className="w-24 shrink-0" style={{ fontSize: '14px', fontWeight: 500 }}>{cert}</label>
+                <input
+                  type="range"
+                  min={4}
+                  max={72}
+                  step={4}
+                  value={hours}
+                  onChange={(e) => setSla((s) => ({ ...s, [cert]: Number(e.target.value) }))}
+                  className="flex-1"
+                />
+                <span
+                  className="w-16 text-right shrink-0"
+                  style={{ fontSize: '14px', fontWeight: 600, color: hours > 24 ? '#F59E0B' : '#1FC16B' }}
+                >
+                  {hours}h
+                </span>
+              </div>
+            ))}
+          </div>
+          <div className="flex justify-end mt-4">
+            <button
+              onClick={() => showToast('success', 'Saved', 'SLA thresholds updated for all certificate types')}
+              className="px-5 py-2.5 rounded-lg text-white"
+              style={{ backgroundColor: '#FF3000', fontSize: '14px' }}
+            >
+              Save SLA Settings
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Feature Flags */}
+      {activeTab === 'flags' && (
+        <div>
+          <p className="text-muted-foreground mb-4" style={{ fontSize: '14px' }}>
+            Toggle platform features on or off. Changes take effect immediately for all users.
+          </p>
+          <div className="bg-card border border-border rounded-lg divide-y divide-border">
+            {Object.entries(flags).map(([name, enabled]) => (
+              <div key={name} className="flex items-center justify-between px-4 sm:px-6 py-4">
+                <div>
+                  <p style={{ fontSize: '14px', fontWeight: 500 }}>{name}</p>
+                  {name === 'Maintenance Mode' && (
+                    <p className="text-red-500" style={{ fontSize: '12px' }}>
+                      Enabling this blocks all user logins except admin
+                    </p>
+                  )}
+                </div>
+                <button
+                  onClick={() => {
+                    setFlags((f) => ({ ...f, [name]: !f[name] }));
+                    showToast('info', 'Feature toggled', `${name} is now ${enabled ? 'disabled' : 'enabled'}`);
+                  }}
+                  aria-pressed={enabled}
+                  className={`relative w-11 h-6 rounded-full transition-colors ${enabled ? 'bg-[#1FC16B]' : 'bg-muted'}`}
+                >
+                  <span
+                    className="absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white transition-transform shadow-sm"
+                    style={{ transform: enabled ? 'translateX(20px)' : 'translateX(0)' }}
+                  />
+                  <span className="sr-only">{enabled ? 'Disable' : 'Enable'} {name}</span>
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Announcements */}
+      {activeTab === 'announcements' && (
+        <div>
+          <p className="text-muted-foreground mb-4" style={{ fontSize: '14px' }}>
+            Broadcast a system-wide banner to all logged-in users. It appears at the top of their dashboard until dismissed.
+          </p>
+          <div className="bg-card border border-border rounded-lg p-4 sm:p-6">
+            <div className="mb-4">
+              <label className="block mb-1.5" style={{ fontSize: '13px', fontWeight: 500 }}>Banner type</label>
+              <div className="flex gap-3">
+                {(['info', 'warning'] as const).map((type) => (
+                  <button
+                    key={type}
+                    onClick={() => setAnnouncementType(type)}
+                    className={`px-4 py-1.5 rounded-md border transition-colors capitalize`}
+                    style={{
+                      fontSize: '13px',
+                      borderColor: announcementType === type ? '#FF3000' : 'var(--border)',
+                      backgroundColor: announcementType === type ? '#fff5f3' : 'transparent',
+                      color: announcementType === type ? '#FF3000' : 'var(--muted-foreground)',
+                    }}
+                  >
+                    {type}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="mb-4">
+              <label htmlFor="announcement-text" className="block mb-1.5" style={{ fontSize: '13px', fontWeight: 500 }}>Message</label>
+              <textarea
+                id="announcement-text"
+                value={announcement}
+                onChange={(e) => setAnnouncement(e.target.value)}
+                placeholder="e.g. Scheduled maintenance on Saturday 17 May 02:00–04:00 WAT. Certificate uploads will be temporarily unavailable."
+                rows={4}
+                className="w-full px-3 py-2 border border-border rounded-md bg-input-background"
+                style={{ fontSize: '14px' }}
+              />
+              <p className="text-muted-foreground mt-1" style={{ fontSize: '12px' }}>{announcement.length}/280 characters</p>
+            </div>
+
+            {announcement.trim() && (
+              <div
+                className="mb-4 p-3 rounded-lg border"
+                style={{
+                  backgroundColor: announcementType === 'warning' ? '#fef3c7' : '#eff6ff',
+                  borderColor: announcementType === 'warning' ? '#fcd34d' : '#bfdbfe',
+                  color: announcementType === 'warning' ? '#92400e' : '#1e40af',
+                  fontSize: '13px',
+                }}
+              >
+                <span style={{ fontWeight: 600 }}>{announcementType === 'warning' ? 'Notice: ' : 'Info: '}</span>
+                {announcement}
+              </div>
+            )}
+
+            <div className="flex flex-col-reverse sm:flex-row gap-2 justify-end">
+              {announcement.trim() && (
+                <button
+                  onClick={() => { setAnnouncement(''); showToast('info', 'Cleared', 'Active announcement removed'); }}
+                  className="px-4 py-2 rounded-lg border border-border"
+                  style={{ fontSize: '13px' }}
+                >
+                  Clear Active Announcement
+                </button>
+              )}
+              <button
+                onClick={() => {
+                  if (!announcement.trim()) {
+                    showToast('error', 'Empty', 'Enter a message before broadcasting');
+                    return;
+                  }
+                  showToast('success', 'Broadcasted', 'Announcement is now live for all users');
+                }}
+                className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg text-white"
+                style={{ backgroundColor: '#FF3000', fontSize: '14px' }}
+              >
+                <Send className="w-4 h-4" aria-hidden="true" />
+                Broadcast Now
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 // ─── MAIN EXPORT ─────────────────────────────────────────────────────────────
 
 interface AdminPortalViewProps {
@@ -549,11 +857,7 @@ export function AdminPortalView({ section }: AdminPortalViewProps) {
         {section === 'admin-analytics' && <PlatformAnalytics />}
         {section === 'admin-fraud' && <FraudDetection />}
         {section === 'admin-sla' && <SLAMonitoring />}
-        {section === 'admin-settings' && (
-          <div className="text-center py-12">
-            <p className="text-muted-foreground" style={{ fontSize: '14px' }}>System settings panel — coming soon</p>
-          </div>
-        )}
+        {section === 'admin-settings' && <SystemSettings />}
       </div>
     </div>
   );

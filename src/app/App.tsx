@@ -4,13 +4,20 @@ import ErrorBoundary from './components/ErrorBoundary';
 import { Sidebar } from './components/Sidebar';
 import { MDASidebar } from './components/MDASidebar';
 import { PartnerSidebar } from './components/PartnerSidebar';
+import { AdminSidebar } from './components/AdminSidebar';
+import { HMOSidebar } from './components/HMOSidebar';
 import { ToastProvider } from './components/ToastProvider';
 import { AppShell } from './components/AppShell';
 import { EmptyState } from './components/ui/EmptyState';
 import { OfflineBanner } from './components/OfflineBanner';
 import { AchievementNotification } from './components/AchievementNotification';
 import { GamificationProvider, useGamification } from './contexts/GamificationContext';
+import { AuthProvider, useAuth, type AccountType } from './context/AuthContext';
 import { useOnlineStatus } from './hooks/useOnlineStatus';
+
+const AuthView = lazy(() =>
+  import('./components/AuthView').then((m) => ({ default: m.AuthView }))
+);
 
 // Inner component that uses the gamification context
 function AppContent() {
@@ -20,7 +27,8 @@ function AppContent() {
   // Update unlocked achievements when context changes
   useEffect(() => {
     if (newlyUnlocked.length > 0) {
-      setUnlockedAchievements(newlyUnlocked);
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setUnlockedAchievements(prev => [...prev, ...newlyUnlocked]);
       clearNewlyUnlocked();
     }
   }, [newlyUnlocked, clearNewlyUnlocked]);
@@ -142,6 +150,36 @@ const PartnerBillingView = lazy(() =>
     default: m.PartnerBillingView,
   }))
 );
+const ExpiryTimelineView = lazy(() =>
+  import('./components/ExpiryTimelineView').then((m) => ({
+    default: m.ExpiryTimelineView,
+  }))
+);
+const DocumentVaultView = lazy(() =>
+  import('./components/DocumentVaultView').then((m) => ({
+    default: m.DocumentVaultView,
+  }))
+);
+const CertificateGuidesView = lazy(() =>
+  import('./components/CertificateGuidesView').then((m) => ({
+    default: m.CertificateGuidesView,
+  }))
+);
+const MDAWatchlistView = lazy(() =>
+  import('./components/MDAWatchlistView').then((m) => ({
+    default: m.MDAWatchlistView,
+  }))
+);
+const AdminPortalView = lazy(() =>
+  import('./components/AdminPortalView').then((m) => ({
+    default: m.AdminPortalView,
+  }))
+);
+const HMOPortalView = lazy(() =>
+  import('./components/HMOPortalView').then((m) => ({
+    default: m.HMOPortalView,
+  }))
+);
 
 // ─── Per-route skeleton fallbacks ───────────────────────────────────────────
 // Pick a fallback that mirrors the destination view so the layout doesn't
@@ -239,9 +277,20 @@ function SectionNotFound({
   );
 }
 
-// ─── App ────────────────────────────────────────────────────────────────────
+// ─── Persona mapping ────────────────────────────────────────────────────────
 
-export default function App() {
+const ACCOUNT_TYPE_TO_PERSONA: Record<AccountType, Persona> = {
+  business: 'Business',
+  mda: 'MDA',
+  partner: 'Partner',
+  hmo: 'HMO',
+  admin: 'Admin',
+};
+
+// ─── Auth-gated app shell ────────────────────────────────────────────────────
+
+function AppInner() {
+  const { isAuthenticated, isLoading, user } = useAuth();
   const [showOnboarding, setShowOnboarding] = useState(
     () => !localStorage.getItem('clearpass_onboarded')
   );
@@ -253,7 +302,26 @@ export default function App() {
   );
   const isOnline = useOnlineStatus();
 
-  // One-shot setup on mount.
+  // When a user logs in, sync the persona from their account type.
+  useEffect(() => {
+    if (user) {
+      const persona = ACCOUNT_TYPE_TO_PERSONA[user.accountType];
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setSelectedPersona(persona);
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setActiveSection(() => {
+        if (persona === 'Business') return 'overview';
+        if (persona === 'MDA') return 'verify';
+        if (persona === 'HMO') return 'hmo-overview';
+        if (persona === 'Admin') return 'admin-overview';
+        return 'clients';
+      });
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setShowOnboarding(false);
+    }
+  }, [user]);
+
+  // One-shot setup on mount — must be above early returns (Rules of Hooks).
   useEffect(() => {
     setupCoreWebVitals();
     setupMemoryMonitoring();
@@ -261,12 +329,8 @@ export default function App() {
 
     if (import.meta.env.PROD) {
       registerSW({
-        onNeedRefresh() {
-          // SW: a fresh build is available. Hard reload picks it up next nav.
-        },
-        onOfflineReady() {
-          // SW: app is now usable offline.
-        },
+        onNeedRefresh() {},
+        onOfflineReady() {},
       });
     }
   }, []);
@@ -276,10 +340,37 @@ export default function App() {
     prefetchLikelyRoutes(`/${activeSection}`);
   }, [activeSection]);
 
+  // Loading state — brief spinner while localStorage is read.
+  if (isLoading) {
+    return (
+      <div className="fixed inset-0 flex items-center justify-center bg-background">
+        <div className="flex flex-col items-center gap-3">
+          <img src="/clearpass-logo.svg" alt="ClearPass" className="h-10 w-auto animate-pulse" />
+          <p className="text-muted-foreground" style={{ fontSize: '14px' }}>Loading…</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Auth gate — show login screen when no session exists.
+  if (!isAuthenticated) {
+    return (
+      <Suspense fallback={
+        <div className="fixed inset-0 flex items-center justify-center bg-background">
+          <img src="/clearpass-logo.svg" alt="ClearPass" className="h-10 w-auto animate-pulse" />
+        </div>
+      }>
+        <AuthView onAuthenticated={() => {}} />
+      </Suspense>
+    );
+  }
+
   const handlePersonaChange = (persona: Persona) => {
     setSelectedPersona(persona);
     if (persona === 'Business') setActiveSection('overview');
     else if (persona === 'MDA') setActiveSection('verify');
+    else if (persona === 'HMO') setActiveSection('hmo-overview');
+    else if (persona === 'Admin') setActiveSection('admin-overview');
     else setActiveSection('clients');
   };
 
@@ -292,6 +383,8 @@ export default function App() {
   const goHome = () => {
     if (selectedPersona === 'Business') setActiveSection('overview');
     else if (selectedPersona === 'MDA') setActiveSection('verify');
+    else if (selectedPersona === 'HMO') setActiveSection('hmo-overview');
+    else if (selectedPersona === 'Admin') setActiveSection('admin-overview');
     else setActiveSection('clients');
   };
 
@@ -309,6 +402,10 @@ export default function App() {
         return <MDASidebar {...props} fluid={!!onItemSelect} />;
       case 'Partner':
         return <PartnerSidebar {...props} fluid={!!onItemSelect} />;
+      case 'HMO':
+        return <HMOSidebar {...props} fluid={!!onItemSelect} />;
+      case 'Admin':
+        return <AdminSidebar {...props} fluid={!!onItemSelect} />;
     }
   };
 
@@ -331,6 +428,24 @@ export default function App() {
           return (
             <Suspense fallback={<GenericSkeleton />}>
               <BusinessVerifyView />
+            </Suspense>
+          );
+        case 'expiry-timeline':
+          return (
+            <Suspense fallback={<GenericSkeleton />}>
+              <ExpiryTimelineView />
+            </Suspense>
+          );
+        case 'document-vault':
+          return (
+            <Suspense fallback={<GenericSkeleton />}>
+              <DocumentVaultView />
+            </Suspense>
+          );
+        case 'certificate-guides':
+          return (
+            <Suspense fallback={<GenericSkeleton />}>
+              <CertificateGuidesView />
             </Suspense>
           );
         case 'activity':
@@ -388,6 +503,12 @@ export default function App() {
               <MDAReportsView />
             </Suspense>
           );
+        case 'watchlist':
+          return (
+            <Suspense fallback={<GenericSkeleton />}>
+              <MDAWatchlistView />
+            </Suspense>
+          );
         case 'audit':
           return (
             <Suspense fallback={<ActivitySkeleton />}>
@@ -403,6 +524,22 @@ export default function App() {
         default:
           return <SectionNotFound persona="MDA" section={activeSection} onHome={goHome} />;
       }
+    }
+
+    if (selectedPersona === 'HMO') {
+      return (
+        <Suspense fallback={<GenericSkeleton />}>
+          <HMOPortalView section={activeSection} />
+        </Suspense>
+      );
+    }
+
+    if (selectedPersona === 'Admin') {
+      return (
+        <Suspense fallback={<GenericSkeleton />}>
+          <AdminPortalView section={activeSection} />
+        </Suspense>
+      );
     }
 
     // Partner
@@ -455,46 +592,58 @@ export default function App() {
   };
 
   return (
+    <>
+      {/* Skip to main content link for keyboard users */}
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-primary focus:text-primary-foreground focus:rounded-md"
+      >
+        Skip to main content
+      </a>
+
+      <OfflineBanner isOnline={isOnline} />
+
+      <AppShell
+        persona={selectedPersona}
+        sidebar={renderSidebar()}
+        drawerSidebar={(close) => renderSidebar(close)}
+      >
+        {renderMainContent()}
+      </AppShell>
+
+      <TweaksButton onClick={() => setIsTweaksPanelOpen(true)} />
+      <TweaksPanel
+        isOpen={isTweaksPanelOpen}
+        onClose={() => setIsTweaksPanelOpen(false)}
+        selectedPersona={selectedPersona}
+        onPersonaChange={handlePersonaChange}
+        selectedState={selectedState}
+        onStateChange={setSelectedState}
+      />
+
+      {showOnboarding && (
+        <Suspense fallback={null}>
+          <OnboardingFlow onComplete={handleOnboardingComplete} />
+        </Suspense>
+      )}
+
+      <AppContent />
+    </>
+  );
+}
+
+// ─── Root — providers only ───────────────────────────────────────────────────
+
+export default function App() {
+  return (
     <ErrorBoundary>
-      <GamificationProvider>
-        <ToastProvider>
-        {/* Skip to main content link for keyboard users */}
-        <a
-          href="#main-content"
-          className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-primary focus:text-primary-foreground focus:rounded-md"
-        >
-          Skip to main content
-        </a>
-
-        <OfflineBanner isOnline={isOnline} />
-
-        <AppShell
-          persona={selectedPersona}
-          sidebar={renderSidebar()}
-          drawerSidebar={(close) => renderSidebar(close)}
-        >
-          {renderMainContent()}
-        </AppShell>
-
-        <TweaksButton onClick={() => setIsTweaksPanelOpen(true)} />
-        <TweaksPanel
-          isOpen={isTweaksPanelOpen}
-          onClose={() => setIsTweaksPanelOpen(false)}
-          selectedPersona={selectedPersona}
-          onPersonaChange={handlePersonaChange}
-          selectedState={selectedState}
-          onStateChange={setSelectedState}
-        />
-
-        {showOnboarding && (
-          <Suspense fallback={null}>
-            <OnboardingFlow onComplete={handleOnboardingComplete} />
-          </Suspense>
-        )}
-
-        <AppContent />
-      </ToastProvider>
-      </GamificationProvider>
+      <AuthProvider>
+        <GamificationProvider>
+          <ToastProvider>
+            <AppInner />
+          </ToastProvider>
+        </GamificationProvider>
+      </AuthProvider>
     </ErrorBoundary>
   );
 }

@@ -1,6 +1,10 @@
 import { Search, FileCheck, Activity, BarChart3, Settings, Star } from 'lucide-react';
 import { useState } from 'react';
 import { ProfileModal } from './ProfileModal';
+import { useAuth } from '../context/AuthContext';
+
+const getInitials = (name: string) =>
+  name.split(' ').map((n) => n[0]).join('').toUpperCase().slice(0, 2);
 
 interface MDASidebarProps {
   activeSection: string;
@@ -33,22 +37,18 @@ export function MDASidebar({
   fluid = false,
 }: MDASidebarProps) {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const { user, logout } = useAuth();
 
   const handleClick = (id: string) => {
     onSectionChange(id);
     onItemSelect?.();
   };
 
-  const handleLogout = () => {
-    // Handle logout logic here
-    console.log('Logging out...');
-  };
-
   const userProfile = {
-    name: 'Engr. Bello',
-    email: 'bello@mda.gov.ng',
-    phone: '+234 802 345 6789',
-    company: 'Federal Ministry of Procurement',
+    name: user?.name ?? 'MDA Officer',
+    email: user?.email ?? '',
+    phone: user?.phone ?? '',
+    company: user?.mdaName ?? '',
     role: 'Procurement Officer',
   };
 
@@ -82,14 +82,14 @@ export function MDASidebar({
           className="w-full flex items-center gap-2 px-2 py-1.5 hover:bg-muted rounded-md transition-colors"
         >
           <div className="w-7 h-7 rounded-full bg-[#FF3000] flex items-center justify-center text-white text-xs font-bold">
-            EB
+            {getInitials(userProfile.name)}
           </div>
           <div className="flex-1 overflow-hidden text-left">
             <p style={{ fontSize: '12px' }} className="truncate">
-              Engr. Bello
+              {userProfile.name}
             </p>
             <p className="text-muted-foreground truncate" style={{ fontSize: '13px' }}>
-              Procurement Officer
+              {userProfile.role}
             </p>
           </div>
         </button>
@@ -100,7 +100,7 @@ export function MDASidebar({
         onClose={() => setIsProfileOpen(false)}
         persona="MDA"
         userProfile={userProfile}
-        onLogout={handleLogout}
+        onLogout={logout}
       />
     </aside>
   );

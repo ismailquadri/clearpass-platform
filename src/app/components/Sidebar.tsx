@@ -13,6 +13,10 @@ import {
 } from 'lucide-react';
 import { useState } from 'react';
 import { ProfileModal } from './ProfileModal';
+import { useAuth } from '../context/AuthContext';
+
+const getInitials = (name: string) =>
+  name.split(' ').map((n) => n[0]).join('').toUpperCase().slice(0, 2);
 
 interface SidebarProps {
   activeSection: string;
@@ -55,22 +59,18 @@ export function Sidebar({
   fluid = false,
 }: SidebarProps) {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const { user, logout } = useAuth();
 
   const handleClick = (id: string) => {
     onSectionChange(id);
     onItemSelect?.();
   };
 
-  const handleLogout = () => {
-    // Handle logout logic here
-    console.log('Logging out...');
-  };
-
   const userProfile = {
-    name: 'Amaka Okoro',
-    email: 'amaka@company.ng',
-    phone: '+234 801 234 5678',
-    company: 'TechVentures Nigeria Ltd',
+    name: user?.name ?? 'Business User',
+    email: user?.email ?? '',
+    phone: user?.phone ?? '',
+    company: user?.companyName ?? '',
     role: 'Compliance Officer',
   };
 
@@ -111,14 +111,14 @@ export function Sidebar({
           className="w-full flex items-center gap-2 px-2 py-1.5 hover:bg-muted rounded-md transition-colors"
         >
           <div className="w-7 h-7 rounded-full bg-[#FF3000] flex items-center justify-center text-white text-xs font-bold">
-            AO
+            {getInitials(userProfile.name)}
           </div>
           <div className="flex-1 overflow-hidden text-left">
             <p style={{ fontSize: '12px' }} className="truncate">
-              Amaka Okoro
+              {userProfile.name}
             </p>
             <p className="text-muted-foreground truncate" style={{ fontSize: '13px' }}>
-              amaka@company.ng
+              {userProfile.email}
             </p>
           </div>
         </button>
@@ -129,7 +129,7 @@ export function Sidebar({
         onClose={() => setIsProfileOpen(false)}
         persona="Business"
         userProfile={userProfile}
-        onLogout={handleLogout}
+        onLogout={logout}
       />
     </aside>
   );
@@ -152,16 +152,18 @@ function SidebarGroup({
 }: SidebarGroupProps) {
   const handleKeyDown = (e: React.KeyboardEvent, currentIndex: number) => {
     switch (e.key) {
-      case 'ArrowDown':
+      case 'ArrowDown': {
         e.preventDefault();
         const nextIndex = (currentIndex + 1) % items.length;
         (e.target as HTMLElement).parentElement?.children[nextIndex]?.querySelector('button')?.focus();
         break;
-      case 'ArrowUp':
+      }
+      case 'ArrowUp': {
         e.preventDefault();
         const prevIndex = (currentIndex - 1 + items.length) % items.length;
         (e.target as HTMLElement).parentElement?.children[prevIndex]?.querySelector('button')?.focus();
         break;
+      }
       case 'Home':
         e.preventDefault();
         (e.target as HTMLElement).parentElement?.children[0]?.querySelector('button')?.focus();

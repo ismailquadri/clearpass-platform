@@ -15,7 +15,7 @@ import { useState } from 'react';
 import { useToast } from './ToastProvider';
 
 type BillingCycle = 'monthly' | 'annual';
-type PlanTier = 'starter' | 'professional' | 'enterprise';
+type PlanTier = 'starter' | 'business' | 'enterprise';
 
 interface Plan {
   id: PlanTier;
@@ -35,33 +35,33 @@ const PLANS: Plan[] = [
   {
     id: 'starter',
     name: 'Starter',
-    monthlyPrice: 5000,
-    annualPrice: 50000,
+    monthlyPrice: 0,
+    annualPrice: 0,
     profiles: '1 profile',
-    reports: '1 report/month',
+    reports: '2 reports/month',
     teamMembers: '1 member',
     apiAccess: 'None',
     whiteLabel: 'Not included',
-    support: 'Email (24h)',
+    support: 'Email (48h)',
   },
   {
-    id: 'professional',
-    name: 'Professional',
-    monthlyPrice: 25000,
-    annualPrice: 250000,
+    id: 'business',
+    name: 'Business',
+    monthlyPrice: 7000,
+    annualPrice: 60000,
     profiles: '50 profiles',
     reports: 'Unlimited',
-    teamMembers: '3 members',
+    teamMembers: '5 members',
     apiAccess: 'Read-only',
-    whiteLabel: '₦10K/month add-on',
+    whiteLabel: '₦10K/year add-on',
     support: 'Priority (4h)',
     highlight: true,
   },
   {
     id: 'enterprise',
     name: 'Enterprise',
-    monthlyPrice: 100000,
-    annualPrice: 0,
+    monthlyPrice: 18000,
+    annualPrice: 200000,
     profiles: 'Unlimited',
     reports: 'Unlimited',
     teamMembers: 'Unlimited',
@@ -72,17 +72,17 @@ const PLANS: Plan[] = [
 ];
 
 const INVOICES = [
-  { id: 'INV-2026-05', date: 'May 1, 2026', amount: 25000, status: 'paid', period: 'May 2026' },
-  { id: 'INV-2026-04', date: 'Apr 1, 2026', amount: 25000, status: 'paid', period: 'Apr 2026' },
-  { id: 'INV-2026-03', date: 'Mar 1, 2026', amount: 25000, status: 'paid', period: 'Mar 2026' },
-  { id: 'INV-2026-02', date: 'Feb 1, 2026', amount: 25000, status: 'paid', period: 'Feb 2026' },
-  { id: 'INV-2026-01', date: 'Jan 1, 2026', amount: 25000, status: 'paid', period: 'Jan 2026' },
+  { id: 'INV-2026-05', date: 'May 1, 2026', amount: 5000, status: 'paid', period: 'May 2026' },
+  { id: 'INV-2026-04', date: 'Apr 1, 2026', amount: 5000, status: 'paid', period: 'Apr 2026' },
+  { id: 'INV-2026-03', date: 'Mar 1, 2026', amount: 5000, status: 'paid', period: 'Mar 2026' },
+  { id: 'INV-2026-02', date: 'Feb 1, 2026', amount: 5000, status: 'paid', period: 'Feb 2026' },
+  { id: 'INV-2026-01', date: 'Jan 1, 2026', amount: 5000, status: 'paid', period: 'Jan 2026' },
 ];
 
 export function BillingView() {
   const { showToast } = useToast();
   const [billingCycle, setBillingCycle] = useState<BillingCycle>('monthly');
-  const [currentPlan] = useState<PlanTier>('professional');
+  const [currentPlan] = useState<PlanTier>('business');
   const [showCancelConfirm, setShowCancelConfirm] = useState(false);
   const [showPauseConfirm, setShowPauseConfirm] = useState(false);
 
@@ -115,7 +115,8 @@ export function BillingView() {
   };
 
   const displayPrice = (plan: Plan) => {
-    if (plan.id === 'enterprise') return 'Custom';
+    if (plan.id === 'starter') return 'Free';
+    if (plan.id === 'enterprise' && billingCycle === 'monthly') return `${fmt(plan.monthlyPrice)}/mo`;
     return billingCycle === 'monthly'
       ? `${fmt(plan.monthlyPrice)}/mo`
       : `${fmt(plan.annualPrice)}/yr`;
@@ -239,13 +240,13 @@ function CurrentPlanCard({
 }) {
   const names: Record<PlanTier, string> = {
     starter: 'Starter',
-    professional: 'Professional',
+    business: 'Business',
     enterprise: 'Enterprise',
   };
   const amounts: Record<PlanTier, number> = {
-    starter: 5000,
-    professional: 25000,
-    enterprise: 100000,
+    starter: 0,
+    business: 60000,
+    enterprise: 200000,
   };
 
   return (
@@ -277,11 +278,11 @@ function CurrentPlanCard({
         </div>
         <div className="sm:text-right">
           <p style={{ fontSize: '32px', fontWeight: 700, color: '#FF3000' }}>
-            {fmt(amounts[plan])}
-            <span style={{ fontSize: '16px', fontWeight: 400, color: 'inherit' }}>/mo</span>
+            {plan === 'starter' ? 'Free' : `${fmt(amounts[plan])}`}
+            {plan !== 'starter' && <span style={{ fontSize: '16px', fontWeight: 400, color: 'inherit' }}>/yr</span>}
           </p>
           <p className="text-muted-foreground" style={{ fontSize: '13px' }}>
-            Save 17% with annual billing
+            {plan === 'starter' ? 'No credit card required' : 'Billed annually · Save vs monthly'}
           </p>
         </div>
       </div>

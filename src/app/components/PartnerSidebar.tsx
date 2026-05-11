@@ -2,6 +2,10 @@ import { Users, FileText, TrendingUp, DollarSign, Settings, Briefcase, AlertCirc
 import { useState } from 'react';
 import { NotificationCenter, NotificationBell } from './NotificationCenter';
 import { ProfileModal } from './ProfileModal';
+import { useAuth } from '../context/AuthContext';
+
+const getInitials = (name: string) =>
+  name.split(' ').map((n) => n[0]).join('').toUpperCase().slice(0, 2);
 
 interface PartnerSidebarProps {
   activeSection: string;
@@ -38,22 +42,18 @@ export function PartnerSidebar({
 }: PartnerSidebarProps) {
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const { user, logout } = useAuth();
 
   const handleClick = (id: string) => {
     onSectionChange(id);
     onItemSelect?.();
   };
 
-  const handleLogout = () => {
-    // Handle logout logic here
-    console.log('Logging out...');
-  };
-
   const userProfile = {
-    name: 'Chisom Okafor',
-    email: 'chisom@compliancepartner.com',
-    phone: '+234 803 456 7890',
-    company: 'Compliance Partners Ltd',
+    name: user?.name ?? 'Partner',
+    email: user?.email ?? '',
+    phone: user?.phone ?? '',
+    company: user?.companyName ?? '',
     role: 'Compliance Consultant',
   };
 
@@ -100,14 +100,14 @@ export function PartnerSidebar({
           className="w-full flex items-center gap-2 px-2 py-1.5 hover:bg-muted rounded-md transition-colors"
         >
           <div className="w-7 h-7 rounded-full bg-[#FF3000] flex items-center justify-center text-white text-xs font-bold">
-            CO
+            {getInitials(userProfile.name)}
           </div>
           <div className="flex-1 overflow-hidden text-left">
             <p style={{ fontSize: '12px' }} className="truncate">
-              Chisom Okafor
+              {userProfile.name}
             </p>
             <p className="text-muted-foreground truncate" style={{ fontSize: '13px' }}>
-              Compliance Consultant
+              {userProfile.role}
             </p>
           </div>
         </button>
@@ -123,7 +123,7 @@ export function PartnerSidebar({
         onClose={() => setIsProfileOpen(false)}
         persona="Partner"
         userProfile={userProfile}
-        onLogout={handleLogout}
+        onLogout={logout}
       />
     </aside>
   );
@@ -140,16 +140,18 @@ interface GroupProps {
 function Group({ label, items, activeSection, onSelect, className = '' }: GroupProps) {
   const handleKeyDown = (e: React.KeyboardEvent, currentIndex: number) => {
     switch (e.key) {
-      case 'ArrowDown':
+      case 'ArrowDown': {
         e.preventDefault();
         const nextIndex = (currentIndex + 1) % items.length;
         (e.target as HTMLElement).parentElement?.children[nextIndex]?.querySelector('button')?.focus();
         break;
-      case 'ArrowUp':
+      }
+      case 'ArrowUp': {
         e.preventDefault();
         const prevIndex = (currentIndex - 1 + items.length) % items.length;
         (e.target as HTMLElement).parentElement?.children[prevIndex]?.querySelector('button')?.focus();
         break;
+      }
       case 'Home':
         e.preventDefault();
         (e.target as HTMLElement).parentElement?.children[0]?.querySelector('button')?.focus();

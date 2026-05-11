@@ -11,6 +11,9 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
+const getInitials = (name: string) =>
+  name.split(' ').map((n) => n[0]).join('').toUpperCase().slice(0, 2);
+
 interface AdminSidebarProps {
   activeSection: string;
   onSectionChange: (section: string) => void;
@@ -37,7 +40,7 @@ export function AdminSidebar({
   onItemSelect,
   fluid = false,
 }: AdminSidebarProps) {
-  const { logout } = useAuth();
+  const { user, logout } = useAuth();
 
   const handleClick = (id: string) => {
     onSectionChange(id);
@@ -131,10 +134,10 @@ export function AdminSidebar({
       <div className="p-3 border-t border-border space-y-1">
         <div className="flex items-center gap-2 px-2 py-1.5">
           <div className="w-7 h-7 rounded-full bg-[#FF3000] flex items-center justify-center text-white" style={{ fontSize: '11px', fontWeight: 700 }}>
-            CA
+            {getInitials(user?.name ?? 'CA')}
           </div>
           <div className="flex-1 overflow-hidden">
-            <p style={{ fontSize: '12px', fontWeight: 500 }} className="truncate">ClearPass Admin</p>
+            <p style={{ fontSize: '12px', fontWeight: 500 }} className="truncate">{user?.name ?? 'ClearPass Admin'}</p>
             <p className="text-muted-foreground truncate" style={{ fontSize: '11px' }}>Super Administrator</p>
           </div>
         </div>

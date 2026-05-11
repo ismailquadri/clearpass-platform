@@ -26,6 +26,56 @@ export interface ApiError {
   details?: unknown;
 }
 
+// ─── Auth ────────────────────────────────────────────────────────────────────
+
+export type UserRole = 'contractor' | 'mda' | 'consultant' | 'hmo' | 'admin';
+
+export interface User {
+  id: ID;
+  email: string;
+  first_name: string;
+  last_name: string;
+  phone?: string;
+  role: UserRole;
+  company_id?: ID;
+  status?: 'active' | 'suspended' | 'deleted';
+}
+
+export interface LoginInput {
+  email: string;
+  password: string;
+}
+
+export interface RegisterInput {
+  email: string;
+  password: string;
+  first_name: string;
+  last_name: string;
+  role?: UserRole;
+  phone?: string;
+}
+
+export interface AuthResponse {
+  user: User;
+  token: string;
+  refreshToken: string;
+}
+
+export interface MfaSetupResponse {
+  secret: string;
+  qrCodeUrl: string;
+  backupCodes: string[];
+}
+
+export interface Session {
+  id: ID;
+  userId: ID;
+  userAgent: string;
+  ipAddress: string;
+  createdAt: string;
+  lastActive: string;
+}
+
 // ─── Certificates ───────────────────────────────────────────────────────────
 
 export type CertificateStatus =

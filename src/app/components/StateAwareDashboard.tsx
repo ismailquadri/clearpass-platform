@@ -2,6 +2,7 @@ import { ComplianceScore } from './ComplianceScore';
 import { CertificateCard } from './CertificateCard';
 import { AlertCard } from './AlertCard';
 import { NextBestAction } from './NextBestAction';
+import { NHIAEnrollmentBanner } from './NHIAEnrollmentBanner';
 import { AchievementsPanel } from './AchievementsPanel';
 import { Leaderboard } from './Leaderboard';
 import { ActivityFeed } from './ActivityFeed';
@@ -432,6 +433,13 @@ export function StateAwareDashboard({ state, onNavigate }: StateAwareDashboardPr
   const activeCerts = certificates.filter((c) => c.status === 'active').length;
   const isProcurementReady = state.score >= 80;
 
+  // Hard-block derivations for ComplianceScore
+  const nhiaStatus = certificates.find((c) => c.shortName === 'NHIA')?.status;
+  const nhiaHardBlock = nhiaStatus !== 'active';
+  const hasExpiredCert = certificates.some((c) => c.status === 'expired');
+  // CAC unverified is not modelled in the demo states — leave false
+  const cacUnverified = false;
+
   return (
     <div className="flex-1 h-full overflow-y-auto bg-background">
       <div className="p-4 sm:p-6 max-w-7xl mx-auto">
@@ -527,6 +535,16 @@ export function StateAwareDashboard({ state, onNavigate }: StateAwareDashboardPr
               }}
             />
           </div>
+        )}
+
+        {/* NHIA enrollment banner — shown whenever NHIA is not active */}
+        {(state.label === 'New Registration' || state.label === 'Non-Compliant') && (
+          <NHIAEnrollmentBanner
+            companyName="TechBuild Nigeria Ltd"
+            rcNumber="RC1234567"
+            employeeCount={45}
+            sector="ICT"
+          />
         )}
 
         {/* Stats Row */}
@@ -654,6 +672,9 @@ export function StateAwareDashboard({ state, onNavigate }: StateAwareDashboardPr
             isProcurementReady={isProcurementReady}
             activeCerts={activeCerts}
             totalCerts={6}
+            nhiaHardBlock={nhiaHardBlock}
+            hasExpiredCert={hasExpiredCert}
+            cacUnverified={cacUnverified}
             projectedScore={
               state.label === 'Attention Required'
                 ? {

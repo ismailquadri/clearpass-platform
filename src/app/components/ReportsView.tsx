@@ -1,4 +1,5 @@
-import { FileText, Download, Calendar, CheckCircle2, AlertTriangle, Lock } from 'lucide-react';
+import { FileText, Download, Calendar, CheckCircle2, AlertTriangle, Lock, Printer, QrCode, History } from 'lucide-react';
+import { useState } from 'react';
 import { useToast } from './ToastProvider';
 
 interface Report {
@@ -13,8 +14,16 @@ interface Report {
   fileSize: string;
 }
 
+const HISTORICAL_REPORTS = [
+  { id: 'h1', date: 'Apr 1, 2026', score: 78, status: 'procurement-ready' as const, label: 'April 2026 Snapshot' },
+  { id: 'h2', date: 'Mar 1, 2026', score: 71, status: 'provisional' as const, label: 'March 2026 Snapshot' },
+  { id: 'h3', date: 'Feb 1, 2026', score: 65, status: 'provisional' as const, label: 'February 2026 Snapshot' },
+  { id: 'h4', date: 'Jan 1, 2026', score: 58, status: 'monthly' as const, label: 'January 2026 Snapshot' },
+];
+
 export function ReportsView() {
   const { showToast } = useToast();
+  const [showQR, setShowQR] = useState<string | null>(null);
 
   const availableReports: Report[] = [
     {
@@ -79,6 +88,8 @@ export function ReportsView() {
       return;
     }
     showToast('success', 'Download Started', `Downloading ${report.title}`);
+    // Trigger browser print for PDF generation
+    setTimeout(() => window.print(), 300);
   };
 
   const getReportIcon = (_type: Report['type']) => {
@@ -256,7 +267,7 @@ export function ReportsView() {
                       </div>
                     )}
 
-                    <div className="flex gap-2">
+                    <div className="flex flex-wrap gap-2">
                       <button
                         onClick={() => downloadReport(report)}
                         disabled={report.status === 'locked'}
@@ -266,11 +277,26 @@ export function ReportsView() {
                         Download PDF
                       </button>
                       <button
-                        onClick={() => downloadReport(report)}
+                        onClick={() => {
+                          if (report.status === 'locked') { showToast('error', 'Locked', 'Unlock report first'); return; }
+                          window.print();
+                        }}
                         disabled={report.status === 'locked'}
-                        className="px-4 py-2 rounded-md border border-border hover:bg-muted transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="px-4 py-2 rounded-md border border-border hover:bg-muted transition-colors flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                       >
-                        View Report
+                        <Printer className="w-4 h-4" />
+                        Print
+                      </button>
+                      <button
+                        onClick={() => {
+                          if (report.status === 'locked') { showToast('error', 'Locked', 'Unlock report first'); return; }
+                          setShowQR(showQR === report.id ? null : report.id);
+                        }}
+                        disabled={report.status === 'locked'}
+                        className="px-4 py-2 rounded-md border border-border hover:bg-muted transition-colors flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        <QrCode className="w-4 h-4" />
+                        QR Code
                       </button>
                       {report.type === 'procurement-ready' && report.status !== 'locked' && (
                         <button
@@ -283,11 +309,69 @@ export function ReportsView() {
                         </button>
                       )}
                     </div>
+
+                    {/* QR Code placeholder — shown inline below the action row */}
+                    {showQR === report.id && (
+                      <div className="mt-4 p-4 border border-border rounded-lg bg-muted/20 flex items-start gap-4">
+                        <div
+                          className="w-24 h-24 border-2 border-dashed border-border rounded flex items-center justify-center shrink-0"
+                          aria-label="QR code placeholder"
+                        >
+                          <QrCode className="w-10 h-10 text-muted-foreground" />
+                        </div>
+                        <div>
+                          <p style={{ fontSize: '14px', fontWeight: 500 }}>Verification QR Code</p>
+                          <p className="text-muted-foreground mt-1" style={{ fontSize: '13px' }}>
+                            MDAs can scan this QR code to instantly verify this report's authenticity on the ClearPass portal without logging in.
+                          </p>
+                          <p className="text-muted-foreground mt-1" style={{ fontSize: '12px' }}>
+                            Report ID: CLP-{report.id.padStart(8, '0')}-{report.generatedDate.replace(/ /g, '')}
+                          </p>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
             );
           })}
+        </div>
+
+        {/* Historical / Point-in-Time Reports */}
+        <div className="mt-8 bg-card border border-border rounded-lg p-4 sm:p-6">
+          <div className="flex items-center gap-2 mb-4">
+            <History className="w-5 h-5 text-muted-foreground" />
+            <h3 style={{ fontSize: '18px', fontWeight: 500 }}>Historical Snapshots</h3>
+          </div>
+          <p className="text-muted-foreground mb-4" style={{ fontSize: '14px' }}>
+            Point-in-time compliance reports from previous months. Use these for audits or to show score improvement over time.
+          </p>
+          <div className="space-y-3">
+            {HISTORICAL_REPORTS.map((h) => {
+              const color = h.score >= 80 ? '#1FC16B' : h.score >= 60 ? '#F59E0B' : '#FF3000';
+              return (
+                <div key={h.id} className="flex items-center justify-between gap-4 py-2 border-b border-border last:border-0">
+                  <div className="flex items-center gap-3">
+                    <Calendar className="w-4 h-4 text-muted-foreground shrink-0" />
+                    <div>
+                      <p style={{ fontSize: '14px', fontWeight: 500 }}>{h.label}</p>
+                      <p className="text-muted-foreground" style={{ fontSize: '12px' }}>{h.date}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <span style={{ fontSize: '16px', fontWeight: 700, color }}>{h.score}/100</span>
+                    <button
+                      onClick={() => showToast('success', 'Download Started', `Downloading ${h.label}…`)}
+                      className="p-1.5 rounded-md hover:bg-muted transition-colors"
+                      aria-label={`Download ${h.label}`}
+                    >
+                      <Download className="w-4 h-4 text-muted-foreground" />
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
         </div>
 
         {/* Report Information */}

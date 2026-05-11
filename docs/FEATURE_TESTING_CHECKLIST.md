@@ -273,8 +273,8 @@ If you find any broken features, please document:
 
 ## ✅ **TESTING COMPLETE**
 
-**Test Date:** ******\_******  
-**Tester Name:** ******\_******  
+**Test Date:** **\*\***\_**\*\***  
+**Tester Name:** **\*\***\_**\*\***  
 **Overall Status:** [ ] Ready for Backend / [ ] Needs Fixes
 
 **Summary:**

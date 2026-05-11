@@ -10,9 +10,11 @@ import {
   Search,
   BarChart3,
   Briefcase,
+  Heart,
+  ShieldCheck,
 } from 'lucide-react';
 
-type Persona = 'Business' | 'MDA' | 'Partner';
+type Persona = 'Business' | 'MDA' | 'Partner' | 'HMO' | 'Admin';
 
 interface OnboardingFlowProps {
   onComplete: (persona: Persona) => void;
@@ -37,6 +39,18 @@ const PERSONA_CARDS = [
     label: 'Compliance Partner',
     tagline: 'I manage compliance for clients',
   },
+  {
+    id: 'HMO' as Persona,
+    icon: Heart,
+    label: 'Health Insurance (HMO)',
+    tagline: 'I manage employer NHIA enrollment',
+  },
+  {
+    id: 'Admin' as Persona,
+    icon: ShieldCheck,
+    label: 'Platform Admin',
+    tagline: 'I manage the ClearPass platform',
+  },
 ];
 
 const PERSONA_FEATURES: Record<Persona, { icon: typeof CheckCircle2; text: string }[]> = {
@@ -55,6 +69,16 @@ const PERSONA_FEATURES: Record<Persona, { icon: typeof CheckCircle2; text: strin
     { icon: BarChart3, text: 'Track compliance scores across your entire client base' },
     { icon: FileText, text: 'Generate branded compliance reports for any client' },
   ],
+  HMO: [
+    { icon: FileText, text: 'Track employer NHIA enrollment compliance across your portfolio' },
+    { icon: BarChart3, text: 'Manage referral claims and commission pipelines in real time' },
+    { icon: Bell, text: 'Monitor enrolled member analytics and plan performance' },
+  ],
+  Admin: [
+    { icon: CheckCircle2, text: 'Review and approve pending certificate verification requests' },
+    { icon: BarChart3, text: 'Monitor platform-wide compliance metrics and SLA health' },
+    { icon: Users, text: 'Manage user accounts, partners, and system configuration' },
+  ],
 };
 
 const PERSONA_READY_COPY: Record<Persona, string> = {
@@ -62,6 +86,8 @@ const PERSONA_READY_COPY: Record<Persona, string> = {
     "Upload your first certificate and we'll start tracking expiry dates and compliance score right away.",
   MDA: "Enter any RC number to check a vendor's full compliance status before procurement.",
   Partner: 'Add your first client and start managing their compliance from one portfolio view.',
+  HMO: "Start reviewing employer NHIA enrollment compliance to process referral claims faster.",
+  Admin: 'Access the admin portal to review verification requests and manage platform users.',
 };
 
 export function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
@@ -125,7 +151,7 @@ export function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
                 </p>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {PERSONA_CARDS.map((card) => {
                   const Icon = card.icon;
                   const isSelected = persona === card.id;
@@ -188,7 +214,11 @@ export function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
                   ? 'government agencies'
                   : persona === 'Partner'
                     ? 'compliance partners'
-                    : 'businesses'}{' '}
+                    : persona === 'HMO'
+                      ? 'health insurance organisations'
+                      : persona === 'Admin'
+                        ? 'platform administrators'
+                        : 'businesses'}{' '}
                 like yours.
               </p>
 

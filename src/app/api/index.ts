@@ -11,6 +11,7 @@ export type { AsyncStatus, UseApiResult, UseMutationResult } from './useApi';
 // Domain hooks
 export * from './activity';
 export * from './alerts';
+export * from './auth';
 export * from './certificates';
 export * from './dashboard';
 export * from './mda';

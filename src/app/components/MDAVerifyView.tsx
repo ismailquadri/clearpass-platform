@@ -1,5 +1,5 @@
-import { Search, Upload, Download, CheckCircle2, XCircle, AlertTriangle } from 'lucide-react';
-import { useState } from 'react';
+import { Search, Upload, Download, CheckCircle2, XCircle, AlertTriangle, Clock } from 'lucide-react';
+import { useState, useRef } from 'react';
 import { VendorVerificationModal } from './VendorVerificationModal';
 import { useToast } from './ToastProvider';
 import { useVerifyVendor, verifyVendor } from '../api';
@@ -7,13 +7,34 @@ import type { VendorEligibilityStatus, VendorVerification } from '../api';
 import { EmptyState } from './ui';
 import { MDAActivityHook } from './NextBestAction';
 
+interface BulkRow {
+  rcNumber: string;
+  companyName: string;
+  status: 'eligible' | 'ineligible' | 'pending' | 'error';
+  score: number;
+  nhia: boolean;
+  pcc: boolean;
+  nsitf: boolean;
+  firs: boolean;
+}
+
+const MOCK_BULK_RESULTS: Record<string, BulkRow> = {
+  RC1234567: { rcNumber: 'RC1234567', companyName: 'TechVentures Nigeria Ltd', status: 'eligible', score: 92, nhia: true, pcc: true, nsitf: true, firs: true },
+  RC7654321: { rcNumber: 'RC7654321', companyName: 'Lagos Builders Ltd', status: 'ineligible', score: 54, nhia: false, pcc: true, nsitf: false, firs: true },
+  RC9876543: { rcNumber: 'RC9876543', companyName: 'Delta Contractors', status: 'ineligible', score: 38, nhia: false, pcc: false, nsitf: false, firs: false },
+  RC2345678: { rcNumber: 'RC2345678', companyName: 'Abuja Roads Co.', status: 'eligible', score: 88, nhia: true, pcc: true, nsitf: true, firs: true },
+};
+
 export function MDAVerifyView() {
   const { showToast } = useToast();
   const verify = useVerifyVendor();
+  const csvInputRef = useRef<HTMLInputElement>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [verificationResults, setVerificationResults] = useState<VendorVerification[]>([]);
   const [isVerificationModalOpen, setIsVerificationModalOpen] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [bulkResults, setBulkResults] = useState<BulkRow[]>([]);
+  const [isBulkProcessing, setIsBulkProcessing] = useState(false);
 
   const handleSearch = async () => {
     setError(null);
@@ -54,11 +75,67 @@ export function MDAVerifyView() {
   };
 
   const handleBulkUpload = () => {
-    showToast(
-      'info',
-      'Bulk Upload',
-      'Bulk upload feature coming soon. Contact support for assistance.'
-    );
+    csvInputRef.current?.click();
+  };
+
+  const handleCSVFile = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (!file.name.endsWith('.csv') && file.type !== 'text/csv') {
+      showToast('error', 'Invalid File', 'Please upload a CSV file with RC numbers in the first column.');
+      return;
+    }
+    setIsBulkProcessing(true);
+    setBulkResults([]);
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      const text = ev.target?.result as string;
+      const lines = text.split(/\r?\n/).filter((l) => l.trim());
+      const rcNumbers = lines
+        .map((l) => l.split(',')[0].trim().toUpperCase())
+        .filter((rc) => /^RC\d{7,}$/i.test(rc));
+
+      if (rcNumbers.length === 0) {
+        showToast('error', 'No Valid RC Numbers', 'CSV must have RC numbers (e.g. RC1234567) in the first column.');
+        setIsBulkProcessing(false);
+        return;
+      }
+
+      // Simulate async processing with mock data
+      setTimeout(() => {
+        const results: BulkRow[] = rcNumbers.map((rc) => {
+          if (MOCK_BULK_RESULTS[rc]) return MOCK_BULK_RESULTS[rc];
+          return {
+            rcNumber: rc,
+            companyName: 'Unknown Company',
+            status: 'pending' as const,
+            score: 0,
+            nhia: false, pcc: false, nsitf: false, firs: false,
+          };
+        });
+        setBulkResults(results);
+        setIsBulkProcessing(false);
+        showToast('success', 'Bulk Verification Complete', `${results.length} RC numbers processed.`);
+      }, 1200);
+    };
+    reader.readAsText(file);
+    e.target.value = '';
+  };
+
+  const exportBulkResults = () => {
+    if (!bulkResults.length) return;
+    const header = 'RC Number,Company Name,Status,Score,NHIA,PCC,NSITF,FIRS\n';
+    const rows = bulkResults.map((r) =>
+      `${r.rcNumber},${r.companyName},${r.status},${r.score},${r.nhia},${r.pcc},${r.nsitf},${r.firs}`
+    ).join('\n');
+    const blob = new Blob([header + rows], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `bulk-verification-${new Date().toISOString().slice(0, 10)}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+    showToast('success', 'Export Complete', 'Bulk verification results downloaded.');
   };
 
   return (
@@ -141,18 +218,143 @@ export function MDAVerifyView() {
               </button>
               <button
                 onClick={handleBulkUpload}
-                className="px-6 py-3 min-h-[44px] rounded-md border border-border hover:bg-muted transition-colors flex items-center justify-center gap-2"
+                disabled={isBulkProcessing}
+                className="px-6 py-3 min-h-[44px] rounded-md border border-border hover:bg-muted transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
               >
                 <Upload className="w-5 h-5" aria-hidden="true" />
-                Bulk Upload
+                {isBulkProcessing ? 'Processing…' : 'Bulk CSV Upload'}
               </button>
             </div>
+            {/* Hidden CSV file input */}
+            <input
+              ref={csvInputRef}
+              type="file"
+              accept=".csv,text/csv"
+              onChange={handleCSVFile}
+              className="sr-only"
+              aria-hidden="true"
+            />
           </div>
           <p className="caption text-muted-foreground mt-3">
-            Search for single vendor or upload CSV file with multiple RC numbers for batch
-            verification
+            Single vendor search or upload a CSV with RC numbers in column A for batch verification
           </p>
         </div>
+
+        {/* Bulk Results Matrix */}
+        {(isBulkProcessing || bulkResults.length > 0) && (
+          <div className="bg-card border border-border rounded-lg p-4 sm:p-6 mb-6">
+            <div className="flex items-center justify-between mb-4">
+              <h2 style={{ fontSize: '18px', fontWeight: 600 }}>
+                Bulk Verification Results
+                {isBulkProcessing && <span className="ml-2 text-muted-foreground" style={{ fontSize: '14px' }}>Processing…</span>}
+              </h2>
+              {bulkResults.length > 0 && (
+                <button
+                  onClick={exportBulkResults}
+                  className="flex items-center gap-2 px-3 py-2 rounded-md border border-border hover:bg-muted transition-colors"
+                  style={{ fontSize: '13px' }}
+                >
+                  <Download className="w-4 h-4" aria-hidden="true" />
+                  Export CSV
+                </button>
+              )}
+            </div>
+
+            {isBulkProcessing ? (
+              <div className="flex items-center gap-3 py-6 justify-center text-muted-foreground">
+                <Clock className="w-5 h-5 animate-spin" />
+                <span style={{ fontSize: '14px' }}>Verifying RC numbers…</span>
+              </div>
+            ) : (
+              <>
+                {/* Summary */}
+                <div className="grid grid-cols-3 gap-3 mb-4">
+                  <div className="bg-muted/30 rounded-lg p-3 text-center">
+                    <p style={{ fontSize: '20px', fontWeight: 700, color: '#1FC16B' }}>
+                      {bulkResults.filter((r) => r.status === 'eligible').length}
+                    </p>
+                    <p className="text-muted-foreground" style={{ fontSize: '12px' }}>Eligible</p>
+                  </div>
+                  <div className="bg-muted/30 rounded-lg p-3 text-center">
+                    <p style={{ fontSize: '20px', fontWeight: 700, color: '#FF3000' }}>
+                      {bulkResults.filter((r) => r.status === 'ineligible').length}
+                    </p>
+                    <p className="text-muted-foreground" style={{ fontSize: '12px' }}>Ineligible</p>
+                  </div>
+                  <div className="bg-muted/30 rounded-lg p-3 text-center">
+                    <p style={{ fontSize: '20px', fontWeight: 700, color: '#F59E0B' }}>
+                      {bulkResults.filter((r) => r.status === 'pending').length}
+                    </p>
+                    <p className="text-muted-foreground" style={{ fontSize: '12px' }}>Unknown</p>
+                  </div>
+                </div>
+
+                {/* Table — desktop */}
+                <div className="hidden sm:block overflow-x-auto">
+                  <table className="w-full">
+                    <thead>
+                      <tr className="border-b border-border">
+                        {['RC Number', 'Company', 'Status', 'Score', 'NHIA', 'PCC', 'NSITF', 'FIRS'].map((h) => (
+                          <th key={h} className="text-left pb-2 text-muted-foreground" style={{ fontSize: '12px', fontWeight: 500 }}>{h}</th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {bulkResults.map((row) => {
+                        const statusColor = row.status === 'eligible' ? '#1FC16B' : row.status === 'ineligible' ? '#FF3000' : '#F59E0B';
+                        return (
+                          <tr key={row.rcNumber} className="border-b border-border last:border-0">
+                            <td className="py-2" style={{ fontSize: '13px' }}>{row.rcNumber}</td>
+                            <td className="py-2" style={{ fontSize: '13px' }}>{row.companyName}</td>
+                            <td className="py-2">
+                              <span className="px-2 py-0.5 rounded-full capitalize" style={{ fontSize: '11px', backgroundColor: `${statusColor}20`, color: statusColor, fontWeight: 500 }}>
+                                {row.status}
+                              </span>
+                            </td>
+                            <td className="py-2" style={{ fontSize: '13px', fontWeight: 500, color: statusColor }}>{row.score || '—'}</td>
+                            {[row.nhia, row.pcc, row.nsitf, row.firs].map((v, i) => (
+                              <td key={i} className="py-2">
+                                {v
+                                  ? <CheckCircle2 className="w-4 h-4" style={{ color: '#1FC16B' }} />
+                                  : <XCircle className="w-4 h-4" style={{ color: '#FF3000' }} />}
+                              </td>
+                            ))}
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+
+                {/* Mobile cards */}
+                <div className="sm:hidden space-y-3">
+                  {bulkResults.map((row) => {
+                    const statusColor = row.status === 'eligible' ? '#1FC16B' : row.status === 'ineligible' ? '#FF3000' : '#F59E0B';
+                    return (
+                      <div key={row.rcNumber} className="border border-border rounded-lg p-3">
+                        <div className="flex items-start justify-between gap-2 mb-2">
+                          <div>
+                            <p style={{ fontSize: '13px', fontWeight: 600 }}>{row.companyName}</p>
+                            <p className="text-muted-foreground" style={{ fontSize: '12px' }}>{row.rcNumber}</p>
+                          </div>
+                          <span className="px-2 py-0.5 rounded-full capitalize shrink-0" style={{ fontSize: '11px', backgroundColor: `${statusColor}20`, color: statusColor, fontWeight: 500 }}>
+                            {row.status}
+                          </span>
+                        </div>
+                        <div className="flex gap-3 text-muted-foreground" style={{ fontSize: '12px' }}>
+                          <span>NHIA {row.nhia ? '✓' : '✗'}</span>
+                          <span>PCC {row.pcc ? '✓' : '✗'}</span>
+                          <span>NSITF {row.nsitf ? '✓' : '✗'}</span>
+                          <span>FIRS {row.firs ? '✓' : '✗'}</span>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </>
+            )}
+          </div>
+        )}
 
         {verificationResults.length > 0 && (
           <>
