@@ -2,6 +2,7 @@ import { FileText, Download, Calendar, Search, Plus, Eye, Trash2, Shield, AlertT
 import { useMemo, useState } from 'react';
 import { useToast } from './ToastProvider';
 import { EmptyState } from './ui';
+import '../../app/styles/mda-theme.css';
 
 interface MDAReport {
   id: string;
@@ -152,7 +153,7 @@ export function MDAReportsView() {
         </div>
         <button
           onClick={handleGenerateReport}
-          className="inline-flex items-center gap-2 px-4 py-2 bg-[#FF3000] text-white rounded-md hover:bg-[#e62e00] transition-colors self-start"
+          className="inline-flex items-center gap-2 px-4 py-2 bg-[var(--mda-primary)] text-white rounded-md hover:bg-[#e62e00] transition-colors self-start"
         >
           <Plus className="w-4 h-4" />
           Generate Report
@@ -168,13 +169,13 @@ export function MDAReportsView() {
             placeholder="Search reports by vendor, RC number, or title..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-[#FF3000] focus:border-transparent"
+            className="w-full pl-10 pr-4 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-[var(--mda-primary)] focus:border-transparent"
           />
         </div>
         <select
           value={filterType}
           onChange={(e) => setFilterType(e.target.value as typeof filterType)}
-          className="px-4 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-[#FF3000] focus:border-transparent bg-background"
+          className="px-4 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-[var(--mda-primary)] focus:border-transparent bg-background"
         >
           <option value="all">All Report Types</option>
           <option value="verification">Verification</option>
@@ -407,7 +408,7 @@ export function MDAReportsView() {
                     handleDownloadReport(viewReport);
                     setViewReport(null);
                   }}
-                  className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2 bg-[#FF3000] text-white rounded-md hover:bg-[#e62e00] transition-colors"
+                  className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2 bg-[var(--mda-primary)] text-white rounded-md hover:bg-[#e62e00] transition-colors"
                 >
                   <Download className="w-4 h-4" />
                   Download Report

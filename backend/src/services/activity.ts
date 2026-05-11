@@ -16,7 +16,7 @@ export class ActivityService {
       .orderBy('created_at', 'desc')
       .limit(limit);
 
-    return auditLogs.map(log => this.formatActivityItem(log));
+    return auditLogs.map((log) => this.formatActivityItem(log));
   }
 
   private formatActivityItem(log: any): ActivityItem {
@@ -35,15 +35,15 @@ export class ActivityService {
 
   private mapActionToType(action: string): ActivityItem['type'] {
     const actionMap: Record<string, ActivityItem['type']> = {
-      'cert_verify': 'verification',
-      'cert_upload': 'upload',
-      'cert_update': 'verification',
-      'cert_delete': 'upload',
-      'login': 'verification',
-      'register': 'verification',
-      'payment': 'renewal',
-      'score_update': 'verification',
-      'report': 'report',
+      cert_verify: 'verification',
+      cert_upload: 'upload',
+      cert_update: 'verification',
+      cert_delete: 'upload',
+      login: 'verification',
+      register: 'verification',
+      payment: 'renewal',
+      score_update: 'verification',
+      report: 'report',
     };
 
     return actionMap[action] || 'verification';

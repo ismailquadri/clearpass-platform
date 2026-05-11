@@ -4,7 +4,7 @@ import type { Role } from '../config/constants';
 // ─── Auth ────────────────────────────────────────────────────────────────────
 
 export interface JwtPayload {
-  sub: string;        // user_id
+  sub: string; // user_id
   email: string;
   role: Role;
   company_id: string | null;

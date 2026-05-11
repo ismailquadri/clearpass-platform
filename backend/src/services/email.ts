@@ -81,7 +81,8 @@ export class EmailService {
   }
 
   async sendExpiryReminder(options: SendExpiryReminderOptions): Promise<void> {
-    const urgency = options.daysToExpiry <= 7 ? 'URGENT' : options.daysToExpiry <= 14 ? 'Important' : 'Reminder';
+    const urgency =
+      options.daysToExpiry <= 7 ? 'URGENT' : options.daysToExpiry <= 14 ? 'Important' : 'Reminder';
 
     const html = `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">

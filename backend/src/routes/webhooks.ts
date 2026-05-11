@@ -12,7 +12,7 @@ router.post('/paystack', async (req, res, next) => {
     //   .createHmac('sha512', env.paystackWebhookSecret)
     //   .update(JSON.stringify(req.body))
     //   .digest('hex');
-    // 
+    //
     // if (signature !== expectedSignature) {
     //   throw new AppError('INVALID_SIGNATURE', 'Invalid webhook signature', 401);
     // }
@@ -25,27 +25,27 @@ router.post('/paystack', async (req, res, next) => {
       case 'charge.success':
         await paymentService.handleWebhook({ event, data });
         break;
-      
+
       case 'charge.failed':
         await paymentService.handleWebhook({ event, data });
         break;
-      
+
       case 'invoice.create':
         // Handle invoice creation
         break;
-      
+
       case 'invoice.payment_failed':
         // Handle failed invoice payment
         break;
-      
+
       case 'subscription.create':
         // Handle subscription creation
         break;
-      
+
       case 'subscription.disable':
         // Handle subscription cancellation
         break;
-      
+
       default:
         console.log(`Unhandled webhook event: ${event}`);
     }

@@ -59,9 +59,13 @@ router.get(
       const certificates = await certificateService.getCertificatesByCompany(company.id);
 
       // Format certificates for response
-      const formattedCerts = certificates.map(cert => ({
+      const formattedCerts = certificates.map((cert) => ({
         name: cert.shortName,
-        status: (cert.status === 'active' ? 'active' : cert.status === 'expired' ? 'expired' : 'expiring') as 'active' | 'expiring' | 'expired',
+        status: (cert.status === 'active'
+          ? 'active'
+          : cert.status === 'expired'
+            ? 'expired'
+            : 'expiring') as 'active' | 'expiring' | 'expired',
         expiryDate: cert.expiryDate,
       }));
 
@@ -120,7 +124,7 @@ router.get(
         .whereNull('companies.deleted_at')
         .orderBy('companies.created_at', 'desc');
 
-      const applicants: PrequalificationApplicant[] = companies.map(company => {
+      const applicants: PrequalificationApplicant[] = companies.map((company) => {
         let status: 'procurement-ready' | 'attention-required' | 'ineligible';
         if (company.total_score >= 80 && company.procurement_ready) {
           status = 'procurement-ready';
@@ -165,12 +169,10 @@ router.post(
       const { id } = req.params;
 
       // Update company verification status
-      await db('companies')
-        .where({ id })
-        .update({
-          verified: true,
-          verification_date: new Date(),
-        });
+      await db('companies').where({ id }).update({
+        verified: true,
+        verification_date: new Date(),
+      });
 
       // Log audit trail
       if (req.user?.sub) {
@@ -202,12 +204,10 @@ router.post(
       const { reason } = req.body;
 
       // Update company verification status
-      await db('companies')
-        .where({ id })
-        .update({
-          verified: false,
-          verification_date: new Date(),
-        });
+      await db('companies').where({ id }).update({
+        verified: false,
+        verification_date: new Date(),
+      });
 
       // Log audit trail
       if (req.user?.sub) {

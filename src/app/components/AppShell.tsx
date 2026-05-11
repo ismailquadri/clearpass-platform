@@ -1,7 +1,8 @@
 import { CheckCircle2, Menu, Shield, Briefcase, X, HeartPulse, Building } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import type { ReactNode } from 'react';
-import type { Persona } from './TweaksPanel';
+import type { Persona } from '../api/types';
+import '../styles/mda-theme.css';
 
 interface AppShellProps {
   persona: Persona;
@@ -27,6 +28,14 @@ const PERSONA_LABEL: Record<Persona, string> = {
   Partner: 'Partner Portal',
   HMO: 'HMO Portal',
   Admin: 'Admin Portal',
+};
+
+const PERSONA_COLOR: Record<Persona, string> = {
+  Business: '#FF3000',
+  MDA: 'var(--mda-primary)',
+  Partner: '#FF3000',
+  HMO: '#FF3000',
+  Admin: '#FF3000',
 };
 
 /**
@@ -90,7 +99,7 @@ export function AppShell({ persona, sidebar, drawerSidebar, children }: AppShell
         <div className="flex items-center gap-2">
           <div
             className="w-9 h-9 rounded-md flex items-center justify-center"
-            style={{ backgroundColor: '#FF3000' }}
+            style={{ backgroundColor: PERSONA_COLOR[persona] }}
           >
             <Icon className="w-5 h-5 text-white" aria-hidden="true" />
           </div>

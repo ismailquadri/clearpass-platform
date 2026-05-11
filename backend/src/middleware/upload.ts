@@ -56,19 +56,14 @@ export const handleMultipleFileUploads = async (req: any, res: any, next: any) =
 
   try {
     const uploadPromises = req.files.map((file: Express.Multer.File) =>
-      storageService.uploadFile(
-        file.buffer,
-        file.originalname,
-        file.mimetype,
-        'documents'
-      )
+      storageService.uploadFile(file.buffer, file.originalname, file.mimetype, 'documents')
     );
 
     const results = await Promise.all(uploadPromises);
 
     // Add the file URLs to the request body
-    req.body.document_urls = results.map(r => r.url);
-    req.body.document_keys = results.map(r => r.key);
+    req.body.document_urls = results.map((r) => r.url);
+    req.body.document_keys = results.map((r) => r.key);
 
     next();
   } catch (error) {

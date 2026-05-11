@@ -1,0 +1,76 @@
+/**
+ * MDA Portal Color Palette
+ * Base color: #05A756 (Green)
+ * Smart hue variations for creative use across the MDA portal
+ */
+
+:root {
+  /* Primary brand color */
+  --mda-primary: #05A756;
+  
+  /* Lighter tints (for backgrounds, hover states) */
+  --mda-primary-5: #f0fcf6;
+  --mda-primary-10: #e1f8eb;
+  --mda-primary-20: #c3f1d7;
+  --mda-primary-30: #a5e9c3;
+  --mda-primary-40: #87e1af;
+  
+  /* Base variations */
+  --mda-primary-50: #69da8;
+  --mda-primary-60: #4cd696;
+  --mda-primary-70: #3fd284;
+  --mda-primary-80: #31ce72;
+  
+  /* Darker shades (for text, borders, active states) */
+  --mda-primary-90: #24ca60;
+  --mda-primary-100: #05A756;
+  --mda-primary-200: #048647;
+  --mda-primary-300: #036538;
+  --mda-primary-400: #024429;
+  --mda-primary-500: #01231a;
+  
+  /* Semantic variations */
+  --mda-bg-light: #f0fcf6;
+  --mda-bg-medium: #e1f8eb;
+  --mda-bg-dark: #036538;
+  
+  --mda-text-primary: #05A756;
+  --mda-text-secondary: #048647;
+  --mda-text-muted: #24ca60;
+  
+  --mda-border-light: #c3f1d7;
+  --mda-border-medium: #87e1af;
+  --mda-border-dark: #048647;
+  
+  /* Accent colors for different states */
+  --mda-success: #05A756;
+  --mda-success-light: #e1f8eb;
+  --mda-warning: #f59e0b;
+  --mda-warning-light: #fef3c7;
+  --mda-error: #dc2626;
+  --mda-error-light: #fee2e2;
+  --mda-info: #0ea5e9;
+  --mda-info-light: #e0f2fe;
+  
+  /* Gradient combinations */
+  --mda-gradient-primary: linear-gradient(135deg, #05A756 0%, #4cd696 100%);
+  --mda-gradient-subtle: linear-gradient(135deg, #e1f8eb 0%, #c3f1d7 100%);
+  --mda-gradient-dark: linear-gradient(135deg, #048647 0%, #036538 100%);
+}
+
+/* Dark mode variations */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --mda-bg-light: #036538;
+    --mda-bg-medium: #048647;
+    --mda-bg-dark: #01231a;
+    
+    --mda-text-primary: #4cd696;
+    --mda-text-secondary: #87e1af;
+    --mda-text-muted: #a5e9c3;
+    
+    --mda-border-light: #24ca60;
+    --mda-border-medium: #31ce72;
+    --mda-border-dark: #4cd696;
+  }
+}

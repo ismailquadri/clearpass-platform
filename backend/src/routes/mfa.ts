@@ -23,31 +23,27 @@ const verifyMfaSchema = z.object({
 });
 
 // POST /api/mfa/setup
-router.post(
-  '/setup',
-  authMiddleware,
-  async (req: AuthRequest, res, next) => {
-    try {
-      if (!req.user?.sub) {
-        throw new AppError('UNAUTHORIZED', 'Authentication required', 401);
-      }
-
-      const result = await mfaService.setupMFA(req.user.sub);
-
-      const response: SuccessResponse = {
-        success: true,
-        data: result,
-        meta: {
-          timestamp: new Date().toISOString(),
-        },
-      };
-
-      res.status(200).json(response);
-    } catch (error) {
-      next(error);
+router.post('/setup', authMiddleware, async (req: AuthRequest, res, next) => {
+  try {
+    if (!req.user?.sub) {
+      throw new AppError('UNAUTHORIZED', 'Authentication required', 401);
     }
+
+    const result = await mfaService.setupMFA(req.user.sub);
+
+    const response: SuccessResponse = {
+      success: true,
+      data: result,
+      meta: {
+        timestamp: new Date().toISOString(),
+      },
+    };
+
+    res.status(200).json(response);
+  } catch (error) {
+    next(error);
   }
-);
+});
 
 // POST /api/mfa/enable
 router.post(

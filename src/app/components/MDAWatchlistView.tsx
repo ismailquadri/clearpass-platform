@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 import { useState } from 'react';
 import { useToast } from './ToastProvider';
+import '../../app/styles/mda-theme.css';
 
 interface WatchlistCompany {
   id: string;
@@ -142,7 +143,7 @@ export function MDAWatchlistView() {
               onClick={handleAdd}
               disabled={isAdding || !addRC.trim()}
               className="flex items-center justify-center gap-2 px-5 py-2.5 min-h-[44px] rounded-md text-white hover:opacity-90 transition-opacity disabled:opacity-50 w-full sm:w-auto"
-              style={{ backgroundColor: '#FF3000', fontSize: '14px' }}
+              style={{ backgroundColor: 'var(--mda-primary)', fontSize: '14px' }}
             >
               <Plus className="w-4 h-4" aria-hidden="true" />
               {isAdding ? 'Adding…' : 'Add to Watchlist'}
@@ -162,7 +163,7 @@ export function MDAWatchlistView() {
           </div>
           <div className="bg-card border border-border rounded-lg p-3 sm:p-4">
             <p className="text-muted-foreground" style={{ fontSize: '12px' }}>Need Attention</p>
-            <p style={{ fontSize: '24px', fontWeight: 700, color: '#FF3000' }}>{watchlist.filter((c) => c.status !== 'procurement-ready').length}</p>
+            <p style={{ fontSize: '24px', fontWeight: 700, color: 'var(--mda-primary)' }}>{watchlist.filter((c) => c.status !== 'procurement-ready').length}</p>
           </div>
         </div>
 
@@ -230,7 +231,7 @@ export function MDAWatchlistView() {
                       title={company.alertsEnabled ? 'Alerts on — click to disable' : 'Alerts off — click to enable'}
                     >
                       {company.alertsEnabled
-                        ? <Bell className="w-4 h-4" style={{ color: '#FF3000' }} />
+                        ? <Bell className="w-4 h-4" style={{ color: 'var(--mda-primary)' }} />
                         : <BellOff className="w-4 h-4 text-muted-foreground" />}
                     </button>
                     <button

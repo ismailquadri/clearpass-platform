@@ -20,46 +20,58 @@ export interface VerificationResult {
 export class GovernmentApiService {
   // Mock government API responses
   private mockDatabase: Map<string, VerificationResult> = new Map([
-    ['NHIA/2024/001234', {
-      valid: true,
-      certNumber: 'NHIA/2024/001234',
-      certType: 'nhia',
-      issuedDate: '2024-01-15',
-      expiryDate: '2025-01-15',
-      issuingAuthority: 'National Health Insurance Authority',
-      status: 'active',
-      apiResponse: { source: 'NHIA API', verifiedAt: new Date().toISOString() },
-    }],
-    ['PCC/2024/005678', {
-      valid: true,
-      certNumber: 'PCC/2024/005678',
-      certType: 'pcc',
-      issuedDate: '2024-02-20',
-      expiryDate: '2025-02-20',
-      issuingAuthority: 'Nigeria Police Force',
-      status: 'active',
-      apiResponse: { source: 'NPF API', verifiedAt: new Date().toISOString() },
-    }],
-    ['NSITF/2024/009012', {
-      valid: true,
-      certNumber: 'NSITF/2024/009012',
-      certType: 'nsitf',
-      issuedDate: '2024-03-10',
-      expiryDate: '2025-03-10',
-      issuingAuthority: 'Nigeria Social Insurance Trust Fund',
-      status: 'active',
-      apiResponse: { source: 'NSITF API', verifiedAt: new Date().toISOString() },
-    }],
-    ['FIRS/2024/013456', {
-      valid: true,
-      certNumber: 'FIRS/2024/013456',
-      certType: 'firs',
-      issuedDate: '2024-04-05',
-      expiryDate: '2025-04-05',
-      issuingAuthority: 'Federal Inland Revenue Service',
-      status: 'active',
-      apiResponse: { source: 'FIRS API', verifiedAt: new Date().toISOString() },
-    }],
+    [
+      'NHIA/2024/001234',
+      {
+        valid: true,
+        certNumber: 'NHIA/2024/001234',
+        certType: 'nhia',
+        issuedDate: '2024-01-15',
+        expiryDate: '2025-01-15',
+        issuingAuthority: 'National Health Insurance Authority',
+        status: 'active',
+        apiResponse: { source: 'NHIA API', verifiedAt: new Date().toISOString() },
+      },
+    ],
+    [
+      'PCC/2024/005678',
+      {
+        valid: true,
+        certNumber: 'PCC/2024/005678',
+        certType: 'pcc',
+        issuedDate: '2024-02-20',
+        expiryDate: '2025-02-20',
+        issuingAuthority: 'Nigeria Police Force',
+        status: 'active',
+        apiResponse: { source: 'NPF API', verifiedAt: new Date().toISOString() },
+      },
+    ],
+    [
+      'NSITF/2024/009012',
+      {
+        valid: true,
+        certNumber: 'NSITF/2024/009012',
+        certType: 'nsitf',
+        issuedDate: '2024-03-10',
+        expiryDate: '2025-03-10',
+        issuingAuthority: 'Nigeria Social Insurance Trust Fund',
+        status: 'active',
+        apiResponse: { source: 'NSITF API', verifiedAt: new Date().toISOString() },
+      },
+    ],
+    [
+      'FIRS/2024/013456',
+      {
+        valid: true,
+        certNumber: 'FIRS/2024/013456',
+        certType: 'firs',
+        issuedDate: '2024-04-05',
+        expiryDate: '2025-04-05',
+        issuingAuthority: 'Federal Inland Revenue Service',
+        status: 'active',
+        apiResponse: { source: 'FIRS API', verifiedAt: new Date().toISOString() },
+      },
+    ],
   ]);
 
   async verifyCertificate(input: VerifyCertificateInput): Promise<VerificationResult> {
@@ -85,7 +97,10 @@ export class GovernmentApiService {
       expiryDate: new Date(Date.now() + 180 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
       issuingAuthority: this.getIssuingAuthority(input.certType),
       status: 'active',
-      apiResponse: { source: `${input.certType.toUpperCase()} API`, verifiedAt: new Date().toISOString() },
+      apiResponse: {
+        source: `${input.certType.toUpperCase()} API`,
+        verifiedAt: new Date().toISOString(),
+      },
     };
 
     // Log the API call
@@ -109,7 +124,9 @@ export class GovernmentApiService {
     };
   }
 
-  async batchVerifyCertificates(certificates: Array<{ certType: string; certNumber: string }>): Promise<VerificationResult[]> {
+  async batchVerifyCertificates(
+    certificates: Array<{ certType: string; certNumber: string }>
+  ): Promise<VerificationResult[]> {
     const results: VerificationResult[] = [];
 
     for (const cert of certificates) {
@@ -148,7 +165,7 @@ export class GovernmentApiService {
 
   private async simulateApiDelay(min: number, max: number): Promise<void> {
     const delay = Math.random() * (max - min) + min;
-    await new Promise(resolve => setTimeout(resolve, delay));
+    await new Promise((resolve) => setTimeout(resolve, delay));
   }
 
   private async logApiCall(

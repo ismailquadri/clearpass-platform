@@ -36,9 +36,7 @@ export interface AuthResponse {
 export class AuthService {
   async register(input: RegisterInput): Promise<AuthResponse> {
     // Check if user already exists
-    const existingUser = await db('users')
-      .where({ email: input.email })
-      .first();
+    const existingUser = await db('users').where({ email: input.email }).first();
 
     if (existingUser) {
       throw new AppError('EMAIL_EXISTS', 'User with this email already exists', 409);
@@ -91,9 +89,7 @@ export class AuthService {
 
   async login(input: LoginInput): Promise<AuthResponse> {
     // Find user
-    const user = await db('users')
-      .where({ email: input.email })
-      .first();
+    const user = await db('users').where({ email: input.email }).first();
 
     if (!user) {
       throw new AppError('INVALID_CREDENTIALS', 'Invalid email or password', 401);
@@ -112,9 +108,7 @@ export class AuthService {
     }
 
     // Update last login
-    await db('users')
-      .where({ id: user.id })
-      .update({ last_login: new Date() });
+    await db('users').where({ id: user.id }).update({ last_login: new Date() });
 
     // Prepare user response
     const userResponse = {
@@ -141,9 +135,7 @@ export class AuthService {
   }
 
   async me(userId: string): Promise<AuthResponse['user']> {
-    const user = await db('users')
-      .where({ id: userId })
-      .first();
+    const user = await db('users').where({ id: userId }).first();
 
     if (!user) {
       throw new AppError('USER_NOT_FOUND', 'User not found', 404);
@@ -163,9 +155,7 @@ export class AuthService {
     try {
       const decoded = jwt.verify(refreshToken, env.jwtRefreshSecret) as JwtPayload;
 
-      const user = await db('users')
-        .where({ id: decoded.sub })
-        .first();
+      const user = await db('users').where({ id: decoded.sub }).first();
 
       if (!user || user.status !== 'active') {
         throw new AppError('INVALID_TOKEN', 'Invalid refresh token', 401);
@@ -193,7 +183,12 @@ export class AuthService {
     }
   }
 
-  private generateAccessToken(user: { id: string; email: string; role: string; company_id: string | null }): string {
+  private generateAccessToken(user: {
+    id: string;
+    email: string;
+    role: string;
+    company_id: string | null;
+  }): string {
     const payload: JwtPayload = {
       sub: user.id,
       email: user.email,
@@ -206,7 +201,12 @@ export class AuthService {
     });
   }
 
-  private generateRefreshToken(user: { id: string; email: string; role: string; company_id: string | null }): string {
+  private generateRefreshToken(user: {
+    id: string;
+    email: string;
+    role: string;
+    company_id: string | null;
+  }): string {
     const payload: JwtPayload = {
       sub: user.id,
       email: user.email,

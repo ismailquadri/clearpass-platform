@@ -44,7 +44,7 @@ export class CertificateService {
       .whereNull('deleted_at')
       .orderBy('expiry_date', 'asc');
 
-    return certificates.map(cert => this.formatCertificate(cert));
+    return certificates.map((cert) => this.formatCertificate(cert));
   }
 
   async getCertificateById(id: string, companyId: string): Promise<CertificateResponse> {
@@ -96,7 +96,15 @@ export class CertificateService {
       .returning('*');
 
     // Log audit trail
-    await this.logAudit(userId, input.company_id, 'cert_upload', 'certificate', certificate.id, null, certificate);
+    await this.logAudit(
+      userId,
+      input.company_id,
+      'cert_upload',
+      'certificate',
+      certificate.id,
+      null,
+      certificate
+    );
 
     return this.formatCertificate(certificate);
   }
@@ -122,10 +130,7 @@ export class CertificateService {
       updateData.status = this.calculateStatus(updates.expiry_date);
     }
 
-    const [updated] = await db('certificates')
-      .where({ id })
-      .update(updateData)
-      .returning('*');
+    const [updated] = await db('certificates').where({ id }).update(updateData).returning('*');
 
     // Log audit trail
     await this.logAudit(userId, companyId, 'cert_update', 'certificate', id, existing, updated);
@@ -143,9 +148,7 @@ export class CertificateService {
       throw new AppError('CERTIFICATE_NOT_FOUND', 'Certificate not found', 404);
     }
 
-    await db('certificates')
-      .where({ id })
-      .update({ deleted_at: new Date() });
+    await db('certificates').where({ id }).update({ deleted_at: new Date() });
 
     // Log audit trail
     await this.logAudit(userId, companyId, 'cert_delete', 'certificate', id, existing, null);
@@ -181,7 +184,9 @@ export class CertificateService {
       ? Math.ceil((expiryDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24))
       : undefined;
 
-    const status = this.calculateStatus(cert.expiry_date ? cert.expiry_date.toISOString() : undefined);
+    const status = this.calculateStatus(
+      cert.expiry_date ? cert.expiry_date.toISOString() : undefined
+    );
 
     return {
       id: cert.id,

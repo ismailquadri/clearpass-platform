@@ -1,13 +1,13 @@
-import { 
-  User, 
-  Mail, 
-  Phone, 
-  Building2, 
-  LogOut, 
-  Copy, 
-  Share2, 
-  Gift, 
-  Users, 
+import {
+  User,
+  Mail,
+  Phone,
+  Building2,
+  LogOut,
+  Copy,
+  Share2,
+  Gift,
+  Users,
   Crown,
   Settings,
   X,
@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import { useState } from 'react';
 import { useToast } from './ToastProvider';
+import '../../app/styles/mda-theme.css';
 
 interface ProfileModalProps {
   isOpen: boolean;
@@ -41,16 +42,19 @@ interface ReferralData {
   referralBonus: number;
 }
 
-export function ProfileModal({ 
-  isOpen, 
-  onClose, 
-  persona, 
-  userProfile, 
-  onLogout 
+export function ProfileModal({
+  isOpen,
+  onClose,
+  persona,
+  userProfile,
+  onLogout
 }: ProfileModalProps) {
   const { showToast } = useToast();
   const [activeTab, setActiveTab] = useState<'profile' | 'referral'>('profile');
   const [copiedCode, setCopiedCode] = useState(false);
+
+  const primaryColor = persona === 'MDA' ? 'var(--mda-primary)' : '#FF3000';
+  const primaryColorLight = persona === 'MDA' ? 'var(--mda-bg-light)' : 'rgba(255, 48, 0, 0.1)';
 
   // Mock referral data - in real implementation, this would come from the backend
   const referralData: ReferralData = {
@@ -122,9 +126,13 @@ export function ProfileModal({
               onClick={() => setActiveTab('profile')}
               className={`flex-1 px-4 py-3 font-medium transition-colors ${
                 activeTab === 'profile'
-                  ? 'text-[#FF3000] border-b-2 border-[#FF3000]'
+                  ? 'border-b-2'
                   : 'text-muted-foreground hover:text-foreground'
               }`}
+              style={{
+                color: activeTab === 'profile' ? primaryColor : undefined,
+                borderColor: activeTab === 'profile' ? primaryColor : undefined
+              }}
             >
               Profile
             </button>
@@ -132,9 +140,13 @@ export function ProfileModal({
               onClick={() => setActiveTab('referral')}
               className={`flex-1 px-4 py-3 font-medium transition-colors ${
                 activeTab === 'referral'
-                  ? 'text-[#FF3000] border-b-2 border-[#FF3000]'
+                  ? 'border-b-2'
                   : 'text-muted-foreground hover:text-foreground'
               }`}
+              style={{
+                color: activeTab === 'referral' ? primaryColor : undefined,
+                borderColor: activeTab === 'referral' ? primaryColor : undefined
+              }}
             >
               Referral Program
             </button>
@@ -147,7 +159,7 @@ export function ProfileModal({
             <div className="space-y-6">
               {/* Avatar Section */}
               <div className="flex items-center gap-4">
-                <div className="w-16 h-16 rounded-full bg-[#FF3000] flex items-center justify-center text-white text-xl font-bold">
+                <div className="w-16 h-16 rounded-full flex items-center justify-center text-white text-xl font-bold" style={{ backgroundColor: primaryColor }}>
                   {userProfile.avatar || userProfile.name.split(' ').map(n => n[0]).join('')}
                 </div>
                 <div>
@@ -227,7 +239,11 @@ export function ProfileModal({
             <div className="space-y-6">
               {/* Referral Stats */}
               <div className="grid grid-cols-2 gap-4">
-                <div className="bg-gradient-to-br from-[#FF3000] to-[#e62e00] rounded-lg p-4 text-white">
+                <div className="rounded-lg p-4 text-white" style={{
+                  background: persona === 'MDA' 
+                    ? 'var(--mda-gradient-primary)' 
+                    : 'linear-gradient(to bottom right, #FF3000, #e62e00)'
+                }}>
                   <Gift className="w-8 h-8 mb-2 opacity-80" />
                   <p className="text-2xl font-bold">₦{referralData.rewardsEarned.toLocaleString()}</p>
                   <p className="text-sm opacity-80">Total Earned</p>
@@ -286,7 +302,8 @@ export function ProfileModal({
               {/* Share Button */}
               <button
                 onClick={handleShare}
-                className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-[#FF3000] text-white rounded-lg hover:bg-[#e62e00] transition-colors"
+                className="w-full flex items-center justify-center gap-2 px-4 py-3 text-white rounded-lg hover:opacity-90 transition-opacity"
+                style={{ backgroundColor: primaryColor }}
               >
                 <Share2 className="w-5 h-5" />
                 Share Referral Link

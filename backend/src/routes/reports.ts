@@ -41,9 +41,7 @@ router.post(
       const { report_type } = req.body;
 
       // Get company information
-      const company = await db('companies')
-        .where({ id: req.user.company_id })
-        .first();
+      const company = await db('companies').where({ id: req.user.company_id }).first();
 
       if (!company) {
         throw new AppError('COMPANY_NOT_FOUND', 'Company not found', 404);
@@ -56,7 +54,7 @@ router.post(
       const certificates = await certificateService.getCertificatesByCompany(req.user.company_id);
 
       // Format certificates for report
-      const formattedCertificates = certificates.map(cert => ({
+      const formattedCertificates = certificates.map((cert) => ({
         name: cert.name,
         certNumber: cert.certificateNumber || 'N/A',
         status: cert.status,
@@ -79,17 +77,19 @@ router.post(
       const pdfResult = await pdfService.generateComplianceReport(reportData);
 
       // Save report to database
-      const [report] = await db('reports').insert({
-        company_id: req.user.company_id,
-        report_type,
-        generated_by: req.user.sub,
-        pdf_url: pdfResult.url,
-        pdf_hash: pdfResult.key,
-        included_certificates: certificates.map(c => c.shortName),
-        compliance_score: complianceData.score.total_score,
-        generated_at: new Date(),
-        valid_until: reportData.validUntil,
-      }).returning('*');
+      const [report] = await db('reports')
+        .insert({
+          company_id: req.user.company_id,
+          report_type,
+          generated_by: req.user.sub,
+          pdf_url: pdfResult.url,
+          pdf_hash: pdfResult.key,
+          included_certificates: certificates.map((c) => c.shortName),
+          compliance_score: complianceData.score.total_score,
+          generated_at: new Date(),
+          valid_until: reportData.validUntil,
+        })
+        .returning('*');
 
       const response: SuccessResponse<GenerateReportResponse> = {
         success: true,
@@ -113,83 +113,78 @@ router.post(
 );
 
 // GET /api/reports/:id/download
-router.get(
-  '/:id/download',
-  authMiddleware,
-  async (req: AuthRequest, res, next) => {
-    try {
-      if (!req.user?.company_id) {
-        throw new AppError('UNAUTHORIZED', 'Authentication required', 401);
-      }
-
-      const report = await db('reports')
-        .where({
-          id: req.params.id,
-          company_id: req.user.company_id,
-        })
-        .first();
-
-      if (!report) {
-        throw new AppError('REPORT_NOT_FOUND', 'Report not found', 404);
-      }
-
-      // Check if report is still valid
-      if (report.valid_until && new Date(report.valid_until) < new Date()) {
-        throw new AppError('REPORT_EXPIRED', 'This report has expired', 400);
-      }
-
-      // Download the PDF from storage
-      try {
-        const file = await storageService.downloadFile(report.pdf_hash);
-
-        res.setHeader('Content-Type', 'application/pdf');
-        res.setHeader('Content-Disposition', `attachment; filename="${report.report_type}-report-${report.id}.pdf"`);
-        res.send(file.data);
-      } catch {
-        // If storage fails, redirect to the URL
-        res.redirect(report.pdf_url);
-      }
-    } catch (error) {
-      next(error);
+router.get('/:id/download', authMiddleware, async (req: AuthRequest, res, next) => {
+  try {
+    if (!req.user?.company_id) {
+      throw new AppError('UNAUTHORIZED', 'Authentication required', 401);
     }
+
+    const report = await db('reports')
+      .where({
+        id: req.params.id,
+        company_id: req.user.company_id,
+      })
+      .first();
+
+    if (!report) {
+      throw new AppError('REPORT_NOT_FOUND', 'Report not found', 404);
+    }
+
+    // Check if report is still valid
+    if (report.valid_until && new Date(report.valid_until) < new Date()) {
+      throw new AppError('REPORT_EXPIRED', 'This report has expired', 400);
+    }
+
+    // Download the PDF from storage
+    try {
+      const file = await storageService.downloadFile(report.pdf_hash);
+
+      res.setHeader('Content-Type', 'application/pdf');
+      res.setHeader(
+        'Content-Disposition',
+        `attachment; filename="${report.report_type}-report-${report.id}.pdf"`
+      );
+      res.send(file.data);
+    } catch {
+      // If storage fails, redirect to the URL
+      res.redirect(report.pdf_url);
+    }
+  } catch (error) {
+    next(error);
   }
-);
+});
 
 // GET /api/reports
-router.get(
-  '/',
-  authMiddleware,
-  async (req: AuthRequest, res, next) => {
-    try {
-      if (!req.user?.company_id) {
-        throw new AppError('UNAUTHORIZED', 'Authentication required', 401);
-      }
-
-      const reports = await db('reports')
-        .where({ company_id: req.user.company_id })
-        .orderBy('generated_at', 'desc')
-        .limit(20);
-
-      const response: SuccessResponse = {
-        success: true,
-        data: reports.map(report => ({
-          id: report.id,
-          report_type: report.report_type,
-          pdf_url: report.pdf_url,
-          generated_at: report.generated_at.toISOString(),
-          valid_until: report.valid_until?.toISOString(),
-          compliance_score: report.compliance_score,
-        })),
-        meta: {
-          timestamp: new Date().toISOString(),
-        },
-      };
-
-      res.status(200).json(response);
-    } catch (error) {
-      next(error);
+router.get('/', authMiddleware, async (req: AuthRequest, res, next) => {
+  try {
+    if (!req.user?.company_id) {
+      throw new AppError('UNAUTHORIZED', 'Authentication required', 401);
     }
+
+    const reports = await db('reports')
+      .where({ company_id: req.user.company_id })
+      .orderBy('generated_at', 'desc')
+      .limit(20);
+
+    const response: SuccessResponse = {
+      success: true,
+      data: reports.map((report) => ({
+        id: report.id,
+        report_type: report.report_type,
+        pdf_url: report.pdf_url,
+        generated_at: report.generated_at.toISOString(),
+        valid_until: report.valid_until?.toISOString(),
+        compliance_score: report.compliance_score,
+      })),
+      meta: {
+        timestamp: new Date().toISOString(),
+      },
+    };
+
+    res.status(200).json(response);
+  } catch (error) {
+    next(error);
   }
-);
+});
 
 export default router;

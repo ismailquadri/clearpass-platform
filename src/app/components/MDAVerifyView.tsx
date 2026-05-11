@@ -1,4 +1,12 @@
-import { Search, Upload, Download, CheckCircle2, XCircle, AlertTriangle, Clock } from 'lucide-react';
+import {
+  Search,
+  Upload,
+  Download,
+  CheckCircle2,
+  XCircle,
+  AlertTriangle,
+  Clock,
+} from 'lucide-react';
 import { useState, useRef } from 'react';
 import { VendorVerificationModal } from './VendorVerificationModal';
 import { useToast } from './ToastProvider';
@@ -6,6 +14,7 @@ import { useVerifyVendor, verifyVendor } from '../api';
 import type { VendorEligibilityStatus, VendorVerification } from '../api';
 import { EmptyState } from './ui';
 import { MDAActivityHook } from './NextBestAction';
+import '../../app/styles/mda-theme.css';
 
 interface BulkRow {
   rcNumber: string;
@@ -19,10 +28,46 @@ interface BulkRow {
 }
 
 const MOCK_BULK_RESULTS: Record<string, BulkRow> = {
-  RC1234567: { rcNumber: 'RC1234567', companyName: 'TechVentures Nigeria Ltd', status: 'eligible', score: 92, nhia: true, pcc: true, nsitf: true, firs: true },
-  RC7654321: { rcNumber: 'RC7654321', companyName: 'Lagos Builders Ltd', status: 'ineligible', score: 54, nhia: false, pcc: true, nsitf: false, firs: true },
-  RC9876543: { rcNumber: 'RC9876543', companyName: 'Delta Contractors', status: 'ineligible', score: 38, nhia: false, pcc: false, nsitf: false, firs: false },
-  RC2345678: { rcNumber: 'RC2345678', companyName: 'Abuja Roads Co.', status: 'eligible', score: 88, nhia: true, pcc: true, nsitf: true, firs: true },
+  RC1234567: {
+    rcNumber: 'RC1234567',
+    companyName: 'TechVentures Nigeria Ltd',
+    status: 'eligible',
+    score: 92,
+    nhia: true,
+    pcc: true,
+    nsitf: true,
+    firs: true,
+  },
+  RC7654321: {
+    rcNumber: 'RC7654321',
+    companyName: 'Lagos Builders Ltd',
+    status: 'ineligible',
+    score: 54,
+    nhia: false,
+    pcc: true,
+    nsitf: false,
+    firs: true,
+  },
+  RC9876543: {
+    rcNumber: 'RC9876543',
+    companyName: 'Delta Contractors',
+    status: 'ineligible',
+    score: 38,
+    nhia: false,
+    pcc: false,
+    nsitf: false,
+    firs: false,
+  },
+  RC2345678: {
+    rcNumber: 'RC2345678',
+    companyName: 'Abuja Roads Co.',
+    status: 'eligible',
+    score: 88,
+    nhia: true,
+    pcc: true,
+    nsitf: true,
+    firs: true,
+  },
 };
 
 export function MDAVerifyView() {
@@ -82,7 +127,11 @@ export function MDAVerifyView() {
     const file = e.target.files?.[0];
     if (!file) return;
     if (!file.name.endsWith('.csv') && file.type !== 'text/csv') {
-      showToast('error', 'Invalid File', 'Please upload a CSV file with RC numbers in the first column.');
+      showToast(
+        'error',
+        'Invalid File',
+        'Please upload a CSV file with RC numbers in the first column.'
+      );
       return;
     }
     setIsBulkProcessing(true);
@@ -96,7 +145,11 @@ export function MDAVerifyView() {
         .filter((rc) => /^RC\d{7,}$/i.test(rc));
 
       if (rcNumbers.length === 0) {
-        showToast('error', 'No Valid RC Numbers', 'CSV must have RC numbers (e.g. RC1234567) in the first column.');
+        showToast(
+          'error',
+          'No Valid RC Numbers',
+          'CSV must have RC numbers (e.g. RC1234567) in the first column.'
+        );
         setIsBulkProcessing(false);
         return;
       }
@@ -110,12 +163,19 @@ export function MDAVerifyView() {
             companyName: 'Unknown Company',
             status: 'pending' as const,
             score: 0,
-            nhia: false, pcc: false, nsitf: false, firs: false,
+            nhia: false,
+            pcc: false,
+            nsitf: false,
+            firs: false,
           };
         });
         setBulkResults(results);
         setIsBulkProcessing(false);
-        showToast('success', 'Bulk Verification Complete', `${results.length} RC numbers processed.`);
+        showToast(
+          'success',
+          'Bulk Verification Complete',
+          `${results.length} RC numbers processed.`
+        );
       }, 1200);
     };
     reader.readAsText(file);
@@ -125,9 +185,12 @@ export function MDAVerifyView() {
   const exportBulkResults = () => {
     if (!bulkResults.length) return;
     const header = 'RC Number,Company Name,Status,Score,NHIA,PCC,NSITF,FIRS\n';
-    const rows = bulkResults.map((r) =>
-      `${r.rcNumber},${r.companyName},${r.status},${r.score},${r.nhia},${r.pcc},${r.nsitf},${r.firs}`
-    ).join('\n');
+    const rows = bulkResults
+      .map(
+        (r) =>
+          `${r.rcNumber},${r.companyName},${r.status},${r.score},${r.nhia},${r.pcc},${r.nsitf},${r.firs}`
+      )
+      .join('\n');
     const blob = new Blob([header + rows], { type: 'text/csv' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -202,7 +265,7 @@ export function MDAVerifyView() {
               <button
                 onClick={() => setIsVerificationModalOpen(true)}
                 className="px-6 py-3 min-h-[44px] rounded-md text-white flex items-center justify-center gap-2 hover:opacity-90 transition-opacity"
-                style={{ backgroundColor: '#FF3000' }}
+                style={{ backgroundColor: 'var(--mda-primary)' }}
               >
                 <Search className="w-5 h-5" aria-hidden="true" />
                 Quick Verify
@@ -246,7 +309,11 @@ export function MDAVerifyView() {
             <div className="flex items-center justify-between mb-4">
               <h2 style={{ fontSize: '18px', fontWeight: 600 }}>
                 Bulk Verification Results
-                {isBulkProcessing && <span className="ml-2 text-muted-foreground" style={{ fontSize: '14px' }}>Processing…</span>}
+                {isBulkProcessing && (
+                  <span className="ml-2 text-muted-foreground" style={{ fontSize: '14px' }}>
+                    Processing…
+                  </span>
+                )}
               </h2>
               {bulkResults.length > 0 && (
                 <button
@@ -273,19 +340,25 @@ export function MDAVerifyView() {
                     <p style={{ fontSize: '20px', fontWeight: 700, color: '#1FC16B' }}>
                       {bulkResults.filter((r) => r.status === 'eligible').length}
                     </p>
-                    <p className="text-muted-foreground" style={{ fontSize: '12px' }}>Eligible</p>
+                    <p className="text-muted-foreground" style={{ fontSize: '12px' }}>
+                      Eligible
+                    </p>
                   </div>
                   <div className="bg-muted/30 rounded-lg p-3 text-center">
-                    <p style={{ fontSize: '20px', fontWeight: 700, color: '#FF3000' }}>
+                    <p style={{ fontSize: '20px', fontWeight: 700, color: 'var(--mda-primary)' }}>
                       {bulkResults.filter((r) => r.status === 'ineligible').length}
                     </p>
-                    <p className="text-muted-foreground" style={{ fontSize: '12px' }}>Ineligible</p>
+                    <p className="text-muted-foreground" style={{ fontSize: '12px' }}>
+                      Ineligible
+                    </p>
                   </div>
                   <div className="bg-muted/30 rounded-lg p-3 text-center">
                     <p style={{ fontSize: '20px', fontWeight: 700, color: '#F59E0B' }}>
                       {bulkResults.filter((r) => r.status === 'pending').length}
                     </p>
-                    <p className="text-muted-foreground" style={{ fontSize: '12px' }}>Unknown</p>
+                    <p className="text-muted-foreground" style={{ fontSize: '12px' }}>
+                      Unknown
+                    </p>
                   </div>
                 </div>
 
@@ -294,29 +367,68 @@ export function MDAVerifyView() {
                   <table className="w-full">
                     <thead>
                       <tr className="border-b border-border">
-                        {['RC Number', 'Company', 'Status', 'Score', 'NHIA', 'PCC', 'NSITF', 'FIRS'].map((h) => (
-                          <th key={h} className="text-left pb-2 text-muted-foreground" style={{ fontSize: '12px', fontWeight: 500 }}>{h}</th>
+                        {[
+                          'RC Number',
+                          'Company',
+                          'Status',
+                          'Score',
+                          'NHIA',
+                          'PCC',
+                          'NSITF',
+                          'FIRS',
+                        ].map((h) => (
+                          <th
+                            key={h}
+                            className="text-left pb-2 text-muted-foreground"
+                            style={{ fontSize: '12px', fontWeight: 500 }}
+                          >
+                            {h}
+                          </th>
                         ))}
                       </tr>
                     </thead>
                     <tbody>
                       {bulkResults.map((row) => {
-                        const statusColor = row.status === 'eligible' ? '#1FC16B' : row.status === 'ineligible' ? '#FF3000' : '#F59E0B';
+                        const statusColor =
+                          row.status === 'eligible'
+                            ? '#1FC16B'
+                            : row.status === 'ineligible'
+                              ? 'var(--mda-primary)'
+                              : '#F59E0B';
                         return (
                           <tr key={row.rcNumber} className="border-b border-border last:border-0">
-                            <td className="py-2" style={{ fontSize: '13px' }}>{row.rcNumber}</td>
-                            <td className="py-2" style={{ fontSize: '13px' }}>{row.companyName}</td>
+                            <td className="py-2" style={{ fontSize: '13px' }}>
+                              {row.rcNumber}
+                            </td>
+                            <td className="py-2" style={{ fontSize: '13px' }}>
+                              {row.companyName}
+                            </td>
                             <td className="py-2">
-                              <span className="px-2 py-0.5 rounded-full capitalize" style={{ fontSize: '11px', backgroundColor: `${statusColor}20`, color: statusColor, fontWeight: 500 }}>
+                              <span
+                                className="px-2 py-0.5 rounded-full capitalize"
+                                style={{
+                                  fontSize: '11px',
+                                  backgroundColor: `${statusColor}20`,
+                                  color: statusColor,
+                                  fontWeight: 500,
+                                }}
+                              >
                                 {row.status}
                               </span>
                             </td>
-                            <td className="py-2" style={{ fontSize: '13px', fontWeight: 500, color: statusColor }}>{row.score || '—'}</td>
+                            <td
+                              className="py-2"
+                              style={{ fontSize: '13px', fontWeight: 500, color: statusColor }}
+                            >
+                              {row.score || '—'}
+                            </td>
                             {[row.nhia, row.pcc, row.nsitf, row.firs].map((v, i) => (
                               <td key={i} className="py-2">
-                                {v
-                                  ? <CheckCircle2 className="w-4 h-4" style={{ color: '#1FC16B' }} />
-                                  : <XCircle className="w-4 h-4" style={{ color: '#FF3000' }} />}
+                                {v ? (
+                                  <CheckCircle2 className="w-4 h-4" style={{ color: '#1FC16B' }} />
+                                ) : (
+                                  <XCircle className="w-4 h-4" style={{ color: 'var(--mda-primary)' }} />
+                                )}
                               </td>
                             ))}
                           </tr>
@@ -329,19 +441,37 @@ export function MDAVerifyView() {
                 {/* Mobile cards */}
                 <div className="sm:hidden space-y-3">
                   {bulkResults.map((row) => {
-                    const statusColor = row.status === 'eligible' ? '#1FC16B' : row.status === 'ineligible' ? '#FF3000' : '#F59E0B';
+                    const statusColor =
+                      row.status === 'eligible'
+                        ? '#1FC16B'
+                        : row.status === 'ineligible'
+                          ? 'var(--mda-primary)'
+                          : '#F59E0B';
                     return (
                       <div key={row.rcNumber} className="border border-border rounded-lg p-3">
                         <div className="flex items-start justify-between gap-2 mb-2">
                           <div>
                             <p style={{ fontSize: '13px', fontWeight: 600 }}>{row.companyName}</p>
-                            <p className="text-muted-foreground" style={{ fontSize: '12px' }}>{row.rcNumber}</p>
+                            <p className="text-muted-foreground" style={{ fontSize: '12px' }}>
+                              {row.rcNumber}
+                            </p>
                           </div>
-                          <span className="px-2 py-0.5 rounded-full capitalize shrink-0" style={{ fontSize: '11px', backgroundColor: `${statusColor}20`, color: statusColor, fontWeight: 500 }}>
+                          <span
+                            className="px-2 py-0.5 rounded-full capitalize shrink-0"
+                            style={{
+                              fontSize: '11px',
+                              backgroundColor: `${statusColor}20`,
+                              color: statusColor,
+                              fontWeight: 500,
+                            }}
+                          >
                             {row.status}
                           </span>
                         </div>
-                        <div className="flex gap-3 text-muted-foreground" style={{ fontSize: '12px' }}>
+                        <div
+                          className="flex gap-3 text-muted-foreground"
+                          style={{ fontSize: '12px' }}
+                        >
                           <span>NHIA {row.nhia ? '✓' : '✗'}</span>
                           <span>PCC {row.pcc ? '✓' : '✗'}</span>
                           <span>NSITF {row.nsitf ? '✓' : '✗'}</span>
@@ -360,7 +490,9 @@ export function MDAVerifyView() {
           <>
             <MDAActivityHook
               sessionCount={verificationResults.length}
-              readyCount={verificationResults.filter((r) => r.status === 'procurement-ready').length}
+              readyCount={
+                verificationResults.filter((r) => r.status === 'procurement-ready').length
+              }
               flaggedCount={
                 verificationResults.filter(
                   (r) => r.status === 'attention-required' || r.status === 'ineligible'
@@ -372,17 +504,17 @@ export function MDAVerifyView() {
               <StatTile
                 label="Procurement Ready"
                 value={verificationResults.filter((r) => r.status === 'procurement-ready').length}
-                color="#FF3000"
+                color="var(--mda-primary)"
               />
               <StatTile
                 label="Attention Required"
                 value={verificationResults.filter((r) => r.status === 'attention-required').length}
-                color="#FF3000"
+                color="var(--mda-primary)"
               />
               <StatTile
                 label="Ineligible"
                 value={verificationResults.filter((r) => r.status === 'ineligible').length}
-                color="#FF3000"
+                color="var(--mda-primary)"
               />
             </div>
 
@@ -481,10 +613,10 @@ function ResultCard({ result }: { result: VendorVerification }) {
           {result.certificates.map((cert, idx) => {
             const certColor =
               cert.status === 'active'
-                ? '#FF3000'
+                ? 'var(--mda-primary)'
                 : cert.status === 'expiring'
-                  ? '#FF3000'
-                  : '#FF3000';
+                  ? 'var(--mda-primary)'
+                  : 'var(--mda-primary)';
             const certBg =
               cert.status === 'active'
                 ? 'rgba(255, 48, 0, 0.1)'
@@ -529,21 +661,21 @@ function getStatusConfig(status: VendorEligibilityStatus) {
     case 'procurement-ready':
       return {
         icon: CheckCircle2,
-        color: '#FF3000',
+        color: 'var(--mda-primary)',
         bgColor: 'rgba(255, 48, 0, 0.1)',
         label: 'Procurement Ready',
       };
     case 'attention-required':
       return {
         icon: AlertTriangle,
-        color: '#FF3000',
+        color: 'var(--mda-primary)',
         bgColor: 'rgba(255, 48, 0, 0.1)',
         label: 'Attention Required',
       };
     case 'ineligible':
       return {
         icon: XCircle,
-        color: '#FF3000',
+        color: 'var(--mda-primary)',
         bgColor: 'rgba(255, 48, 0, 0.1)',
         label: 'Ineligible to Bid',
       };

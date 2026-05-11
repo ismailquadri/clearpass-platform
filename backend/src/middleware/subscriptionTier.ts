@@ -45,7 +45,11 @@ export class SubscriptionTierMiddleware {
       .first();
 
     if (!subscription || !subscription.api_access) {
-      throw new AppError('API_ACCESS_DENIED', 'API access requires Business or Enterprise tier', 403);
+      throw new AppError(
+        'API_ACCESS_DENIED',
+        'API access requires Business or Enterprise tier',
+        403
+      );
     }
   }
 
@@ -66,11 +70,18 @@ export class SubscriptionTierMiddleware {
       .first();
 
     if (count && Number(count.count) >= maxProfiles) {
-      throw new AppError('PROFILE_LIMIT_EXCEEDED', `Maximum ${maxProfiles} profiles allowed for current tier`, 403);
+      throw new AppError(
+        'PROFILE_LIMIT_EXCEEDED',
+        `Maximum ${maxProfiles} profiles allowed for current tier`,
+        403
+      );
     }
   }
 
-  private async checkBulkVerificationLimit(companyId: string, maxVerifications: number): Promise<void> {
+  private async checkBulkVerificationLimit(
+    companyId: string,
+    maxVerifications: number
+  ): Promise<void> {
     // Check current month's usage
     const now = new Date();
     const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
@@ -82,7 +93,11 @@ export class SubscriptionTierMiddleware {
       .first();
 
     if (count && Number(count.count) >= maxVerifications) {
-      throw new AppError('BULK_VERIFICATION_LIMIT_EXCEEDED', `Maximum ${maxVerifications} bulk verifications per month for current tier`, 403);
+      throw new AppError(
+        'BULK_VERIFICATION_LIMIT_EXCEEDED',
+        `Maximum ${maxVerifications} bulk verifications per month for current tier`,
+        403
+      );
     }
   }
 
@@ -93,7 +108,11 @@ export class SubscriptionTierMiddleware {
       .first();
 
     if (count && Number(count.count) >= maxTeamMembers) {
-      throw new AppError('TEAM_MEMBER_LIMIT_EXCEEDED', `Maximum ${maxTeamMembers} team members allowed for current tier`, 403);
+      throw new AppError(
+        'TEAM_MEMBER_LIMIT_EXCEEDED',
+        `Maximum ${maxTeamMembers} team members allowed for current tier`,
+        403
+      );
     }
   }
 

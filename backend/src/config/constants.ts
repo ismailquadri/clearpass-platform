@@ -12,16 +12,16 @@ export type SubscriptionTier = (typeof SUBSCRIPTION_TIERS)[number];
 
 // PRD pricing in NGN kobo (Paystack uses kobo)
 export const PLAN_PRICES = {
-  starter:    { monthly: 0,        annual: 0 },
-  business:   { monthly: 700000,   annual: 6000000 },   // ₦7k/mo, ₦60k/yr
-  enterprise: { monthly: 1800000,  annual: 20000000 },  // ₦18k/mo, ₦200k/yr
+  starter: { monthly: 0, annual: 0 },
+  business: { monthly: 700000, annual: 6000000 }, // ₦7k/mo, ₦60k/yr
+  enterprise: { monthly: 1800000, annual: 20000000 }, // ₦18k/mo, ₦200k/yr
 } as const;
 
 // Compliance score components (PRD spec)
 export const SCORE_WEIGHTS = {
-  coverage:  50,  // Component A — % of 6 certs present
-  freshness: 30,  // Component B — % not expiring within 30 days
-  quality:   20,  // Component C — % API-verified
+  coverage: 40, // Component A — % of 6 certs present (6.67 points each)
+  freshness: 30, // Component B — % not expiring within 30 days
+  quality: 30, // Component C — % API-verified (API = 30, manual = 15, pending = 0)
 } as const;
 
 // Expiry warning thresholds (days)
@@ -36,10 +36,10 @@ export const PROCUREMENT_READY_SCORE = 80;
 
 // Rate limit windows
 export const RATE_LIMITS = {
-  loginWindowMs: 15 * 60 * 1000,  // 15 minutes
+  loginWindowMs: 15 * 60 * 1000, // 15 minutes
   loginMax: 5,
-  apiWindowMs: 60 * 1000,          // 1 minute
+  apiWindowMs: 60 * 1000, // 1 minute
   apiMax: 100,
-  uploadWindowMs: 60 * 60 * 1000,  // 1 hour
+  uploadWindowMs: 60 * 60 * 1000, // 1 hour
   uploadMax: 10,
 } as const;

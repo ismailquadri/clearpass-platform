@@ -2,9 +2,15 @@ import { Search, FileCheck, Activity, BarChart3, Settings, Star } from 'lucide-r
 import { useState } from 'react';
 import { ProfileModal } from './ProfileModal';
 import { useAuth } from '../context/AuthContext';
+import '../../app/styles/mda-theme.css';
 
 const getInitials = (name: string) =>
-  name.split(' ').map((n) => n[0]).join('').toUpperCase().slice(0, 2);
+  name
+    .split(' ')
+    .map((n) => n[0])
+    .join('')
+    .toUpperCase()
+    .slice(0, 2);
 
 interface MDASidebarProps {
   activeSection: string;
@@ -56,7 +62,7 @@ export function MDASidebar({
     <aside className={`${fluid ? 'w-full' : 'w-56 lg:w-64'} h-full bg-card flex flex-col`}>
       <div className="px-4 py-4 border-b border-border">
         <div className="flex items-center gap-2">
-          <img src="/clearpass-logo.svg" alt="ClearPass" className="h-9 w-auto" />
+          <img src="/clearpass-logo-mda.svg" alt="ClearPass MDA" className="h-9 w-auto" />
         </div>
       </div>
 
@@ -81,7 +87,7 @@ export function MDASidebar({
           onClick={() => setIsProfileOpen(true)}
           className="w-full flex items-center gap-2 px-2 py-1.5 hover:bg-muted rounded-md transition-colors"
         >
-          <div className="w-7 h-7 rounded-full bg-[#FF3000] flex items-center justify-center text-white text-xs font-bold">
+          <div className="w-7 h-7 rounded-full flex items-center justify-center text-white text-xs font-bold" style={{ backgroundColor: 'var(--mda-primary)' }}>
             {getInitials(userProfile.name)}
           </div>
           <div className="flex-1 overflow-hidden text-left">
@@ -120,13 +126,17 @@ function Group({ label, items, activeSection, onSelect, className = '' }: GroupP
       case 'ArrowDown': {
         e.preventDefault();
         const nextIndex = (currentIndex + 1) % items.length;
-        (e.target as HTMLElement).parentElement?.children[nextIndex]?.querySelector('button')?.focus();
+        (e.target as HTMLElement).parentElement?.children[nextIndex]
+          ?.querySelector('button')
+          ?.focus();
         break;
       }
       case 'ArrowUp': {
         e.preventDefault();
         const prevIndex = (currentIndex - 1 + items.length) % items.length;
-        (e.target as HTMLElement).parentElement?.children[prevIndex]?.querySelector('button')?.focus();
+        (e.target as HTMLElement).parentElement?.children[prevIndex]
+          ?.querySelector('button')
+          ?.focus();
         break;
       }
       case 'Home':
@@ -135,7 +145,9 @@ function Group({ label, items, activeSection, onSelect, className = '' }: GroupP
         break;
       case 'End':
         e.preventDefault();
-        (e.target as HTMLElement).parentElement?.children[items.length - 1]?.querySelector('button')?.focus();
+        (e.target as HTMLElement).parentElement?.children[items.length - 1]
+          ?.querySelector('button')
+          ?.focus();
         break;
     }
   };
@@ -160,12 +172,13 @@ function Group({ label, items, activeSection, onSelect, className = '' }: GroupP
               onClick={() => onSelect(item.id)}
               onKeyDown={(e) => handleKeyDown(e, index)}
               aria-current={isActive ? 'page' : undefined}
-              className={`w-full flex items-center gap-2 px-2 py-2 sm:py-1.5 rounded-md transition-all min-h-[40px] outline-none focus-visible:ring-2 focus-visible:ring-[#FF3000] focus-visible:ring-offset-2 ${
+              className={`w-full flex items-center gap-2 px-2 py-2 sm:py-1.5 rounded-md transition-all min-h-[40px] outline-none focus-visible:ring-2 focus-visible:ring-[var(--mda-primary)] focus-visible:ring-offset-2 ${
                 isActive
-                  ? 'bg-[#ffe6e6] text-[#FF3000] dark:bg-[#3a1010] dark:text-[#ff6b6b]'
-                  : 'hover:bg-[#f5f5f5] dark:hover:bg-[#2a2a2a] text-foreground/80'
+                  ? 'text-[var(--mda-primary)] dark:text-[var(--mda-text-primary)]'
+                  : 'hover:bg-[var(--mda-bg-light)] dark:hover:bg-[var(--mda-bg-medium)] text-foreground/80'
               }`}
               style={{
+                backgroundColor: isActive ? 'var(--mda-bg-light)' : undefined,
                 fontSize: '13px',
                 fontWeight: isActive ? 500 : 400,
               }}

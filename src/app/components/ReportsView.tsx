@@ -1,4 +1,14 @@
-import { FileText, Download, Calendar, CheckCircle2, AlertTriangle, Lock, Printer, QrCode, History } from 'lucide-react';
+import {
+  FileText,
+  Download,
+  Calendar,
+  CheckCircle2,
+  AlertTriangle,
+  Lock,
+  Printer,
+  QrCode,
+  History,
+} from 'lucide-react';
 import { useState } from 'react';
 import { useToast } from './ToastProvider';
 
@@ -15,10 +25,34 @@ interface Report {
 }
 
 const HISTORICAL_REPORTS = [
-  { id: 'h1', date: 'Apr 1, 2026', score: 78, status: 'procurement-ready' as const, label: 'April 2026 Snapshot' },
-  { id: 'h2', date: 'Mar 1, 2026', score: 71, status: 'provisional' as const, label: 'March 2026 Snapshot' },
-  { id: 'h3', date: 'Feb 1, 2026', score: 65, status: 'provisional' as const, label: 'February 2026 Snapshot' },
-  { id: 'h4', date: 'Jan 1, 2026', score: 58, status: 'monthly' as const, label: 'January 2026 Snapshot' },
+  {
+    id: 'h1',
+    date: 'Apr 1, 2026',
+    score: 78,
+    status: 'procurement-ready' as const,
+    label: 'April 2026 Snapshot',
+  },
+  {
+    id: 'h2',
+    date: 'Mar 1, 2026',
+    score: 71,
+    status: 'provisional' as const,
+    label: 'March 2026 Snapshot',
+  },
+  {
+    id: 'h3',
+    date: 'Feb 1, 2026',
+    score: 65,
+    status: 'provisional' as const,
+    label: 'February 2026 Snapshot',
+  },
+  {
+    id: 'h4',
+    date: 'Jan 1, 2026',
+    score: 58,
+    status: 'monthly' as const,
+    label: 'January 2026 Snapshot',
+  },
 ];
 
 export function ReportsView() {
@@ -278,7 +312,10 @@ export function ReportsView() {
                       </button>
                       <button
                         onClick={() => {
-                          if (report.status === 'locked') { showToast('error', 'Locked', 'Unlock report first'); return; }
+                          if (report.status === 'locked') {
+                            showToast('error', 'Locked', 'Unlock report first');
+                            return;
+                          }
                           window.print();
                         }}
                         disabled={report.status === 'locked'}
@@ -289,7 +326,10 @@ export function ReportsView() {
                       </button>
                       <button
                         onClick={() => {
-                          if (report.status === 'locked') { showToast('error', 'Locked', 'Unlock report first'); return; }
+                          if (report.status === 'locked') {
+                            showToast('error', 'Locked', 'Unlock report first');
+                            return;
+                          }
                           setShowQR(showQR === report.id ? null : report.id);
                         }}
                         disabled={report.status === 'locked'}
@@ -322,10 +362,12 @@ export function ReportsView() {
                         <div>
                           <p style={{ fontSize: '14px', fontWeight: 500 }}>Verification QR Code</p>
                           <p className="text-muted-foreground mt-1" style={{ fontSize: '13px' }}>
-                            MDAs can scan this QR code to instantly verify this report's authenticity on the ClearPass portal without logging in.
+                            MDAs can scan this QR code to instantly verify this report's
+                            authenticity on the ClearPass portal without logging in.
                           </p>
                           <p className="text-muted-foreground mt-1" style={{ fontSize: '12px' }}>
-                            Report ID: CLP-{report.id.padStart(8, '0')}-{report.generatedDate.replace(/ /g, '')}
+                            Report ID: CLP-{report.id.padStart(8, '0')}-
+                            {report.generatedDate.replace(/ /g, '')}
                           </p>
                         </div>
                       </div>
@@ -344,24 +386,32 @@ export function ReportsView() {
             <h3 style={{ fontSize: '18px', fontWeight: 500 }}>Historical Snapshots</h3>
           </div>
           <p className="text-muted-foreground mb-4" style={{ fontSize: '14px' }}>
-            Point-in-time compliance reports from previous months. Use these for audits or to show score improvement over time.
+            Point-in-time compliance reports from previous months. Use these for audits or to show
+            score improvement over time.
           </p>
           <div className="space-y-3">
             {HISTORICAL_REPORTS.map((h) => {
               const color = h.score >= 80 ? '#1FC16B' : h.score >= 60 ? '#F59E0B' : '#FF3000';
               return (
-                <div key={h.id} className="flex items-center justify-between gap-4 py-2 border-b border-border last:border-0">
+                <div
+                  key={h.id}
+                  className="flex items-center justify-between gap-4 py-2 border-b border-border last:border-0"
+                >
                   <div className="flex items-center gap-3">
                     <Calendar className="w-4 h-4 text-muted-foreground shrink-0" />
                     <div>
                       <p style={{ fontSize: '14px', fontWeight: 500 }}>{h.label}</p>
-                      <p className="text-muted-foreground" style={{ fontSize: '12px' }}>{h.date}</p>
+                      <p className="text-muted-foreground" style={{ fontSize: '12px' }}>
+                        {h.date}
+                      </p>
                     </div>
                   </div>
                   <div className="flex items-center gap-3">
                     <span style={{ fontSize: '16px', fontWeight: 700, color }}>{h.score}/100</span>
                     <button
-                      onClick={() => showToast('success', 'Download Started', `Downloading ${h.label}…`)}
+                      onClick={() =>
+                        showToast('success', 'Download Started', `Downloading ${h.label}…`)
+                      }
                       className="p-1.5 rounded-md hover:bg-muted transition-colors"
                       aria-label={`Download ${h.label}`}
                     >

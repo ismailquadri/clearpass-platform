@@ -8,11 +8,17 @@ import {
   Clock,
   Settings,
   LogOut,
+  ScrollText,
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
 const getInitials = (name: string) =>
-  name.split(' ').map((n) => n[0]).join('').toUpperCase().slice(0, 2);
+  name
+    .split(' ')
+    .map((n) => n[0])
+    .join('')
+    .toUpperCase()
+    .slice(0, 2);
 
 interface AdminSidebarProps {
   activeSection: string;
@@ -23,12 +29,19 @@ interface AdminSidebarProps {
 
 const NAV_ITEMS = [
   { id: 'admin-overview', label: 'Overview', icon: LayoutDashboard, group: 'Main' },
-  { id: 'admin-review', label: 'Certificate Review Queue', icon: CheckSquare, group: 'Main', badge: '8' },
+  {
+    id: 'admin-review',
+    label: 'Certificate Review Queue',
+    icon: CheckSquare,
+    group: 'Main',
+    badge: '8',
+  },
   { id: 'admin-accounts', label: 'Account Oversight', icon: Users, group: 'Main' },
   { id: 'admin-partners', label: 'Partner Management', icon: Building2, group: 'Platform' },
   { id: 'admin-analytics', label: 'Platform Analytics', icon: BarChart2, group: 'Platform' },
   { id: 'admin-fraud', label: 'Fraud Detection', icon: ShieldAlert, group: 'Platform', badge: '3' },
   { id: 'admin-sla', label: 'SLA Monitoring', icon: Clock, group: 'Platform' },
+  { id: 'admin-audit', label: 'Audit Trail', icon: ScrollText, group: 'System' },
   { id: 'admin-settings', label: 'System Settings', icon: Settings, group: 'System' },
 ];
 
@@ -67,7 +80,10 @@ export function AdminSidebar({
           return (
             <div key={group} className="mt-4 first:mt-0">
               <div className="px-2 py-1.5 mb-1">
-                <p className="uppercase tracking-wide text-muted-foreground" style={{ fontSize: '13px', fontWeight: 600 }}>
+                <p
+                  className="uppercase tracking-wide text-muted-foreground"
+                  style={{ fontSize: '13px', fontWeight: 600 }}
+                >
                   {group}
                 </p>
               </div>
@@ -84,22 +100,30 @@ export function AdminSidebar({
                           case 'ArrowDown': {
                             e.preventDefault();
                             const nextIndex = (index + 1) % items.length;
-                            (e.target as HTMLElement).parentElement?.children[nextIndex]?.querySelector('button')?.focus();
+                            (e.target as HTMLElement).parentElement?.children[nextIndex]
+                              ?.querySelector('button')
+                              ?.focus();
                             break;
                           }
                           case 'ArrowUp': {
                             e.preventDefault();
                             const prevIndex = (index - 1 + items.length) % items.length;
-                            (e.target as HTMLElement).parentElement?.children[prevIndex]?.querySelector('button')?.focus();
+                            (e.target as HTMLElement).parentElement?.children[prevIndex]
+                              ?.querySelector('button')
+                              ?.focus();
                             break;
                           }
                           case 'Home':
                             e.preventDefault();
-                            (e.target as HTMLElement).parentElement?.children[0]?.querySelector('button')?.focus();
+                            (e.target as HTMLElement).parentElement?.children[0]
+                              ?.querySelector('button')
+                              ?.focus();
                             break;
                           case 'End':
                             e.preventDefault();
-                            (e.target as HTMLElement).parentElement?.children[items.length - 1]?.querySelector('button')?.focus();
+                            (e.target as HTMLElement).parentElement?.children[items.length - 1]
+                              ?.querySelector('button')
+                              ?.focus();
                             break;
                         }
                       }}
@@ -133,12 +157,19 @@ export function AdminSidebar({
 
       <div className="p-3 border-t border-border space-y-1">
         <div className="flex items-center gap-2 px-2 py-1.5">
-          <div className="w-7 h-7 rounded-full bg-[#FF3000] flex items-center justify-center text-white" style={{ fontSize: '11px', fontWeight: 700 }}>
+          <div
+            className="w-7 h-7 rounded-full bg-[#FF3000] flex items-center justify-center text-white"
+            style={{ fontSize: '11px', fontWeight: 700 }}
+          >
             {getInitials(user?.name ?? 'CA')}
           </div>
           <div className="flex-1 overflow-hidden">
-            <p style={{ fontSize: '12px', fontWeight: 500 }} className="truncate">{user?.name ?? 'ClearPass Admin'}</p>
-            <p className="text-muted-foreground truncate" style={{ fontSize: '11px' }}>Super Administrator</p>
+            <p style={{ fontSize: '12px', fontWeight: 500 }} className="truncate">
+              {user?.name ?? 'ClearPass Admin'}
+            </p>
+            <p className="text-muted-foreground truncate" style={{ fontSize: '11px' }}>
+              Super Administrator
+            </p>
           </div>
         </div>
         <button

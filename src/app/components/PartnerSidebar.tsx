@@ -1,11 +1,24 @@
-import { Users, FileText, TrendingUp, DollarSign, Settings, Briefcase, AlertCircle } from 'lucide-react';
+import {
+  Users,
+  FileText,
+  TrendingUp,
+  DollarSign,
+  Settings,
+  Briefcase,
+  AlertCircle,
+} from 'lucide-react';
 import { useState } from 'react';
 import { NotificationCenter, NotificationBell } from './NotificationCenter';
 import { ProfileModal } from './ProfileModal';
 import { useAuth } from '../context/AuthContext';
 
 const getInitials = (name: string) =>
-  name.split(' ').map((n) => n[0]).join('').toUpperCase().slice(0, 2);
+  name
+    .split(' ')
+    .map((n) => n[0])
+    .join('')
+    .toUpperCase()
+    .slice(0, 2);
 
 interface PartnerSidebarProps {
   activeSection: string;
@@ -64,10 +77,7 @@ export function PartnerSidebar({
           <div className="flex items-center gap-2">
             <img src="/clearpass-logo.svg" alt="ClearPass" className="h-9 w-auto" />
           </div>
-          <NotificationBell
-            onClick={() => setIsNotificationOpen(true)}
-            unreadCount={5}
-          />
+          <NotificationBell onClick={() => setIsNotificationOpen(true)} unreadCount={5} />
         </div>
       </div>
 
@@ -143,13 +153,17 @@ function Group({ label, items, activeSection, onSelect, className = '' }: GroupP
       case 'ArrowDown': {
         e.preventDefault();
         const nextIndex = (currentIndex + 1) % items.length;
-        (e.target as HTMLElement).parentElement?.children[nextIndex]?.querySelector('button')?.focus();
+        (e.target as HTMLElement).parentElement?.children[nextIndex]
+          ?.querySelector('button')
+          ?.focus();
         break;
       }
       case 'ArrowUp': {
         e.preventDefault();
         const prevIndex = (currentIndex - 1 + items.length) % items.length;
-        (e.target as HTMLElement).parentElement?.children[prevIndex]?.querySelector('button')?.focus();
+        (e.target as HTMLElement).parentElement?.children[prevIndex]
+          ?.querySelector('button')
+          ?.focus();
         break;
       }
       case 'Home':
@@ -158,7 +172,9 @@ function Group({ label, items, activeSection, onSelect, className = '' }: GroupP
         break;
       case 'End':
         e.preventDefault();
-        (e.target as HTMLElement).parentElement?.children[items.length - 1]?.querySelector('button')?.focus();
+        (e.target as HTMLElement).parentElement?.children[items.length - 1]
+          ?.querySelector('button')
+          ?.focus();
         break;
     }
   };

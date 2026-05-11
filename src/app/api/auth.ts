@@ -61,13 +61,10 @@ export async function login(input: LoginInput): Promise<AuthResponse> {
     };
     return mockResponse(fakeResponse);
   }
-  const response = await request<{ success: boolean; data: AuthResponse }>(
-    ENDPOINTS.auth.login,
-    {
-      method: 'POST',
-      body: input,
-    }
-  );
+  const response = await request<{ success: boolean; data: AuthResponse }>(ENDPOINTS.auth.login, {
+    method: 'POST',
+    body: input,
+  });
   // Auto-set the auth token on successful login
   if (response.data.token) {
     setAuthToken(response.data.token);
@@ -120,10 +117,7 @@ export async function getCurrentUser(signal?: AbortSignal): Promise<User> {
     };
     return mockResponse(fakeUser, signal);
   }
-  const response = await request<{ success: boolean; data: User }>(
-    ENDPOINTS.auth.me,
-    { signal }
-  );
+  const response = await request<{ success: boolean; data: User }>(ENDPOINTS.auth.me, { signal });
   return response.data;
 }
 
@@ -150,13 +144,10 @@ export async function refreshToken(refreshToken: string): Promise<AuthResponse> 
     };
     return mockResponse(fakeResponse);
   }
-  const response = await request<{ success: boolean; data: AuthResponse }>(
-    ENDPOINTS.auth.refresh,
-    {
-      method: 'POST',
-      body: { refreshToken },
-    }
-  );
+  const response = await request<{ success: boolean; data: AuthResponse }>(ENDPOINTS.auth.refresh, {
+    method: 'POST',
+    body: { refreshToken },
+  });
   if (response.data.token) {
     setAuthToken(response.data.token);
   }
@@ -169,10 +160,9 @@ export async function getSessions(signal?: AbortSignal): Promise<Session[]> {
   if (env.useMocks) {
     return mockResponse([], signal);
   }
-  const response = await request<{ success: boolean; data: Session[] }>(
-    ENDPOINTS.auth.sessions,
-    { signal }
-  );
+  const response = await request<{ success: boolean; data: Session[] }>(ENDPOINTS.auth.sessions, {
+    signal,
+  });
   return response.data;
 }
 

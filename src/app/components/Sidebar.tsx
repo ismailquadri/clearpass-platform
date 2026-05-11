@@ -10,13 +10,19 @@ import {
   FolderOpen,
   BookOpen,
   CalendarClock,
+  Building2,
 } from 'lucide-react';
 import { useState } from 'react';
 import { ProfileModal } from './ProfileModal';
 import { useAuth } from '../context/AuthContext';
 
 const getInitials = (name: string) =>
-  name.split(' ').map((n) => n[0]).join('').toUpperCase().slice(0, 2);
+  name
+    .split(' ')
+    .map((n) => n[0])
+    .join('')
+    .toUpperCase()
+    .slice(0, 2);
 
 interface SidebarProps {
   activeSection: string;
@@ -47,6 +53,7 @@ const TOOL_ITEMS: MenuItem[] = [
   { id: 'activity', label: 'Activity Log', icon: Activity },
 ];
 const ACCOUNT_ITEMS: MenuItem[] = [
+  { id: 'company-profile', label: 'Company Profile', icon: Building2 },
   { id: 'alerts', label: 'Alerts', icon: Bell, badge: '2' },
   { id: 'billing', label: 'Billing', icon: CreditCard },
   { id: 'settings', label: 'Settings', icon: Settings },
@@ -155,13 +162,17 @@ function SidebarGroup({
       case 'ArrowDown': {
         e.preventDefault();
         const nextIndex = (currentIndex + 1) % items.length;
-        (e.target as HTMLElement).parentElement?.children[nextIndex]?.querySelector('button')?.focus();
+        (e.target as HTMLElement).parentElement?.children[nextIndex]
+          ?.querySelector('button')
+          ?.focus();
         break;
       }
       case 'ArrowUp': {
         e.preventDefault();
         const prevIndex = (currentIndex - 1 + items.length) % items.length;
-        (e.target as HTMLElement).parentElement?.children[prevIndex]?.querySelector('button')?.focus();
+        (e.target as HTMLElement).parentElement?.children[prevIndex]
+          ?.querySelector('button')
+          ?.focus();
         break;
       }
       case 'Home':
@@ -170,7 +181,9 @@ function SidebarGroup({
         break;
       case 'End':
         e.preventDefault();
-        (e.target as HTMLElement).parentElement?.children[items.length - 1]?.querySelector('button')?.focus();
+        (e.target as HTMLElement).parentElement?.children[items.length - 1]
+          ?.querySelector('button')
+          ?.focus();
         break;
     }
   };

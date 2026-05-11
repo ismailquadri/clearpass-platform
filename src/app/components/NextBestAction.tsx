@@ -1,8 +1,9 @@
 import { ArrowRight, AlertTriangle, Zap, Info, CheckCircle2, Trophy } from 'lucide-react';
-import type { DashboardState } from './TweaksPanel';
+import type { DashboardStateLabel } from '../api/types';
+import '../styles/mda-theme.css';
 
 interface NextBestActionProps {
-  state: DashboardState;
+  state: { label: DashboardStateLabel };
   onAction: (section: string) => void;
 }
 
@@ -211,9 +212,9 @@ export function MDAActivityHook({ sessionCount, readyCount, flaggedCount }: MDAA
   return (
     <div
       className="rounded-lg px-4 py-3 border mb-5 flex flex-wrap items-center gap-4"
-      style={{ backgroundColor: 'rgba(255, 48, 0, 0.03)' }}
+      style={{ backgroundColor: 'var(--mda-bg-light)' }}
     >
-      <CheckCircle2 className="w-4 h-4 shrink-0" style={{ color: '#FF3000' }} aria-hidden="true" />
+      <CheckCircle2 className="w-4 h-4 shrink-0" style={{ color: 'var(--mda-primary)' }} aria-hidden="true" />
       <p style={{ fontSize: '13px', fontWeight: 500 }}>
         Session summary: {sessionCount} verified — {readyCount} procurement ready, {flaggedCount}{' '}
         flagged

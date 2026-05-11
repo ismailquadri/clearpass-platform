@@ -38,7 +38,8 @@ export class SmsService {
   }
 
   async sendExpiryReminder(options: SendExpiryReminderSmsOptions): Promise<void> {
-    const urgency = options.daysToExpiry <= 7 ? 'URGENT' : options.daysToExpiry <= 14 ? 'Important' : 'Reminder';
+    const urgency =
+      options.daysToExpiry <= 7 ? 'URGENT' : options.daysToExpiry <= 14 ? 'Important' : 'Reminder';
 
     const message = `${urgency}: Your ${options.certificateName} expires in ${options.daysToExpiry} days (${options.expiryDate}). Please renew to maintain compliance. - ClearPass`;
 

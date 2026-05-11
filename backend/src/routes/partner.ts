@@ -61,9 +61,7 @@ router.get(
   async (req: AuthRequest, res, next) => {
     try {
       // For MVP, return all companies (in production, filter by partner's clients)
-      const companies = await db('companies')
-        .whereNull('deleted_at')
-        .orderBy('name', 'asc');
+      const companies = await db('companies').whereNull('deleted_at').orderBy('name', 'asc');
 
       const clients: PartnerClient[] = [];
 
@@ -76,7 +74,7 @@ router.get(
 
         // Find next expiring certificate
         const expiringCerts = certificates
-          .filter(c => c.daysToExpiry !== undefined && c.daysToExpiry > 0)
+          .filter((c) => c.daysToExpiry !== undefined && c.daysToExpiry > 0)
           .sort((a, b) => (a.daysToExpiry || 0) - (b.daysToExpiry || 0));
 
         const nextExpiry = expiringCerts[0]?.shortName || 'N/A';
@@ -93,9 +91,7 @@ router.get(
         }
 
         // Get monthly fee from subscription
-        const subscription = await db('subscriptions')
-          .where({ company_id: company.id })
-          .first();
+        const subscription = await db('subscriptions').where({ company_id: company.id }).first();
 
         const monthlyFee = subscription?.monthly_amount || 0;
 
@@ -105,7 +101,7 @@ router.get(
           rcNumber: company.rc_number || '',
           score: complianceData.score.total_score,
           status,
-          activeCertificates: certificates.filter(c => c.status === 'active').length,
+          activeCertificates: certificates.filter((c) => c.status === 'active').length,
           totalCertificates: certificates.length,
           nextExpiry,
           daysToExpiry,
@@ -155,9 +151,12 @@ router.get(
         const monthName = date.toLocaleDateString('en-US', { month: 'short', year: '2-digit' });
 
         // In production, this would be calculated from actual payment data
-        const monthCompanies = companies.filter(c => {
+        const monthCompanies = companies.filter((c) => {
           const companyDate = new Date(c.created_at);
-          return companyDate.getMonth() === date.getMonth() && companyDate.getFullYear() === date.getFullYear();
+          return (
+            companyDate.getMonth() === date.getMonth() &&
+            companyDate.getFullYear() === date.getFullYear()
+          );
         });
 
         revenueTrend.push({
@@ -169,9 +168,21 @@ router.get(
 
       // Calculate compliance distribution
       const complianceDistribution = [
-        { name: 'Procurement Ready', value: companies.filter(c => c.total_score >= 80).length, color: '#10B981' },
-        { name: 'Attention Required', value: companies.filter(c => c.total_score >= 50 && c.total_score < 80).length, color: '#F59E0B' },
-        { name: 'Critical', value: companies.filter(c => c.total_score < 50).length, color: '#EF4444' },
+        {
+          name: 'Procurement Ready',
+          value: companies.filter((c) => c.total_score >= 80).length,
+          color: '#10B981',
+        },
+        {
+          name: 'Attention Required',
+          value: companies.filter((c) => c.total_score >= 50 && c.total_score < 80).length,
+          color: '#F59E0B',
+        },
+        {
+          name: 'Critical',
+          value: companies.filter((c) => c.total_score < 50).length,
+          color: '#EF4444',
+        },
       ];
 
       // Calculate expiry timeline (simplified for MVP)
@@ -194,9 +205,10 @@ router.get(
 
       // Calculate KPIs
       const monthlyRevenue = companies.reduce((sum, c) => sum + (c.monthly_amount || 0), 0);
-      const avgComplianceScore = companies.length > 0
-        ? companies.reduce((sum, c) => sum + c.total_score, 0) / companies.length
-        : 0;
+      const avgComplianceScore =
+        companies.length > 0
+          ? companies.reduce((sum, c) => sum + c.total_score, 0) / companies.length
+          : 0;
 
       const analytics: PartnerAnalytics = {
         revenueTrend,

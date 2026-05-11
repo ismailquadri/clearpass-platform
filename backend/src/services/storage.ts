@@ -7,7 +7,8 @@ export interface UploadResult {
 }
 
 export class StorageService {
-  private mockStorage: Map<string, { data: string; contentType: string; originalName: string }> = new Map();
+  private mockStorage: Map<string, { data: string; contentType: string; originalName: string }> =
+    new Map();
 
   async uploadFile(
     file: Buffer,
@@ -54,7 +55,9 @@ export class StorageService {
   }
 
   // Mock method to simulate file download
-  async downloadFile(key: string): Promise<{ data: Buffer; contentType: string; originalName: string }> {
+  async downloadFile(
+    key: string
+  ): Promise<{ data: Buffer; contentType: string; originalName: string }> {
     const file = this.mockStorage.get(key);
     if (!file) {
       throw new Error('File not found');

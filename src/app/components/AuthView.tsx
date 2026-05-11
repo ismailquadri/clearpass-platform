@@ -100,6 +100,12 @@ export function AuthView({ onAuthenticated }: AuthViewProps) {
     if (regData.accountType === 'business' && !regData.rcNumber?.trim()) {
       setRegError('RC Number is required for business accounts'); return;
     }
+    if (regData.accountType === 'business' && !regData.bvn?.trim()) {
+      setRegError('BVN is required for business accounts'); return;
+    }
+    if (regData.accountType === 'business' && regData.bvn && regData.bvn.length !== 11) {
+      setRegError('BVN must be 11 digits'); return;
+    }
     if (!regData.consentGiven) {
       setRegError('You must agree to the data processing terms to continue'); return;
     }
@@ -345,12 +351,20 @@ export function AuthView({ onAuthenticated }: AuthViewProps) {
                   </Field>
                 )}
                 {regData.accountType === 'business' && (
-                  <Field label="RC Number (CAC Registration)" htmlFor="reg-rc">
-                    <InputWithIcon id="reg-rc" type="text" value={regData.rcNumber ?? ''} onChange={(v) => setRegData((d) => ({ ...d, rcNumber: v.toUpperCase() }))} placeholder="RC1234567" icon={Hash} />
-                    <p className="text-muted-foreground mt-1" style={{ fontSize: '12px' }}>
-                      Enter your CAC-registered company RC number for instant profile auto-population
-                    </p>
-                  </Field>
+                  <>
+                    <Field label="RC Number (CAC Registration)" htmlFor="reg-rc">
+                      <InputWithIcon id="reg-rc" type="text" value={regData.rcNumber ?? ''} onChange={(v) => setRegData((d) => ({ ...d, rcNumber: v.toUpperCase() }))} placeholder="RC1234567" icon={Hash} />
+                      <p className="text-muted-foreground mt-1" style={{ fontSize: '12px' }}>
+                        Enter your CAC-registered company RC number for instant profile auto-population
+                      </p>
+                    </Field>
+                    <Field label="BVN (Bank Verification Number)" htmlFor="reg-bvn">
+                      <InputWithIcon id="reg-bvn" type="text" value={regData.bvn ?? ''} onChange={(v) => setRegData((d) => ({ ...d, bvn: v.replace(/\D/g, '').slice(0, 11) }))} placeholder="12345678901" icon={Hash} maxLength={11} />
+                      <p className="text-muted-foreground mt-1" style={{ fontSize: '12px' }}>
+                        Your BVN is required for identity verification and will be validated against the Nigerian Inter-Bank Settlement System
+                      </p>
+                    </Field>
+                  </>
                 )}
                 {regData.accountType === 'mda' && (
                   <Field label="Ministry / Agency name" htmlFor="reg-mda">

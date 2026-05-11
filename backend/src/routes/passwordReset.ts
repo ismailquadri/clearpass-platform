@@ -17,75 +17,64 @@ const resetPasswordSchema = z.object({
 });
 
 // POST /api/password-reset/request
-router.post(
-  '/request',
-  validate(requestResetSchema),
-  async (req, res, next) => {
-    try {
-      await passwordResetService.requestReset(req.body);
+router.post('/request', validate(requestResetSchema), async (req, res, next) => {
+  try {
+    await passwordResetService.requestReset(req.body);
 
-      const response: SuccessResponse = {
-        success: true,
-        data: {
-          message: 'If an account exists with this email, a password reset link has been sent.',
-        },
-        meta: {
-          timestamp: new Date().toISOString(),
-        },
-      };
+    const response: SuccessResponse = {
+      success: true,
+      data: {
+        message: 'If an account exists with this email, a password reset link has been sent.',
+      },
+      meta: {
+        timestamp: new Date().toISOString(),
+      },
+    };
 
-      res.status(200).json(response);
-    } catch (error) {
-      next(error);
-    }
+    res.status(200).json(response);
+  } catch (error) {
+    next(error);
   }
-);
+});
 
 // POST /api/password-reset/reset
-router.post(
-  '/reset',
-  validate(resetPasswordSchema),
-  async (req, res, next) => {
-    try {
-      await passwordResetService.resetPassword(req.body);
+router.post('/reset', validate(resetPasswordSchema), async (req, res, next) => {
+  try {
+    await passwordResetService.resetPassword(req.body);
 
-      const response: SuccessResponse = {
-        success: true,
-        data: {
-          message: 'Password has been reset successfully',
-        },
-        meta: {
-          timestamp: new Date().toISOString(),
-        },
-      };
+    const response: SuccessResponse = {
+      success: true,
+      data: {
+        message: 'Password has been reset successfully',
+      },
+      meta: {
+        timestamp: new Date().toISOString(),
+      },
+    };
 
-      res.status(200).json(response);
-    } catch (error) {
-      next(error);
-    }
+    res.status(200).json(response);
+  } catch (error) {
+    next(error);
   }
-);
+});
 
 // GET /api/password-reset/validate/:token
-router.get(
-  '/validate/:token',
-  async (req, res, next) => {
-    try {
-      const result = await passwordResetService.validateToken(req.params.token);
+router.get('/validate/:token', async (req, res, next) => {
+  try {
+    const result = await passwordResetService.validateToken(req.params.token);
 
-      const response: SuccessResponse = {
-        success: true,
-        data: result,
-        meta: {
-          timestamp: new Date().toISOString(),
-        },
-      };
+    const response: SuccessResponse = {
+      success: true,
+      data: result,
+      meta: {
+        timestamp: new Date().toISOString(),
+      },
+    };
 
-      res.status(200).json(response);
-    } catch (error) {
-      next(error);
-    }
+    res.status(200).json(response);
+  } catch (error) {
+    next(error);
   }
-);
+});
 
 export default router;

@@ -43,55 +43,47 @@ const updateNotificationsSchema = z.object({
 });
 
 // GET /api/settings/profile
-router.get(
-  '/profile',
-  authMiddleware,
-  async (req: AuthRequest, res, next) => {
-    try {
-      if (!req.user?.sub) {
-        throw new AppError('UNAUTHORIZED', 'Authentication required', 401);
-      }
-
-      const user = await db('users')
-        .where({ id: req.user.sub })
-        .first();
-
-      if (!user) {
-        throw new AppError('USER_NOT_FOUND', 'User not found', 404);
-      }
-
-      let company = null;
-      if (user.company_id) {
-        company = await db('companies')
-          .where({ id: user.company_id })
-          .first();
-      }
-
-      const profile: UserProfile = {
-        id: user.id,
-        fullName: `${user.first_name || ''} ${user.last_name || ''}`.trim(),
-        email: user.email,
-        phone: user.phone || undefined,
-        companyName: company?.name || '',
-        rcNumber: company?.rc_number || undefined,
-        role: user.role as 'business' | 'mda' | 'partner',
-        avatarUrl: undefined, // Would implement avatar upload in production
-      };
-
-      const response: SuccessResponse = {
-        success: true,
-        data: profile,
-        meta: {
-          timestamp: new Date().toISOString(),
-        },
-      };
-
-      res.status(200).json(response);
-    } catch (error) {
-      next(error);
+router.get('/profile', authMiddleware, async (req: AuthRequest, res, next) => {
+  try {
+    if (!req.user?.sub) {
+      throw new AppError('UNAUTHORIZED', 'Authentication required', 401);
     }
+
+    const user = await db('users').where({ id: req.user.sub }).first();
+
+    if (!user) {
+      throw new AppError('USER_NOT_FOUND', 'User not found', 404);
+    }
+
+    let company = null;
+    if (user.company_id) {
+      company = await db('companies').where({ id: user.company_id }).first();
+    }
+
+    const profile: UserProfile = {
+      id: user.id,
+      fullName: `${user.first_name || ''} ${user.last_name || ''}`.trim(),
+      email: user.email,
+      phone: user.phone || undefined,
+      companyName: company?.name || '',
+      rcNumber: company?.rc_number || undefined,
+      role: user.role as 'business' | 'mda' | 'partner',
+      avatarUrl: undefined, // Would implement avatar upload in production
+    };
+
+    const response: SuccessResponse = {
+      success: true,
+      data: profile,
+      meta: {
+        timestamp: new Date().toISOString(),
+      },
+    };
+
+    res.status(200).json(response);
+  } catch (error) {
+    next(error);
   }
-);
+});
 
 // PATCH /api/settings/profile
 router.patch(
@@ -121,15 +113,11 @@ router.patch(
         });
 
       // Get updated user
-      const user = await db('users')
-        .where({ id: req.user.sub })
-        .first();
+      const user = await db('users').where({ id: req.user.sub }).first();
 
       let company = null;
       if (user.company_id) {
-        company = await db('companies')
-          .where({ id: user.company_id })
-          .first();
+        company = await db('companies').where({ id: user.company_id }).first();
       }
 
       const profile: UserProfile = {
@@ -159,39 +147,35 @@ router.patch(
 );
 
 // GET /api/settings/notifications
-router.get(
-  '/notifications',
-  authMiddleware,
-  async (req: AuthRequest, res, next) => {
-    try {
-      if (!req.user?.sub) {
-        throw new AppError('UNAUTHORIZED', 'Authentication required', 401);
-      }
-
-      // For MVP, return default preferences
-      // In production, this would be stored in a user_preferences table
-      const preferences: NotificationPreferences = {
-        emailAlerts: true,
-        smsAlerts: false,
-        pushAlerts: true,
-        weeklyDigest: true,
-        expiryReminderDays: [30, 14, 7, 1],
-      };
-
-      const response: SuccessResponse = {
-        success: true,
-        data: preferences,
-        meta: {
-          timestamp: new Date().toISOString(),
-        },
-      };
-
-      res.status(200).json(response);
-    } catch (error) {
-      next(error);
+router.get('/notifications', authMiddleware, async (req: AuthRequest, res, next) => {
+  try {
+    if (!req.user?.sub) {
+      throw new AppError('UNAUTHORIZED', 'Authentication required', 401);
     }
+
+    // For MVP, return default preferences
+    // In production, this would be stored in a user_preferences table
+    const preferences: NotificationPreferences = {
+      emailAlerts: true,
+      smsAlerts: false,
+      pushAlerts: true,
+      weeklyDigest: true,
+      expiryReminderDays: [30, 14, 7, 1],
+    };
+
+    const response: SuccessResponse = {
+      success: true,
+      data: preferences,
+      meta: {
+        timestamp: new Date().toISOString(),
+      },
+    };
+
+    res.status(200).json(response);
+  } catch (error) {
+    next(error);
   }
-);
+});
 
 // PUT /api/settings/notifications
 router.put(

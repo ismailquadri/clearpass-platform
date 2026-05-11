@@ -42,16 +42,18 @@ export class SessionService {
         .delete();
     }
 
-    const [session] = await db('user_sessions').insert({
-      id: uuidv4(),
-      user_id: userId,
-      token,
-      user_agent: userAgent,
-      ip_address: ipAddress,
-      created_at: now,
-      last_activity: now,
-      expires_at: expiresAt,
-    }).returning('*');
+    const [session] = await db('user_sessions')
+      .insert({
+        id: uuidv4(),
+        user_id: userId,
+        token,
+        user_agent: userAgent,
+        ip_address: ipAddress,
+        created_at: now,
+        last_activity: now,
+        expires_at: expiresAt,
+      })
+      .returning('*');
 
     return session;
   }
@@ -64,31 +66,22 @@ export class SessionService {
 
     if (session) {
       // Update last activity
-      await db('user_sessions')
-        .where({ id: session.id })
-        .update({ last_activity: new Date() });
+      await db('user_sessions').where({ id: session.id }).update({ last_activity: new Date() });
     }
 
     return session;
   }
 
   async deleteSession(token: string): Promise<void> {
-    await db('user_sessions')
-      .where({ token })
-      .delete();
+    await db('user_sessions').where({ token }).delete();
   }
 
   async deleteAllUserSessions(userId: string): Promise<void> {
-    await db('user_sessions')
-      .where({ user_id: userId })
-      .delete();
+    await db('user_sessions').where({ user_id: userId }).delete();
   }
 
   async deleteOtherSessions(userId: string, currentToken: string): Promise<void> {
-    await db('user_sessions')
-      .where({ user_id: userId })
-      .whereNot('token', currentToken)
-      .delete();
+    await db('user_sessions').where({ user_id: userId }).whereNot('token', currentToken).delete();
   }
 
   async getUserSessions(userId: string): Promise<Session[]> {
@@ -100,9 +93,7 @@ export class SessionService {
   }
 
   async cleanupExpiredSessions(): Promise<void> {
-    await db('user_sessions')
-      .where('expires_at', '<', new Date())
-      .delete();
+    await db('user_sessions').where('expires_at', '<', new Date()).delete();
   }
 }
 

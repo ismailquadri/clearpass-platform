@@ -1,6 +1,9 @@
 import { Download, Upload, Plus, CheckCircle2, XCircle, AlertTriangle, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 import { useToast } from './ToastProvider';
+import { AddVendorModal } from './AddVendorModal';
+import { ImportBiddersModal } from './ImportBiddersModal';
+import '../../app/styles/mda-theme.css';
 
 interface Vendor {
   id: string;
@@ -63,6 +66,10 @@ export function MDAPrequalificationView() {
     tenderNumber?: string;
   }>({});
 
+  // Modal states
+  const [isAddVendorModalOpen, setIsAddVendorModalOpen] = useState(false);
+  const [isImportBiddersModalOpen, setIsImportBiddersModalOpen] = useState(false);
+
   const qualifiedCount = vendors.filter((v) => v.status === 'qualified').length;
   const attentionCount = vendors.filter((v) => v.status === 'attention').length;
   const disqualifiedCount = vendors.filter((v) => v.status === 'disqualified').length;
@@ -100,21 +107,21 @@ export function MDAPrequalificationView() {
       case 'qualified':
         return {
           icon: CheckCircle2,
-          color: '#FF3000',
+          color: 'var(--mda-primary)',
           bgColor: 'rgba(255, 48, 0, 0.1)',
           label: 'Pre-Qualified',
         };
       case 'attention':
         return {
           icon: AlertTriangle,
-          color: '#FF3000',
+          color: 'var(--mda-primary)',
           bgColor: 'rgba(255, 48, 0, 0.1)',
           label: 'Needs Review',
         };
       case 'disqualified':
         return {
           icon: XCircle,
-          color: '#FF3000',
+          color: 'var(--mda-primary)',
           bgColor: 'rgba(255, 48, 0, 0.1)',
           label: 'Disqualified',
         };
@@ -137,6 +144,60 @@ export function MDAPrequalificationView() {
     }
   };
 
+  const handleAddVendor = (vendorData: { rcNumber: string; companyName: string }) => {
+    // Check for duplicate RC number
+    if (vendors.some((v) => v.rcNumber === vendorData.rcNumber)) {
+      showToast('error', 'Duplicate Vendor', 'A vendor with this RC Number already exists');
+      return;
+    }
+
+    const newVendor: Vendor = {
+      id: Date.now().toString(),
+      rcNumber: vendorData.rcNumber,
+      companyName: vendorData.companyName,
+      score: 0, // Will be calculated when compliance check is run
+      status: 'attention', // Default status until verified
+      submissionDate: new Date().toLocaleDateString('en-GB', {
+        day: 'numeric',
+        month: 'short',
+        year: 'numeric',
+      }),
+    };
+
+    setVendors([...vendors, newVendor]);
+  };
+
+  const handleImportBidders = (bidders: Array<{ rcNumber: string; companyName: string }>) => {
+    // Filter out duplicates
+    const existingRcNumbers = new Set(vendors.map((v) => v.rcNumber));
+    const newBidders = bidders.filter((b) => !existingRcNumbers.has(b.rcNumber));
+
+    if (newBidders.length === 0) {
+      showToast('info', 'No New Vendors', 'All bidders already exist in the list');
+      return;
+    }
+
+    const vendorsToAdd: Vendor[] = newBidders.map((bidder) => ({
+      id: Date.now().toString() + Math.random().toString(36).substr(2, 9),
+      rcNumber: bidder.rcNumber,
+      companyName: bidder.companyName,
+      score: 0,
+      status: 'attention',
+      submissionDate: new Date().toLocaleDateString('en-GB', {
+        day: 'numeric',
+        month: 'short',
+        year: 'numeric',
+      }),
+    }));
+
+    setVendors([...vendors, ...vendorsToAdd]);
+    showToast(
+      'success',
+      'Bidders Imported',
+      `${vendorsToAdd.length} bidder${vendorsToAdd.length !== 1 ? 's' : ''} imported successfully`
+    );
+  };
+
   return (
     <div className="flex-1 h-full overflow-y-auto bg-background">
       <div className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto">
@@ -145,13 +206,17 @@ export function MDAPrequalificationView() {
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-2">
             <h1 style={{ fontSize: '32px' }}>Pre-Qualification List</h1>
             <div className="flex flex-col sm:flex-row gap-3">
-              <button className="w-full sm:w-auto px-4 py-2.5 rounded-md border border-border hover:bg-muted transition-colors flex items-center justify-center gap-2">
+              <button
+                onClick={() => setIsImportBiddersModalOpen(true)}
+                className="w-full sm:w-auto px-4 py-2.5 rounded-md border border-border hover:bg-muted transition-colors flex items-center justify-center gap-2"
+              >
                 <Upload className="w-4 h-4" />
                 Import Bidders
               </button>
               <button
+                onClick={() => setIsAddVendorModalOpen(true)}
                 className="w-full sm:w-auto px-4 py-2.5 rounded-md text-white flex items-center justify-center gap-2"
-                style={{ backgroundColor: '#FF3000' }}
+                style={{ backgroundColor: 'var(--mda-primary)' }}
               >
                 <Plus className="w-4 h-4" />
                 Add Vendor
@@ -251,19 +316,19 @@ export function MDAPrequalificationView() {
           </div>
           <div className="bg-card border border-border rounded-lg p-5">
             <p className="caption text-muted-foreground mb-1">Pre-Qualified</p>
-            <p style={{ fontSize: '32px', fontWeight: '600', color: '#FF3000' }}>
+            <p style={{ fontSize: '32px', fontWeight: '600', color: 'var(--mda-primary)' }}>
               {qualifiedCount}
             </p>
           </div>
           <div className="bg-card border border-border rounded-lg p-5">
             <p className="caption text-muted-foreground mb-1">Needs Review</p>
-            <p style={{ fontSize: '32px', fontWeight: '600', color: '#FF3000' }}>
+            <p style={{ fontSize: '32px', fontWeight: '600', color: 'var(--mda-primary)' }}>
               {attentionCount}
             </p>
           </div>
           <div className="bg-card border border-border rounded-lg p-5">
             <p className="caption text-muted-foreground mb-1">Disqualified</p>
-            <p style={{ fontSize: '32px', fontWeight: '600', color: '#FF3000' }}>
+            <p style={{ fontSize: '32px', fontWeight: '600', color: 'var(--mda-primary)' }}>
               {disqualifiedCount}
             </p>
           </div>
@@ -420,7 +485,7 @@ export function MDAPrequalificationView() {
             <button
               onClick={handleGenerateReport}
               className="w-full sm:w-auto px-6 py-2.5 rounded-md text-white"
-              style={{ backgroundColor: '#FF3000' }}
+              style={{ backgroundColor: 'var(--mda-primary)' }}
             >
               Generate Pre-Qualification Report
             </button>
@@ -432,6 +497,19 @@ export function MDAPrequalificationView() {
             </button>
           </div>
         </div>
+
+      {/* Modals */}
+      <AddVendorModal
+        isOpen={isAddVendorModalOpen}
+        onClose={() => setIsAddVendorModalOpen(false)}
+        onAddVendor={handleAddVendor}
+      />
+
+      <ImportBiddersModal
+        isOpen={isImportBiddersModalOpen}
+        onClose={() => setIsImportBiddersModalOpen(false)}
+        onImportBidders={handleImportBidders}
+      />
       </div>
     </div>
   );

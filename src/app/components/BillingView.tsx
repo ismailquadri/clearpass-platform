@@ -116,7 +116,8 @@ export function BillingView() {
 
   const displayPrice = (plan: Plan) => {
     if (plan.id === 'starter') return 'Free';
-    if (plan.id === 'enterprise' && billingCycle === 'monthly') return `${fmt(plan.monthlyPrice)}/mo`;
+    if (plan.id === 'enterprise' && billingCycle === 'monthly')
+      return `${fmt(plan.monthlyPrice)}/mo`;
     return billingCycle === 'monthly'
       ? `${fmt(plan.monthlyPrice)}/mo`
       : `${fmt(plan.annualPrice)}/yr`;
@@ -165,9 +166,13 @@ export function BillingView() {
         </div>
 
         {/* Invoice History */}
-        <InvoiceHistory invoices={INVOICES} fmt={fmt} onDownload={(id) =>
-          showToast('success', 'Downloading', `Invoice ${id} PDF is downloading…`)
-        } />
+        <InvoiceHistory
+          invoices={INVOICES}
+          fmt={fmt}
+          onDownload={(id) =>
+            showToast('success', 'Downloading', `Invoice ${id} PDF is downloading…`)
+          }
+        />
 
         {/* Subscription Management */}
         <div className="mt-6 bg-card border border-border rounded-lg p-4 sm:p-6">
@@ -183,7 +188,9 @@ export function BillingView() {
               Pause Subscription
             </button>
             <button
-              onClick={() => showToast('info', 'Payment Method', 'Redirecting to Paystack to update your card…')}
+              onClick={() =>
+                showToast('info', 'Payment Method', 'Redirecting to Paystack to update your card…')
+              }
               className="flex items-center justify-center gap-2 px-4 py-2.5 min-h-[44px] rounded-md border border-border hover:bg-muted transition-colors w-full sm:w-auto"
             >
               <CreditCard className="w-4 h-4" aria-hidden="true" />
@@ -231,13 +238,7 @@ export function BillingView() {
   );
 }
 
-function CurrentPlanCard({
-  plan,
-  fmt,
-}: {
-  plan: PlanTier;
-  fmt: (n: number) => string;
-}) {
+function CurrentPlanCard({ plan, fmt }: { plan: PlanTier; fmt: (n: number) => string }) {
   const names: Record<PlanTier, string> = {
     starter: 'Starter',
     business: 'Business',
@@ -279,7 +280,9 @@ function CurrentPlanCard({
         <div className="sm:text-right">
           <p style={{ fontSize: '32px', fontWeight: 700, color: '#FF3000' }}>
             {plan === 'starter' ? 'Free' : `${fmt(amounts[plan])}`}
-            {plan !== 'starter' && <span style={{ fontSize: '16px', fontWeight: 400, color: 'inherit' }}>/yr</span>}
+            {plan !== 'starter' && (
+              <span style={{ fontSize: '16px', fontWeight: 400, color: 'inherit' }}>/yr</span>
+            )}
           </p>
           <p className="text-muted-foreground" style={{ fontSize: '13px' }}>
             {plan === 'starter' ? 'No credit card required' : 'Billed annually · Save vs monthly'}
@@ -298,7 +301,13 @@ function UsageSection() {
       </h2>
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <UsageMeter label="Profiles" used={3} total={50} icon={Users} />
-        <UsageMeter label="Reports" used={12} total={-1} icon={FileText} unlimitedLabel="Unlimited" />
+        <UsageMeter
+          label="Reports"
+          used={12}
+          total={-1}
+          icon={FileText}
+          unlimitedLabel="Unlimited"
+        />
         <UsageMeter label="Team Members" used={2} total={3} icon={Users} />
       </div>
     </div>
@@ -440,7 +449,10 @@ function PlanCard({
       <ul className="space-y-2 flex-1 mb-4">
         {features.map(({ icon: Icon, text }, i) => (
           <li key={i} className="flex items-start gap-2">
-            <Icon className="w-3.5 h-3.5 text-muted-foreground mt-0.5 shrink-0" aria-hidden="true" />
+            <Icon
+              className="w-3.5 h-3.5 text-muted-foreground mt-0.5 shrink-0"
+              aria-hidden="true"
+            />
             <span style={{ fontSize: '13px' }}>{text}</span>
           </li>
         ))}
@@ -553,7 +565,10 @@ function InvoiceHistory({
       {/* Mobile list */}
       <div className="sm:hidden space-y-3">
         {invoices.map((inv) => (
-          <div key={inv.id} className="flex items-center justify-between py-2 border-b border-border last:border-0">
+          <div
+            key={inv.id}
+            className="flex items-center justify-between py-2 border-b border-border last:border-0"
+          >
             <div>
               <p style={{ fontSize: '13px', fontWeight: 500 }}>{inv.id}</p>
               <p className="text-muted-foreground" style={{ fontSize: '12px' }}>

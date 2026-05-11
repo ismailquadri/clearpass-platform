@@ -11,6 +11,7 @@ import {
 import { useState, useEffect } from 'react';
 import { useToast } from './ToastProvider';
 import { useFocusTrap } from '../hooks/useFocusTrap';
+import '../../app/styles/mda-theme.css';
 
 interface VendorVerificationModalProps {
   isOpen: boolean;
@@ -164,21 +165,21 @@ export function VendorVerificationModal({ isOpen, onClose }: VendorVerificationM
     switch (status) {
       case 'procurement-ready':
         return {
-          color: '#FF3000',
+          color: 'var(--mda-primary)',
           bgColor: 'rgba(255, 48, 0, 0.1)',
           label: 'Procurement Ready',
           icon: CheckCircle2,
         };
       case 'attention-required':
         return {
-          color: '#FF3000',
+          color: 'var(--mda-primary)',
           bgColor: 'rgba(255, 48, 0, 0.1)',
           label: 'Attention Required',
           icon: AlertTriangle,
         };
       case 'non-compliant':
         return {
-          color: '#FF3000',
+          color: 'var(--mda-primary)',
           bgColor: 'rgba(255, 48, 0, 0.1)',
           label: 'Non-Compliant',
           icon: XCircle,
@@ -189,9 +190,9 @@ export function VendorVerificationModal({ isOpen, onClose }: VendorVerificationM
   const getCertStatusConfig = (status: 'active' | 'expired' | 'missing') => {
     switch (status) {
       case 'active':
-        return { color: '#FF3000', label: 'Active', icon: CheckCircle2 };
+        return { color: 'var(--mda-primary)', label: 'Active', icon: CheckCircle2 };
       case 'expired':
-        return { color: '#FF3000', label: 'Expired', icon: XCircle };
+        return { color: 'var(--mda-primary)', label: 'Expired', icon: XCircle };
       case 'missing':
         return { color: 'rgb(92, 92, 92)', label: 'Missing', icon: AlertTriangle };
     }
@@ -227,7 +228,7 @@ export function VendorVerificationModal({ isOpen, onClose }: VendorVerificationM
                 className="w-10 h-10 rounded-lg flex items-center justify-center"
                 style={{ backgroundColor: 'rgba(255, 48, 0, 0.1)' }}
               >
-                <Shield className="w-5 h-5" style={{ color: '#FF3000' }} />
+                <Shield className="w-5 h-5" style={{ color: 'var(--mda-primary)' }} />
               </div>
               <div>
                 <h2 id="modal-title" style={{ fontSize: '24px', fontWeight: '600' }}>
@@ -288,7 +289,7 @@ export function VendorVerificationModal({ isOpen, onClose }: VendorVerificationM
                   aria-live="polite"
                   aria-busy={isVerifying}
                   className="shrink-0 px-4 py-2 rounded-md text-white flex items-center gap-2 disabled:opacity-50"
-                  style={{ backgroundColor: '#FF3000', fontSize: '13px', fontWeight: '500' }}
+                  style={{ backgroundColor: 'var(--mda-primary)', fontSize: '13px', fontWeight: '500' }}
                 >
                   {isVerifying ? (
                     <>
@@ -378,12 +379,12 @@ export function VendorVerificationModal({ isOpen, onClose }: VendorVerificationM
                         CAC Status
                       </p>
                       <div className="flex items-center gap-1.5">
-                        <CheckCircle2 className="w-4 h-4" style={{ color: '#FF3000' }} />
+                        <CheckCircle2 className="w-4 h-4" style={{ color: 'var(--mda-primary)' }} />
                         <p
                           style={{
                             fontSize: '13px',
                             fontWeight: '500',
-                            color: '#FF3000',
+                            color: 'var(--mda-primary)',
                           }}
                         >
                           Verified
@@ -449,9 +450,9 @@ export function VendorVerificationModal({ isOpen, onClose }: VendorVerificationM
                 {/* Verification Note */}
                 <div className="px-4 py-3 rounded-lg border border-[#e5e5e5] bg-[#ffe6e6] bg-opacity-30">
                   <div className="flex items-start gap-3">
-                    <FileText className="w-5 h-5 flex-shrink-0" style={{ color: '#FF3000' }} />
+                    <FileText className="w-5 h-5 flex-shrink-0" style={{ color: 'var(--mda-primary)' }} />
                     <div>
-                      <p style={{ fontSize: '14px', fontWeight: '500', color: '#FF3000' }}>
+                      <p style={{ fontSize: '14px', fontWeight: '500', color: 'var(--mda-primary)' }}>
                         Official Verification Record
                       </p>
                       <p
@@ -483,7 +484,7 @@ export function VendorVerificationModal({ isOpen, onClose }: VendorVerificationM
                   <button
                     onClick={handleDownloadReport}
                     className="w-full sm:w-auto px-4 py-2.5 rounded-md text-white flex items-center justify-center gap-2"
-                    style={{ backgroundColor: '#FF3000', fontSize: '13px', fontWeight: '500' }}
+                    style={{ backgroundColor: 'var(--mda-primary)', fontSize: '13px', fontWeight: '500' }}
                   >
                     <Download className="w-4 h-4" />
                     Download Report

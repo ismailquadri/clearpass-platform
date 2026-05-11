@@ -3,7 +3,12 @@ import type { Knex } from 'knex';
 export async function up(knex: Knex): Promise<void> {
   await knex.schema.createTable('subscriptions', (table) => {
     table.uuid('id').primary().defaultTo(knex.raw('gen_random_uuid()'));
-    table.uuid('company_id').notNullable().references('id').inTable('companies').onDelete('CASCADE');
+    table
+      .uuid('company_id')
+      .notNullable()
+      .references('id')
+      .inTable('companies')
+      .onDelete('CASCADE');
 
     // Subscription details
     table.string('tier', 50).notNullable(); // 'starter', 'business', 'enterprise'

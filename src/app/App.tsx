@@ -10,40 +10,11 @@ import { ToastProvider } from './components/ToastProvider';
 import { AppShell } from './components/AppShell';
 import { EmptyState } from './components/ui/EmptyState';
 import { OfflineBanner } from './components/OfflineBanner';
-import { AchievementNotification } from './components/AchievementNotification';
-import { GamificationProvider, useGamification } from './contexts/GamificationContext';
 import { AuthProvider, useAuth, type AccountType } from './context/AuthContext';
 import { useOnlineStatus } from './hooks/useOnlineStatus';
+import type { Persona } from './api/types';
 
-const AuthView = lazy(() =>
-  import('./components/AuthView').then((m) => ({ default: m.AuthView }))
-);
-
-// Inner component that uses the gamification context
-function AppContent() {
-  const { newlyUnlocked, clearNewlyUnlocked } = useGamification();
-  const [unlockedAchievements, setUnlockedAchievements] = useState<any[]>([]);
-
-  // Update unlocked achievements when context changes
-  useEffect(() => {
-    if (newlyUnlocked.length > 0) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setUnlockedAchievements(prev => [...prev, ...newlyUnlocked]);
-      clearNewlyUnlocked();
-    }
-  }, [newlyUnlocked, clearNewlyUnlocked]);
-
-  return (
-    <>
-      {unlockedAchievements.length > 0 && (
-        <AchievementNotification
-          achievements={unlockedAchievements}
-          onClose={() => setUnlockedAchievements([])}
-        />
-      )}
-    </>
-  );
-}
+const AuthView = lazy(() => import('./components/AuthView').then((m) => ({ default: m.AuthView })));
 import {
   PageHeaderSkeleton,
   StatCardGridSkeleton,
@@ -51,13 +22,6 @@ import {
   TableSkeleton,
   ChartSkeleton,
 } from './components/ui/Skeleton';
-import {
-  TweaksPanel,
-  TweaksButton,
-  DASHBOARD_STATES,
-  type Persona,
-  type DashboardState,
-} from './components/TweaksPanel';
 import './sentry';
 import { setupCoreWebVitals, setupMemoryMonitoring } from './utils/performance';
 import { registerSW } from 'virtual:pwa-register';
@@ -180,6 +144,11 @@ const HMOPortalView = lazy(() =>
     default: m.HMOPortalView,
   }))
 );
+const CompanyProfile = lazy(() =>
+  import('./components/CompanyProfile').then((m) => ({
+    default: m.CompanyProfile,
+  }))
+);
 
 // ─── Per-route skeleton fallbacks ───────────────────────────────────────────
 // Pick a fallback that mirrors the destination view so the layout doesn't
@@ -279,7 +248,7 @@ function SectionNotFound({
 
 // ─── Persona mapping ────────────────────────────────────────────────────────
 
-const ACCOUNT_TYPE_TO_PERSONA: Record<AccountType, Persona> = {
+const ACCOUNT_TYPE_TO_PERSONA: Record<AccountType, 'Business' | 'MDA' | 'Partner' | 'HMO' | 'Admin'> = {
   business: 'Business',
   mda: 'MDA',
   partner: 'Partner',
@@ -295,11 +264,7 @@ function AppInner() {
     () => !localStorage.getItem('clearpass_onboarded')
   );
   const [activeSection, setActiveSection] = useState('overview');
-  const [isTweaksPanelOpen, setIsTweaksPanelOpen] = useState(false);
-  const [selectedPersona, setSelectedPersona] = useState<Persona>('Business');
-  const [selectedState, setSelectedState] = useState<DashboardState>(
-    DASHBOARD_STATES[1] // Attention Required
-  );
+  const [selectedPersona, setSelectedPersona] = useState<'Business' | 'MDA' | 'Partner' | 'HMO' | 'Admin'>('Business');
   const isOnline = useOnlineStatus();
 
   // When a user logs in, sync the persona from their account type.
@@ -308,7 +273,7 @@ function AppInner() {
       const persona = ACCOUNT_TYPE_TO_PERSONA[user.accountType];
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setSelectedPersona(persona);
-      // eslint-disable-next-line react-hooks/set-state-in-effect
+
       setActiveSection(() => {
         if (persona === 'Business') return 'overview';
         if (persona === 'MDA') return 'verify';
@@ -316,7 +281,7 @@ function AppInner() {
         if (persona === 'Admin') return 'admin-overview';
         return 'clients';
       });
-      // eslint-disable-next-line react-hooks/set-state-in-effect
+
       setShowOnboarding(false);
     }
   }, [user]);
@@ -346,7 +311,9 @@ function AppInner() {
       <div className="fixed inset-0 flex items-center justify-center bg-background">
         <div className="flex flex-col items-center gap-3">
           <img src="/clearpass-logo.svg" alt="ClearPass" className="h-10 w-auto animate-pulse" />
-          <p className="text-muted-foreground" style={{ fontSize: '14px' }}>Loading…</p>
+          <p className="text-muted-foreground" style={{ fontSize: '14px' }}>
+            Loading…
+          </p>
         </div>
       </div>
     );
@@ -355,11 +322,13 @@ function AppInner() {
   // Auth gate — show login screen when no session exists.
   if (!isAuthenticated) {
     return (
-      <Suspense fallback={
-        <div className="fixed inset-0 flex items-center justify-center bg-background">
-          <img src="/clearpass-logo.svg" alt="ClearPass" className="h-10 w-auto animate-pulse" />
-        </div>
-      }>
+      <Suspense
+        fallback={
+          <div className="fixed inset-0 flex items-center justify-center bg-background">
+            <img src="/clearpass-logo.svg" alt="ClearPass" className="h-10 w-auto animate-pulse" />
+          </div>
+        }
+      >
         <AuthView onAuthenticated={() => {}} />
       </Suspense>
     );
@@ -415,7 +384,7 @@ function AppInner() {
         case 'overview':
           return (
             <Suspense fallback={<DashboardSkeleton />}>
-              <StateAwareDashboard state={selectedState} onNavigate={setActiveSection} />
+              <StateAwareDashboard onNavigate={setActiveSection} />
             </Suspense>
           );
         case 'certificates':
@@ -476,6 +445,12 @@ function AppInner() {
           return (
             <Suspense fallback={<GenericSkeleton />}>
               <SettingsView />
+            </Suspense>
+          );
+        case 'company-profile':
+          return (
+            <Suspense fallback={<GenericSkeleton />}>
+              <CompanyProfile />
             </Suspense>
           );
         default:
@@ -611,23 +586,11 @@ function AppInner() {
         {renderMainContent()}
       </AppShell>
 
-      <TweaksButton onClick={() => setIsTweaksPanelOpen(true)} />
-      <TweaksPanel
-        isOpen={isTweaksPanelOpen}
-        onClose={() => setIsTweaksPanelOpen(false)}
-        selectedPersona={selectedPersona}
-        onPersonaChange={handlePersonaChange}
-        selectedState={selectedState}
-        onStateChange={setSelectedState}
-      />
-
       {showOnboarding && (
         <Suspense fallback={null}>
           <OnboardingFlow onComplete={handleOnboardingComplete} />
         </Suspense>
       )}
-
-      <AppContent />
     </>
   );
 }
@@ -638,11 +601,9 @@ export default function App() {
   return (
     <ErrorBoundary>
       <AuthProvider>
-        <GamificationProvider>
-          <ToastProvider>
-            <AppInner />
-          </ToastProvider>
-        </GamificationProvider>
+        <ToastProvider>
+          <AppInner />
+        </ToastProvider>
       </AuthProvider>
     </ErrorBoundary>
   );

@@ -38,7 +38,7 @@ router.post(
   async (req: AuthRequest, res, next) => {
     try {
       const { certType, certNumber, companyName } = req.body;
-      
+
       const result = await governmentApiService.verifyCertificate({
         certType,
         certNumber,
@@ -60,114 +60,102 @@ router.post(
   }
 );
 
-router.post(
-  '/government/verify-company',
-  authMiddleware,
-  async (req: AuthRequest, res, next) => {
-    try {
-      const { rcNumber } = req.body;
-      
-      const result = await governmentApiService.verifyCompany(rcNumber);
+router.post('/government/verify-company', authMiddleware, async (req: AuthRequest, res, next) => {
+  try {
+    const { rcNumber } = req.body;
 
-      const response: SuccessResponse = {
-        success: true,
-        data: result,
-        meta: {
-          timestamp: new Date().toISOString(),
-        },
-      };
+    const result = await governmentApiService.verifyCompany(rcNumber);
 
-      res.status(200).json(response);
-    } catch (error) {
-      next(error);
-    }
+    const response: SuccessResponse = {
+      success: true,
+      data: result,
+      meta: {
+        timestamp: new Date().toISOString(),
+      },
+    };
+
+    res.status(200).json(response);
+  } catch (error) {
+    next(error);
   }
-);
+});
 
-router.post(
-  '/government/batch-verify',
-  authMiddleware,
-  async (req: AuthRequest, res, next) => {
-    try {
-      const { certificates } = req.body; // Array of { certType, certNumber }
-      
-      const results = await governmentApiService.batchVerifyCertificates(certificates);
+router.post('/government/batch-verify', authMiddleware, async (req: AuthRequest, res, next) => {
+  try {
+    const { certificates } = req.body; // Array of { certType, certNumber }
 
-      const response: SuccessResponse = {
-        success: true,
-        data: results,
-        meta: {
-          timestamp: new Date().toISOString(),
-        },
-      };
+    const results = await governmentApiService.batchVerifyCertificates(certificates);
 
-      res.status(200).json(response);
-    } catch (error) {
-      next(error);
-    }
+    const response: SuccessResponse = {
+      success: true,
+      data: results,
+      meta: {
+        timestamp: new Date().toISOString(),
+      },
+    };
+
+    res.status(200).json(response);
+  } catch (error) {
+    next(error);
   }
-);
+});
 
 // User management endpoints
-router.get(
-  '/users',
-  authMiddleware,
-  requireRole('admin'),
-  async (req: AuthRequest, res, next) => {
-    try {
-      const { companyId, role, status } = req.query;
-      
-      let query = db('users').whereNull('deleted_at');
-      
-      if (companyId) query = query.where('company_id', companyId);
-      if (role) query = query.where('role', role);
-      if (status) query = query.where('status', status);
-      
-      const users = await query.select('id', 'email', 'first_name', 'last_name', 'role', 'status', 'created_at');
+router.get('/users', authMiddleware, requireRole('admin'), async (req: AuthRequest, res, next) => {
+  try {
+    const { companyId, role, status } = req.query;
 
-      const response: SuccessResponse = {
-        success: true,
-        data: users,
-        meta: {
-          timestamp: new Date().toISOString(),
-        },
-      };
+    let query = db('users').whereNull('deleted_at');
 
-      res.status(200).json(response);
-    } catch (error) {
-      next(error);
-    }
+    if (companyId) query = query.where('company_id', companyId);
+    if (role) query = query.where('role', role);
+    if (status) query = query.where('status', status);
+
+    const users = await query.select(
+      'id',
+      'email',
+      'first_name',
+      'last_name',
+      'role',
+      'status',
+      'created_at'
+    );
+
+    const response: SuccessResponse = {
+      success: true,
+      data: users,
+      meta: {
+        timestamp: new Date().toISOString(),
+      },
+    };
+
+    res.status(200).json(response);
+  } catch (error) {
+    next(error);
   }
-);
+});
 
-router.get(
-  '/users/:id',
-  authMiddleware,
-  async (req: AuthRequest, res, next) => {
-    try {
-      const user = await db('users')
-        .where({ id: req.params.id })
-        .whereNull('deleted_at')
-        .first();
+router.get('/users/:id', authMiddleware, async (req: AuthRequest, res, next) => {
+  try {
+    const user = await db('users').where({ id: req.params.id }).whereNull('deleted_at').first();
 
-      if (!user) {
-        throw new AppError('USER_NOT_FOUND', 'User not found', 404);
-      }
-
-      const response: SuccessResponse = {
-        success: true,
-        data: user,
-        meta: {
-          timestamp: new Date().toISOString(),
-        },
-      };
-
-      res.status(200).json(response);
-    } catch (error) {
-      next(error);
+    if (!user) {
+      throw new AppError('USER_NOT_FOUND', 'User not found', 404);
     }
+
+    const response: SuccessResponse = {
+      success: true,
+      data: user,
+      meta: {
+        timestamp: new Date().toISOString(),
+      },
+    };
+
+    res.status(200).json(response);
+  } catch (error) {
+    next(error);
   }
-);
+});
 
 router.patch(
   '/users/:id',
@@ -188,13 +176,9 @@ router.patch(
 
       updates.updated_at = new Date();
 
-      await db('users')
-        .where({ id: req.params.id })
-        .update(updates);
+      await db('users').where({ id: req.params.id }).update(updates);
 
-      const user = await db('users')
-        .where({ id: req.params.id })
-        .first();
+      const user = await db('users').where({ id: req.params.id }).first();
 
       const response: SuccessResponse = {
         success: true,
@@ -217,13 +201,11 @@ router.delete(
   requireRole('admin'),
   async (req: AuthRequest, res, next) => {
     try {
-      await db('users')
-        .where({ id: req.params.id })
-        .update({
-          status: 'deleted',
-          deleted_at: new Date(),
-          updated_at: new Date(),
-        });
+      await db('users').where({ id: req.params.id }).update({
+        status: 'deleted',
+        deleted_at: new Date(),
+        updated_at: new Date(),
+      });
 
       res.status(204).send();
     } catch (error) {
@@ -240,12 +222,12 @@ router.get(
   async (req: AuthRequest, res, next) => {
     try {
       const { tier, status } = req.query;
-      
+
       let query = db('companies').whereNull('deleted_at');
-      
+
       if (tier) query = query.where('subscription_tier', tier);
       if (status) query = query.where('status', status);
-      
+
       const companies = await query.select('*');
 
       const response: SuccessResponse = {
@@ -263,34 +245,30 @@ router.get(
   }
 );
 
-router.get(
-  '/companies/:id',
-  authMiddleware,
-  async (req: AuthRequest, res, next) => {
-    try {
-      const company = await db('companies')
-        .where({ id: req.params.id })
-        .whereNull('deleted_at')
-        .first();
+router.get('/companies/:id', authMiddleware, async (req: AuthRequest, res, next) => {
+  try {
+    const company = await db('companies')
+      .where({ id: req.params.id })
+      .whereNull('deleted_at')
+      .first();
 
-      if (!company) {
-        throw new AppError('COMPANY_NOT_FOUND', 'Company not found', 404);
-      }
-
-      const response: SuccessResponse = {
-        success: true,
-        data: company,
-        meta: {
-          timestamp: new Date().toISOString(),
-        },
-      };
-
-      res.status(200).json(response);
-    } catch (error) {
-      next(error);
+    if (!company) {
+      throw new AppError('COMPANY_NOT_FOUND', 'Company not found', 404);
     }
+
+    const response: SuccessResponse = {
+      success: true,
+      data: company,
+      meta: {
+        timestamp: new Date().toISOString(),
+      },
+    };
+
+    res.status(200).json(response);
+  } catch (error) {
+    next(error);
   }
-);
+});
 
 router.patch(
   '/companies/:id',
@@ -299,7 +277,7 @@ router.patch(
   async (req: AuthRequest, res, next) => {
     try {
       const updates: any = {};
-      Object.keys(req.body).forEach(key => {
+      Object.keys(req.body).forEach((key) => {
         if (req.body[key] !== undefined) {
           updates[key] = req.body[key];
         }
@@ -311,13 +289,9 @@ router.patch(
 
       updates.updated_at = new Date();
 
-      await db('companies')
-        .where({ id: req.params.id })
-        .update(updates);
+      await db('companies').where({ id: req.params.id }).update(updates);
 
-      const company = await db('companies')
-        .where({ id: req.params.id })
-        .first();
+      const company = await db('companies').where({ id: req.params.id }).first();
 
       const response: SuccessResponse = {
         success: true,
@@ -335,35 +309,30 @@ router.patch(
 );
 
 // System health endpoint
-router.get(
-  '/health',
-  authMiddleware,
-  requireRole('admin'),
-  async (req: AuthRequest, res, next) => {
-    try {
-      const health = {
-        status: 'healthy',
+router.get('/health', authMiddleware, requireRole('admin'), async (req: AuthRequest, res, next) => {
+  try {
+    const health = {
+      status: 'healthy',
+      timestamp: new Date().toISOString(),
+      database: 'connected',
+      uptime: process.uptime(),
+      memory: process.memoryUsage(),
+      environment: process.env.NODE_ENV,
+    };
+
+    const response: SuccessResponse = {
+      success: true,
+      data: health,
+      meta: {
         timestamp: new Date().toISOString(),
-        database: 'connected',
-        uptime: process.uptime(),
-        memory: process.memoryUsage(),
-        environment: process.env.NODE_ENV,
-      };
+      },
+    };
 
-      const response: SuccessResponse = {
-        success: true,
-        data: health,
-        meta: {
-          timestamp: new Date().toISOString(),
-        },
-      };
-
-      res.status(200).json(response);
-    } catch (error) {
-      next(error);
-    }
+    res.status(200).json(response);
+  } catch (error) {
+    next(error);
   }
-);
+});
 
 // System statistics endpoint
 router.get(
@@ -383,7 +352,11 @@ router.get(
         db('users').whereNull('deleted_at').count('* as count').first(),
         db('users').where({ status: 'active' }).whereNull('deleted_at').count('* as count').first(),
         db('companies').whereNull('deleted_at').count('* as count').first(),
-        db('companies').where({ status: 'active' }).whereNull('deleted_at').count('* as count').first(),
+        db('companies')
+          .where({ status: 'active' })
+          .whereNull('deleted_at')
+          .count('* as count')
+          .first(),
         db('certificates').whereNull('deleted_at').count('* as count').first(),
         db('subscriptions').where({ status: 'active' }).count('* as count').first(),
       ]);

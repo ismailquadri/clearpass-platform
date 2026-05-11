@@ -18,9 +18,7 @@ export class PasswordResetService {
   private readonly TOKEN_EXPIRY_HOURS = 1;
 
   async requestReset(input: RequestResetInput): Promise<void> {
-    const user = await db('users')
-      .where({ email: input.email })
-      .first();
+    const user = await db('users').where({ email: input.email }).first();
 
     if (!user) {
       // Don't reveal if user exists or not
@@ -57,12 +55,10 @@ export class PasswordResetService {
     const password_hash = await bcrypt.hash(input.newPassword, 12);
 
     // Update password
-    await db('users')
-      .where({ id: tokenData.userId })
-      .update({
-        password_hash,
-        updated_at: new Date(),
-      });
+    await db('users').where({ id: tokenData.userId }).update({
+      password_hash,
+      updated_at: new Date(),
+    });
 
     // Delete token
     this.resetTokens.delete(input.token);

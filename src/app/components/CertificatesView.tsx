@@ -1,4 +1,4 @@
-import { Search, Filter, Plus, Download } from 'lucide-react';
+import { Search, Filter, Plus, Download, FileText } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { CertificateCard } from './CertificateCard';
 import { CertificateDetailModal } from './CertificateDetailModal';
@@ -8,6 +8,7 @@ import { useCertificates } from '../api';
 import type { Certificate } from '../api';
 import { ApiState, EmptyState } from './ui';
 import { CertificateGridSkeleton } from './ui/Skeleton';
+import { exportCertificatesToCSV, printCertificateReport, type CertificateExportData } from '../utils/exportUtils';
 
 type StatusFilter = 'all' | 'active' | 'expiring' | 'expired';
 
@@ -71,10 +72,19 @@ export function CertificatesView() {
               setFilterStatus={setFilterStatus}
               onSelectCertificate={setSelectedCertificate}
               onExport={() =>
-                showToast(
-                  'success',
-                  'Export Started',
-                  'Downloading all certificates as PDF bundle...'
+                exportCertificatesToCSV(
+                  allCertificates.map(cert => ({
+                    name: cert.name,
+                    shortName: cert.shortName,
+                    status: cert.status,
+                    daysToExpiry: cert.daysToExpiry,
+                    expiryDate: cert.expiryDate,
+                    certificateNumber: cert.certificateNumber,
+                    isApiVerified: cert.isApiVerified,
+                    issuingAuthority: cert.issuingAuthority,
+                    issuedDate: cert.issuedDate,
+                  })),
+                  `certificates-export-${new Date().toISOString().slice(0, 10)}.csv`
                 )
               }
             />
@@ -113,7 +123,7 @@ interface CertificatesContentProps {
   filterStatus: StatusFilter;
   setFilterStatus: (f: StatusFilter) => void;
   onSelectCertificate: (c: Certificate) => void;
-  onExport: () => void;
+  onExport: (certificates: Certificate[]) => void;
 }
 
 function CertificatesContent({
@@ -219,13 +229,35 @@ function CertificatesContent({
               </button>
             ))}
           </div>
-          <button
-            onClick={onExport}
-            className="px-4 py-2 min-h-[44px] rounded-md border border-border hover:bg-muted transition-colors flex items-center justify-center gap-2 shrink-0"
-          >
-            <Download className="w-4 h-4" aria-hidden="true" />
-            <span>Export All</span>
-          </button>
+          <div className="flex gap-2">
+            <button
+              onClick={() => printCertificateReport(
+                certificates.map(cert => ({
+                  name: cert.name,
+                  shortName: cert.shortName,
+                  status: cert.status,
+                  daysToExpiry: cert.daysToExpiry,
+                  expiryDate: cert.expiryDate,
+                  certificateNumber: cert.certificateNumber,
+                  isApiVerified: cert.isApiVerified,
+                  issuingAuthority: cert.issuingAuthority,
+                  issuedDate: cert.issuedDate,
+                })),
+                'My Company'
+              )}
+              className="px-4 py-2 min-h-[44px] rounded-md border border-border hover:bg-muted transition-colors flex items-center justify-center gap-2 shrink-0"
+            >
+              <FileText className="w-4 h-4" aria-hidden="true" />
+              <span>Export PDF</span>
+            </button>
+            <button
+              onClick={onExport}
+              className="px-4 py-2 min-h-[44px] rounded-md border border-border hover:bg-muted transition-colors flex items-center justify-center gap-2 shrink-0"
+            >
+              <Download className="w-4 h-4" aria-hidden="true" />
+              <span>Export CSV</span>
+            </button>
+          </div>
         </div>
       </div>
 

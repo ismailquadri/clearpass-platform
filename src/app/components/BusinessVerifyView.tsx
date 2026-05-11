@@ -275,16 +275,9 @@ export function BusinessVerifyView() {
             <h3 className="mb-2" style={{ fontSize: '18px', fontWeight: '500' }}>
               No Verification Results
             </h3>
-            <p className="text-muted-foreground mb-6" style={{ fontSize: '14px' }}>
+            <p className="text-muted-foreground" style={{ fontSize: '14px' }}>
               Enter a company RC number to verify their compliance status
             </p>
-            <div className="flex items-center justify-center gap-4">
-              <div className="text-left">
-                <p style={{ fontSize: '14px', fontWeight: '500' }}>Try searching:</p>
-                <p className="caption text-muted-foreground">RC1234567</p>
-                <p className="caption text-muted-foreground">RC7654321</p>
-              </div>
-            </div>
           </div>
         )}
       </div>

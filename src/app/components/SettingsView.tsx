@@ -10,15 +10,19 @@ import {
   Download,
   Upload,
   Save,
+  Link,
+  CheckCircle2,
 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { useToast } from './ToastProvider';
+import { ShareableLinkModal } from './ShareableLinkModal';
 
 export function SettingsView() {
   const { showToast } = useToast();
   const [activeTab, setActiveTab] = useState<
     'company' | 'team' | 'notifications' | 'preferences' | 'security'
   >('company');
+  const [isShareableLinkModalOpen, setIsShareableLinkModalOpen] = useState(false);
 
   // Form state
   const [formData, setFormData] = useState({
@@ -36,19 +40,76 @@ export function SettingsView() {
   const [isSaving, setIsSaving] = useState(false);
   const [isSavingNotifications, setIsSavingNotifications] = useState(false);
   const [teamMembers] = useState([
-    { id: 't1', name: 'Amaka Okoro', email: 'amaka@techventures.ng', role: 'Admin', status: 'active' as const },
-    { id: 't2', name: 'Chidi Obi', email: 'chidi@techventures.ng', role: 'Viewer', status: 'active' as const },
-    { id: 't3', name: 'Ngozi Eze', email: 'ngozi@techventures.ng', role: 'Editor', status: 'pending' as const },
+    {
+      id: 't1',
+      name: 'Amaka Okoro',
+      email: 'amaka@techventures.ng',
+      role: 'Admin',
+      status: 'active' as const,
+    },
+    {
+      id: 't2',
+      name: 'Chidi Obi',
+      email: 'chidi@techventures.ng',
+      role: 'Viewer',
+      status: 'active' as const,
+    },
+    {
+      id: 't3',
+      name: 'Ngozi Eze',
+      email: 'ngozi@techventures.ng',
+      role: 'Editor',
+      status: 'pending' as const,
+    },
   ]);
   const [inviteEmail, setInviteEmail] = useState('');
   const [inviteRole, setInviteRole] = useState('Viewer');
   const [certAlerts, setCertAlerts] = useState({
-    nhia: true, pcc: true, nsitf: true, firs: true, bpp: false, itf: false,
+    nhia: true,
+    pcc: true,
+    nsitf: true,
+    firs: true,
+    bpp: false,
+    itf: false,
   });
   const [alertChannels, setAlertChannels] = useState({
-    email: true, sms: false, inApp: true,
+    email: true,
+    sms: false,
+    inApp: true,
   });
+
+  // Email notification preferences
+  const [emailNotifications, setEmailNotifications] = useState({
+    certExpiryAlerts: true,
+    scoreChanges: true,
+    verificationUpdates: true,
+    weeklySummary: false,
+    productUpdates: true,
+  });
+
+  // SMS notification preferences
+  const [smsNotifications, setSmsNotifications] = useState({
+    criticalExpiryAlerts: true,
+    scoreDropWarnings: true,
+  });
+
   const shareableLink = 'https://clearpass.com.ng/verify/RC1234567?token=abc123xyz';
+
+  // Load notification preferences from localStorage on mount
+  useEffect(() => {
+    const savedPrefs = localStorage.getItem('clearpass_notification_prefs');
+    if (savedPrefs) {
+      try {
+        const prefs = JSON.parse(savedPrefs);
+        if (prefs.emailNotifications) setEmailNotifications(prefs.emailNotifications);
+        if (prefs.smsNotifications) setSmsNotifications(prefs.smsNotifications);
+        if (prefs.certAlerts) setCertAlerts(prefs.certAlerts);
+        if (prefs.alertChannels) setAlertChannels(prefs.alertChannels);
+      } catch (error) {
+        console.error('Failed to load notification preferences:', error);
+      }
+    }
+  }, []);
 
   // Auto-save form data to localStorage
   useEffect(() => {
@@ -123,6 +184,15 @@ export function SettingsView() {
   const handleSaveNotifications = async () => {
     setIsSavingNotifications(true);
     try {
+      // Save notification preferences to localStorage
+      const notificationPrefs = {
+        emailNotifications,
+        smsNotifications,
+        certAlerts,
+        alertChannels,
+      };
+      localStorage.setItem('clearpass_notification_prefs', JSON.stringify(notificationPrefs));
+
       // Simulate API call
       await new Promise((resolve) => setTimeout(resolve, 1000));
       showToast('success', 'Notifications Saved', 'Notification preferences updated successfully');
@@ -420,6 +490,29 @@ export function SettingsView() {
               </div>
             </div>
 
+            {/* Shareable Compliance Link Section */}
+            <div className="bg-card border border-border rounded-lg p-6">
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-2">
+                  <Link className="w-5 h-5 text-[#FF3000]" />
+                  <h2 className="text-lg font-semibold">Shareable Compliance Link</h2>
+                </div>
+                <button
+                  onClick={() => setIsShareableLinkModalOpen(true)}
+                  className="px-4 py-2 rounded-md border border-[#FF3000] text-[#FF3000] hover:bg-[#fff5f3] transition-colors text-sm font-medium"
+                >
+                  Generate Link
+                </button>
+              </div>
+              <p className="text-sm text-muted-foreground mb-4">
+                Generate a shareable link to let MDAs verify your compliance status without requiring them to log in to ClearPass.
+              </p>
+              <div className="flex items-center gap-2 text-sm">
+                <CheckCircle2 className="w-4 h-4 text-green-600" />
+                <span className="text-muted-foreground">Links are read-only and can be deactivated at any time</span>
+              </div>
+            </div>
+
             <div className="flex flex-col-reverse sm:flex-row sm:justify-end gap-3">
               <button
                 onClick={() => showToast('info', 'Cancelled', 'Changes have been discarded')}
@@ -447,7 +540,9 @@ export function SettingsView() {
           <div role="tabpanel" id="team-panel" aria-labelledby="team-tab" className="space-y-6">
             {/* Invite member */}
             <div className="bg-card border border-border rounded-lg p-4 sm:p-6">
-              <h2 className="mb-4" style={{ fontSize: '18px', fontWeight: 500 }}>Invite Team Member</h2>
+              <h2 className="mb-4" style={{ fontSize: '18px', fontWeight: 500 }}>
+                Invite Team Member
+              </h2>
               <div className="flex flex-col sm:flex-row gap-3">
                 <input
                   type="email"
@@ -486,26 +581,49 @@ export function SettingsView() {
 
             {/* Member list */}
             <div className="bg-card border border-border rounded-lg p-4 sm:p-6">
-              <h2 className="mb-4" style={{ fontSize: '18px', fontWeight: 500 }}>Team Members</h2>
+              <h2 className="mb-4" style={{ fontSize: '18px', fontWeight: 500 }}>
+                Team Members
+              </h2>
               <div className="space-y-3">
                 {teamMembers.map((m) => (
-                  <div key={m.id} className="flex items-center justify-between gap-3 py-2 border-b border-border last:border-0">
+                  <div
+                    key={m.id}
+                    className="flex items-center justify-between gap-3 py-2 border-b border-border last:border-0"
+                  >
                     <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-full bg-[#FF3000] flex items-center justify-center text-white shrink-0" style={{ fontSize: '12px', fontWeight: 700 }}>
-                        {m.name.split(' ').map((n) => n[0]).join('')}
+                      <div
+                        className="w-8 h-8 rounded-full bg-[#FF3000] flex items-center justify-center text-white shrink-0"
+                        style={{ fontSize: '12px', fontWeight: 700 }}
+                      >
+                        {m.name
+                          .split(' ')
+                          .map((n) => n[0])
+                          .join('')}
                       </div>
                       <div>
                         <p style={{ fontSize: '14px', fontWeight: 500 }}>{m.name}</p>
-                        <p className="text-muted-foreground" style={{ fontSize: '12px' }}>{m.email}</p>
+                        <p className="text-muted-foreground" style={{ fontSize: '12px' }}>
+                          {m.email}
+                        </p>
                       </div>
                     </div>
                     <div className="flex items-center gap-2 shrink-0">
-                      <span className="px-2 py-0.5 rounded-full" style={{ fontSize: '11px', backgroundColor: m.status === 'pending' ? '#fef3c7' : '#dcfce7', color: m.status === 'pending' ? '#F59E0B' : '#1FC16B', fontWeight: 500 }}>
+                      <span
+                        className="px-2 py-0.5 rounded-full"
+                        style={{
+                          fontSize: '11px',
+                          backgroundColor: m.status === 'pending' ? '#fef3c7' : '#dcfce7',
+                          color: m.status === 'pending' ? '#F59E0B' : '#1FC16B',
+                          fontWeight: 500,
+                        }}
+                      >
                         {m.status === 'pending' ? 'Pending' : m.role}
                       </span>
                       {m.status === 'active' && (
                         <button
-                          onClick={() => showToast('info', 'Removed', `${m.name} removed from team`)}
+                          onClick={() =>
+                            showToast('info', 'Removed', `${m.name} removed from team`)
+                          }
                           className="text-muted-foreground hover:text-foreground transition-colors"
                           style={{ fontSize: '12px' }}
                         >
@@ -520,9 +638,12 @@ export function SettingsView() {
 
             {/* Shareable compliance link */}
             <div className="bg-card border border-border rounded-lg p-4 sm:p-6">
-              <h2 className="mb-2" style={{ fontSize: '18px', fontWeight: 500 }}>Shareable Compliance Link</h2>
+              <h2 className="mb-2" style={{ fontSize: '18px', fontWeight: 500 }}>
+                Shareable Compliance Link
+              </h2>
               <p className="text-muted-foreground mb-3" style={{ fontSize: '14px' }}>
-                Share this link with MDAs to let them verify your compliance status without logging in.
+                Share this link with MDAs to let them verify your compliance status without logging
+                in.
               </p>
               <div className="flex flex-col sm:flex-row gap-2">
                 <input
@@ -546,12 +667,21 @@ export function SettingsView() {
 
             {/* Data deletion */}
             <div className="bg-card border border-red-200 rounded-lg p-4 sm:p-6">
-              <h2 className="mb-2 text-red-600" style={{ fontSize: '18px', fontWeight: 500 }}>Danger Zone</h2>
+              <h2 className="mb-2 text-red-600" style={{ fontSize: '18px', fontWeight: 500 }}>
+                Danger Zone
+              </h2>
               <p className="text-muted-foreground mb-4" style={{ fontSize: '14px' }}>
-                Requesting data deletion will remove all certificates, reports, and company data permanently after a 30-day grace period.
+                Requesting data deletion will remove all certificates, reports, and company data
+                permanently after a 30-day grace period.
               </p>
               <button
-                onClick={() => showToast('info', 'Request Submitted', 'A data deletion request has been submitted. Our team will contact you within 2 business days.')}
+                onClick={() =>
+                  showToast(
+                    'info',
+                    'Request Submitted',
+                    'A data deletion request has been submitted. Our team will contact you within 2 business days.'
+                  )
+                }
                 className="px-4 py-2.5 min-h-[44px] rounded-md border border-red-300 text-red-600 hover:bg-red-50 transition-colors"
                 style={{ fontSize: '14px' }}
               >
@@ -578,32 +708,37 @@ export function SettingsView() {
                   {
                     label: 'Certificate Expiry Alerts',
                     description: 'Get notified 30, 14, and 7 days before certificate expiry',
-                    enabled: true,
+                    enabled: emailNotifications.certExpiryAlerts,
                     id: 'cert-expiry-alerts',
+                    key: 'certExpiryAlerts',
                   },
                   {
                     label: 'Compliance Score Changes',
                     description: 'Receive alerts when your compliance score changes significantly',
-                    enabled: true,
+                    enabled: emailNotifications.scoreChanges,
                     id: 'score-changes',
+                    key: 'scoreChanges',
                   },
                   {
                     label: 'Verification Status Updates',
                     description: 'Get updates when certificates are verified or approved',
-                    enabled: true,
+                    enabled: emailNotifications.verificationUpdates,
                     id: 'verification-updates',
+                    key: 'verificationUpdates',
                   },
                   {
                     label: 'Weekly Summary',
                     description: 'Receive a weekly email summary of your compliance status',
-                    enabled: false,
+                    enabled: emailNotifications.weeklySummary,
                     id: 'weekly-summary',
+                    key: 'weeklySummary',
                   },
                   {
                     label: 'Product Updates',
                     description: 'Stay informed about new features and platform updates',
-                    enabled: true,
+                    enabled: emailNotifications.productUpdates,
                     id: 'product-updates',
+                    key: 'productUpdates',
                   },
                 ].map((item, index) => (
                   <div
@@ -621,7 +756,13 @@ export function SettingsView() {
                       <input
                         id={item.id}
                         type="checkbox"
-                        defaultChecked={item.enabled}
+                        checked={item.enabled}
+                        onChange={() =>
+                          setEmailNotifications((prev) => ({
+                            ...prev,
+                            [item.key]: !prev[item.key as keyof typeof prev],
+                          }))
+                        }
                         className="sr-only peer"
                       />
                       <div
@@ -645,14 +786,16 @@ export function SettingsView() {
                   {
                     label: 'Critical Expiry Alerts',
                     description: 'SMS alerts for certificates expiring within 7 days',
-                    enabled: true,
+                    enabled: smsNotifications.criticalExpiryAlerts,
                     id: 'critical-expiry-sms',
+                    key: 'criticalExpiryAlerts',
                   },
                   {
                     label: 'Score Drop Warnings',
                     description: 'SMS when compliance score drops below 60',
-                    enabled: true,
+                    enabled: smsNotifications.scoreDropWarnings,
                     id: 'score-drop-sms',
+                    key: 'scoreDropWarnings',
                   },
                 ].map((item, index) => (
                   <div
@@ -670,7 +813,13 @@ export function SettingsView() {
                       <input
                         id={item.id}
                         type="checkbox"
-                        defaultChecked={item.enabled}
+                        checked={item.enabled}
+                        onChange={() =>
+                          setSmsNotifications((prev) => ({
+                            ...prev,
+                            [item.key]: !prev[item.key as keyof typeof prev],
+                          }))
+                        }
                         className="sr-only peer"
                       />
                       <div
@@ -687,8 +836,12 @@ export function SettingsView() {
 
             {/* Per-cert alert routing */}
             <div className="bg-card border border-border rounded-lg p-4 sm:p-6">
-              <h2 className="mb-4" style={{ fontSize: '18px', fontWeight: 500 }}>Per-Certificate Alerts</h2>
-              <p className="text-muted-foreground mb-3" style={{ fontSize: '14px' }}>Choose which certificates trigger expiry notifications.</p>
+              <h2 className="mb-4" style={{ fontSize: '18px', fontWeight: 500 }}>
+                Per-Certificate Alerts
+              </h2>
+              <p className="text-muted-foreground mb-3" style={{ fontSize: '14px' }}>
+                Choose which certificates trigger expiry notifications.
+              </p>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                 {(Object.keys(certAlerts) as Array<keyof typeof certAlerts>).map((cert) => (
                   <label key={cert} className="flex items-center gap-2 cursor-pointer">
@@ -706,13 +859,17 @@ export function SettingsView() {
 
             {/* Channel routing */}
             <div className="bg-card border border-border rounded-lg p-4 sm:p-6">
-              <h2 className="mb-4" style={{ fontSize: '18px', fontWeight: 500 }}>Alert Channels</h2>
+              <h2 className="mb-4" style={{ fontSize: '18px', fontWeight: 500 }}>
+                Alert Channels
+              </h2>
               <div className="space-y-3">
-                {([
-                  { key: 'email', label: 'Email notifications' },
-                  { key: 'sms', label: 'SMS notifications (₦2/alert)' },
-                  { key: 'inApp', label: 'In-app notifications' },
-                ] as const).map(({ key, label }) => (
+                {(
+                  [
+                    { key: 'email', label: 'Email notifications' },
+                    { key: 'sms', label: 'SMS notifications (₦2/alert)' },
+                    { key: 'inApp', label: 'In-app notifications' },
+                  ] as const
+                ).map(({ key, label }) => (
                   <label key={key} className="flex items-center justify-between cursor-pointer">
                     <span style={{ fontSize: '14px' }}>{label}</span>
                     <div
@@ -722,7 +879,9 @@ export function SettingsView() {
                       aria-checked={alertChannels[key]}
                       tabIndex={0}
                     >
-                      <span className={`absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-white shadow transition-transform ${alertChannels[key] ? 'translate-x-5' : 'translate-x-0'}`} />
+                      <span
+                        className={`absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-white shadow transition-transform ${alertChannels[key] ? 'translate-x-5' : 'translate-x-0'}`}
+                      />
                     </div>
                   </label>
                 ))}
@@ -926,6 +1085,12 @@ export function SettingsView() {
           </div>
         )}
       </div>
+
+      {/* Shareable Link Modal */}
+      <ShareableLinkModal
+        isOpen={isShareableLinkModalOpen}
+        onClose={() => setIsShareableLinkModalOpen(false)}
+      />
     </div>
   );
 }

@@ -2,6 +2,7 @@ import { Search, Download, Eye, Clock, User, AlertCircle, CheckCircle2, XCircle,
 import { useMemo, useState } from 'react';
 import { useToast } from './ToastProvider';
 import { EmptyState } from './ui';
+import '../../app/styles/mda-theme.css';
 
 interface AuditLogEntry {
   id: string;
@@ -213,13 +214,13 @@ export function MDAAuditTrailView() {
             placeholder="Search by vendor, RC number, actor, or details..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-[#FF3000] focus:border-transparent"
+            className="w-full pl-10 pr-4 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-[var(--mda-primary)] focus:border-transparent"
           />
         </div>
         <select
           value={filterAction}
           onChange={(e) => setFilterAction(e.target.value as typeof filterAction)}
-          className="px-4 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-[#FF3000] focus:border-transparent bg-background"
+          className="px-4 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-[var(--mda-primary)] focus:border-transparent bg-background"
         >
           <option value="all">All Actions</option>
           <option value="verification_initiated">Verification Initiated</option>
@@ -233,7 +234,7 @@ export function MDAAuditTrailView() {
         <select
           value={filterStatus}
           onChange={(e) => setFilterStatus(e.target.value as typeof filterStatus)}
-          className="px-4 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-[#FF3000] focus:border-transparent bg-background"
+          className="px-4 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-[var(--mda-primary)] focus:border-transparent bg-background"
         >
           <option value="all">All Status</option>
           <option value="success">Success</option>

@@ -3,7 +3,13 @@ import type { Knex } from 'knex';
 export async function up(knex: Knex): Promise<void> {
   await knex.schema.createTable('compliance_scores', (table) => {
     table.uuid('id').primary().defaultTo(knex.raw('gen_random_uuid()'));
-    table.uuid('company_id').notNullable().unique().references('id').inTable('companies').onDelete('CASCADE');
+    table
+      .uuid('company_id')
+      .notNullable()
+      .unique()
+      .references('id')
+      .inTable('companies')
+      .onDelete('CASCADE');
 
     // Components (PRD specified)
     table.integer('component_a').defaultTo(0); // Coverage (0-50): % of required certs present

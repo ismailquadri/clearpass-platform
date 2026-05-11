@@ -1,6 +1,7 @@
 # 🚀 ClearPass Demo Deployment - Quick Start
 
 ## 🔐 Your Secure Secrets (SAVE THESE!)
+
 ```
 JWT_SECRET=4035f2fa554ed94d86db0a7f84c740c3005deacf387de78418e587fe82bdb0e2
 JWT_REFRESH_SECRET=68742444f8c9854f8cf1987af14013b77ec0ab3ae6c51db18d4e4ce7888565d9
@@ -13,16 +14,19 @@ ENCRYPTION_KEY=91011fbc3954534e104618894007dee546c226e2bb2d7bdf0383d0f4f13f827a
 ## ⚡ Immediate Next Steps (30 minutes)
 
 ### **Step 1: Set up Railway Account**
+
 1. Go to https://railway.app
 2. Sign up with GitHub
 3. Create new project from your `clearpass` GitHub repo
 
 ### **Step 2: Add PostgreSQL**
+
 1. In Railway project, click "+ New Service"
 2. Select "PostgreSQL"
 3. Wait for it to provision
 
 ### **Step 3: Configure Backend**
+
 1. Click your backend service
 2. Settings → Set root directory to `backend`
 3. Variables → Add these:
@@ -32,11 +36,13 @@ ENCRYPTION_KEY=91011fbc3954534e104618894007dee546c226e2bb2d7bdf0383d0f4f13f827a
    - `PORT=5000`
 
 ### **Step 4: Deploy Backend**
+
 1. Click "Deploy Now"
 2. Wait for build to complete
 3. Note your backend URL (e.g., `https://clearpass-backend.up.railway.app`)
 
 ### **Step 5: Deploy Frontend to Vercel**
+
 1. Go to https://vercel.com
 2. Sign up with GitHub
 3. Add your `clearpass` repo
@@ -54,6 +60,7 @@ See `DEMO_DEPLOYMENT_GUIDE.md` for detailed step-by-step instructions.
 ## 🎯 Success Metrics
 
 You'll know it's working when:
+
 - ✅ Railway backend URL returns `{"status":"ok"}` on `/health`
 - ✅ Vercel frontend loads without errors
 - ✅ You can register and login

@@ -32,15 +32,18 @@ export interface VerifyPaymentResponse {
 }
 
 export class PaymentService {
-  private mockTransactions: Map<string, {
-    amount: number;
-    tier: string;
-    companyId: string;
-    billingCycle: 'monthly' | 'annual';
-    email: string;
-    status: 'pending' | 'success' | 'failed';
-    createdAt: Date;
-  }> = new Map();
+  private mockTransactions: Map<
+    string,
+    {
+      amount: number;
+      tier: string;
+      companyId: string;
+      billingCycle: 'monthly' | 'annual';
+      email: string;
+      status: 'pending' | 'success' | 'failed';
+      createdAt: Date;
+    }
+  > = new Map();
 
   async initializePayment(input: InitializePaymentInput): Promise<PaymentResponse> {
     const reference = `mock_${uuidv4()}`;
@@ -125,9 +128,7 @@ export class PaymentService {
     const monthlyAmount = billingCycle === 'monthly' ? amount : prices.annual / 12;
     const annualAmount = billingCycle === 'annual' ? amount : prices.monthly * 12;
 
-    const existing = await db('subscriptions')
-      .where({ company_id: companyId })
-      .first();
+    const existing = await db('subscriptions').where({ company_id: companyId }).first();
 
     const subscriptionData = {
       company_id: companyId,
@@ -139,7 +140,9 @@ export class PaymentService {
       paystack_authorization_code: `mock_auth_${uuidv4()}`,
       last_payment_reference: uuidv4(),
       last_payment_date: new Date(),
-      next_billing_date: new Date(Date.now() + (billingCycle === 'monthly' ? 30 : 365) * 24 * 60 * 60 * 1000),
+      next_billing_date: new Date(
+        Date.now() + (billingCycle === 'monthly' ? 30 : 365) * 24 * 60 * 60 * 1000
+      ),
       status: 'active',
     };
 
@@ -159,19 +162,15 @@ export class PaymentService {
   }
 
   async cancelSubscription(companyId: string): Promise<void> {
-    await db('subscriptions')
-      .where({ company_id: companyId })
-      .update({
-        status: 'cancelled',
-        ended_at: new Date(),
-        updated_at: new Date(),
-      });
+    await db('subscriptions').where({ company_id: companyId }).update({
+      status: 'cancelled',
+      ended_at: new Date(),
+      updated_at: new Date(),
+    });
   }
 
   async getSubscription(companyId: string) {
-    return await db('subscriptions')
-      .where({ company_id: companyId })
-      .first();
+    return await db('subscriptions').where({ company_id: companyId }).first();
   }
 
   async calculatePrice(tier: string, billingCycle: 'monthly' | 'annual'): Promise<number> {

@@ -10,7 +10,12 @@ import {
 import { useAuth } from '../context/AuthContext';
 
 const getInitials = (name: string) =>
-  name.split(' ').map((n) => n[0]).join('').toUpperCase().slice(0, 2);
+  name
+    .split(' ')
+    .map((n) => n[0])
+    .join('')
+    .toUpperCase()
+    .slice(0, 2);
 
 interface HMOSidebarProps {
   activeSection: string;
@@ -63,7 +68,10 @@ export function HMOSidebar({
           return (
             <div key={group} className="mt-4 first:mt-0">
               <div className="px-2 py-1.5 mb-1">
-                <p className="uppercase tracking-wide text-muted-foreground" style={{ fontSize: '13px', fontWeight: 600 }}>
+                <p
+                  className="uppercase tracking-wide text-muted-foreground"
+                  style={{ fontSize: '13px', fontWeight: 600 }}
+                >
                   {group}
                 </p>
               </div>
@@ -104,12 +112,19 @@ export function HMOSidebar({
 
       <div className="p-3 border-t border-border space-y-1">
         <div className="flex items-center gap-2 px-2 py-1.5">
-          <div className="w-7 h-7 rounded-full bg-[#1FC16B] flex items-center justify-center text-white" style={{ fontSize: '11px', fontWeight: 700 }}>
+          <div
+            className="w-7 h-7 rounded-full bg-[#1FC16B] flex items-center justify-center text-white"
+            style={{ fontSize: '11px', fontWeight: 700 }}
+          >
             {getInitials(user?.name ?? 'HO')}
           </div>
           <div className="flex-1 overflow-hidden">
-            <p style={{ fontSize: '12px', fontWeight: 500 }} className="truncate">{user?.name ?? 'HMO User'}</p>
-            <p className="text-muted-foreground truncate" style={{ fontSize: '11px' }}>{user?.companyName ?? 'Health Insurance'}</p>
+            <p style={{ fontSize: '12px', fontWeight: 500 }} className="truncate">
+              {user?.name ?? 'HMO User'}
+            </p>
+            <p className="text-muted-foreground truncate" style={{ fontSize: '11px' }}>
+              {user?.companyName ?? 'Health Insurance'}
+            </p>
           </div>
         </div>
         <button

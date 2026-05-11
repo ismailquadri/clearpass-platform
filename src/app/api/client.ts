@@ -17,10 +17,9 @@ interface Env {
 }
 
 function readEnv(): Env {
-  const apiBaseUrl = (import.meta.env.VITE_API_BASE_URL as string | undefined) ?? '/api';
-  const useMocksRaw = import.meta.env.VITE_USE_MOCKS as string | undefined;
-  // Default to mocks in dev, real API in production unless explicitly opted in/out.
-  const useMocks = useMocksRaw === undefined ? import.meta.env.DEV : useMocksRaw === 'true';
+  // Backend disconnected - always use mocks
+  const apiBaseUrl = '/api'; // Placeholder, not used
+  const useMocks = true; // Always use mocks
   const mockLatencyMs = Number((import.meta.env.VITE_MOCK_LATENCY_MS as string | undefined) ?? 350);
   return { apiBaseUrl, useMocks, mockLatencyMs };
 }
@@ -104,60 +103,14 @@ async function parseError(res: Response): Promise<ApiClientError> {
 }
 
 export async function request<T>(path: string, options: RequestOptions = {}): Promise<T> {
-  const { method = 'GET', body, query, headers = {}, signal, retries = 1 } = options;
-
-  const url = buildUrl(path, query);
-  const isFormData = body instanceof FormData;
-
-  const init: RequestInit = {
-    method,
-    signal,
-    headers: {
-      Accept: 'application/json',
-      ...(isFormData ? {} : { 'Content-Type': 'application/json' }),
-      ...headers,
-    },
-  };
-
-  const token = getAuthToken();
-  if (token) {
-    (init.headers as Record<string, string>)['Authorization'] = `Bearer ${token}`;
-  }
-
-  if (body !== undefined && method !== 'GET') {
-    init.body = isFormData ? (body as FormData) : JSON.stringify(body);
-  }
-
-  let lastError: unknown;
-  for (let attempt = 0; attempt <= retries; attempt++) {
-    try {
-      const res = await fetch(url, init);
-      if (!res.ok) {
-        if (res.status >= 500 && attempt < retries) {
-          await wait(backoffMs(attempt));
-          continue;
-        }
-        throw await parseError(res);
-      }
-      if (res.status === 204) return undefined as T;
-      const ct = res.headers.get('content-type') ?? '';
-      if (ct.includes('application/json')) {
-        return (await res.json()) as T;
-      }
-      return (await res.text()) as unknown as T;
-    } catch (err) {
-      if (isAbortError(err)) throw err;
-      lastError = err;
-      if (err instanceof ApiClientError && err.status < 500) throw err;
-      if (attempt < retries) {
-        await wait(backoffMs(attempt));
-        continue;
-      }
-    }
-  }
-  throw lastError instanceof Error
-    ? lastError
-    : new ApiClientError(0, 'NETWORK', 'Network request failed');
+  // Backend disconnected - always use mock mode
+  // This function should never be called since all API modules check env.useMocks first
+  console.warn(`API request attempted but backend is disconnected: ${path}`);
+  throw new ApiClientError(
+    503,
+    'BACKEND_DISCONNECTED',
+    'Backend is disconnected. Please build the backend API separately.'
+  );
 }
 
 function backoffMs(attempt: number): number {

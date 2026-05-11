@@ -24,69 +24,61 @@ const updateCertificateSchema = z.object({
 });
 
 // GET /api/certificates
-router.get(
-  '/',
-  authMiddleware,
-  async (req: AuthRequest, res, next) => {
-    try {
-      if (!req.user?.company_id) {
-        return res.status(400).json({
-          success: false,
-          error: {
-            code: 'NO_COMPANY',
-            message: 'User is not associated with a company',
-          },
-        });
-      }
-
-      const certificates = await certificateService.getCertificatesByCompany(req.user.company_id);
-      const response: SuccessResponse = {
-        success: true,
-        data: certificates,
-        meta: {
-          timestamp: new Date().toISOString(),
+router.get('/', authMiddleware, async (req: AuthRequest, res, next) => {
+  try {
+    if (!req.user?.company_id) {
+      return res.status(400).json({
+        success: false,
+        error: {
+          code: 'NO_COMPANY',
+          message: 'User is not associated with a company',
         },
-      };
-      res.status(200).json(response);
-    } catch (error) {
-      next(error);
+      });
     }
+
+    const certificates = await certificateService.getCertificatesByCompany(req.user.company_id);
+    const response: SuccessResponse = {
+      success: true,
+      data: certificates,
+      meta: {
+        timestamp: new Date().toISOString(),
+      },
+    };
+    res.status(200).json(response);
+  } catch (error) {
+    next(error);
   }
-);
+});
 
 // GET /api/certificates/:id
-router.get(
-  '/:id',
-  authMiddleware,
-  async (req: AuthRequest, res, next) => {
-    try {
-      if (!req.user?.company_id) {
-        return res.status(400).json({
-          success: false,
-          error: {
-            code: 'NO_COMPANY',
-            message: 'User is not associated with a company',
-          },
-        });
-      }
-
-      const certificate = await certificateService.getCertificateById(
-        req.params.id,
-        req.user.company_id
-      );
-      const response: SuccessResponse = {
-        success: true,
-        data: certificate,
-        meta: {
-          timestamp: new Date().toISOString(),
+router.get('/:id', authMiddleware, async (req: AuthRequest, res, next) => {
+  try {
+    if (!req.user?.company_id) {
+      return res.status(400).json({
+        success: false,
+        error: {
+          code: 'NO_COMPANY',
+          message: 'User is not associated with a company',
         },
-      };
-      res.status(200).json(response);
-    } catch (error) {
-      next(error);
+      });
     }
+
+    const certificate = await certificateService.getCertificateById(
+      req.params.id,
+      req.user.company_id
+    );
+    const response: SuccessResponse = {
+      success: true,
+      data: certificate,
+      meta: {
+        timestamp: new Date().toISOString(),
+      },
+    };
+    res.status(200).json(response);
+  } catch (error) {
+    next(error);
   }
-);
+});
 
 // POST /api/certificates
 router.post(
@@ -163,103 +155,97 @@ router.put(
 );
 
 // DELETE /api/certificates/:id
-router.delete(
-  '/:id',
-  authMiddleware,
-  async (req: AuthRequest, res, next) => {
-    try {
-      if (!req.user?.company_id || !req.user?.sub) {
-        return res.status(401).json({
-          success: false,
-          error: {
-            code: 'UNAUTHORIZED',
-            message: 'Authentication required',
-          },
-        });
-      }
-
-      await certificateService.deleteCertificate(req.params.id, req.user.company_id, req.user.sub);
-      res.status(204).send();
-    } catch (error) {
-      next(error);
+router.delete('/:id', authMiddleware, async (req: AuthRequest, res, next) => {
+  try {
+    if (!req.user?.company_id || !req.user?.sub) {
+      return res.status(401).json({
+        success: false,
+        error: {
+          code: 'UNAUTHORIZED',
+          message: 'Authentication required',
+        },
+      });
     }
+
+    await certificateService.deleteCertificate(req.params.id, req.user.company_id, req.user.sub);
+    res.status(204).send();
+  } catch (error) {
+    next(error);
   }
-);
+});
 
 // GET /api/certificates/:id/download
-router.get(
-  '/:id/download',
-  authMiddleware,
-  async (req: AuthRequest, res, next) => {
-    try {
-      if (!req.user?.company_id) {
-        return res.status(401).json({
-          success: false,
-          error: {
-            code: 'UNAUTHORIZED',
-            message: 'Authentication required',
-          },
-        });
-      }
-
-      const certificate = await certificateService.getCertificateById(req.params.id, req.user.company_id);
-
-      if (!certificate.documentUrl) {
-        return res.status(404).json({
-          success: false,
-          error: {
-            code: 'DOCUMENT_NOT_FOUND',
-            message: 'No document available for this certificate',
-          },
-        });
-      }
-
-      // Generate a mock PDF if no document URL exists
-      if (!certificate.documentUrl || certificate.documentUrl.startsWith('mock')) {
-        const pdfResult = await pdfService.generateCertificatePDF(certificate);
-        const file = await storageService.downloadFile(pdfResult.key);
-
-        res.setHeader('Content-Type', 'application/pdf');
-        res.setHeader('Content-Disposition', `attachment; filename="${certificate.shortName}-${certificate.certificateNumber}.pdf"`);
-        res.send(file.data);
-      } else {
-        // Redirect to the document URL
-        res.redirect(certificate.documentUrl);
-      }
-    } catch (error) {
-      next(error);
+router.get('/:id/download', authMiddleware, async (req: AuthRequest, res, next) => {
+  try {
+    if (!req.user?.company_id) {
+      return res.status(401).json({
+        success: false,
+        error: {
+          code: 'UNAUTHORIZED',
+          message: 'Authentication required',
+        },
+      });
     }
+
+    const certificate = await certificateService.getCertificateById(
+      req.params.id,
+      req.user.company_id
+    );
+
+    if (!certificate.documentUrl) {
+      return res.status(404).json({
+        success: false,
+        error: {
+          code: 'DOCUMENT_NOT_FOUND',
+          message: 'No document available for this certificate',
+        },
+      });
+    }
+
+    // Generate a mock PDF if no document URL exists
+    if (!certificate.documentUrl || certificate.documentUrl.startsWith('mock')) {
+      const pdfResult = await pdfService.generateCertificatePDF(certificate);
+      const file = await storageService.downloadFile(pdfResult.key);
+
+      res.setHeader('Content-Type', 'application/pdf');
+      res.setHeader(
+        'Content-Disposition',
+        `attachment; filename="${certificate.shortName}-${certificate.certificateNumber}.pdf"`
+      );
+      res.send(file.data);
+    } else {
+      // Redirect to the document URL
+      res.redirect(certificate.documentUrl);
+    }
+  } catch (error) {
+    next(error);
   }
-);
+});
 
 // GET /api/certificates/export
-router.get(
-  '/export',
-  authMiddleware,
-  async (req: AuthRequest, res, next) => {
-    try {
-      if (!req.user?.company_id) {
-        return res.status(401).json({
-          success: false,
-          error: {
-            code: 'UNAUTHORIZED',
-            message: 'Authentication required',
-          },
-        });
-      }
-
-      const certificates = await certificateService.getCertificatesByCompany(req.user.company_id);
-
-      // Generate a mock ZIP file (in production, use a real ZIP library)
-      const mockZipContent = JSON.stringify(certificates, null, 2);
-
-      res.setHeader('Content-Type', 'application/zip');
-      res.setHeader('Content-Disposition', 'attachment; filename="certificates-export.zip"');
-      res.send(mockZipContent);
-    } catch (error) {
-      next(error);
+router.get('/export', authMiddleware, async (req: AuthRequest, res, next) => {
+  try {
+    if (!req.user?.company_id) {
+      return res.status(401).json({
+        success: false,
+        error: {
+          code: 'UNAUTHORIZED',
+          message: 'Authentication required',
+        },
+      });
     }
+
+    const certificates = await certificateService.getCertificatesByCompany(req.user.company_id);
+
+    // Generate a mock ZIP file (in production, use a real ZIP library)
+    const mockZipContent = JSON.stringify(certificates, null, 2);
+
+    res.setHeader('Content-Type', 'application/zip');
+    res.setHeader('Content-Disposition', 'attachment; filename="certificates-export.zip"');
+    res.send(mockZipContent);
+  } catch (error) {
+    next(error);
   }
-);
+});
 
 export default router;

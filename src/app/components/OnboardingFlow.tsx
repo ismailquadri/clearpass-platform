@@ -13,8 +13,7 @@ import {
   Heart,
   ShieldCheck,
 } from 'lucide-react';
-
-type Persona = 'Business' | 'MDA' | 'Partner' | 'HMO' | 'Admin';
+import type { Persona } from '../api/types';
 
 interface OnboardingFlowProps {
   onComplete: (persona: Persona) => void;
@@ -86,7 +85,7 @@ const PERSONA_READY_COPY: Record<Persona, string> = {
     "Upload your first certificate and we'll start tracking expiry dates and compliance score right away.",
   MDA: "Enter any RC number to check a vendor's full compliance status before procurement.",
   Partner: 'Add your first client and start managing their compliance from one portfolio view.',
-  HMO: "Start reviewing employer NHIA enrollment compliance to process referral claims faster.",
+  HMO: 'Start reviewing employer NHIA enrollment compliance to process referral claims faster.',
   Admin: 'Access the admin portal to review verification requests and manage platform users.',
 };
 

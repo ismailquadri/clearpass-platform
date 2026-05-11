@@ -14,9 +14,7 @@ export class MFAService {
     const secret = this.generateSecret();
 
     // Get user email for label
-    const user = await db('users')
-      .where({ id: userId })
-      .first();
+    const user = await db('users').where({ id: userId }).first();
 
     if (!user) {
       throw new AppError('USER_NOT_FOUND', 'User not found', 404);
@@ -29,11 +27,9 @@ export class MFAService {
     const backupCodes = this.generateBackupCodes();
 
     // Store in database (not enabled yet)
-    await db('users')
-      .where({ id: userId })
-      .update({
-        mfa_secret: secret,
-      });
+    await db('users').where({ id: userId }).update({
+      mfa_secret: secret,
+    });
 
     return {
       secret,
@@ -43,9 +39,7 @@ export class MFAService {
   }
 
   async enableMFA(userId: string, token: string, backupCodes: string[]): Promise<void> {
-    const user = await db('users')
-      .where({ id: userId })
-      .first();
+    const user = await db('users').where({ id: userId }).first();
 
     if (!user || !user.mfa_secret) {
       throw new AppError('MFA_NOT_SETUP', 'MFA not set up', 400);
@@ -59,34 +53,28 @@ export class MFAService {
     }
 
     // Store backup codes (in production, hash these)
-    await db('users')
-      .where({ id: userId })
-      .update({
-        mfa_enabled: true,
-      });
+    await db('users').where({ id: userId }).update({
+      mfa_enabled: true,
+    });
 
     // Store backup codes in a separate table
     for (const code of backupCodes) {
-      await db('mfa_backup_codes')
-        .insert({
-          user_id: userId,
-          code: code, // In production, hash this
-          used: false,
-        });
+      await db('mfa_backup_codes').insert({
+        user_id: userId,
+        code: code, // In production, hash this
+        used: false,
+      });
     }
   }
 
   async disableMFA(userId: string, password: string): Promise<void> {
     // Verify password first
-    const user = await db('users')
-      .where({ id: userId })
-      .first();
+    const user = await db('users').where({ id: userId }).first();
 
     if (!user) {
       throw new AppError('USER_NOT_FOUND', 'User not found', 404);
     }
 
-    
     const isValidPassword = await bcrypt.compare(password, user.password_hash);
 
     if (!isValidPassword) {
@@ -94,23 +82,17 @@ export class MFAService {
     }
 
     // Disable MFA
-    await db('users')
-      .where({ id: userId })
-      .update({
-        mfa_enabled: false,
-        mfa_secret: null,
-      });
+    await db('users').where({ id: userId }).update({
+      mfa_enabled: false,
+      mfa_secret: null,
+    });
 
     // Delete backup codes
-    await db('mfa_backup_codes')
-      .where({ user_id: userId })
-      .delete();
+    await db('mfa_backup_codes').where({ user_id: userId }).delete();
   }
 
   async verifyToken(userId: string, token: string): Promise<boolean> {
-    const user = await db('users')
-      .where({ id: userId })
-      .first();
+    const user = await db('users').where({ id: userId }).first();
 
     if (!user || !user.mfa_enabled || !user.mfa_secret) {
       return false;
@@ -127,9 +109,7 @@ export class MFAService {
 
     if (backupCode) {
       // Mark as used
-      await db('mfa_backup_codes')
-        .where({ id: backupCode.id })
-        .update({ used: true });
+      await db('mfa_backup_codes').where({ id: backupCode.id }).update({ used: true });
       return true;
     }
 

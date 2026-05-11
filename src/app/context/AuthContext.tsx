@@ -38,16 +38,17 @@ interface AuthContextValue extends AuthState {
 }
 
 export interface RegisterData {
-  name: string;
   email: string;
-  phone: string;
   password: string;
+  name: string;
+  phone?: string;
   accountType: AccountType;
   companyName?: string;
   rcNumber?: string;
   mdaName?: string;
+  bvn?: string;
   govEmail?: string;
-  consentGiven: boolean;
+  consentGiven?: boolean;
 }
 
 const MOCK_USERS: (AuthUser & { password: string })[] = [
@@ -181,7 +182,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       id: `usr-${Date.now()}`,
       name: data.name,
       email: data.email,
-      phone: data.phone,
+      phone: data.phone || '+2348000000000',
       accountType: data.accountType,
       companyName: data.companyName,
       rcNumber: data.rcNumber,
@@ -190,7 +191,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       emailVerified: false,
       phoneVerified: false,
       cacVerified: false,
-      consentGiven: data.consentGiven,
+      consentGiven: data.consentGiven ?? true,
       createdAt: new Date().toISOString(),
     };
     localStorage.setItem(STORAGE_KEY, JSON.stringify(newUser));

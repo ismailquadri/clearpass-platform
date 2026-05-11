@@ -3,7 +3,12 @@ import type { Knex } from 'knex';
 export async function up(knex: Knex): Promise<void> {
   await knex.schema.createTable('certificates', (table) => {
     table.uuid('id').primary().defaultTo(knex.raw('gen_random_uuid()'));
-    table.uuid('company_id').notNullable().references('id').inTable('companies').onDelete('CASCADE');
+    table
+      .uuid('company_id')
+      .notNullable()
+      .references('id')
+      .inTable('companies')
+      .onDelete('CASCADE');
     table.string('cert_type', 50).notNullable(); // 'nhia', 'pcc', 'nsitf', 'firs', 'bpp', 'itf'
     table.string('cert_number', 100).notNullable();
     table.string('issuing_authority', 255);

@@ -149,6 +149,8 @@ export interface ActivityItem {
 
 // ─── Dashboard ──────────────────────────────────────────────────────────────
 
+export type Persona = 'Business' | 'MDA' | 'Partner' | 'HMO' | 'Admin';
+
 export type DashboardStateLabel =
   | 'Healthy'
   | 'Attention Required'
@@ -230,7 +232,13 @@ export interface ClientCertificate {
   id: ID;
   name: string;
   shortName: string;
-  status: 'active' | 'expiring-soon' | 'expiring-urgent' | 'expiring-critical' | 'expired' | 'pending';
+  status:
+    | 'active'
+    | 'expiring-soon'
+    | 'expiring-urgent'
+    | 'expiring-critical'
+    | 'expired'
+    | 'pending';
   expiryDate: string;
   daysToExpiry: number;
   certificateNumber: string;

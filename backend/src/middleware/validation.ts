@@ -14,12 +14,7 @@ export function validate(schema: ZodSchema, property: 'body' | 'query' | 'params
           message: err.message,
         }));
 
-        throw new AppError(
-          'VALIDATION_ERROR',
-          'Invalid input data',
-          400,
-          { details }
-        );
+        throw new AppError('VALIDATION_ERROR', 'Invalid input data', 400, { details });
       }
       next(error);
     }

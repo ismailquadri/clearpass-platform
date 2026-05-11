@@ -25,16 +25,20 @@ import adminRoutes from './routes/admin';
 const app = express();
 
 // Security middleware
-app.use(helmet({
-  contentSecurityPolicy: env.isDevelopment ? false : undefined,
-  crossOriginEmbedderPolicy: false,
-}));
+app.use(
+  helmet({
+    contentSecurityPolicy: env.isDevelopment ? false : undefined,
+    crossOriginEmbedderPolicy: false,
+  })
+);
 
 // CORS
-app.use(cors({
-  origin: env.frontendUrl,
-  credentials: true,
-}));
+app.use(
+  cors({
+    origin: env.frontendUrl,
+    credentials: true,
+  })
+);
 
 // Body parsing
 app.use(express.json({ limit: '10mb' }));

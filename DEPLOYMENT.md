@@ -4,7 +4,7 @@ This guide covers deploying the ClearPass Platform (backend API and frontend) to
 
 ## Prerequisites
 
-- Node.js 18+ 
+- Node.js 18+
 - PostgreSQL 16+
 - Domain names for frontend and API
 - SSL certificates (recommended)
@@ -35,6 +35,7 @@ cp .env.production .env
 ```
 
 **Critical variables to update:**
+
 - `DATABASE_URL`: Your production PostgreSQL connection string
 - `JWT_SECRET` & `JWT_REFRESH_SECRET`: Generate strong random secrets
 - `FRONTEND_URL`: Your production frontend URL
@@ -114,6 +115,7 @@ cp .env.production .env.production.local
 ```
 
 **Critical variables to update:**
+
 - `VITE_API_BASE_URL`: Your production API URL
 - `VITE_APP_URL`: Your production frontend URL
 - `VITE_SENTRY_DSN`: Your Sentry DSN
@@ -175,6 +177,7 @@ CNAME record: www -> your-domain.com
 ### 2. Configure Email Templates
 
 Set up email templates in Postmark:
+
 - Password reset
 - MFA setup
 - Expiry reminders
@@ -183,18 +186,21 @@ Set up email templates in Postmark:
 ### 3. Set Up Monitoring
 
 Configure Sentry for error tracking:
+
 - Backend: Add Sentry DSN to backend `.env`
 - Frontend: Already configured in `.env.production`
 
 ### 4. Configure SSL
 
 Ensure SSL is enabled:
+
 - Most hosting providers provide free SSL (Let's Encrypt)
 - Configure HTTPS redirects
 
 ### 5. Set Up Backups
 
 Configure automated database backups:
+
 - Railway: Automatic backups included
 - Render: Configure backup add-on
 - Custom: Set up PostgreSQL WAL archiving
@@ -232,6 +238,7 @@ Configure automated database backups:
 ### Health Checks
 
 Monitor these endpoints:
+
 - `GET /health` - Backend health
 - `GET /api/admin/health` - Detailed health (admin only)
 
@@ -252,20 +259,24 @@ Monitor these endpoints:
 ### Common Issues
 
 **Database connection errors:**
+
 - Verify `DATABASE_URL` is correct
 - Check database is accessible from your deployment
 - Ensure SSL certificates are valid
 
 **CORS errors:**
+
 - Verify `FRONTEND_URL` matches your frontend domain exactly
 - Check browser console for specific CORS errors
 
 **Payment webhook failures:**
+
 - Verify Paystack webhook URL is accessible
 - Check webhook secret matches
 - Test with Paystack's webhook tester
 
 **Email delivery issues:**
+
 - Verify Postmark API token is valid
 - Check email templates are configured
 - Monitor Postmark delivery logs
@@ -297,6 +308,7 @@ vercel --prod --commit <previous-commit-hash>
 ## Support
 
 For deployment issues:
+
 - Check logs: `railway logs` or hosting provider dashboard
 - Review this guide's troubleshooting section
 - Check Sentry for error reports
@@ -305,18 +317,22 @@ For deployment issues:
 ## Cost Estimates (Monthly)
 
 **Backend (Railway):**
+
 - Starter: $5/month
 - Standard: $20/month (recommended for production)
 
 **Database (Railway PostgreSQL):**
+
 - Starter: $5/month
 - Standard: $20/month (recommended for production)
 
 **Frontend (Vercel):**
+
 - Hobby: Free
 - Pro: $20/month (recommended for production)
 
 **Other services:**
+
 - AWS S3: ~$5-10/month
 - Postmark: ~$10-50/month (based on volume)
 - Paystack: Transaction fees only

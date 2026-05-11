@@ -42,8 +42,8 @@ export class AlertsService {
     }
 
     // Generate alerts for missing certificates
-    const presentTypes = certificates.map(c => c.cert_type);
-    const missingTypes = CERT_TYPES.filter(type => !presentTypes.includes(type));
+    const presentTypes = certificates.map((c) => c.cert_type);
+    const missingTypes = CERT_TYPES.filter((type) => !presentTypes.includes(type));
 
     for (const type of missingTypes) {
       alerts.push({
@@ -65,7 +65,7 @@ export class AlertsService {
         .where({ user_id: userId })
         .pluck('alert_id');
 
-      return alerts.map(alert => ({
+      return alerts.map((alert) => ({
         ...alert,
         isRead: readAlertIds.includes(alert.id),
       }));
@@ -87,7 +87,7 @@ export class AlertsService {
 
   async markAllAsRead(companyId: string, userId: string): Promise<void> {
     const alerts = await this.getAlerts(companyId);
-    const alertIds = alerts.map(a => a.id);
+    const alertIds = alerts.map((a) => a.id);
 
     for (const alertId of alertIds) {
       await db('user_alert_reads')
