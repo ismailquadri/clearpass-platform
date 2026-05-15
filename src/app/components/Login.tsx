@@ -184,7 +184,9 @@ export function Login({ onSuccess, onRegisterClick }: LoginProps) {
                 type="text"
                 inputMode="numeric"
                 value={formData.mfaCode}
-                onChange={(e) => updateFormData('mfaCode', e.target.value.replace(/\D/g, '').slice(0, 6))}
+                onChange={(e) =>
+                  updateFormData('mfaCode', e.target.value.replace(/\D/g, '').slice(0, 6))
+                }
                 className={`w-full px-4 py-3 rounded-md border text-center text-2xl tracking-widest ${
                   errors.mfaCode ? 'border-red-500' : 'border-border'
                 } bg-input-background`}
@@ -207,7 +209,9 @@ export function Login({ onSuccess, onRegisterClick }: LoginProps) {
               <button
                 type="button"
                 className="text-sm text-[#FF3000] hover:underline"
-                onClick={() => showToast('info', 'Password Reset', 'Password reset link sent to your email')}
+                onClick={() =>
+                  showToast('info', 'Password Reset', 'Password reset link sent to your email')
+                }
               >
                 Forgot password?
               </button>

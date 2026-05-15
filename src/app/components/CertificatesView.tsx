@@ -71,7 +71,7 @@ export function CertificatesView() {
               onSelectCertificate={setSelectedCertificate}
               onExport={() =>
                 exportCertificatesToCSV(
-                  allCertificates.map(cert => ({
+                  allCertificates.map((cert) => ({
                     name: cert.name,
                     shortName: cert.shortName,
                     status: cert.status,
@@ -229,20 +229,22 @@ function CertificatesContent({
           </div>
           <div className="flex gap-2">
             <button
-              onClick={() => printCertificateReport(
-                certificates.map(cert => ({
-                  name: cert.name,
-                  shortName: cert.shortName,
-                  status: cert.status,
-                  daysToExpiry: cert.daysToExpiry,
-                  expiryDate: cert.expiryDate,
-                  certificateNumber: cert.certificateNumber,
-                  isApiVerified: cert.isApiVerified,
-                  issuingAuthority: cert.issuingAuthority,
-                  issuedDate: cert.issuedDate,
-                })),
-                'My Company'
-              )}
+              onClick={() =>
+                printCertificateReport(
+                  certificates.map((cert) => ({
+                    name: cert.name,
+                    shortName: cert.shortName,
+                    status: cert.status,
+                    daysToExpiry: cert.daysToExpiry,
+                    expiryDate: cert.expiryDate,
+                    certificateNumber: cert.certificateNumber,
+                    isApiVerified: cert.isApiVerified,
+                    issuingAuthority: cert.issuingAuthority,
+                    issuedDate: cert.issuedDate,
+                  })),
+                  'My Company'
+                )
+              }
               className="px-4 py-2 min-h-[44px] rounded-md border border-border hover:bg-muted transition-colors flex items-center justify-center gap-2 shrink-0"
             >
               <FileText className="w-4 h-4" aria-hidden="true" />

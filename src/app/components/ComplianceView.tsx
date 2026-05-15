@@ -12,12 +12,60 @@ interface ComplianceCheck {
 }
 
 const MOCK_CHECKS: ComplianceCheck[] = [
-  { id: '1', name: 'NHIA Certificate Status', description: 'Verify NHIA certificate is valid and not expired', status: 'passed', lastChecked: '2025-05-10', nextDue: '2026-05-10', category: 'Health Insurance' },
-  { id: '2', name: 'Pension Clearance', description: 'Verify pension contributions are current', status: 'passed', lastChecked: '2025-05-08', nextDue: '2026-03-31', category: 'Labor Compliance' },
-  { id: '3', name: 'NSITF Coverage', description: 'Verify NSITF coverage for all employees', status: 'pending', lastChecked: '2025-04-15', nextDue: '2025-05-15', category: 'Labor Compliance' },
-  { id: '4', name: 'FIRS Tax Compliance', description: 'Verify tax filings are up to date', status: 'warning', lastChecked: '2025-03-20', nextDue: '2025-04-20', category: 'Tax' },
-  { id: '5', name: 'BPP Registration', description: 'Verify BPP registration is current', status: 'passed', lastChecked: '2025-05-01', nextDue: '2026-05-01', category: 'Regulatory' },
-  { id: '6', name: 'ITF Compliance', description: 'Verify ITF training fund contributions', status: 'failed', lastChecked: '2025-05-12', nextDue: 'Overdue', category: 'Training' },
+  {
+    id: '1',
+    name: 'NHIA Certificate Status',
+    description: 'Verify NHIA certificate is valid and not expired',
+    status: 'passed',
+    lastChecked: '2025-05-10',
+    nextDue: '2026-05-10',
+    category: 'Health Insurance',
+  },
+  {
+    id: '2',
+    name: 'Pension Clearance',
+    description: 'Verify pension contributions are current',
+    status: 'passed',
+    lastChecked: '2025-05-08',
+    nextDue: '2026-03-31',
+    category: 'Labor Compliance',
+  },
+  {
+    id: '3',
+    name: 'NSITF Coverage',
+    description: 'Verify NSITF coverage for all employees',
+    status: 'pending',
+    lastChecked: '2025-04-15',
+    nextDue: '2025-05-15',
+    category: 'Labor Compliance',
+  },
+  {
+    id: '4',
+    name: 'FIRS Tax Compliance',
+    description: 'Verify tax filings are up to date',
+    status: 'warning',
+    lastChecked: '2025-03-20',
+    nextDue: '2025-04-20',
+    category: 'Tax',
+  },
+  {
+    id: '5',
+    name: 'BPP Registration',
+    description: 'Verify BPP registration is current',
+    status: 'passed',
+    lastChecked: '2025-05-01',
+    nextDue: '2026-05-01',
+    category: 'Regulatory',
+  },
+  {
+    id: '6',
+    name: 'ITF Compliance',
+    description: 'Verify ITF training fund contributions',
+    status: 'failed',
+    lastChecked: '2025-05-12',
+    nextDue: 'Overdue',
+    category: 'Training',
+  },
 ];
 
 export function ComplianceView() {
@@ -29,19 +77,21 @@ export function ComplianceView() {
     setTimeout(() => setIsRefreshing(false), 1500);
   };
 
-  const passedCount = checks.filter(c => c.status === 'passed').length;
-  const failedCount = checks.filter(c => c.status === 'failed').length;
-  const pendingCount = checks.filter(c => c.status === 'pending').length;
-  const warningCount = checks.filter(c => c.status === 'warning').length;
+  const passedCount = checks.filter((c) => c.status === 'passed').length;
+  const failedCount = checks.filter((c) => c.status === 'failed').length;
+  const pendingCount = checks.filter((c) => c.status === 'pending').length;
+  const warningCount = checks.filter((c) => c.status === 'warning').length;
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="cp-page-title">Compliance Checks</h1>
-          <p className="text-muted-foreground mt-1">Run and monitor compliance verification checks</p>
+          <p className="text-muted-foreground mt-1">
+            Run and monitor compliance verification checks
+          </p>
         </div>
-        <button 
+        <button
           onClick={handleRefresh}
           disabled={isRefreshing}
           className="inline-flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors disabled:opacity-50"

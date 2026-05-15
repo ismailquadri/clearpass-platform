@@ -1,4 +1,13 @@
-import { Briefcase, TrendingUp, DollarSign, Users, AlertCircle, Building2, Calendar, Search } from 'lucide-react';
+import {
+  Briefcase,
+  TrendingUp,
+  DollarSign,
+  Users,
+  AlertCircle,
+  Building2,
+  Calendar,
+  Search,
+} from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { usePartnerClients } from '../api';
 import { ApiState, EmptyState } from './ui';
@@ -12,7 +21,13 @@ export function PartnerPortfolioView() {
     <div className="flex-1 h-full overflow-y-auto bg-background">
       <div className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto">
         <ApiState query={clientsQuery} loading={<TableSkeleton rows={5} />}>
-          {(clients) => <PortfolioContent clients={clients} searchQuery={searchQuery} setSearchQuery={setSearchQuery} />}
+          {(clients) => (
+            <PortfolioContent
+              clients={clients}
+              searchQuery={searchQuery}
+              setSearchQuery={setSearchQuery}
+            />
+          )}
         </ApiState>
       </div>
     </div>
@@ -30,10 +45,11 @@ function PortfolioContent({ clients, searchQuery, setSearchQuery }: PortfolioCon
   const filteredClients = useMemo(() => {
     if (!searchQuery) return clients;
     const q = searchQuery.toLowerCase();
-    return clients.filter(client =>
-      client.companyName?.toLowerCase().includes(q) ||
-      client.rcNumber?.toLowerCase().includes(q) ||
-      client.sector?.toLowerCase().includes(q)
+    return clients.filter(
+      (client) =>
+        client.companyName?.toLowerCase().includes(q) ||
+        client.rcNumber?.toLowerCase().includes(q) ||
+        client.sector?.toLowerCase().includes(q)
     );
   }, [clients, searchQuery]);
 
@@ -59,21 +75,23 @@ function PortfolioContent({ clients, searchQuery, setSearchQuery }: PortfolioCon
   // Sector distribution
   const sectorDistribution = useMemo(() => {
     const sectors: Record<string, number> = {};
-    filteredClients.forEach(client => {
+    filteredClients.forEach((client) => {
       const sector = client.sector || 'Other';
       sectors[sector] = (sectors[sector] || 0) + 1;
     });
-    return Object.entries(sectors).map(([name, count]) => ({
-      name,
-      count,
-      percentage: Math.round((count / filteredClients.length) * 100),
-    })).sort((a, b) => b.count - a.count);
+    return Object.entries(sectors)
+      .map(([name, count]) => ({
+        name,
+        count,
+        percentage: Math.round((count / filteredClients.length) * 100),
+      }))
+      .sort((a, b) => b.count - a.count);
   }, [filteredClients]);
 
   // Sector performance (average score by sector)
   const sectorPerformance = useMemo(() => {
     const sectorScores: Record<string, { total: number; count: number }> = {};
-    filteredClients.forEach(client => {
+    filteredClients.forEach((client) => {
       const sector = client.sector || 'Other';
       if (!sectorScores[sector]) {
         sectorScores[sector] = { total: 0, count: 0 };
@@ -81,24 +99,26 @@ function PortfolioContent({ clients, searchQuery, setSearchQuery }: PortfolioCon
       sectorScores[sector].total += client.score;
       sectorScores[sector].count += 1;
     });
-    return Object.entries(sectorScores).map(([name, data]) => ({
-      name,
-      averageScore: Math.round(data.total / data.count),
-      clientCount: data.count,
-    })).sort((a, b) => b.averageScore - a.averageScore);
+    return Object.entries(sectorScores)
+      .map(([name, data]) => ({
+        name,
+        averageScore: Math.round(data.total / data.count),
+        clientCount: data.count,
+      }))
+      .sort((a, b) => b.averageScore - a.averageScore);
   }, [filteredClients]);
 
   // Renewal forecast (next 90 days)
   const renewalForecast = useMemo(() => {
     const now = new Date();
     const ninetyDaysLater = new Date(now.getTime() + 90 * 24 * 60 * 60 * 1000);
-    
+
     return filteredClients
-      .filter(c => {
+      .filter((c) => {
         const expiryDate = new Date(c.nextExpiry);
         return expiryDate > now && expiryDate <= ninetyDaysLater;
       })
-      .map(c => ({
+      .map((c) => ({
         ...c,
         estimatedRenewalCost: c.monthlyFee * 12, // Annual cost estimate
       }))
@@ -111,20 +131,23 @@ function PortfolioContent({ clients, searchQuery, setSearchQuery }: PortfolioCon
   const newClientsThisMonth = useMemo(() => {
     const oneMonthAgo = new Date();
     oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
-    return filteredClients.filter(c => new Date(c.createdAt) >= oneMonthAgo).length;
+    return filteredClients.filter((c) => new Date(c.createdAt) >= oneMonthAgo).length;
   }, [filteredClients]);
 
-  const atRiskClients = filteredClients.filter(c => c.status === 'critical' || c.status === 'attention').length;
+  const atRiskClients = filteredClients.filter(
+    (c) => c.status === 'critical' || c.status === 'attention'
+  ).length;
 
   // Certificate health metrics
   const expiringSoonCertificates = useMemo(() => {
-    return filteredClients.reduce((sum, c) => sum + (c.totalCertificates - c.activeCertificates), 0);
+    return filteredClients.reduce(
+      (sum, c) => sum + (c.totalCertificates - c.activeCertificates),
+      0
+    );
   }, [filteredClients]);
 
   const certificateHealthRate = useMemo(() => {
-    return totalCertificates > 0
-      ? Math.round((activeCertificates / totalCertificates) * 100)
-      : 0;
+    return totalCertificates > 0 ? Math.round((activeCertificates / totalCertificates) * 100) : 0;
   }, [totalCertificates, activeCertificates]);
 
   if (filteredClients.length === 0 && searchQuery) {
@@ -192,14 +215,22 @@ function PortfolioContent({ clients, searchQuery, setSearchQuery }: PortfolioCon
           value={`${averageHealthScore}/100`}
           subtitle="Average across all clients"
           icon={TrendingUp}
-          color={averageHealthScore >= 80 ? '#FF3000' : averageHealthScore >= 50 ? '#FFA500' : '#FF3000'}
+          color={
+            averageHealthScore >= 80 ? '#FF3000' : averageHealthScore >= 50 ? '#FFA500' : '#FF3000'
+          }
         />
         <PortfolioKpiCard
           label="Certificate Health"
           value={`${certificateHealthRate}%`}
           subtitle={`${activeCertificates}/${totalCertificates} active`}
           icon={Briefcase}
-          color={certificateHealthRate >= 80 ? '#FF3000' : certificateHealthRate >= 50 ? '#FFA500' : '#FF3000'}
+          color={
+            certificateHealthRate >= 80
+              ? '#FF3000'
+              : certificateHealthRate >= 50
+                ? '#FFA500'
+                : '#FF3000'
+          }
         />
         <PortfolioKpiCard
           label="At-Risk Clients"
@@ -246,9 +277,7 @@ function PortfolioContent({ clients, searchQuery, setSearchQuery }: PortfolioCon
         {/* Sector Distribution */}
         <div className="bg-card border border-border rounded-lg p-4 sm:p-5">
           <div className="flex items-center justify-between mb-4">
-            <h3 style={{ fontSize: '18px', fontWeight: 600 }}>
-              Sector Distribution
-            </h3>
+            <h3 style={{ fontSize: '18px', fontWeight: 600 }}>Sector Distribution</h3>
             <Building2 className="w-5 h-5 text-muted-foreground" />
           </div>
           <div className="space-y-3">
@@ -277,20 +306,32 @@ function PortfolioContent({ clients, searchQuery, setSearchQuery }: PortfolioCon
         {/* Sector Performance */}
         <div className="bg-card border border-border rounded-lg p-4 sm:p-5">
           <div className="flex items-center justify-between mb-4">
-            <h3 style={{ fontSize: '18px', fontWeight: 600 }}>
-              Sector Performance
-            </h3>
+            <h3 style={{ fontSize: '18px', fontWeight: 600 }}>Sector Performance</h3>
             <TrendingUp className="w-5 h-5 text-muted-foreground" />
           </div>
           <div className="space-y-3">
             {sectorPerformance.map((sector) => (
-              <div key={sector.name} className="flex items-center justify-between p-3 bg-muted rounded-md">
+              <div
+                key={sector.name}
+                className="flex items-center justify-between p-3 bg-muted rounded-md"
+              >
                 <div>
                   <p style={{ fontSize: '14px', fontWeight: 500 }}>{sector.name}</p>
                   <p className="caption text-muted-foreground">{sector.clientCount} clients</p>
                 </div>
                 <div className="text-right">
-                  <p style={{ fontSize: '18px', fontWeight: 600, color: sector.averageScore >= 80 ? '#FF3000' : sector.averageScore >= 50 ? '#FFA500' : '#FF3000' }}>
+                  <p
+                    style={{
+                      fontSize: '18px',
+                      fontWeight: 600,
+                      color:
+                        sector.averageScore >= 80
+                          ? '#FF3000'
+                          : sector.averageScore >= 50
+                            ? '#FFA500'
+                            : '#FF3000',
+                    }}
+                  >
                     {sector.averageScore}/100
                   </p>
                   <p className="caption text-muted-foreground">Avg Score</p>
@@ -305,16 +346,14 @@ function PortfolioContent({ clients, searchQuery, setSearchQuery }: PortfolioCon
       <div className="bg-card border border-border rounded-lg p-4 sm:p-5 mb-6">
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h3 style={{ fontSize: '18px', fontWeight: 600 }}>
-              Renewal Forecast (Next 90 Days)
-            </h3>
+            <h3 style={{ fontSize: '18px', fontWeight: 600 }}>Renewal Forecast (Next 90 Days)</h3>
             <p className="text-muted-foreground" style={{ fontSize: '14px' }}>
               Estimated renewal costs for upcoming certificate expirations
             </p>
           </div>
           <Calendar className="w-5 h-5 text-muted-foreground" />
         </div>
-        
+
         <div className="mb-4 p-3 bg-muted rounded-md">
           <div className="flex items-center justify-between">
             <span style={{ fontSize: '14px', fontWeight: 500 }}>Total Estimated Renewal Cost</span>
@@ -343,9 +382,7 @@ function PortfolioContent({ clients, searchQuery, setSearchQuery }: PortfolioCon
                 </div>
                 <div className="text-right">
                   <p style={{ fontSize: '14px', fontWeight: 500 }}>{client.nextExpiry}</p>
-                  <p className="caption text-muted-foreground">
-                    {client.daysToExpiry} days
-                  </p>
+                  <p className="caption text-muted-foreground">{client.daysToExpiry} days</p>
                 </div>
                 <div className="text-right ml-4">
                   <p style={{ fontSize: '14px', fontWeight: 600 }}>
@@ -370,13 +407,7 @@ interface PortfolioKpiCardProps {
   color?: string;
 }
 
-function PortfolioKpiCard({
-  label,
-  value,
-  subtitle,
-  icon: Icon,
-  color,
-}: PortfolioKpiCardProps) {
+function PortfolioKpiCard({ label, value, subtitle, icon: Icon, color }: PortfolioKpiCardProps) {
   return (
     <div className="bg-card border border-border rounded-lg p-4 sm:p-5">
       <div className="flex items-center justify-between mb-3">

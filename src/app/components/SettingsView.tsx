@@ -108,11 +108,11 @@ export function SettingsView() {
         const prefs = JSON.parse(savedPrefs);
         // eslint-disable-next-line react-hooks/set-state-in-effect
         if (prefs.emailNotifications) setEmailNotifications(prefs.emailNotifications);
-        // eslint-disable-next-line react-hooks/set-state-in-effect
+
         if (prefs.smsNotifications) setSmsNotifications(prefs.smsNotifications);
-        // eslint-disable-next-line react-hooks/set-state-in-effect
+
         if (prefs.certAlerts) setCertAlerts(prefs.certAlerts);
-        // eslint-disable-next-line react-hooks/set-state-in-effect
+
         if (prefs.alertChannels) setAlertChannels(prefs.alertChannels);
       } catch {
         console.error('Failed to load notification preferences:', error);
@@ -507,19 +507,30 @@ export function SettingsView() {
                 <button
                   onClick={() => setIsShareableLinkModalOpen(true)}
                   className="px-4 py-2 rounded-md border transition-colors text-sm font-medium hover:opacity-90"
-                  style={{ borderColor: accentBorder, color: accentColor, backgroundColor: 'transparent' }}
-                  onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.backgroundColor = accentBg; }}
-                  onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.backgroundColor = 'transparent'; }}
+                  style={{
+                    borderColor: accentBorder,
+                    color: accentColor,
+                    backgroundColor: 'transparent',
+                  }}
+                  onMouseEnter={(e) => {
+                    (e.currentTarget as HTMLButtonElement).style.backgroundColor = accentBg;
+                  }}
+                  onMouseLeave={(e) => {
+                    (e.currentTarget as HTMLButtonElement).style.backgroundColor = 'transparent';
+                  }}
                 >
                   Generate Link
                 </button>
               </div>
               <p className="text-sm text-muted-foreground mb-4">
-                Generate a shareable link to let MDAs verify your compliance status without requiring them to log in to ClearPass.
+                Generate a shareable link to let MDAs verify your compliance status without
+                requiring them to log in to ClearPass.
               </p>
               <div className="flex items-center gap-2 text-sm">
                 <CheckCircle2 className="w-4 h-4 text-green-600" />
-                <span className="text-muted-foreground">Links are read-only and can be deactivated at any time</span>
+                <span className="text-muted-foreground">
+                  Links are read-only and can be deactivated at any time
+                </span>
               </div>
             </div>
 

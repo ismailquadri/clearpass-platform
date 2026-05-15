@@ -152,7 +152,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setState({ user, isLoading: false, isAuthenticated: true });
       } catch {
         localStorage.removeItem(STORAGE_KEY);
-        // eslint-disable-next-line react-hooks/set-state-in-effect
+
         setState({ user: null, isLoading: false, isAuthenticated: false });
       }
     } else {

@@ -121,12 +121,8 @@ export function Sidebar({
             {getInitials(userProfile.name)}
           </div>
           <div className="flex-1 overflow-hidden text-left">
-            <p className="truncate text-xs">
-              {userProfile.name}
-            </p>
-            <p className="text-muted-foreground truncate text-sm">
-              {userProfile.email}
-            </p>
+            <p className="truncate text-xs">{userProfile.name}</p>
+            <p className="text-muted-foreground truncate text-sm">{userProfile.email}</p>
           </div>
         </button>
       </div>
@@ -216,7 +212,6 @@ function SidebarGroup({
               {item.badge && (
                 <span
                   className="text-white px-1.5 py-0.5 rounded-full text-[11px] font-semibold bg-[#FF3000]"
-                  
                   aria-label={`${item.badge} unread`}
                 >
                   {item.badge}

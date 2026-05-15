@@ -164,7 +164,8 @@ export function PartnerReportsView() {
             </div>
 
             <p className="text-sm text-muted-foreground mb-6">
-              Are you sure you want to delete this report? This will permanently remove the report from your account.
+              Are you sure you want to delete this report? This will permanently remove the report
+              from your account.
             </p>
 
             <div className="flex gap-3">
@@ -246,9 +247,21 @@ function ReportsContent({
       {/* Summary Stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6">
         <StatCard label="Total Reports" value={reports.length.toString()} icon={FileText} />
-        <StatCard label="Ready to Download" value={reports.filter(r => r.status === 'ready').length.toString()} icon={Download} />
-        <StatCard label="Generating" value={reports.filter(r => r.status === 'generating').length.toString()} icon={Calendar} />
-        <StatCard label="Clients with Reports" value={new Set(reports.map(r => r.clientId)).size.toString()} icon={FileText} />
+        <StatCard
+          label="Ready to Download"
+          value={reports.filter((r) => r.status === 'ready').length.toString()}
+          icon={Download}
+        />
+        <StatCard
+          label="Generating"
+          value={reports.filter((r) => r.status === 'generating').length.toString()}
+          icon={Calendar}
+        />
+        <StatCard
+          label="Clients with Reports"
+          value={new Set(reports.map((r) => r.clientId)).size.toString()}
+          icon={FileText}
+        />
       </div>
 
       {/* Search and Filter */}
@@ -277,22 +290,24 @@ function ReportsContent({
             role="group"
             aria-label="Report type filters"
           >
-            {(['all', 'compliance', 'certificate', 'activity', 'portfolio'] as const).map((type) => (
-              <button
-                key={type}
-                onClick={() => setFilterType(type)}
-                aria-pressed={filterType === type}
-                className={`px-3 sm:px-4 py-2 min-h-[40px] rounded-md transition-colors whitespace-nowrap ${
-                  filterType === type ? 'bg-card shadow-sm' : 'hover:bg-card/50'
-                }`}
-                style={{
-                  fontSize: '14px',
-                  fontWeight: filterType === type ? 500 : 400,
-                }}
-              >
-                {type === 'all' ? 'All Types' : reportTypeLabels[type]}
-              </button>
-            ))}
+            {(['all', 'compliance', 'certificate', 'activity', 'portfolio'] as const).map(
+              (type) => (
+                <button
+                  key={type}
+                  onClick={() => setFilterType(type)}
+                  aria-pressed={filterType === type}
+                  className={`px-3 sm:px-4 py-2 min-h-[40px] rounded-md transition-colors whitespace-nowrap ${
+                    filterType === type ? 'bg-card shadow-sm' : 'hover:bg-card/50'
+                  }`}
+                  style={{
+                    fontSize: '14px',
+                    fontWeight: filterType === type ? 500 : 400,
+                  }}
+                >
+                  {type === 'all' ? 'All Types' : reportTypeLabels[type]}
+                </button>
+              )
+            )}
           </div>
         </div>
       </div>
@@ -353,8 +368,11 @@ function ReportCard({ report, onDownload, onView, onDelete }: ReportCardProps) {
     }
   };
 
-  // eslint-disable-next-line react-hooks/purity
-  const daysAgo = Math.floor((Date.now() - new Date(report.generatedAt).getTime()) / (1000 * 60 * 60 * 24));
+  /* eslint-disable react-hooks/purity */
+  const daysAgo = Math.floor(
+    (Date.now() - new Date(report.generatedAt).getTime()) / (1000 * 60 * 60 * 24)
+  );
+  /* eslint-enable react-hooks/purity */
 
   return (
     <div className="bg-card border border-border rounded-lg p-4 sm:p-5">
@@ -388,7 +406,11 @@ function ReportCard({ report, onDownload, onView, onDelete }: ReportCardProps) {
               <div>
                 <p className="caption text-muted-foreground mb-1">Expires</p>
                 <p style={{ fontSize: '14px', fontWeight: 500 }}>
-                  {new Date(report.expiryDate).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
+                  {new Date(report.expiryDate).toLocaleDateString('en-GB', {
+                    day: 'numeric',
+                    month: 'short',
+                    year: 'numeric',
+                  })}
                 </p>
               </div>
             )}
@@ -470,16 +492,19 @@ function GenerateReportModal({ clients, onClose, onGenerate }: GenerateReportMod
       <div className="bg-card rounded-lg w-full max-w-md">
         <div className="p-6 border-b border-border">
           <div className="flex items-center justify-between">
-            <h2 style={{ fontSize: '20px', fontWeight: 600 }}>
-              Generate Report
-            </h2>
+            <h2 style={{ fontSize: '20px', fontWeight: 600 }}>Generate Report</h2>
             <button
               onClick={onClose}
               className="p-2 hover:bg-muted rounded-md transition-colors"
               aria-label="Close modal"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M6 18L18 6M6 6l12 12"
+                />
               </svg>
             </button>
           </div>
@@ -487,7 +512,11 @@ function GenerateReportModal({ clients, onClose, onGenerate }: GenerateReportMod
 
         <div className="p-6 space-y-4">
           <div>
-            <label htmlFor="client-select" className="block mb-2" style={{ fontSize: '14px', fontWeight: 500 }}>
+            <label
+              htmlFor="client-select"
+              className="block mb-2"
+              style={{ fontSize: '14px', fontWeight: 500 }}
+            >
               Select Client
             </label>
             <select
@@ -507,7 +536,11 @@ function GenerateReportModal({ clients, onClose, onGenerate }: GenerateReportMod
           </div>
 
           <div>
-            <label htmlFor="report-type" className="block mb-2" style={{ fontSize: '14px', fontWeight: 500 }}>
+            <label
+              htmlFor="report-type"
+              className="block mb-2"
+              style={{ fontSize: '14px', fontWeight: 500 }}
+            >
               Report Type
             </label>
             <select

@@ -50,7 +50,11 @@ function writeWatchlist(items: WatchlistCompany[]) {
   }
 }
 
-function deriveWatchlistFields(v: { score: number; status: WatchlistCompany['status']; certificates: Array<{ expiryDate: string; status: string }> }) {
+function deriveWatchlistFields(v: {
+  score: number;
+  status: WatchlistCompany['status'];
+  certificates: Array<{ expiryDate: string; status: string }>;
+}) {
   const today = new Date();
   const validDates = v.certificates
     .map((c) => c.expiryDate)
@@ -58,11 +62,15 @@ function deriveWatchlistFields(v: { score: number; status: WatchlistCompany['sta
     .map((d) => new Date(d))
     .filter((d) => !Number.isNaN(d.getTime()));
   const nearest = validDates.length ? validDates.reduce((a, b) => (a < b ? a : b)) : null;
-  const days = nearest ? Math.ceil((nearest.getTime() - today.getTime()) / (1000 * 60 * 60 * 24)) : 0;
+  const days = nearest
+    ? Math.ceil((nearest.getTime() - today.getTime()) / (1000 * 60 * 60 * 24))
+    : 0;
   return {
     score: v.score,
     status: v.status,
-    nearestExpiry: nearest ? nearest.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : 'N/A',
+    nearestExpiry: nearest
+      ? nearest.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
+      : 'N/A',
     daysToExpiry: nearest ? days : 0,
   };
 }
@@ -70,7 +78,12 @@ function deriveWatchlistFields(v: { score: number; status: WatchlistCompany['sta
 function statusCfg(status: WatchlistCompany['status']) {
   switch (status) {
     case 'procurement-ready':
-      return { icon: CheckCircle2, color: 'var(--mda-success)', bg: 'var(--mda-success-light)', label: 'Procurement Ready' };
+      return {
+        icon: CheckCircle2,
+        color: 'var(--mda-success)',
+        bg: 'var(--mda-success-light)',
+        label: 'Procurement Ready',
+      };
     case 'attention-required':
       return { icon: AlertTriangle, color: '#F59E0B', bg: '#fef3c7', label: 'Attention Required' };
     case 'ineligible':
@@ -86,9 +99,17 @@ export function MDAWatchlistView() {
   const [isAdding, setIsAdding] = useState(false);
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
 
-  const prevSnapshots = useRef<Map<string, { score: number; status: WatchlistCompany['status']; nearestExpiry: string; daysToExpiry: number }>>(
-    new Map()
-  );
+  const prevSnapshots = useRef<
+    Map<
+      string,
+      {
+        score: number;
+        status: WatchlistCompany['status'];
+        nearestExpiry: string;
+        daysToExpiry: number;
+      }
+    >
+  >(new Map());
 
   useEffect(() => {
     writeWatchlist(watchlist);
@@ -97,10 +118,10 @@ export function MDAWatchlistView() {
   const filtered = useMemo(
     () =>
       watchlist.filter(
-    (c) =>
-      search === '' ||
-      c.companyName.toLowerCase().includes(search.toLowerCase()) ||
-      c.rcNumber.toLowerCase().includes(search.toLowerCase())
+        (c) =>
+          search === '' ||
+          c.companyName.toLowerCase().includes(search.toLowerCase()) ||
+          c.rcNumber.toLowerCase().includes(search.toLowerCase())
       ),
     [watchlist, search]
   );
@@ -142,11 +163,15 @@ export function MDAWatchlistView() {
           prev.daysToExpiry !== derived.daysToExpiry;
         if (changed) {
           const alertsOn =
-            watchlist.find((w) => w.rcNumber.toUpperCase() === rcNumber.toUpperCase())?.alertsEnabled ??
-            true;
+            watchlist.find((w) => w.rcNumber.toUpperCase() === rcNumber.toUpperCase())
+              ?.alertsEnabled ?? true;
           if (alertsOn && noisy) {
             showToast(
-              derived.status === 'ineligible' ? 'error' : derived.status === 'attention-required' ? 'info' : 'success',
+              derived.status === 'ineligible'
+                ? 'error'
+                : derived.status === 'attention-required'
+                  ? 'info'
+                  : 'success',
               'Watchlist Update',
               `${rcNumber.toUpperCase()} is now ${derived.status.replace('-', ' ')}`
             );
@@ -206,7 +231,11 @@ export function MDAWatchlistView() {
         status: v.status,
         certificates: v.certificates.map((c) => ({ expiryDate: c.expiryDate, status: c.status })),
       });
-      const nowLabel = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+      const nowLabel = new Date().toLocaleDateString('en-GB', {
+        day: 'numeric',
+        month: 'short',
+        year: 'numeric',
+      });
       const newEntry: WatchlistCompany = {
         id: `w${Date.now()}`,
         companyName: v.companyName || 'Unknown Vendor',
@@ -233,7 +262,9 @@ export function MDAWatchlistView() {
 
   const toggleAlerts = (id: string) => {
     const company = watchlist.find((c) => c.id === id);
-    setWatchlist((prev) => prev.map((c) => (c.id === id ? { ...c, alertsEnabled: !c.alertsEnabled } : c)));
+    setWatchlist((prev) =>
+      prev.map((c) => (c.id === id ? { ...c, alertsEnabled: !c.alertsEnabled } : c))
+    );
     if (company) {
       showToast(
         'info',
@@ -291,16 +322,26 @@ export function MDAWatchlistView() {
         {/* Summary tiles */}
         <div className="grid grid-cols-3 gap-3 mb-5">
           <div className="bg-card border border-border rounded-lg p-3 sm:p-4">
-            <p className="text-muted-foreground" style={{ fontSize: '12px' }}>Watching</p>
+            <p className="text-muted-foreground" style={{ fontSize: '12px' }}>
+              Watching
+            </p>
             <p style={{ fontSize: '24px', fontWeight: 700 }}>{watchlist.length}</p>
           </div>
           <div className="bg-card border border-border rounded-lg p-3 sm:p-4">
-            <p className="text-muted-foreground" style={{ fontSize: '12px' }}>Alerts On</p>
-            <p style={{ fontSize: '24px', fontWeight: 700, color: 'var(--mda-success)' }}>{watchlist.filter((c) => c.alertsEnabled).length}</p>
+            <p className="text-muted-foreground" style={{ fontSize: '12px' }}>
+              Alerts On
+            </p>
+            <p style={{ fontSize: '24px', fontWeight: 700, color: 'var(--mda-success)' }}>
+              {watchlist.filter((c) => c.alertsEnabled).length}
+            </p>
           </div>
           <div className="bg-card border border-border rounded-lg p-3 sm:p-4">
-            <p className="text-muted-foreground" style={{ fontSize: '12px' }}>Need Attention</p>
-            <p style={{ fontSize: '24px', fontWeight: 700, color: 'var(--mda-primary)' }}>{watchlist.filter((c) => c.status !== 'procurement-ready').length}</p>
+            <p className="text-muted-foreground" style={{ fontSize: '12px' }}>
+              Need Attention
+            </p>
+            <p style={{ fontSize: '24px', fontWeight: 700, color: 'var(--mda-primary)' }}>
+              {watchlist.filter((c) => c.status !== 'procurement-ready').length}
+            </p>
           </div>
         </div>
 
@@ -340,7 +381,12 @@ export function MDAWatchlistView() {
                       <h3 style={{ fontSize: '15px', fontWeight: 600 }}>{company.companyName}</h3>
                       <span
                         className="flex items-center gap-1 px-2 py-0.5 rounded-full"
-                        style={{ backgroundColor: cfg.bg, color: cfg.color, fontSize: '11px', fontWeight: 500 }}
+                        style={{
+                          backgroundColor: cfg.bg,
+                          color: cfg.color,
+                          fontSize: '11px',
+                          fontWeight: 500,
+                        }}
                       >
                         <StatusIcon className="w-3 h-3" aria-hidden="true" />
                         {cfg.label}
@@ -348,7 +394,9 @@ export function MDAWatchlistView() {
                     </div>
                     <div className="flex flex-wrap gap-3 text-muted-foreground">
                       <span style={{ fontSize: '13px' }}>{company.rcNumber}</span>
-                      <span style={{ fontSize: '13px' }}>Score: <strong style={{ color: cfg.color }}>{company.score}</strong>/100</span>
+                      <span style={{ fontSize: '13px' }}>
+                        Score: <strong style={{ color: cfg.color }}>{company.score}</strong>/100
+                      </span>
                       <span style={{ fontSize: '13px' }}>
                         {company.daysToExpiry < 0
                           ? `Expired ${Math.abs(company.daysToExpiry)}d ago`
@@ -365,11 +413,17 @@ export function MDAWatchlistView() {
                       onClick={() => toggleAlerts(company.id)}
                       className="p-2 rounded-md border border-border hover:bg-muted transition-colors"
                       aria-label={company.alertsEnabled ? 'Disable alerts' : 'Enable alerts'}
-                      title={company.alertsEnabled ? 'Alerts on — click to disable' : 'Alerts off — click to enable'}
+                      title={
+                        company.alertsEnabled
+                          ? 'Alerts on — click to disable'
+                          : 'Alerts off — click to enable'
+                      }
                     >
-                      {company.alertsEnabled
-                        ? <Bell className="w-4 h-4" style={{ color: 'var(--mda-primary)' }} />
-                        : <BellOff className="w-4 h-4 text-muted-foreground" />}
+                      {company.alertsEnabled ? (
+                        <Bell className="w-4 h-4" style={{ color: 'var(--mda-primary)' }} />
+                      ) : (
+                        <BellOff className="w-4 h-4 text-muted-foreground" />
+                      )}
                     </button>
                     <button
                       onClick={() => {
@@ -391,8 +445,18 @@ export function MDAWatchlistView() {
                     </button>
                     {deleteConfirm === company.id ? (
                       <div className="flex gap-1">
-                        <button onClick={() => handleRemove(company.id)} className="px-2 py-1 rounded text-white bg-red-600 text-xs">Remove</button>
-                        <button onClick={() => setDeleteConfirm(null)} className="px-2 py-1 rounded border text-xs">Cancel</button>
+                        <button
+                          onClick={() => handleRemove(company.id)}
+                          className="px-2 py-1 rounded text-white bg-red-600 text-xs"
+                        >
+                          Remove
+                        </button>
+                        <button
+                          onClick={() => setDeleteConfirm(null)}
+                          className="px-2 py-1 rounded border text-xs"
+                        >
+                          Cancel
+                        </button>
                       </div>
                     ) : (
                       <button

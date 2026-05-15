@@ -29,7 +29,9 @@ export interface GenerateMDAVerificationReportInput {
 
 function readMockReports(): MDAVerificationReport[] {
   try {
-    return JSON.parse(localStorage.getItem(MOCK_MDA_REPORTS_KEY) || '[]') as MDAVerificationReport[];
+    return JSON.parse(
+      localStorage.getItem(MOCK_MDA_REPORTS_KEY) || '[]'
+    ) as MDAVerificationReport[];
   } catch {
     return [];
   }
@@ -68,7 +70,10 @@ export async function generateMDAVerificationReport(
       id: `mock-${now.getTime()}`,
       report_type: 'verification',
       rc_number: input.rc_number.toUpperCase(),
-      company_name: input.rc_number.toUpperCase() === 'RC1234567' ? 'TechVentures Nigeria Ltd' : 'Unknown Vendor',
+      company_name:
+        input.rc_number.toUpperCase() === 'RC1234567'
+          ? 'TechVentures Nigeria Ltd'
+          : 'Unknown Vendor',
       generated_at: now.toISOString(),
       generated_by: 'Engr. Bello Adamu',
       pdf_url: '#',

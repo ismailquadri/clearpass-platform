@@ -1,4 +1,13 @@
-import { Search, FileCheck, Activity, BarChart3, Settings, Star, QrCode, LayoutDashboard } from 'lucide-react';
+import {
+  Search,
+  FileCheck,
+  Activity,
+  BarChart3,
+  Settings,
+  Star,
+  QrCode,
+  LayoutDashboard,
+} from 'lucide-react';
 import { useState } from 'react';
 import { ProfileModal } from './ProfileModal';
 import { useAuth } from '../context/AuthContext';
@@ -63,7 +72,12 @@ export function MDASidebar({
   return (
     <aside className={`${fluid ? 'w-full' : 'w-56 lg:w-64'} h-full bg-card flex flex-col`}>
       <div className="px-4 h-[70px] flex items-center border-b border-border">
-        <img src="/nhia-logo.png" alt="National Health Insurance Authority" className="w-full h-auto object-contain" style={{ maxHeight: '48px' }} />
+        <img
+          src="/nhia-logo.png"
+          alt="National Health Insurance Authority"
+          className="w-full h-auto object-contain"
+          style={{ maxHeight: '48px' }}
+        />
       </div>
 
       <nav aria-label="NHIA portal navigation" className="flex-1 p-3 overflow-y-auto">
@@ -87,7 +101,10 @@ export function MDASidebar({
           onClick={() => setIsProfileOpen(true)}
           className="w-full flex items-center gap-2 px-2 py-1.5 hover:bg-muted rounded-md transition-colors"
         >
-          <div className="w-7 h-7 rounded-full flex items-center justify-center text-white text-xs font-bold" style={{ backgroundColor: 'var(--mda-primary)' }}>
+          <div
+            className="w-7 h-7 rounded-full flex items-center justify-center text-white text-xs font-bold"
+            style={{ backgroundColor: 'var(--mda-primary)' }}
+          >
             {getInitials(userProfile.name)}
           </div>
           <div className="flex-1 overflow-hidden text-left">

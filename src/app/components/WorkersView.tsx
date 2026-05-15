@@ -12,19 +12,44 @@ interface Worker {
 }
 
 const MOCK_WORKERS: Worker[] = [
-  { id: '1', name: 'Chidi Okafor', email: 'chidi.okafor@company.com', department: 'Engineering', role: 'Senior Developer', status: 'active', addedDate: '2024-01-15' },
-  { id: '2', name: 'Amina Bello', email: 'amina.bello@company.com', department: 'Finance', role: 'Accountant', status: 'active', addedDate: '2024-02-20' },
-  { id: '3', name: 'Emeka Nwosu', email: 'emeka.nwosu@company.com', department: 'Operations', role: 'Operations Manager', status: 'active', addedDate: '2023-11-08' },
+  {
+    id: '1',
+    name: 'Chidi Okafor',
+    email: 'chidi.okafor@company.com',
+    department: 'Engineering',
+    role: 'Senior Developer',
+    status: 'active',
+    addedDate: '2024-01-15',
+  },
+  {
+    id: '2',
+    name: 'Amina Bello',
+    email: 'amina.bello@company.com',
+    department: 'Finance',
+    role: 'Accountant',
+    status: 'active',
+    addedDate: '2024-02-20',
+  },
+  {
+    id: '3',
+    name: 'Emeka Nwosu',
+    email: 'emeka.nwosu@company.com',
+    department: 'Operations',
+    role: 'Operations Manager',
+    status: 'active',
+    addedDate: '2023-11-08',
+  },
 ];
 
 export function WorkersView() {
   const [workers] = useState<Worker[]>(MOCK_WORKERS);
   const [searchQuery, setSearchQuery] = useState('');
 
-  const filteredWorkers = workers.filter(worker =>
-    worker.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    worker.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    worker.department.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredWorkers = workers.filter(
+    (worker) =>
+      worker.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      worker.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      worker.department.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   return (
@@ -69,7 +94,9 @@ export function WorkersView() {
               <CheckCircle2 className="h-5 w-5 text-green-500" />
             </div>
             <div>
-              <p className="text-2xl font-bold">{workers.filter(w => w.status === 'active').length}</p>
+              <p className="text-2xl font-bold">
+                {workers.filter((w) => w.status === 'active').length}
+              </p>
               <p className="text-sm text-muted-foreground">Active</p>
             </div>
           </div>
@@ -80,7 +107,9 @@ export function WorkersView() {
               <Shield className="h-5 w-5 text-amber-500" />
             </div>
             <div>
-              <p className="text-2xl font-bold">{workers.filter(w => w.status === 'pending').length}</p>
+              <p className="text-2xl font-bold">
+                {workers.filter((w) => w.status === 'pending').length}
+              </p>
               <p className="text-sm text-muted-foreground">Pending Review</p>
             </div>
           </div>
@@ -91,12 +120,24 @@ export function WorkersView() {
         <table className="w-full">
           <thead className="bg-muted/50">
             <tr>
-              <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Name</th>
-              <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Email</th>
-              <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Department</th>
-              <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Role</th>
-              <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Status</th>
-              <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Added</th>
+              <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">
+                Name
+              </th>
+              <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">
+                Email
+              </th>
+              <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">
+                Department
+              </th>
+              <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">
+                Role
+              </th>
+              <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">
+                Status
+              </th>
+              <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">
+                Added
+              </th>
             </tr>
           </thead>
           <tbody className="divide-y divide-border">
@@ -107,11 +148,15 @@ export function WorkersView() {
                 <td className="px-4 py-3 text-sm text-muted-foreground">{worker.department}</td>
                 <td className="px-4 py-3 text-sm text-muted-foreground">{worker.role}</td>
                 <td className="px-4 py-3">
-                  <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
-                    worker.status === 'active' ? 'bg-green-500/10 text-green-500' :
-                    worker.status === 'pending' ? 'bg-amber-500/10 text-amber-500' :
-                    'bg-muted text-muted-foreground'
-                  }`}>
+                  <span
+                    className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
+                      worker.status === 'active'
+                        ? 'bg-green-500/10 text-green-500'
+                        : worker.status === 'pending'
+                          ? 'bg-amber-500/10 text-amber-500'
+                          : 'bg-muted text-muted-foreground'
+                    }`}
+                  >
                     {worker.status.charAt(0).toUpperCase() + worker.status.slice(1)}
                   </span>
                 </td>

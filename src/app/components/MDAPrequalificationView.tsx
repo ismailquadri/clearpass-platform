@@ -1,4 +1,14 @@
-import { Download, Upload, Plus, CheckCircle2, XCircle, AlertTriangle, Trash2, Eye, X } from 'lucide-react';
+import {
+  Download,
+  Upload,
+  Plus,
+  CheckCircle2,
+  XCircle,
+  AlertTriangle,
+  Trash2,
+  Eye,
+  X,
+} from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useToast } from './ToastProvider';
 import { AddVendorModal } from './AddVendorModal';
@@ -83,7 +93,10 @@ export function MDAPrequalificationView() {
       const raw = localStorage.getItem('clearpass.mda.prequalification.pendingVendor');
       if (!raw) return;
       localStorage.removeItem('clearpass.mda.prequalification.pendingVendor');
-      const pending = JSON.parse(raw) as Pick<Vendor, 'rcNumber' | 'companyName' | 'score' | 'status'>;
+      const pending = JSON.parse(raw) as Pick<
+        Vendor,
+        'rcNumber' | 'companyName' | 'score' | 'status'
+      >;
       if (!pending.rcNumber || vendors.some((v) => v.rcNumber === pending.rcNumber)) return;
       const submissionDate = new Date().toLocaleDateString('en-GB', {
         day: 'numeric',
@@ -561,62 +574,64 @@ export function MDAPrequalificationView() {
           </div>
         </div>
 
-      {/* Modals */}
-      <AddVendorModal
-        isOpen={isAddVendorModalOpen}
-        onClose={() => setIsAddVendorModalOpen(false)}
-        onAddVendor={handleAddVendor}
-      />
+        {/* Modals */}
+        <AddVendorModal
+          isOpen={isAddVendorModalOpen}
+          onClose={() => setIsAddVendorModalOpen(false)}
+          onAddVendor={handleAddVendor}
+        />
 
-      <ImportBiddersModal
-        isOpen={isImportBiddersModalOpen}
-        onClose={() => setIsImportBiddersModalOpen(false)}
-        onImportBidders={handleImportBidders}
-      />
+        <ImportBiddersModal
+          isOpen={isImportBiddersModalOpen}
+          onClose={() => setIsImportBiddersModalOpen(false)}
+          onImportBidders={handleImportBidders}
+        />
 
-      {selectedVendor && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-          <div className="bg-card border border-border rounded-lg w-full max-w-md p-6">
-            <div className="flex items-start justify-between mb-5">
-              <div>
-                <h2 className="text-xl font-semibold">Vendor Details</h2>
-                <p className="text-muted-foreground text-sm mt-1">{selectedVendor.rcNumber}</p>
+        {selectedVendor && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+            <div className="bg-card border border-border rounded-lg w-full max-w-md p-6">
+              <div className="flex items-start justify-between mb-5">
+                <div>
+                  <h2 className="text-xl font-semibold">Vendor Details</h2>
+                  <p className="text-muted-foreground text-sm mt-1">{selectedVendor.rcNumber}</p>
+                </div>
+                <button
+                  onClick={() => setSelectedVendor(null)}
+                  className="p-2 rounded-md hover:bg-muted"
+                  aria-label="Close details"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+              <div className="space-y-3 text-sm">
+                <div className="flex justify-between gap-4">
+                  <span className="text-muted-foreground">Company</span>
+                  <span className="font-medium text-right">{selectedVendor.companyName}</span>
+                </div>
+                <div className="flex justify-between gap-4">
+                  <span className="text-muted-foreground">Score</span>
+                  <span className="font-medium">{selectedVendor.score}/100</span>
+                </div>
+                <div className="flex justify-between gap-4">
+                  <span className="text-muted-foreground">Status</span>
+                  <span className="font-medium">
+                    {getStatusConfig(selectedVendor.status).label}
+                  </span>
+                </div>
+                <div className="flex justify-between gap-4">
+                  <span className="text-muted-foreground">Submission Date</span>
+                  <span className="font-medium">{selectedVendor.submissionDate}</span>
+                </div>
               </div>
               <button
                 onClick={() => setSelectedVendor(null)}
-                className="p-2 rounded-md hover:bg-muted"
-                aria-label="Close details"
+                className="mt-6 w-full px-4 py-2.5 rounded-md border border-border hover:bg-muted transition-colors"
               >
-                <X className="w-5 h-5" />
+                Close
               </button>
             </div>
-            <div className="space-y-3 text-sm">
-              <div className="flex justify-between gap-4">
-                <span className="text-muted-foreground">Company</span>
-                <span className="font-medium text-right">{selectedVendor.companyName}</span>
-              </div>
-              <div className="flex justify-between gap-4">
-                <span className="text-muted-foreground">Score</span>
-                <span className="font-medium">{selectedVendor.score}/100</span>
-              </div>
-              <div className="flex justify-between gap-4">
-                <span className="text-muted-foreground">Status</span>
-                <span className="font-medium">{getStatusConfig(selectedVendor.status).label}</span>
-              </div>
-              <div className="flex justify-between gap-4">
-                <span className="text-muted-foreground">Submission Date</span>
-                <span className="font-medium">{selectedVendor.submissionDate}</span>
-              </div>
-            </div>
-            <button
-              onClick={() => setSelectedVendor(null)}
-              className="mt-6 w-full px-4 py-2.5 rounded-md border border-border hover:bg-muted transition-colors"
-            >
-              Close
-            </button>
           </div>
-        </div>
-      )}
+        )}
       </div>
     </div>
   );

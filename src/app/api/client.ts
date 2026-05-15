@@ -22,9 +22,7 @@ function readEnv(): Env {
   const apiBaseUrl = (import.meta.env.VITE_API_BASE_URL as string | undefined) ?? '';
   const useMocksRaw = (import.meta.env.VITE_USE_MOCKS as string | undefined) ?? 'true';
   const useMocks = useMocksRaw !== 'false';
-  const mockLatencyMs = Number(
-    (import.meta.env.VITE_MOCK_LATENCY_MS as string | undefined) ?? 350
-  );
+  const mockLatencyMs = Number((import.meta.env.VITE_MOCK_LATENCY_MS as string | undefined) ?? 350);
   return { apiBaseUrl, useMocks, mockLatencyMs };
 }
 

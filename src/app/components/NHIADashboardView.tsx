@@ -1,7 +1,16 @@
 import {
-  CheckCircle2, XCircle, AlertTriangle, Search, Star,
-  TrendingUp, Activity, ArrowRight, QrCode, FileCheck,
-  BarChart3, Clock,
+  CheckCircle2,
+  XCircle,
+  AlertTriangle,
+  Search,
+  Star,
+  TrendingUp,
+  Activity,
+  ArrowRight,
+  QrCode,
+  FileCheck,
+  BarChart3,
+  Clock,
 } from 'lucide-react';
 import '../../app/styles/mda-theme.css';
 import { useCountUp } from '../hooks/useCountUp';
@@ -50,30 +59,78 @@ const STATS = [
 ];
 
 const RECENT = [
-  { rc: 'RC1234567', company: 'TechVentures Nigeria Ltd', score: 92, status: 'procurement-ready' as const, time: '10 min ago' },
-  { rc: 'RC7654321', company: 'BuildCo Construction Ltd', score: 74, status: 'attention-required' as const, time: '28 min ago' },
-  { rc: 'RC9876543', company: 'Alpha Services Ltd', score: 28, status: 'ineligible' as const, time: '1 hr ago' },
-  { rc: 'RC1122334', company: 'ProServe Engineering', score: 88, status: 'procurement-ready' as const, time: '2 hrs ago' },
-  { rc: 'RC5566778', company: 'Delta Logistics Ltd', score: 65, status: 'attention-required' as const, time: '3 hrs ago' },
+  {
+    rc: 'RC1234567',
+    company: 'TechVentures Nigeria Ltd',
+    score: 92,
+    status: 'procurement-ready' as const,
+    time: '10 min ago',
+  },
+  {
+    rc: 'RC7654321',
+    company: 'BuildCo Construction Ltd',
+    score: 74,
+    status: 'attention-required' as const,
+    time: '28 min ago',
+  },
+  {
+    rc: 'RC9876543',
+    company: 'Alpha Services Ltd',
+    score: 28,
+    status: 'ineligible' as const,
+    time: '1 hr ago',
+  },
+  {
+    rc: 'RC1122334',
+    company: 'ProServe Engineering',
+    score: 88,
+    status: 'procurement-ready' as const,
+    time: '2 hrs ago',
+  },
+  {
+    rc: 'RC5566778',
+    company: 'Delta Logistics Ltd',
+    score: 65,
+    status: 'attention-required' as const,
+    time: '3 hrs ago',
+  },
 ];
 
 const QUICK_ACTIONS = [
-  { id: 'verify', label: 'Verify a Vendor', desc: 'Enter RC number for instant check', icon: Search },
+  {
+    id: 'verify',
+    label: 'Verify a Vendor',
+    desc: 'Enter RC number for instant check',
+    icon: Search,
+  },
   { id: 'scan', label: 'Scan QR Document', desc: 'Use camera to scan compliance QR', icon: QrCode },
-  { id: 'prequalification', label: 'Pre-Qualification', desc: 'Manage tender bid lists', icon: FileCheck },
-  { id: 'reports', label: 'Verification Reports', desc: 'View and download past reports', icon: BarChart3 },
+  {
+    id: 'prequalification',
+    label: 'Pre-Qualification',
+    desc: 'Manage tender bid lists',
+    icon: FileCheck,
+  },
+  {
+    id: 'reports',
+    label: 'Verification Reports',
+    desc: 'View and download past reports',
+    icon: BarChart3,
+  },
 ];
 
 function statusCfg(s: 'procurement-ready' | 'attention-required' | 'ineligible') {
   switch (s) {
-    case 'procurement-ready': return { color: 'var(--mda-success)', bg: 'var(--mda-success-light)', label: 'Eligible' };
-    case 'attention-required': return { color: 'var(--mda-warning)', bg: 'var(--mda-warning-light)', label: 'Review' };
-    case 'ineligible': return { color: 'var(--mda-error)', bg: 'var(--mda-error-light)', label: 'Ineligible' };
+    case 'procurement-ready':
+      return { color: 'var(--mda-success)', bg: 'var(--mda-success-light)', label: 'Eligible' };
+    case 'attention-required':
+      return { color: 'var(--mda-warning)', bg: 'var(--mda-warning-light)', label: 'Review' };
+    case 'ineligible':
+      return { color: 'var(--mda-error)', bg: 'var(--mda-error-light)', label: 'Ineligible' };
   }
 }
 
 interface StatCardProps {
-  stat: typeof STATS[number];
+  stat: (typeof STATS)[number];
   delay: number;
 }
 
@@ -88,31 +145,43 @@ function StatCard({ stat, delay }: StatCardProps) {
         <p className="text-muted-foreground" style={{ fontSize: '12px', fontWeight: 500 }}>
           {stat.label}
         </p>
-        <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0" style={{ backgroundColor: stat.bg }}>
+        <div
+          className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0"
+          style={{ backgroundColor: stat.bg }}
+        >
           <Icon className="w-4 h-4" style={{ color: stat.color }} />
         </div>
       </div>
-      <p className="tabnum cp-stat-num" style={{ fontSize: '28px', fontWeight: 700, color: stat.color, lineHeight: 1 }}>
+      <p
+        className="tabnum cp-stat-num"
+        style={{ fontSize: '28px', fontWeight: 700, color: stat.color, lineHeight: 1 }}
+      >
         {formatted}
       </p>
-      <p className="text-muted-foreground mt-1.5" style={{ fontSize: '11px' }}>{stat.delta}</p>
+      <p className="text-muted-foreground mt-1.5" style={{ fontSize: '11px' }}>
+        {stat.delta}
+      </p>
     </div>
   );
 }
 
 export function NHIADashboardView({ onNavigate }: NHIADashboardViewProps) {
   const today = new Date().toLocaleDateString('en-NG', {
-    weekday: 'long', day: 'numeric', month: 'long', year: 'numeric',
+    weekday: 'long',
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
   });
 
   return (
     <div className="flex-1 h-full overflow-y-auto bg-background">
       <div className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto space-y-6">
-
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3">
           <div>
-            <p className="text-muted-foreground mb-1" style={{ fontSize: '13px' }}>{today}</p>
+            <p className="text-muted-foreground mb-1" style={{ fontSize: '13px' }}>
+              {today}
+            </p>
             <h1 className="cp-page-title">NHIA Verification Dashboard</h1>
             <p className="text-muted-foreground mt-1" style={{ fontSize: '14px' }}>
               Real-time compliance intelligence for procurement officers
@@ -137,7 +206,6 @@ export function NHIADashboardView({ onNavigate }: NHIADashboardViewProps) {
 
         {/* Main content grid */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
-
           {/* Recent verifications */}
           <div className="lg:col-span-2 bg-card border border-border rounded-xl overflow-hidden">
             <div className="flex items-center justify-between px-5 py-4 border-b border-border">
@@ -157,10 +225,17 @@ export function NHIADashboardView({ onNavigate }: NHIADashboardViewProps) {
               {RECENT.map((v) => {
                 const cfg = statusCfg(v.status);
                 return (
-                  <div key={v.rc} className="flex items-center justify-between px-5 py-3.5 hover:bg-muted/30 transition-colors">
+                  <div
+                    key={v.rc}
+                    className="flex items-center justify-between px-5 py-3.5 hover:bg-muted/30 transition-colors"
+                  >
                     <div className="flex-1 min-w-0">
-                      <p className="font-medium truncate" style={{ fontSize: '14px' }}>{v.company}</p>
-                      <p className="text-muted-foreground" style={{ fontSize: '12px' }}>{v.rc}</p>
+                      <p className="font-medium truncate" style={{ fontSize: '14px' }}>
+                        {v.company}
+                      </p>
+                      <p className="text-muted-foreground" style={{ fontSize: '12px' }}>
+                        {v.rc}
+                      </p>
                     </div>
                     <div className="flex items-center gap-3 shrink-0 ml-3">
                       <span
@@ -169,10 +244,21 @@ export function NHIADashboardView({ onNavigate }: NHIADashboardViewProps) {
                       >
                         {cfg.label}
                       </span>
-                      <span style={{ fontSize: '22px', fontWeight: 700, color: cfg.color, minWidth: '40px', textAlign: 'right' }}>
+                      <span
+                        style={{
+                          fontSize: '22px',
+                          fontWeight: 700,
+                          color: cfg.color,
+                          minWidth: '40px',
+                          textAlign: 'right',
+                        }}
+                      >
                         {v.score}
                       </span>
-                      <span className="text-muted-foreground hidden sm:block" style={{ fontSize: '11px', minWidth: '60px', textAlign: 'right' }}>
+                      <span
+                        className="text-muted-foreground hidden sm:block"
+                        style={{ fontSize: '11px', minWidth: '60px', textAlign: 'right' }}
+                      >
                         {v.time}
                       </span>
                     </div>
@@ -198,12 +284,19 @@ export function NHIADashboardView({ onNavigate }: NHIADashboardViewProps) {
                       onClick={() => onNavigate(action.id)}
                       className="w-full flex items-center gap-3 px-5 py-3.5 hover:bg-[var(--mda-bg-light)] transition-colors text-left group"
                     >
-                      <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0" style={{ backgroundColor: 'var(--mda-bg-light)' }}>
+                      <div
+                        className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0"
+                        style={{ backgroundColor: 'var(--mda-bg-light)' }}
+                      >
                         <Icon className="w-4 h-4" style={{ color: 'var(--mda-primary)' }} />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="font-medium" style={{ fontSize: '13px' }}>{action.label}</p>
-                        <p className="text-muted-foreground" style={{ fontSize: '11px' }}>{action.desc}</p>
+                        <p className="font-medium" style={{ fontSize: '13px' }}>
+                          {action.label}
+                        </p>
+                        <p className="text-muted-foreground" style={{ fontSize: '11px' }}>
+                          {action.desc}
+                        </p>
                       </div>
                       <ArrowRight className="w-4 h-4 text-muted-foreground shrink-0" />
                     </button>
@@ -230,8 +323,15 @@ export function NHIADashboardView({ onNavigate }: NHIADashboardViewProps) {
                       style={{ color: api.ok ? 'var(--mda-success)' : 'var(--mda-warning)' }}
                     >
                       <span
-                        className={api.ok ? 'cp-live-dot w-1.5 h-1.5 rounded-full' : 'w-1.5 h-1.5 rounded-full'}
-                        style={{ backgroundColor: api.ok ? 'var(--mda-success)' : 'var(--mda-warning)', color: api.ok ? 'var(--mda-success)' : undefined }}
+                        className={
+                          api.ok
+                            ? 'cp-live-dot w-1.5 h-1.5 rounded-full'
+                            : 'w-1.5 h-1.5 rounded-full'
+                        }
+                        style={{
+                          backgroundColor: api.ok ? 'var(--mda-success)' : 'var(--mda-warning)',
+                          color: api.ok ? 'var(--mda-success)' : undefined,
+                        }}
                       />
                       {api.ok ? 'Live' : 'Degraded'}
                     </span>

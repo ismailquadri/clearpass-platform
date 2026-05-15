@@ -129,7 +129,8 @@ export function ImportBiddersModal({ isOpen, onClose, onImportBidders }: ImportB
   };
 
   const handleDownloadTemplate = () => {
-    const template = 'RC Number,Company Name\nRC1234567,Example Company Ltd\nRC7654321,Another Corp';
+    const template =
+      'RC Number,Company Name\nRC1234567,Example Company Ltd\nRC7654321,Another Corp';
     const blob = new Blob([template], { type: 'text/csv' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -201,11 +202,13 @@ export function ImportBiddersModal({ isOpen, onClose, onImportBidders }: ImportB
                 onDrop={handleDrop}
                 onClick={() => fileInputRef.current?.click()}
                 className={`border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition-colors ${
-                  isDragging
-                    ? 'border-border bg-muted/50'
-                    : 'border-border hover:bg-muted/50'
+                  isDragging ? 'border-border bg-muted/50' : 'border-border hover:bg-muted/50'
                 }`}
-                style={isDragging ? { borderColor: 'var(--mda-primary)', backgroundColor: 'var(--mda-bg-light)' } : {}}
+                style={
+                  isDragging
+                    ? { borderColor: 'var(--mda-primary)', backgroundColor: 'var(--mda-bg-light)' }
+                    : {}
+                }
               >
                 <Upload className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
                 <p style={{ fontSize: '16px', fontWeight: 500 }} className="mb-2">

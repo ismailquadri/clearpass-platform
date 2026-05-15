@@ -108,10 +108,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
                 <Icon className="w-4 h-4" style={{ color: config.iconColor }} />
               </div>
               <div className="flex-1 min-w-0">
-                <p
-                  className="leading-tight text-sm"
-                  style={{ color: config.textColor }}
-                >
+                <p className="leading-tight text-sm" style={{ color: config.textColor }}>
                   {toast.title}
                 </p>
                 {toast.message && (

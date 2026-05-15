@@ -198,20 +198,30 @@ export function PartnerBillingView() {
         <RevenueShareBar partnerPct={config.partnerPct} clearpassPct={config.clearpassPct} />
 
         {/* Client Fee Breakdown */}
-        <ClientFeeBreakdown fees={CLIENT_FEES} fmt={fmt} onDownload={() =>
-          showToast('success', 'Downloading', 'Client fee breakdown PDF downloading…')
-        } />
+        <ClientFeeBreakdown
+          fees={CLIENT_FEES}
+          fmt={fmt}
+          onDownload={() =>
+            showToast('success', 'Downloading', 'Client fee breakdown PDF downloading…')
+          }
+        />
 
         {/* Payout History */}
-        <PayoutHistory records={PAYOUT_HISTORY} fmt={fmt} onDownload={(id) =>
-          showToast('success', 'Downloading', `Payout statement ${id} PDF downloading…`)
-        } />
+        <PayoutHistory
+          records={PAYOUT_HISTORY}
+          fmt={fmt}
+          onDownload={(id) =>
+            showToast('success', 'Downloading', `Payout statement ${id} PDF downloading…`)
+          }
+        />
 
         {/* Subscription / Platform Fee */}
         <PlatformFeeCard
           model={partnerModel}
           fmt={fmt}
-          onUpdate={() => showToast('info', 'Payment Method', 'Redirecting to Paystack to update your card…')}
+          onUpdate={() =>
+            showToast('info', 'Payment Method', 'Redirecting to Paystack to update your card…')
+          }
         />
       </div>
     </div>
@@ -336,7 +346,10 @@ function RevenueShareBar({
       </div>
       <div className="flex gap-4">
         <div className="flex items-center gap-1.5">
-          <span className="w-3 h-3 rounded-sm inline-block" style={{ backgroundColor: '#FF3000' }} />
+          <span
+            className="w-3 h-3 rounded-sm inline-block"
+            style={{ backgroundColor: '#FF3000' }}
+          />
           <span className="text-muted-foreground" style={{ fontSize: '12px' }}>
             Your earnings ({partnerPct}%)
           </span>
@@ -405,7 +418,10 @@ function ClientFeeBreakdown({
                 <td className="py-3" style={{ fontSize: '13px' }}>
                   {fmt(fee.monthlyFee)}
                 </td>
-                <td className="py-3" style={{ fontSize: '13px', fontWeight: 600, color: '#FF3000' }}>
+                <td
+                  className="py-3"
+                  style={{ fontSize: '13px', fontWeight: 600, color: '#FF3000' }}
+                >
                   {fmt(fee.partnerShare)}
                 </td>
                 <td className="py-3 text-muted-foreground" style={{ fontSize: '13px' }}>
@@ -423,10 +439,7 @@ function ClientFeeBreakdown({
       {/* Mobile */}
       <div className="sm:hidden space-y-3">
         {fees.map((fee) => (
-          <div
-            key={fee.rcNumber}
-            className="p-3 rounded-lg border border-border bg-background"
-          >
+          <div key={fee.rcNumber} className="p-3 rounded-lg border border-border bg-background">
             <div className="flex items-start justify-between mb-2">
               <div>
                 <p style={{ fontSize: '14px', fontWeight: 500 }}>{fee.clientName}</p>
@@ -485,17 +498,23 @@ function PayoutHistory({
         <table className="w-full">
           <thead>
             <tr className="border-b border-border">
-              {['Period', 'Total Fees', 'Your Earnings', 'ClearPass', 'Status', 'Paid Date', ''].map(
-                (h) => (
-                  <th
-                    key={h}
-                    className="text-left pb-2 text-muted-foreground"
-                    style={{ fontSize: '12px', fontWeight: 500 }}
-                  >
-                    {h}
-                  </th>
-                )
-              )}
+              {[
+                'Period',
+                'Total Fees',
+                'Your Earnings',
+                'ClearPass',
+                'Status',
+                'Paid Date',
+                '',
+              ].map((h) => (
+                <th
+                  key={h}
+                  className="text-left pb-2 text-muted-foreground"
+                  style={{ fontSize: '12px', fontWeight: 500 }}
+                >
+                  {h}
+                </th>
+              ))}
             </tr>
           </thead>
           <tbody>
@@ -507,7 +526,10 @@ function PayoutHistory({
                 <td className="py-3" style={{ fontSize: '13px' }}>
                   {fmt(rec.totalFees)}
                 </td>
-                <td className="py-3" style={{ fontSize: '13px', fontWeight: 600, color: '#FF3000' }}>
+                <td
+                  className="py-3"
+                  style={{ fontSize: '13px', fontWeight: 600, color: '#FF3000' }}
+                >
                   {fmt(rec.partnerEarnings)}
                 </td>
                 <td className="py-3 text-muted-foreground" style={{ fontSize: '13px' }}>
@@ -603,7 +625,10 @@ function PlatformFeeCard({
           </p>
         </div>
         <div className="flex flex-col sm:flex-row gap-3">
-          <span style={{ fontSize: '20px', fontWeight: 700 }}>{fmt(25000)}<span style={{ fontSize: '13px', fontWeight: 400 }}>/mo</span></span>
+          <span style={{ fontSize: '20px', fontWeight: 700 }}>
+            {fmt(25000)}
+            <span style={{ fontSize: '13px', fontWeight: 400 }}>/mo</span>
+          </span>
           <button
             onClick={onUpdate}
             className="flex items-center justify-center gap-2 px-4 py-2 min-h-[40px] rounded-md border border-border hover:bg-muted transition-colors w-full sm:w-auto"

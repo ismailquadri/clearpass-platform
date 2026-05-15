@@ -88,7 +88,7 @@ export function DetailedAuditTrailView() {
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
     loadEntries();
-    // eslint-disable-next-line react-hooks/set-state-in-effect
+
     loadStats();
   }, [filters, searchQuery, dateRange]); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -115,7 +115,11 @@ export function DetailedAuditTrailView() {
   };
 
   const handleClearOldEntries = () => {
-    if (window.confirm('Are you sure you want to delete audit entries older than 90 days? This action cannot be undone.')) {
+    if (
+      window.confirm(
+        'Are you sure you want to delete audit entries older than 90 days? This action cannot be undone.'
+      )
+    ) {
       const deletedCount = auditTrail.clearOldEntries(90);
       loadEntries();
       loadStats();
@@ -199,7 +203,14 @@ export function DetailedAuditTrailView() {
     'mda.verification_performed',
   ];
 
-  const entityTypes: EntityType[] = ['certificate', 'company', 'user', 'compliance', 'mda_verification', 'document'];
+  const entityTypes: EntityType[] = [
+    'certificate',
+    'company',
+    'user',
+    'compliance',
+    'mda_verification',
+    'document',
+  ];
 
   return (
     <div className="flex-1 h-full overflow-y-auto bg-background">
@@ -228,7 +239,11 @@ export function DetailedAuditTrailView() {
               >
                 <Filter className="w-4 h-4" />
                 <span className="hidden sm:inline">Filters</span>
-                {showFilters ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                {showFilters ? (
+                  <ChevronUp className="w-4 h-4" />
+                ) : (
+                  <ChevronDown className="w-4 h-4" />
+                )}
               </button>
               <button
                 onClick={handleExport}
@@ -246,7 +261,9 @@ export function DetailedAuditTrailView() {
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4 mb-6">
             <div className="bg-card border border-border rounded-lg p-4">
               <p className="text-xs text-muted-foreground mb-1">Total Entries</p>
-              <p style={{ fontSize: '24px', fontWeight: 600 }}>{stats.totalEntries.toLocaleString()}</p>
+              <p style={{ fontSize: '24px', fontWeight: 600 }}>
+                {stats.totalEntries.toLocaleString()}
+              </p>
             </div>
             <div className="bg-card border border-border rounded-lg p-4">
               <p className="text-xs text-muted-foreground mb-1">Today</p>
@@ -392,9 +409,7 @@ export function DetailedAuditTrailView() {
         {/* Audit Entries Table */}
         <div className="bg-card border border-border rounded-lg overflow-hidden">
           <div className="p-4 border-b border-border flex items-center justify-between">
-            <h2 style={{ fontSize: '18px', fontWeight: 500 }}>
-              Audit Entries ({entries.length})
-            </h2>
+            <h2 style={{ fontSize: '18px', fontWeight: 500 }}>Audit Entries ({entries.length})</h2>
             <button
               onClick={handleClearOldEntries}
               className="px-3 py-1.5 rounded-md border border-red-200 text-red-600 hover:bg-red-50 transition-colors text-sm flex items-center gap-2"
@@ -431,9 +446,7 @@ export function DetailedAuditTrailView() {
                       className="border-b border-border last:border-b-0 hover:bg-muted/30 cursor-pointer"
                       onClick={() => setSelectedEntry(entry)}
                     >
-                      <td className="px-4 py-3 text-sm">
-                        {formatDate(entry.timestamp)}
-                      </td>
+                      <td className="px-4 py-3 text-sm">{formatDate(entry.timestamp)}</td>
                       <td className="px-4 py-3">
                         <div className="flex items-center gap-2">
                           <span className="text-sm font-medium">{entry.description}</span>
@@ -448,7 +461,9 @@ export function DetailedAuditTrailView() {
                       <td className="px-4 py-3">
                         <div>
                           <p className="text-sm font-medium">{entry.entityType}</p>
-                          <p className="text-xs text-muted-foreground font-mono">{entry.entityId}</p>
+                          <p className="text-xs text-muted-foreground font-mono">
+                            {entry.entityId}
+                          </p>
                         </div>
                       </td>
                       <td className="px-4 py-3">
@@ -555,7 +570,9 @@ export function DetailedAuditTrailView() {
                   <div>
                     <p className="text-sm text-muted-foreground mb-1">Entity</p>
                     <p className="text-sm font-medium">{selectedEntry.entityType}</p>
-                    <p className="text-xs text-muted-foreground font-mono">{selectedEntry.entityId}</p>
+                    <p className="text-xs text-muted-foreground font-mono">
+                      {selectedEntry.entityId}
+                    </p>
                   </div>
                 </div>
 
@@ -566,7 +583,9 @@ export function DetailedAuditTrailView() {
                   </div>
                   <div>
                     <p className="text-sm text-muted-foreground mb-1">User Agent</p>
-                    <p className="text-xs text-muted-foreground truncate">{selectedEntry.userAgent}</p>
+                    <p className="text-xs text-muted-foreground truncate">
+                      {selectedEntry.userAgent}
+                    </p>
                   </div>
                 </div>
 

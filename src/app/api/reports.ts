@@ -69,4 +69,3 @@ export function useGenerateReport() {
 export function reportDownloadUrl(id: string): string {
   return `${env.apiBaseUrl}${ENDPOINTS.reports.download(id)}`;
 }
-

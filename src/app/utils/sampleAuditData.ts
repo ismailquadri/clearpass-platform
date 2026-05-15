@@ -30,9 +30,7 @@ export function populateSampleAuditData() {
   });
 
   auditTrail.logCertificateAction('updated', 'cert_002', 'PCC Certificate', testUser2, {
-    changes: [
-      { field: 'expiryDate', oldValue: '2024-12-31', newValue: '2025-12-31' },
-    ],
+    changes: [{ field: 'expiryDate', oldValue: '2024-12-31', newValue: '2025-12-31' }],
   });
 
   auditTrail.logCertificateAction('expired', 'cert_003', 'NSITF Certificate', testUser, {
@@ -64,9 +62,7 @@ export function populateSampleAuditData() {
   });
 
   auditTrail.logUserAction('role_changed', 'user_456', 'Chidi Obi', testUser, {
-    changes: [
-      { field: 'role', oldValue: 'Viewer', newValue: 'Editor' },
-    ],
+    changes: [{ field: 'role', oldValue: 'Viewer', newValue: 'Editor' }],
   });
 
   // Sample compliance actions
@@ -79,9 +75,7 @@ export function populateSampleAuditData() {
   });
 
   auditTrail.logComplianceAction('score_changed', 'compliance_001', testUser, {
-    changes: [
-      { field: 'score', oldValue: 78, newValue: 85 },
-    ],
+    changes: [{ field: 'score', oldValue: 78, newValue: 85 }],
     metadata: { reason: 'NHIA certificate verified' },
   });
 
@@ -114,13 +108,18 @@ export function populateSampleAuditData() {
   );
 
   // Sample security events
-  auditTrail.logSecurityEvent('api.rate_limit_exceeded', 'API rate limit exceeded for user_456', testUser2, {
-    metadata: {
-      endpoint: '/api/certificates',
-      requestsPerMinute: 150,
-      limit: 100,
-    },
-  });
+  auditTrail.logSecurityEvent(
+    'api.rate_limit_exceeded',
+    'API rate limit exceeded for user_456',
+    testUser2,
+    {
+      metadata: {
+        endpoint: '/api/certificates',
+        requestsPerMinute: 150,
+        limit: 100,
+      },
+    }
+  );
 
   // Add some older entries for testing date filtering
   const pastDate = new Date();

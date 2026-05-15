@@ -1,5 +1,13 @@
 import { useState, useEffect } from 'react';
-import { Mail, MessageSquare, RefreshCw, CheckCircle2, XCircle, Clock, AlertTriangle } from 'lucide-react';
+import {
+  Mail,
+  MessageSquare,
+  RefreshCw,
+  CheckCircle2,
+  XCircle,
+  Clock,
+  AlertTriangle,
+} from 'lucide-react';
 import { useToast } from './ToastProvider';
 import { notificationService, type NotificationDelivery } from '../utils/notificationService';
 
@@ -78,11 +86,14 @@ export function NotificationDeliveryMonitor() {
     });
   };
 
-  const totalPending = queue.emails.filter((e) => e.status === 'pending').length +
+  const totalPending =
+    queue.emails.filter((e) => e.status === 'pending').length +
     queue.sms.filter((e) => e.status === 'pending').length;
-  const totalRetrying = queue.emails.filter((e) => e.status === 'retrying').length +
+  const totalRetrying =
+    queue.emails.filter((e) => e.status === 'retrying').length +
     queue.sms.filter((e) => e.status === 'retrying').length;
-  const totalFailed = queue.emails.filter((e) => e.status === 'failed').length +
+  const totalFailed =
+    queue.emails.filter((e) => e.status === 'failed').length +
     queue.sms.filter((e) => e.status === 'failed').length;
 
   return (
@@ -97,9 +108,7 @@ export function NotificationDeliveryMonitor() {
           </div>
           <div>
             <h3 style={{ fontSize: '18px', fontWeight: 600 }}>Notification Delivery</h3>
-            <p className="text-sm text-muted-foreground">
-              Email and SMS delivery status
-            </p>
+            <p className="text-sm text-muted-foreground">Email and SMS delivery status</p>
           </div>
         </div>
         <div className="flex gap-2">
@@ -185,7 +194,10 @@ export function NotificationDeliveryMonitor() {
           {/* Email Queue */}
           {queue.emails.length > 0 && (
             <div>
-              <h4 style={{ fontSize: '14px', fontWeight: 600 }} className="mb-3 flex items-center gap-2">
+              <h4
+                style={{ fontSize: '14px', fontWeight: 600 }}
+                className="mb-3 flex items-center gap-2"
+              >
                 <Mail className="w-4 h-4" />
                 Email Queue ({queue.emails.length})
               </h4>
@@ -231,7 +243,10 @@ export function NotificationDeliveryMonitor() {
           {/* SMS Queue */}
           {queue.sms.length > 0 && (
             <div>
-              <h4 style={{ fontSize: '14px', fontWeight: 600 }} className="mb-3 flex items-center gap-2">
+              <h4
+                style={{ fontSize: '14px', fontWeight: 600 }}
+                className="mb-3 flex items-center gap-2"
+              >
                 <MessageSquare className="w-4 h-4" />
                 SMS Queue ({queue.sms.length})
               </h4>
@@ -306,10 +321,7 @@ export function NotificationDeliveryMonitor() {
           ) : (
             <div className="space-y-2 max-h-96 overflow-y-auto">
               {history.map((delivery) => (
-                <div
-                  key={delivery.id}
-                  className="p-4 border border-border rounded-lg bg-muted/30"
-                >
+                <div key={delivery.id} className="p-4 border border-border rounded-lg bg-muted/30">
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center gap-2">
                       {delivery.type === 'email' ? (
@@ -331,12 +343,8 @@ export function NotificationDeliveryMonitor() {
                     </span>
                   </div>
                   <div className="text-sm">
-                    <p className="text-muted-foreground">
-                      Recipient ID: {delivery.recipientId}
-                    </p>
-                    <p className="text-muted-foreground">
-                      Attempts: {delivery.attempts}
-                    </p>
+                    <p className="text-muted-foreground">Recipient ID: {delivery.recipientId}</p>
+                    <p className="text-muted-foreground">Attempts: {delivery.attempts}</p>
                     {delivery.error && (
                       <p className="text-red-600 text-xs mt-1">{delivery.error}</p>
                     )}

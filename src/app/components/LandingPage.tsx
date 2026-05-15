@@ -281,9 +281,9 @@ function HeroSection({ onGetStarted }: { onGetStarted?: () => void }) {
             animated ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
           }`}
         >
-          Nigerian businesses lose billions in government contracts every year because one certificate
-          lapsed without warning. ClearPass tracks every certificate, scores your readiness, and
-          alerts you before it's too late.
+          Nigerian businesses lose billions in government contracts every year because one
+          certificate lapsed without warning. ClearPass tracks every certificate, scores your
+          readiness, and alerts you before it's too late.
         </p>
 
         {/* CTA Buttons */}
@@ -375,8 +375,8 @@ function HeroSection({ onGetStarted }: { onGetStarted?: () => void }) {
                       cert.status === 'active'
                         ? 'border-green-200 bg-green-50 text-green-700'
                         : cert.status === 'warning'
-                        ? 'border-amber-200 bg-amber-50 text-amber-700'
-                        : 'border-red-200 bg-red-50 text-red-700'
+                          ? 'border-amber-200 bg-amber-50 text-amber-700'
+                          : 'border-red-200 bg-red-50 text-red-700'
                     }`}
                   >
                     {cert.status === 'active' ? (
@@ -397,7 +397,10 @@ function HeroSection({ onGetStarted }: { onGetStarted?: () => void }) {
                 <AlertTriangle className="h-4 w-4 text-amber-600 shrink-0" />
                 <div className="text-sm flex-1">
                   <span className="font-semibold text-amber-700">Action needed:</span>
-                  <span className="text-gray-600"> NSITF expires in 14 days. Renew now to stay bid-eligible.</span>
+                  <span className="text-gray-600">
+                    {' '}
+                    NSITF expires in 14 days. Renew now to stay bid-eligible.
+                  </span>
                 </div>
                 <button className="rounded-lg bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-700 hover:bg-amber-200 transition-colors">
                   Renew
@@ -426,13 +429,17 @@ function LogosSection() {
           Trusted by leading Nigerian contractors
         </p>
         <div className="flex flex-wrap items-center justify-center gap-12 opacity-50">
-          {['Zenith Construction', 'BuildTech Nigeria', 'Metro Engineering', 'Prime Contractors', 'Nigerian Infra'].map(
-            (company) => (
-              <div key={company} className="text-xl font-bold text-gray-400">
-                {company}
-              </div>
-            )
-          )}
+          {[
+            'Zenith Construction',
+            'BuildTech Nigeria',
+            'Metro Engineering',
+            'Prime Contractors',
+            'Nigerian Infra',
+          ].map((company) => (
+            <div key={company} className="text-xl font-bold text-gray-400">
+              {company}
+            </div>
+          ))}
         </div>
       </div>
     </section>
@@ -446,32 +453,38 @@ function FeaturesGrid() {
     {
       icon: <Search className="h-6 w-6" />,
       title: 'Scrape any website',
-      description: 'Extract structured data from any URL with our advanced web scraper. Handles JavaScript, SPA, and dynamic content.',
+      description:
+        'Extract structured data from any URL with our advanced web scraper. Handles JavaScript, SPA, and dynamic content.',
     },
     {
       icon: <Layers className="h-6 w-6" />,
       title: 'Crawl entire sites',
-      description: 'Map entire websites with configurable depth, filters, and rate limiting. Perfect for comprehensive data collection.',
+      description:
+        'Map entire websites with configurable depth, filters, and rate limiting. Perfect for comprehensive data collection.',
     },
     {
       icon: <FileText className="h-6 w-6" />,
       title: 'Markdown output',
-      description: 'Get clean, readable markdown from any webpage. Preserve structure, links, and formatting automatically.',
+      description:
+        'Get clean, readable markdown from any webpage. Preserve structure, links, and formatting automatically.',
     },
     {
       icon: <Code className="h-6 w-6" />,
       title: 'Developer-first API',
-      description: 'RESTful API with comprehensive documentation, SDKs for popular languages, and webhook support.',
+      description:
+        'RESTful API with comprehensive documentation, SDKs for popular languages, and webhook support.',
     },
     {
       icon: <Database className="h-6 w-6" />,
       title: 'Structured data',
-      description: 'Extract JSON, CSV, or HTML with custom schemas. Perfect for AI training data and data pipelines.',
+      description:
+        'Extract JSON, CSV, or HTML with custom schemas. Perfect for AI training data and data pipelines.',
     },
     {
       icon: <Zap className="h-6 w-6" />,
       title: 'Lightning fast',
-      description: 'Async processing with global CDN edge deployment. Get results in seconds, not minutes.',
+      description:
+        'Async processing with global CDN edge deployment. Get results in seconds, not minutes.',
     },
   ];
 
@@ -524,19 +537,22 @@ function HowItWorks() {
     {
       number: '01',
       title: 'Enter a URL',
-      description: 'Start with any URL. Firecrawl will crawl and extract the content, converting it to clean markdown.',
+      description:
+        'Start with any URL. Firecrawl will crawl and extract the content, converting it to clean markdown.',
       code: 'curl -X POST https://api.firecrawl.dev/v0/scrape \\ -d \'{"url":"https://example.com"}\'',
     },
     {
       number: '02',
       title: 'We handle the rest',
-      description: 'Our infrastructure renders JavaScript, handles rate limits, and extracts structured data automatically.',
+      description:
+        'Our infrastructure renders JavaScript, handles rate limits, and extracts structured data automatically.',
       code: '{"data":{"title":"Example","description":"..."}}',
     },
     {
       number: '03',
       title: 'Get structured data',
-      description: 'Receive clean markdown, HTML, or custom structured data ready for AI models or your application.',
+      description:
+        'Receive clean markdown, HTML, or custom structured data ready for AI models or your application.',
     },
   ];
 
@@ -560,13 +576,11 @@ function HowItWorks() {
             <AnimatedSection key={step.number} delay={i * 150}>
               <div className="relative">
                 {/* Step number */}
-                <div className="mb-6 text-6xl font-black text-[#FF3000]/10">
-                  {step.number}
-                </div>
-                
+                <div className="mb-6 text-6xl font-black text-[#FF3000]/10">{step.number}</div>
+
                 <h3 className="text-xl font-bold text-black mb-3">{step.title}</h3>
                 <p className="text-gray-600 leading-relaxed mb-4">{step.description}</p>
-                
+
                 {step.code && (
                   <div className="rounded-xl bg-gray-900 p-4 text-sm font-mono text-gray-300 overflow-x-auto">
                     {step.code}
@@ -598,7 +612,8 @@ function CodeExample() {
                 Built for developers.
               </h2>
               <p className="text-xl text-gray-400 leading-relaxed mb-8">
-                Simple REST API with comprehensive documentation, client libraries, and examples in every language.
+                Simple REST API with comprehensive documentation, client libraries, and examples in
+                every language.
               </p>
               <div className="flex flex-col sm:flex-row gap-4">
                 <button className="rounded-xl bg-white px-6 py-3 text-sm font-semibold text-black hover:bg-gray-100 transition-colors">
@@ -672,19 +687,22 @@ function Testimonials() {
     {
       name: 'Emeka Nwankwo',
       role: 'CEO, Zenith Construction',
-      quote: "We almost lost a ₦2B contract because our NSITF certificate had expired. ClearPass would have prevented that.",
+      quote:
+        'We almost lost a ₦2B contract because our NSITF certificate had expired. ClearPass would have prevented that.',
       avatar: 'EN',
     },
     {
       name: 'Adaeze Okonkwo',
       role: 'Procurement Director',
-      quote: 'We verify contractor compliance in seconds now. What used to take days is now instant and reliable.',
+      quote:
+        'We verify contractor compliance in seconds now. What used to take days is now instant and reliable.',
       avatar: 'AO',
     },
     {
       name: 'Olumide Adeyemi',
       role: 'Partner, Procurement Partners',
-      quote: 'Managing compliance for 40+ clients used to be chaos. Now I have a real-time dashboard showing exactly who needs what.',
+      quote:
+        'Managing compliance for 40+ clients used to be chaos. Now I have a real-time dashboard showing exactly who needs what.',
       avatar: 'OA',
     },
   ];
@@ -837,7 +855,11 @@ function Pricing() {
                       : 'border border-gray-200 text-gray-700 hover:border-gray-300 hover:bg-gray-50'
                   }`}
                 >
-                  {plan.name === 'Starter' ? 'Get started free' : plan.name === 'Pro' ? 'Start free trial' : 'Contact sales'}
+                  {plan.name === 'Starter'
+                    ? 'Get started free'
+                    : plan.name === 'Pro'
+                      ? 'Start free trial'
+                      : 'Contact sales'}
                 </button>
               </div>
             </AnimatedSection>
@@ -906,7 +928,8 @@ function Footer() {
               <span className="text-xl font-bold text-white">ClearPass</span>
             </div>
             <p className="text-sm text-gray-400 max-w-sm leading-relaxed mb-6">
-              Compliance management for Nigerian government contractors, MDAs, and partners. Stay bid-ready, always.
+              Compliance management for Nigerian government contractors, MDAs, and partners. Stay
+              bid-ready, always.
             </p>
             <div className="flex gap-4">
               {[Twitter, Linkedin, Github].map((Icon, i) => (
@@ -943,7 +966,9 @@ function Footer() {
         </div>
 
         <div className="mt-12 pt-8 border-t border-gray-800 flex flex-col md:flex-row items-center justify-between gap-4">
-          <div className="text-sm text-gray-500">© 2026 ClearPass. Built for Nigerian businesses.</div>
+          <div className="text-sm text-gray-500">
+            © 2026 ClearPass. Built for Nigerian businesses.
+          </div>
           <div className="flex items-center gap-2 text-sm text-gray-500">
             <span>Made with</span>
             <Heart className="h-3 w-3 text-[#FF3000]" />

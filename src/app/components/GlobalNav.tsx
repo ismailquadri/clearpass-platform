@@ -1,11 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import {
-  LogOut,
-  User,
-  Settings,
-  Bell,
-  ChevronDown,
-} from 'lucide-react';
+import { LogOut, User, Settings, Bell, ChevronDown } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
 interface GlobalNavProps {
@@ -13,7 +7,10 @@ interface GlobalNavProps {
   activeSection?: string;
 }
 
-export function GlobalNav({ onNavigate, activeSection: _activeSection = 'overview' }: GlobalNavProps) {
+export function GlobalNav({
+  onNavigate,
+  activeSection: _activeSection = 'overview',
+}: GlobalNavProps) {
   const { user, logout } = useAuth();
   const [profileOpen, setProfileOpen] = useState(false);
   const profileRef = useRef<HTMLDivElement>(null);
@@ -71,7 +68,12 @@ export function GlobalNav({ onNavigate, activeSection: _activeSection = 'overvie
             <img
               src="/nhia-logo.png"
               alt="NHIA"
-              style={{ height: '36px', width: 'auto', objectFit: 'cover', objectPosition: 'left center' }}
+              style={{
+                height: '36px',
+                width: 'auto',
+                objectFit: 'cover',
+                objectPosition: 'left center',
+              }}
             />
           </div>
         )}
@@ -118,7 +120,9 @@ export function GlobalNav({ onNavigate, activeSection: _activeSection = 'overvie
           {/* Dropdown */}
           <div
             className={`absolute right-0 top-full mt-2 w-60 rounded-xl border border-border bg-card shadow-lg transition-all duration-150 ${
-              profileOpen ? 'opacity-100 visible translate-y-0' : 'opacity-0 invisible -translate-y-1'
+              profileOpen
+                ? 'opacity-100 visible translate-y-0'
+                : 'opacity-0 invisible -translate-y-1'
             }`}
           >
             <div className="p-4 border-b border-border">
@@ -128,14 +132,20 @@ export function GlobalNav({ onNavigate, activeSection: _activeSection = 'overvie
 
             <div className="p-2">
               <button
-                onClick={() => { onNavigate?.('settings'); setProfileOpen(false); }}
+                onClick={() => {
+                  onNavigate?.('settings');
+                  setProfileOpen(false);
+                }}
                 className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-foreground/80 hover:text-foreground hover:bg-muted transition-colors"
               >
                 <Settings className="h-4 w-4" />
                 Settings
               </button>
               <button
-                onClick={() => { onNavigate?.('company-profile'); setProfileOpen(false); }}
+                onClick={() => {
+                  onNavigate?.('company-profile');
+                  setProfileOpen(false);
+                }}
                 className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-foreground/80 hover:text-foreground hover:bg-muted transition-colors"
               >
                 <User className="h-4 w-4" />

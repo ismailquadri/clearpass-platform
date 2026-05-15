@@ -117,9 +117,9 @@ export function VendorVerificationModal({
     const trimmed = initialQuery.trim();
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setRcNumber(trimmed);
-    // eslint-disable-next-line react-hooks/set-state-in-effect
+
     setVerificationResult(null);
-    // eslint-disable-next-line react-hooks/set-state-in-effect
+
     setError(null);
 
     if (trimmed && autoVerifiedQueryRef.current !== trimmed) {
@@ -144,7 +144,8 @@ export function VendorVerificationModal({
       companyName: verificationResult.companyName,
       rcNumber: verificationResult.rcNumber,
       score: verificationResult.complianceScore,
-      status: verificationResult.status === 'non-compliant' ? 'ineligible' : verificationResult.status,
+      status:
+        verificationResult.status === 'non-compliant' ? 'ineligible' : verificationResult.status,
       certificates: verificationResult.certificates.map((c) => ({
         name: c.name,
         status: c.status,
@@ -153,7 +154,11 @@ export function VendorVerificationModal({
       lastVerified: verificationResult.lastVerified,
       generatedBy: 'Dr. Bello Adamu',
     });
-    showToast('success', 'Report Ready', `Verification report opened for ${verificationResult.companyName}`);
+    showToast(
+      'success',
+      'Report Ready',
+      `Verification report opened for ${verificationResult.companyName}`
+    );
   };
 
   const handleReset = () => {
@@ -291,7 +296,11 @@ export function VendorVerificationModal({
                   aria-live="polite"
                   aria-busy={isVerifying}
                   className="shrink-0 px-4 py-2 rounded-md text-white flex items-center gap-2 disabled:opacity-50"
-                  style={{ backgroundColor: 'var(--mda-primary)', fontSize: '13px', fontWeight: '500' }}
+                  style={{
+                    backgroundColor: 'var(--mda-primary)',
+                    fontSize: '13px',
+                    fontWeight: '500',
+                  }}
                 >
                   {isVerifying ? (
                     <>
@@ -452,9 +461,14 @@ export function VendorVerificationModal({
                 {/* Verification Note */}
                 <div className="px-4 py-3 rounded-lg border border-[var(--mda-border-light)] bg-[var(--mda-bg-light)]">
                   <div className="flex items-start gap-3">
-                    <FileText className="w-5 h-5 flex-shrink-0" style={{ color: 'var(--mda-primary)' }} />
+                    <FileText
+                      className="w-5 h-5 flex-shrink-0"
+                      style={{ color: 'var(--mda-primary)' }}
+                    />
                     <div>
-                      <p style={{ fontSize: '14px', fontWeight: '500', color: 'var(--mda-primary)' }}>
+                      <p
+                        style={{ fontSize: '14px', fontWeight: '500', color: 'var(--mda-primary)' }}
+                      >
                         Official Verification Record
                       </p>
                       <p
@@ -486,7 +500,11 @@ export function VendorVerificationModal({
                   <button
                     onClick={handleDownloadReport}
                     className="w-full sm:w-auto px-4 py-2.5 rounded-md text-white flex items-center justify-center gap-2"
-                    style={{ backgroundColor: 'var(--mda-primary)', fontSize: '13px', fontWeight: '500' }}
+                    style={{
+                      backgroundColor: 'var(--mda-primary)',
+                      fontSize: '13px',
+                      fontWeight: '500',
+                    }}
                   >
                     <Download className="w-4 h-4" />
                     Download Report
@@ -526,11 +544,7 @@ function toModalResult(result: VendorVerification): VerificationResult {
       return {
         name: cert.name,
         status:
-          cert.status === 'active'
-            ? 'active'
-            : cert.status === 'expired'
-              ? 'expired'
-              : 'missing',
+          cert.status === 'active' ? 'active' : cert.status === 'expired' ? 'expired' : 'missing',
         expiryDate: cert.expiryDate,
         daysToExpiry,
       };

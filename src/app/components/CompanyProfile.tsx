@@ -147,7 +147,11 @@ export function CompanyProfile({ onSave }: CompanyProfileProps) {
     // Simulate document verification
     setTimeout(() => {
       setVerificationStatus((prev) => ({ ...prev, [type]: 'verified' }));
-      showToast('success', 'Document Uploaded', `${type === 'cacDocument' ? 'CAC' : 'Tax'} document uploaded successfully`);
+      showToast(
+        'success',
+        'Document Uploaded',
+        `${type === 'cacDocument' ? 'CAC' : 'Tax'} document uploaded successfully`
+      );
     }, 1500);
   };
 
@@ -310,15 +314,21 @@ export function CompanyProfile({ onSave }: CompanyProfileProps) {
             <div className="grid grid-cols-3 gap-4 text-sm">
               <div className="flex items-center gap-2">
                 {getStatusIcon(verificationStatus.rcNumber)}
-                <span className="text-green-800">RC Number: {getStatusText(verificationStatus.rcNumber)}</span>
+                <span className="text-green-800">
+                  RC Number: {getStatusText(verificationStatus.rcNumber)}
+                </span>
               </div>
               <div className="flex items-center gap-2">
                 {getStatusIcon(verificationStatus.cacDocument)}
-                <span className="text-green-800">CAC Document: {getStatusText(verificationStatus.cacDocument)}</span>
+                <span className="text-green-800">
+                  CAC Document: {getStatusText(verificationStatus.cacDocument)}
+                </span>
               </div>
               <div className="flex items-center gap-2">
                 {getStatusIcon(verificationStatus.taxDocument)}
-                <span className="text-green-800">Tax Document: {getStatusText(verificationStatus.taxDocument)}</span>
+                <span className="text-green-800">
+                  Tax Document: {getStatusText(verificationStatus.taxDocument)}
+                </span>
               </div>
             </div>
           </div>

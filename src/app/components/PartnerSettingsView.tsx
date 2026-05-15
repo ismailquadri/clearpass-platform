@@ -4,7 +4,9 @@ import { useToast } from './ToastProvider';
 
 export function PartnerSettingsView() {
   const { showToast } = useToast();
-  const [activeTab, setActiveTab] = useState<'profile' | 'notifications' | 'security' | 'billing'>('profile');
+  const [activeTab, setActiveTab] = useState<'profile' | 'notifications' | 'security' | 'billing'>(
+    'profile'
+  );
   const [isSaving, setIsSaving] = useState(false);
 
   const handleSave = () => {
@@ -114,9 +116,7 @@ function ProfileSettings() {
   return (
     <div className="space-y-6">
       <div>
-        <h3 style={{ fontSize: '20px', fontWeight: 600, marginBottom: '2px' }}>
-          Profile Settings
-        </h3>
+        <h3 style={{ fontSize: '20px', fontWeight: 600, marginBottom: '2px' }}>Profile Settings</h3>
         <p className="text-muted-foreground" style={{ fontSize: '14px' }}>
           Update your personal information and contact details
         </p>
@@ -125,7 +125,11 @@ function ProfileSettings() {
       <div className="space-y-4">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label htmlFor="first-name" className="block mb-2" style={{ fontSize: '14px', fontWeight: 500 }}>
+            <label
+              htmlFor="first-name"
+              className="block mb-2"
+              style={{ fontSize: '14px', fontWeight: 500 }}
+            >
               First Name
             </label>
             <input
@@ -137,7 +141,11 @@ function ProfileSettings() {
             />
           </div>
           <div>
-            <label htmlFor="last-name" className="block mb-2" style={{ fontSize: '14px', fontWeight: 500 }}>
+            <label
+              htmlFor="last-name"
+              className="block mb-2"
+              style={{ fontSize: '14px', fontWeight: 500 }}
+            >
               Last Name
             </label>
             <input
@@ -151,7 +159,11 @@ function ProfileSettings() {
         </div>
 
         <div>
-          <label htmlFor="email" className="block mb-2" style={{ fontSize: '14px', fontWeight: 500 }}>
+          <label
+            htmlFor="email"
+            className="block mb-2"
+            style={{ fontSize: '14px', fontWeight: 500 }}
+          >
             Email Address
           </label>
           <input
@@ -164,7 +176,11 @@ function ProfileSettings() {
         </div>
 
         <div>
-          <label htmlFor="phone" className="block mb-2" style={{ fontSize: '14px', fontWeight: 500 }}>
+          <label
+            htmlFor="phone"
+            className="block mb-2"
+            style={{ fontSize: '14px', fontWeight: 500 }}
+          >
             Phone Number
           </label>
           <input
@@ -177,7 +193,11 @@ function ProfileSettings() {
         </div>
 
         <div>
-          <label htmlFor="company" className="block mb-2" style={{ fontSize: '14px', fontWeight: 500 }}>
+          <label
+            htmlFor="company"
+            className="block mb-2"
+            style={{ fontSize: '14px', fontWeight: 500 }}
+          >
             Company Name
           </label>
           <input
@@ -242,7 +262,11 @@ interface NotificationToggleProps {
   defaultChecked?: boolean;
 }
 
-function NotificationToggle({ label, description, defaultChecked = false }: NotificationToggleProps) {
+function NotificationToggle({
+  label,
+  description,
+  defaultChecked = false,
+}: NotificationToggleProps) {
   return (
     <label className="flex items-start justify-between p-4 bg-muted rounded-md cursor-pointer hover:bg-muted/80 transition-colors">
       <div className="flex-1">
@@ -272,7 +296,11 @@ function SecuritySettings() {
 
       <div className="space-y-4">
         <div>
-          <label htmlFor="current-password" className="block mb-2" style={{ fontSize: '14px', fontWeight: 500 }}>
+          <label
+            htmlFor="current-password"
+            className="block mb-2"
+            style={{ fontSize: '14px', fontWeight: 500 }}
+          >
             Current Password
           </label>
           <input
@@ -285,7 +313,11 @@ function SecuritySettings() {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label htmlFor="new-password" className="block mb-2" style={{ fontSize: '14px', fontWeight: 500 }}>
+            <label
+              htmlFor="new-password"
+              className="block mb-2"
+              style={{ fontSize: '14px', fontWeight: 500 }}
+            >
               New Password
             </label>
             <input
@@ -296,7 +328,11 @@ function SecuritySettings() {
             />
           </div>
           <div>
-            <label htmlFor="confirm-password" className="block mb-2" style={{ fontSize: '14px', fontWeight: 500 }}>
+            <label
+              htmlFor="confirm-password"
+              className="block mb-2"
+              style={{ fontSize: '14px', fontWeight: 500 }}
+            >
               Confirm New Password
             </label>
             <input
@@ -319,9 +355,7 @@ function SecuritySettings() {
             <Shield className="w-5 h-5 text-muted-foreground" />
             <p style={{ fontSize: '14px', fontWeight: 500 }}>Last Login</p>
           </div>
-          <p className="caption text-muted-foreground">
-            Today at 9:30 AM WAT from Lagos, Nigeria
-          </p>
+          <p className="caption text-muted-foreground">Today at 9:30 AM WAT from Lagos, Nigeria</p>
         </div>
       </div>
     </div>
@@ -346,7 +380,10 @@ function BillingSettings() {
             <p style={{ fontSize: '16px', fontWeight: 600 }}>Professional Plan</p>
             <p className="caption text-muted-foreground">Up to 50 clients</p>
           </div>
-          <span className="px-3 py-1 rounded-full text-xs font-medium" style={{ backgroundColor: 'rgba(255, 48, 0, 0.1)', color: '#FF3000' }}>
+          <span
+            className="px-3 py-1 rounded-full text-xs font-medium"
+            style={{ backgroundColor: 'rgba(255, 48, 0, 0.1)', color: '#FF3000' }}
+          >
             Active
           </span>
         </div>
@@ -362,9 +399,7 @@ function BillingSettings() {
       </div>
 
       <div>
-        <h4 style={{ fontSize: '16px', fontWeight: 600, marginBottom: '3' }}>
-          Payment Method
-        </h4>
+        <h4 style={{ fontSize: '16px', fontWeight: 600, marginBottom: '3' }}>Payment Method</h4>
         <div className="p-4 bg-muted rounded-md">
           <div className="flex items-center gap-3">
             <CreditCard className="w-5 h-5 text-muted-foreground" />

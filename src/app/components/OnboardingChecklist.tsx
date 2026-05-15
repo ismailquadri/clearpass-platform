@@ -84,7 +84,7 @@ export function OnboardingChecklist({ onClose, onTaskClick }: OnboardingChecklis
         const savedTasks = JSON.parse(saved);
         // Reconstruct tasks with proper icon functions and toastMessages
         return savedTasks.map((savedTask: any) => {
-          const config = TASK_CONFIG.find(c => c.id === savedTask.id);
+          const config = TASK_CONFIG.find((c) => c.id === savedTask.id);
           return {
             ...savedTask,
             icon: config?.icon || Building2,
@@ -98,7 +98,7 @@ export function OnboardingChecklist({ onClose, onTaskClick }: OnboardingChecklis
       localStorage.removeItem('onboarding-tasks');
     }
     // Return default tasks with completed: false
-    return TASK_CONFIG.map(task => ({ ...task, completed: false }));
+    return TASK_CONFIG.map((task) => ({ ...task, completed: false }));
   });
 
   useEffect(() => {
@@ -179,7 +179,9 @@ export function OnboardingChecklist({ onClose, onTaskClick }: OnboardingChecklis
       <div className="mb-6">
         <div className="flex items-center justify-between mb-2">
           <span className="text-sm font-medium">Progress</span>
-          <span className="text-sm text-muted-foreground">{completedCount} of {tasks.length} completed</span>
+          <span className="text-sm text-muted-foreground">
+            {completedCount} of {tasks.length} completed
+          </span>
         </div>
         <div className="h-2 bg-muted rounded-full overflow-hidden">
           <div

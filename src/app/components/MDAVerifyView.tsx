@@ -164,22 +164,29 @@ export function MDAVerifyView() {
             const result = await verifyVendor(rc);
             return toBulkRow(result);
           } catch {
-            return MOCK_BULK_RESULTS[rc] ?? {
-              rcNumber: rc,
-              companyName: 'Unknown Company',
-              status: 'pending' as const,
-              score: 0,
-              nhia: false,
-              pcc: false,
-              nsitf: false,
-              firs: false,
-            };
+            return (
+              MOCK_BULK_RESULTS[rc] ?? {
+                rcNumber: rc,
+                companyName: 'Unknown Company',
+                status: 'pending' as const,
+                score: 0,
+                nhia: false,
+                pcc: false,
+                nsitf: false,
+                firs: false,
+              }
+            );
           }
         })
-      ).then((results) => {
+      )
+        .then((results) => {
           setBulkResults(results);
           setIsBulkProcessing(false);
-          showToast('success', 'Bulk Verification Complete', `${results.length} RC numbers processed.`);
+          showToast(
+            'success',
+            'Bulk Verification Complete',
+            `${results.length} RC numbers processed.`
+          );
         })
         .catch(() => {
           setIsBulkProcessing(false);
@@ -346,7 +353,7 @@ export function MDAVerifyView() {
                 {/* Summary */}
                 <div className="grid grid-cols-3 gap-3 mb-4">
                   <div className="bg-muted/30 rounded-lg p-3 text-center">
-                      <p style={{ fontSize: '20px', fontWeight: 700, color: 'var(--mda-success)' }}>
+                    <p style={{ fontSize: '20px', fontWeight: 700, color: 'var(--mda-success)' }}>
                       {bulkResults.filter((r) => r.status === 'eligible').length}
                     </p>
                     <p className="text-muted-foreground" style={{ fontSize: '12px' }}>
@@ -400,7 +407,7 @@ export function MDAVerifyView() {
                       {bulkResults.map((row) => {
                         const statusColor =
                           row.status === 'eligible'
-                    ? 'var(--mda-success)'
+                            ? 'var(--mda-success)'
                             : row.status === 'ineligible'
                               ? 'var(--mda-error)'
                               : 'var(--mda-warning)';
@@ -434,9 +441,15 @@ export function MDAVerifyView() {
                             {[row.nhia, row.pcc, row.nsitf, row.firs].map((v, i) => (
                               <td key={i} className="py-2">
                                 {v ? (
-                                  <CheckCircle2 className="w-4 h-4" style={{ color: 'var(--mda-success)' }} />
+                                  <CheckCircle2
+                                    className="w-4 h-4"
+                                    style={{ color: 'var(--mda-success)' }}
+                                  />
                                 ) : (
-                                  <XCircle className="w-4 h-4" style={{ color: 'var(--mda-primary)' }} />
+                                  <XCircle
+                                    className="w-4 h-4"
+                                    style={{ color: 'var(--mda-primary)' }}
+                                  />
                                 )}
                               </td>
                             ))}
@@ -670,7 +683,11 @@ function ResultCard({ result }: { result: VendorVerification }) {
         const report = await generateReport.mutate({ rc_number: result.rcNumber });
         if (report.pdf_url && report.pdf_url !== '#') {
           window.open(mdaReportDownloadUrl(report.id), '_blank', 'noopener,noreferrer');
-          showToast('success', 'Report Ready', `Verification report opened for ${result.companyName}`);
+          showToast(
+            'success',
+            'Report Ready',
+            `Verification report opened for ${result.companyName}`
+          );
           return;
         }
         liveUrl = report.live_url;
@@ -726,7 +743,11 @@ function ResultCard({ result }: { result: VendorVerification }) {
           score: result.score,
           status: result.status,
           nearestExpiry: nearest
-            ? nearest.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
+            ? nearest.toLocaleDateString('en-GB', {
+                day: 'numeric',
+                month: 'short',
+                year: 'numeric',
+              })
             : 'N/A',
           daysToExpiry: days,
           alertsEnabled: true,
@@ -852,8 +873,8 @@ function getStatusConfig(status: VendorEligibilityStatus) {
     case 'procurement-ready':
       return {
         icon: CheckCircle2,
-    color: 'var(--mda-success)',
-    bgColor: 'var(--mda-success-light)',
+        color: 'var(--mda-success)',
+        bgColor: 'var(--mda-success-light)',
         label: 'Procurement Ready',
       };
     case 'attention-required':

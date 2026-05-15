@@ -22,7 +22,9 @@ export function ShareableLinkModal({
   const { showToast } = useToast();
   const [linkExpiry, setLinkExpiry] = useState<'7' | '30' | '90'>('30');
   const [generatedLink, setGeneratedLink] = useState<string>('');
-  const [linkStatus, setLinkStatus] = useState<'idle' | 'generating' | 'active' | 'expired'>('idle');
+  const [linkStatus, setLinkStatus] = useState<'idle' | 'generating' | 'active' | 'expired'>(
+    'idle'
+  );
 
   const generateLink = () => {
     setLinkStatus('generating');
@@ -73,7 +75,8 @@ export function ShareableLinkModal({
           {/* Info */}
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
             <p className="text-sm text-blue-800">
-              Generate a shareable link to let MDAs verify your compliance status without requiring them to log in.
+              Generate a shareable link to let MDAs verify your compliance status without requiring
+              them to log in.
             </p>
           </div>
 
@@ -89,16 +92,17 @@ export function ShareableLinkModal({
             </div>
             <div className="flex justify-between text-sm">
               <span className="text-muted-foreground">Compliance Score</span>
-              <span className="font-medium" style={{ color: complianceScore >= 80 ? '#1FC16B' : '#FF3000' }}>
+              <span
+                className="font-medium"
+                style={{ color: complianceScore >= 80 ? '#1FC16B' : '#FF3000' }}
+              >
                 {complianceScore}/100
               </span>
             </div>
             <div className="flex justify-between text-sm">
               <span className="text-muted-foreground">Status</span>
               <span
-                className={`font-medium ${
-                  procurementReady ? 'text-green-600' : 'text-red-600'
-                }`}
+                className={`font-medium ${procurementReady ? 'text-green-600' : 'text-red-600'}`}
               >
                 {procurementReady ? 'Procurement Ready' : 'Ineligible to Bid'}
               </span>
@@ -151,7 +155,8 @@ export function ShareableLinkModal({
                   <span className="font-medium text-green-800">Link Active</span>
                 </div>
                 <p className="text-sm text-green-700">
-                  Link expires in {linkExpiry} days. Anyone with this link can view your compliance status.
+                  Link expires in {linkExpiry} days. Anyone with this link can view your compliance
+                  status.
                 </p>
               </div>
 
@@ -189,7 +194,8 @@ export function ShareableLinkModal({
         {/* Footer */}
         <div className="p-4 border-t border-border">
           <p className="text-xs text-muted-foreground text-center">
-            Shareable links provide read-only access to your compliance status. No data can be modified.
+            Shareable links provide read-only access to your compliance status. No data can be
+            modified.
           </p>
         </div>
       </div>

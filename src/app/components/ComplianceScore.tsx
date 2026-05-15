@@ -55,9 +55,7 @@ export const ComplianceScore = memo(function ComplianceScore({
 
   return (
     <div className="bg-card border border-border rounded-lg p-4">
-      <p className="mb-4 text-base font-semibold">
-        Compliance Health Score
-      </p>
+      <p className="mb-4 text-base font-semibold">Compliance Health Score</p>
 
       <div className="flex items-start gap-6">
         {/* Score Circle */}
@@ -80,7 +78,9 @@ export const ComplianceScore = memo(function ComplianceScore({
           </svg>
           <div className="absolute inset-0 flex flex-col items-center justify-center">
             {cacUnverified ? (
-              <span className="text-[22px] font-semibold text-[#9CA3AF] text-center leading-[1.2]">N/A</span>
+              <span className="text-[22px] font-semibold text-[#9CA3AF] text-center leading-[1.2]">
+                N/A
+              </span>
             ) : (
               <>
                 <span className="text-[36px] font-semibold leading-[1]">{score}</span>
@@ -116,7 +116,9 @@ export const ComplianceScore = memo(function ComplianceScore({
               <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5 text-[#9CA3AF]" />
               <div>
                 <p className="text-sm font-medium text-[#6B7280]">Score Not Available</p>
-                <p className="text-muted-foreground text-xs">Complete CAC verification to unlock your compliance score</p>
+                <p className="text-muted-foreground text-xs">
+                  Complete CAC verification to unlock your compliance score
+                </p>
               </div>
             </div>
           )}
@@ -124,8 +126,12 @@ export const ComplianceScore = memo(function ComplianceScore({
             <div className="flex items-start gap-2 px-3 py-2 rounded-md bg-[rgba(255,48,0,0.08)] border border-[rgba(255,48,0,0.3)]">
               <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5 text-[#FF3000]" />
               <div>
-                <p className="text-sm font-medium text-[#FF3000]">Score capped at 49 — NHIA required</p>
-                <p className="text-muted-foreground text-xs">NHIA enrollment is mandatory for federal procurement eligibility</p>
+                <p className="text-sm font-medium text-[#FF3000]">
+                  Score capped at 49 — NHIA required
+                </p>
+                <p className="text-muted-foreground text-xs">
+                  NHIA enrollment is mandatory for federal procurement eligibility
+                </p>
               </div>
             </div>
           )}
@@ -135,9 +141,7 @@ export const ComplianceScore = memo(function ComplianceScore({
             <div className="flex items-center gap-2 px-3 py-2 rounded-md bg-[rgba(255,48,0,0.1)]">
               <CheckCircle2 className="w-4 h-4 text-[#FF3000]" />
               <div>
-                <p className="text-sm font-medium text-[#FF3000]">
-                  Procurement Ready
-                </p>
+                <p className="text-sm font-medium text-[#FF3000]">Procurement Ready</p>
                 <p className="text-muted-foreground text-[#404040] text-sm">
                   Eligible for federal procurement
                 </p>
@@ -147,9 +151,7 @@ export const ComplianceScore = memo(function ComplianceScore({
             <div className="flex items-center gap-2 px-3 py-2 rounded-md bg-[rgba(255,48,0,0.1)]">
               <AlertTriangle className="w-4 h-4 text-[#FF3000]" />
               <div>
-                <p className="text-sm font-medium text-[#FF3000]">
-                  Ineligible to Bid
-                </p>
+                <p className="text-sm font-medium text-[#FF3000]">Ineligible to Bid</p>
                 <p className="text-muted-foreground text-[#404040] text-sm">
                   Complete all certificates to become eligible
                 </p>

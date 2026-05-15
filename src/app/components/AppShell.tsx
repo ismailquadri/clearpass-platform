@@ -1,8 +1,23 @@
 import {
-  CheckCircle2, Menu, Shield, Briefcase, X, HeartPulse, Building,
-  LayoutDashboard, FileText, Bell, Settings, Search,
-  BarChart3, Users, ClipboardList, CheckSquare,
-  TrendingUp, QrCode, Home,
+  CheckCircle2,
+  Menu,
+  Shield,
+  Briefcase,
+  X,
+  HeartPulse,
+  Building,
+  LayoutDashboard,
+  FileText,
+  Bell,
+  Settings,
+  Search,
+  BarChart3,
+  Users,
+  ClipboardList,
+  CheckSquare,
+  TrendingUp,
+  QrCode,
+  Home,
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import type { ReactNode } from 'react';
@@ -94,7 +109,14 @@ const PERSONA_COLOR: Record<Persona, string> = {
  * - Mobile: top bar with a hamburger that opens a slide-in drawer
  *   plus a bottom navigation tab bar.
  */
-export function AppShell({ persona, sidebar, drawerSidebar, children, activeSection, onSectionChange }: AppShellProps) {
+export function AppShell({
+  persona,
+  sidebar,
+  drawerSidebar,
+  children,
+  activeSection,
+  onSectionChange,
+}: AppShellProps) {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const Icon = PERSONA_ICON[persona];
 
@@ -162,9 +184,7 @@ export function AppShell({ persona, sidebar, drawerSidebar, children, activeSect
                 <Icon className="w-5 h-5 text-white" aria-hidden="true" />
               </div>
               <div className="leading-tight">
-                <span className="text-muted-foreground text-[11px]">
-                  {PERSONA_LABEL[persona]}
-                </span>
+                <span className="text-muted-foreground text-[11px]">{PERSONA_LABEL[persona]}</span>
               </div>
             </>
           )}

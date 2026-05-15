@@ -18,53 +18,76 @@ interface ReportData {
 
 function statusLabel(s: string) {
   switch (s) {
-    case 'procurement-ready': return 'PROCUREMENT READY';
-    case 'attention-required': return 'ATTENTION REQUIRED';
-    case 'ineligible': return 'INELIGIBLE TO BID';
-    default: return s.toUpperCase().replace(/-/g, ' ');
+    case 'procurement-ready':
+      return 'PROCUREMENT READY';
+    case 'attention-required':
+      return 'ATTENTION REQUIRED';
+    case 'ineligible':
+      return 'INELIGIBLE TO BID';
+    default:
+      return s.toUpperCase().replace(/-/g, ' ');
   }
 }
 
 function statusColor(s: string) {
   switch (s) {
-    case 'procurement-ready': return '#057a46';
-    case 'attention-required': return '#d97706';
-    case 'ineligible': return '#dc2626';
-    default: return '#6b7280';
+    case 'procurement-ready':
+      return '#057a46';
+    case 'attention-required':
+      return '#d97706';
+    case 'ineligible':
+      return '#dc2626';
+    default:
+      return '#6b7280';
   }
 }
 
 function certStatusColor(s: string) {
   switch (s) {
-    case 'active': return '#057a46';
-    case 'expiring': return '#d97706';
-    case 'expired': return '#dc2626';
-    default: return '#6b7280';
+    case 'active':
+      return '#057a46';
+    case 'expiring':
+      return '#d97706';
+    case 'expired':
+      return '#dc2626';
+    default:
+      return '#6b7280';
   }
 }
 
 function certStatusLabel(s: string) {
   switch (s) {
-    case 'active': return 'Active';
-    case 'expiring': return 'Expiring Soon';
-    case 'expired': return 'Expired';
-    default: return s;
+    case 'active':
+      return 'Active';
+    case 'expiring':
+      return 'Expiring Soon';
+    case 'expired':
+      return 'Expired';
+    default:
+      return s;
   }
 }
 
 export function openVerificationReport(data: ReportData) {
   const now = new Date();
   const generatedAt = now.toLocaleString('en-NG', {
-    weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',
-    hour: '2-digit', minute: '2-digit', second: '2-digit', timeZoneName: 'short',
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    timeZoneName: 'short',
   });
   const reportRef = data.reportId ?? `CP-${Date.now().toString(36).toUpperCase()}`;
   const sColor = statusColor(data.status);
   const sLabel = statusLabel(data.status);
 
-  const certRows = data.certificates.map(c => {
-    const cColor = certStatusColor(c.status);
-    return `
+  const certRows = data.certificates
+    .map((c) => {
+      const cColor = certStatusColor(c.status);
+      return `
       <tr>
         <td style="padding:10px 12px;border-bottom:1px solid #e5e7eb;font-weight:500">${c.name}</td>
         <td style="padding:10px 12px;border-bottom:1px solid #e5e7eb">
@@ -74,7 +97,8 @@ export function openVerificationReport(data: ReportData) {
         </td>
         <td style="padding:10px 12px;border-bottom:1px solid #e5e7eb;color:#6b7280;font-size:13px">${c.expiryDate || '—'}</td>
       </tr>`;
-  }).join('');
+    })
+    .join('');
 
   const html = `<!DOCTYPE html>
 <html lang="en">
@@ -186,7 +210,9 @@ export function openVerificationReport(data: ReportData) {
     </div>
 
     <!-- Certificates -->
-    ${data.certificates.length > 0 ? `
+    ${
+      data.certificates.length > 0
+        ? `
     <div class="section">
       <div class="section-title">Certificate Status</div>
       <table class="cert-table">
@@ -199,7 +225,9 @@ export function openVerificationReport(data: ReportData) {
         </thead>
         <tbody>${certRows}</tbody>
       </table>
-    </div>` : ''}
+    </div>`
+        : ''
+    }
 
     <!-- Footer -->
     <div class="footer">

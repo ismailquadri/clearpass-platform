@@ -41,15 +41,19 @@ export function StateAwareDashboard({ onNavigate }: StateAwareDashboardProps) {
             </div>
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <Calendar className="w-4 h-4" />
-              <span>{new Date().toLocaleDateString('en-NG', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</span>
+              <span>
+                {new Date().toLocaleDateString('en-NG', {
+                  weekday: 'long',
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric',
+                })}
+              </span>
             </div>
           </div>
         </header>
 
-        <ApiState
-          query={dashboardQuery}
-          loading={<DashboardSkeleton />}
-        >
+        <ApiState query={dashboardQuery} loading={<DashboardSkeleton />}>
           {(dashboard) => (
             <>
               {/* NHIA Enrollment Banner */}
@@ -62,10 +66,7 @@ export function StateAwareDashboard({ onNavigate }: StateAwareDashboardProps) {
 
               {/* Onboarding Checklist */}
               {showChecklist && (
-                <OnboardingChecklist
-                  onClose={dismissChecklist}
-                  onTaskClick={handleTaskClick}
-                />
+                <OnboardingChecklist onClose={dismissChecklist} onTaskClick={handleTaskClick} />
               )}
 
               {/* Compliance Score */}
@@ -90,11 +91,7 @@ export function StateAwareDashboard({ onNavigate }: StateAwareDashboardProps) {
                   value={dashboard.summary.expiringCount}
                   color="#F59E0B"
                 />
-                <StatCard
-                  label="Expired"
-                  value={dashboard.summary.expiredCount}
-                  color="#FF3000"
-                />
+                <StatCard label="Expired" value={dashboard.summary.expiredCount} color="#FF3000" />
                 <StatCard
                   label="Pending Review"
                   value={dashboard.summary.pendingCount}
@@ -157,7 +154,7 @@ export function StateAwareDashboard({ onNavigate }: StateAwareDashboardProps) {
 
               {/* Next Best Action */}
               <div className="mb-6">
-                <NextBestAction 
+                <NextBestAction
                   state={{ label: dashboard.state }}
                   onAction={(section) => onNavigate(section)}
                 />

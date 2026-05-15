@@ -15,11 +15,21 @@ import { verifyVendor } from '../api';
 import type { VendorVerification } from '../api';
 import '../../app/styles/mda-theme.css';
 
-type ScanState = 'idle' | 'requesting' | 'scanning' | 'detected' | 'verifying' | 'result' | 'error' | 'unsupported';
+type ScanState =
+  | 'idle'
+  | 'requesting'
+  | 'scanning'
+  | 'detected'
+  | 'verifying'
+  | 'result'
+  | 'error'
+  | 'unsupported';
 
 declare class BarcodeDetector {
   constructor(options?: { formats: string[] });
-  detect(image: HTMLVideoElement | HTMLImageElement | ImageBitmap | HTMLCanvasElement): Promise<Array<{ rawValue: string; format: string }>>;
+  detect(
+    image: HTMLVideoElement | HTMLImageElement | ImageBitmap | HTMLCanvasElement
+  ): Promise<Array<{ rawValue: string; format: string }>>;
   static getSupportedFormats(): Promise<string[]>;
 }
 
@@ -124,7 +134,11 @@ export function QRScannerView() {
         const data = await verifyVendor(rc);
         setResult(data);
         setState('result');
-        showToast('success', 'Verification Complete', `${data.companyName} — ${data.status.replace('-', ' ')}`);
+        showToast(
+          'success',
+          'Verification Complete',
+          `${data.companyName} — ${data.status.replace('-', ' ')}`
+        );
       } catch (err) {
         const msg = err instanceof Error ? err.message : 'Verification failed';
         setErrorMsg(msg);
@@ -242,7 +256,9 @@ export function QRScannerView() {
             if (rc) {
               void runVerification(rc);
             } else {
-              setErrorMsg(`QR detected but no RC number found.\nRaw: ${codes[0].rawValue.slice(0, 80)}`);
+              setErrorMsg(
+                `QR detected but no RC number found.\nRaw: ${codes[0].rawValue.slice(0, 80)}`
+              );
               setState('error');
             }
           })
@@ -325,38 +341,65 @@ export function QRScannerView() {
             {!isMobile && (
               <div
                 className="rounded-lg p-4 border flex items-start gap-3"
-                style={{ backgroundColor: 'var(--mda-bg-light)', borderColor: 'var(--mda-border-light)' }}
+                style={{
+                  backgroundColor: 'var(--mda-bg-light)',
+                  borderColor: 'var(--mda-border-light)',
+                }}
               >
-                <Monitor className="w-5 h-5 shrink-0 mt-0.5" style={{ color: 'var(--mda-primary)' }} />
+                <Monitor
+                  className="w-5 h-5 shrink-0 mt-0.5"
+                  style={{ color: 'var(--mda-primary)' }}
+                />
                 <p className="text-sm" style={{ color: 'var(--mda-primary)' }}>
-                  <strong>Desktop mode:</strong> Take a photo of the document QR code on your phone, then upload it here. Live camera scanning is available on the mobile app.
+                  <strong>Desktop mode:</strong> Take a photo of the document QR code on your phone,
+                  then upload it here. Live camera scanning is available on the mobile app.
                 </p>
               </div>
             )}
 
             {/* How it works */}
             <div className="bg-card border border-border rounded-lg p-5 mt-6">
-              <p className="font-medium mb-3" style={{ fontSize: '14px' }}>How it works</p>
+              <p className="font-medium mb-3" style={{ fontSize: '14px' }}>
+                How it works
+              </p>
               <ol className="space-y-2 text-muted-foreground" style={{ fontSize: '13px' }}>
                 <li className="flex gap-2">
                   <span
                     className="w-5 h-5 rounded-full flex items-center justify-center text-white shrink-0 mt-0.5"
-                    style={{ backgroundColor: 'var(--mda-primary)', fontSize: '11px', fontWeight: 700 }}
-                  >1</span>
+                    style={{
+                      backgroundColor: 'var(--mda-primary)',
+                      fontSize: '11px',
+                      fontWeight: 700,
+                    }}
+                  >
+                    1
+                  </span>
                   Point your camera at the QR code on a physical compliance document
                 </li>
                 <li className="flex gap-2">
                   <span
                     className="w-5 h-5 rounded-full flex items-center justify-center text-white shrink-0 mt-0.5"
-                    style={{ backgroundColor: 'var(--mda-primary)', fontSize: '11px', fontWeight: 700 }}
-                  >2</span>
+                    style={{
+                      backgroundColor: 'var(--mda-primary)',
+                      fontSize: '11px',
+                      fontWeight: 700,
+                    }}
+                  >
+                    2
+                  </span>
                   ClearPass automatically reads the QR and extracts the company RC number
                 </li>
                 <li className="flex gap-2">
                   <span
                     className="w-5 h-5 rounded-full flex items-center justify-center text-white shrink-0 mt-0.5"
-                    style={{ backgroundColor: 'var(--mda-primary)', fontSize: '11px', fontWeight: 700 }}
-                  >3</span>
+                    style={{
+                      backgroundColor: 'var(--mda-primary)',
+                      fontSize: '11px',
+                      fontWeight: 700,
+                    }}
+                  >
+                    3
+                  </span>
                   Real-time compliance status is fetched and displayed instantly
                 </li>
               </ol>
@@ -375,7 +418,10 @@ export function QRScannerView() {
         {/* Live camera viewfinder */}
         {state === 'scanning' && (
           <div className="space-y-4">
-            <div className="relative rounded-xl overflow-hidden bg-black" style={{ aspectRatio: '4/3' }}>
+            <div
+              className="relative rounded-xl overflow-hidden bg-black"
+              style={{ aspectRatio: '4/3' }}
+            >
               <video
                 ref={videoRef}
                 autoPlay
@@ -388,14 +434,17 @@ export function QRScannerView() {
               <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
                 <div className="relative w-56 h-56">
                   {/* Corner brackets */}
-                  {(['tl','tr','bl','br'] as const).map((c) => (
+                  {(['tl', 'tr', 'bl', 'br'] as const).map((c) => (
                     <span
                       key={c}
                       className={`absolute w-8 h-8 border-[3px] ${
-                        c === 'tl' ? 'top-0 left-0 border-r-0 border-b-0 rounded-tl-md' :
-                        c === 'tr' ? 'top-0 right-0 border-l-0 border-b-0 rounded-tr-md' :
-                        c === 'bl' ? 'bottom-0 left-0 border-r-0 border-t-0 rounded-bl-md' :
-                        'bottom-0 right-0 border-l-0 border-t-0 rounded-br-md'
+                        c === 'tl'
+                          ? 'top-0 left-0 border-r-0 border-b-0 rounded-tl-md'
+                          : c === 'tr'
+                            ? 'top-0 right-0 border-l-0 border-b-0 rounded-tr-md'
+                            : c === 'bl'
+                              ? 'bottom-0 left-0 border-r-0 border-t-0 rounded-bl-md'
+                              : 'bottom-0 right-0 border-l-0 border-t-0 rounded-br-md'
                       }`}
                       style={{ borderColor: 'var(--mda-primary)' }}
                     />
@@ -439,7 +488,9 @@ export function QRScannerView() {
               <QrCode className="w-7 h-7 animate-pulse" style={{ color: 'var(--mda-primary)' }} />
             </div>
             <div className="text-center">
-              <p className="font-medium" style={{ fontSize: '16px' }}>QR Code Detected</p>
+              <p className="font-medium" style={{ fontSize: '16px' }}>
+                QR Code Detected
+              </p>
               {scannedRc && (
                 <p className="text-muted-foreground mt-1" style={{ fontSize: '13px' }}>
                   RC: <strong>{scannedRc}</strong>
@@ -462,7 +513,10 @@ export function QRScannerView() {
             >
               <CheckCircle2 className="w-6 h-6 shrink-0" style={{ color: 'var(--mda-primary)' }} />
               <div>
-                <p className="font-medium" style={{ fontSize: '14px', color: 'var(--mda-primary)' }}>
+                <p
+                  className="font-medium"
+                  style={{ fontSize: '14px', color: 'var(--mda-primary)' }}
+                >
                   QR Code Verified
                 </p>
                 <p className="text-muted-foreground" style={{ fontSize: '12px' }}>
@@ -481,7 +535,9 @@ export function QRScannerView() {
                   </p>
                 </div>
                 <div className="text-right shrink-0">
-                  <p className="text-muted-foreground mb-1" style={{ fontSize: '11px' }}>Score</p>
+                  <p className="text-muted-foreground mb-1" style={{ fontSize: '11px' }}>
+                    Score
+                  </p>
                   <p
                     style={{
                       fontSize: '28px',
@@ -490,8 +546,8 @@ export function QRScannerView() {
                         result.status === 'procurement-ready'
                           ? 'var(--mda-success)'
                           : result.status === 'attention-required'
-                          ? 'var(--mda-warning)'
-                          : 'var(--mda-error)',
+                            ? 'var(--mda-warning)'
+                            : 'var(--mda-error)',
                     }}
                   >
                     {result.score}
@@ -509,14 +565,14 @@ export function QRScannerView() {
                       cert.status === 'active'
                         ? 'var(--mda-success)'
                         : cert.status === 'expiring'
-                        ? 'var(--mda-warning)'
-                        : 'var(--mda-error)';
+                          ? 'var(--mda-warning)'
+                          : 'var(--mda-error)';
                     const bg =
                       cert.status === 'active'
                         ? 'var(--mda-success-light)'
                         : cert.status === 'expiring'
-                        ? 'var(--mda-warning-light)'
-                        : 'var(--mda-error-light)';
+                          ? 'var(--mda-warning-light)'
+                          : 'var(--mda-error-light)';
                     return (
                       <div key={i} className="px-3 py-2 rounded-lg" style={{ backgroundColor: bg }}>
                         <p style={{ fontSize: '11px', fontWeight: 600, color }}>{cert.name}</p>
@@ -553,7 +609,10 @@ export function QRScannerView() {
                 <p className="font-medium" style={{ fontSize: '14px', color: 'var(--mda-error)' }}>
                   Scan Failed
                 </p>
-                <p className="text-muted-foreground mt-1 whitespace-pre-wrap" style={{ fontSize: '13px' }}>
+                <p
+                  className="text-muted-foreground mt-1 whitespace-pre-wrap"
+                  style={{ fontSize: '13px' }}
+                >
                   {errorMsg}
                 </p>
               </div>

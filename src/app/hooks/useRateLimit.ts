@@ -46,7 +46,7 @@ export function useRateLimit(config?: RateLimitConfig): UseRateLimitReturn {
   }, []);
 
   const executeWithRateLimit = useCallback(
-    async <T,>(
+    async <T>(
       fn: () => Promise<T>,
       key: string = 'default',
       rateLimitConfig?: RateLimitConfig

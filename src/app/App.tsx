@@ -276,7 +276,10 @@ function SectionNotFound({
 
 // ─── Persona mapping ────────────────────────────────────────────────────────
 
-const ACCOUNT_TYPE_TO_PERSONA: Record<AccountType, 'Business' | 'MDA' | 'Partner' | 'HMO' | 'Admin'> = {
+const ACCOUNT_TYPE_TO_PERSONA: Record<
+  AccountType,
+  'Business' | 'MDA' | 'Partner' | 'HMO' | 'Admin'
+> = {
   business: 'Business',
   mda: 'MDA',
   partner: 'Partner',
@@ -292,7 +295,9 @@ function AppInner() {
     () => !localStorage.getItem('clearpass_onboarded')
   );
   const [activeSection, setActiveSection] = useState('overview');
-  const [selectedPersona, setSelectedPersona] = useState<'Business' | 'MDA' | 'Partner' | 'HMO' | 'Admin'>('Business');
+  const [selectedPersona, setSelectedPersona] = useState<
+    'Business' | 'MDA' | 'Partner' | 'HMO' | 'Admin'
+  >('Business');
   const [isPending, startTransition] = useTransition();
   const isOnline = useOnlineStatus();
   useCertificateNotifications();
@@ -367,9 +372,7 @@ function AppInner() {
       <div className="fixed inset-0 flex items-center justify-center bg-background">
         <div className="flex flex-col items-center gap-3">
           <img src="/clearpass-logo.svg" alt="ClearPass" className="h-10 w-auto animate-pulse" />
-          <p className="text-muted-foreground text-sm">
-            Loading…
-          </p>
+          <p className="text-muted-foreground text-sm">Loading…</p>
         </div>
       </div>
     );
@@ -649,7 +652,7 @@ function AppInner() {
       default:
         return <SectionNotFound persona="Partner" section={activeSection} onHome={goHome} />;
     }
-};
+  };
 
   return (
     <>
@@ -663,10 +666,7 @@ function AppInner() {
 
       <OfflineBanner isOnline={isOnline} />
 
-      <GlobalNav
-        activeSection={activeSection}
-        onNavigate={navigate}
-      />
+      <GlobalNav activeSection={activeSection} onNavigate={navigate} />
 
       <div className="h-full box-border">
         <AppShell

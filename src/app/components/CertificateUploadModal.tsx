@@ -73,11 +73,11 @@ export function CertificateUploadModal({
         const data = JSON.parse(savedData);
         // eslint-disable-next-line react-hooks/set-state-in-effect
         setCertificateNumber(data.certificateNumber || '');
-        // eslint-disable-next-line react-hooks/set-state-in-effect
+
         setIssuedDate(data.issuedDate || '');
-        // eslint-disable-next-line react-hooks/set-state-in-effect
+
         setExpiryDate(data.expiryDate || '');
-        // eslint-disable-next-line react-hooks/set-state-in-effect
+
         setIssuingAuthority(data.issuingAuthority || '');
       } catch {
         // Ignore parse errors
@@ -89,13 +89,23 @@ export function CertificateUploadModal({
   useEffect(() => {
     if (!isOpen) return;
     const storageKey = `clearpass_cert_upload_${certificateType.shortName}`;
-    localStorage.setItem(storageKey, JSON.stringify({
-      certificateNumber,
-      issuedDate,
-      expiryDate,
-      issuingAuthority,
-    }));
-  }, [isOpen, certificateType.shortName, certificateNumber, issuedDate, expiryDate, issuingAuthority]);
+    localStorage.setItem(
+      storageKey,
+      JSON.stringify({
+        certificateNumber,
+        issuedDate,
+        expiryDate,
+        issuingAuthority,
+      })
+    );
+  }, [
+    isOpen,
+    certificateType.shortName,
+    certificateNumber,
+    issuedDate,
+    expiryDate,
+    issuingAuthority,
+  ]);
 
   const modalRef = useFocusTrap(isOpen);
 
@@ -462,9 +472,7 @@ export function CertificateUploadModal({
                 >
                   API Connect
                 </p>
-                <p className="text-muted-foreground text-[#404040] mt-1 text-[11px]">
-                  Auto-verify
-                </p>
+                <p className="text-muted-foreground text-[#404040] mt-1 text-[11px]">Auto-verify</p>
               </button>
             </div>
 
@@ -561,8 +569,8 @@ export function CertificateUploadModal({
 
                     <div>
                       <label
-                      htmlFor="expiry-date-file"
-                      className="block mb-2 text-[13px] font-medium"
+                        htmlFor="expiry-date-file"
+                        className="block mb-2 text-[13px] font-medium"
                       >
                         Expiry Date *
                       </label>
@@ -600,10 +608,7 @@ export function CertificateUploadModal({
             {uploadMethod === 'manual' && (
               <div className="space-y-4">
                 <div>
-                    <label
-                      htmlFor="cert-number"
-                      className="block mb-2 text-[13px] font-medium"
-                  >
+                  <label htmlFor="cert-number" className="block mb-2 text-[13px] font-medium">
                     Certificate Number *
                   </label>
                   <input
@@ -653,11 +658,11 @@ export function CertificateUploadModal({
                       required
                       aria-invalid={!!errors.issuedDate}
                       aria-describedby={errors.issuedDate ? 'cert-issued-date-error' : undefined}
-                    className={`w-full px-3 py-2 rounded-md border bg-background text-[13px] ${
-                      errors.issuedDate ? 'border-red-500' : 'border-border'
-                    }`}
-                  />
-                  {errors.issuedDate && (
+                      className={`w-full px-3 py-2 rounded-md border bg-background text-[13px] ${
+                        errors.issuedDate ? 'border-red-500' : 'border-border'
+                      }`}
+                    />
+                    {errors.issuedDate && (
                       <p
                         id="cert-issued-date-error"
                         className="text-red-500 text-xs mt-1"
@@ -687,11 +692,11 @@ export function CertificateUploadModal({
                       required
                       aria-invalid={!!errors.expiryDate}
                       aria-describedby={errors.expiryDate ? 'cert-expiry-date-error' : undefined}
-                    className={`w-full px-3 py-2 rounded-md border bg-background text-[13px] ${
-                      errors.expiryDate ? 'border-red-500' : 'border-border'
-                    }`}
-                  />
-                  {errors.expiryDate && (
+                      className={`w-full px-3 py-2 rounded-md border bg-background text-[13px] ${
+                        errors.expiryDate ? 'border-red-500' : 'border-border'
+                      }`}
+                    />
+                    {errors.expiryDate && (
                       <p
                         id="cert-expiry-date-error"
                         className="text-red-500 text-xs mt-1"
@@ -705,9 +710,9 @@ export function CertificateUploadModal({
                 </div>
 
                 <div>
-                    <label
-                      htmlFor="cert-issuing-authority"
-                      className="block mb-2 text-[13px] font-medium"
+                  <label
+                    htmlFor="cert-issuing-authority"
+                    className="block mb-2 text-[13px] font-medium"
                   >
                     Issuing Authority *
                   </label>
@@ -763,10 +768,7 @@ export function CertificateUploadModal({
                 </div>
 
                 <div>
-                  <label
-                    htmlFor="api-cert-number"
-                    className="block mb-2 text-[13px] font-medium"
-                  >
+                  <label htmlFor="api-cert-number" className="block mb-2 text-[13px] font-medium">
                     Certificate Number
                   </label>
                   <input
