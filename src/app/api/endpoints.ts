@@ -86,7 +86,16 @@ export const ENDPOINTS = {
   // Reports
   reports: {
     generate: '/api/reports/generate',
+    list: '/api/reports',
     download: (id: string) => `/api/reports/${id}/download`,
+  },
+
+  // MDA reports (verification-facing)
+  mdaReports: {
+    list: '/api/mda/reports',
+    generateVerification: '/api/mda/reports/verification',
+    download: (id: string) => `/api/mda/reports/${id}/download`,
+    live: (token: string) => `/api/public/mda-verification/${token}`,
   },
 
   // Subscriptions

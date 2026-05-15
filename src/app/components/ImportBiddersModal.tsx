@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react';
-import { X, Upload, FileText, Download, AlertCircle, CheckCircle2 } from 'lucide-react';
+import { X, Upload, Download, AlertCircle, CheckCircle2 } from 'lucide-react';
 import { useToast } from './ToastProvider';
 
 interface ImportBiddersModalProps {
@@ -167,9 +167,9 @@ export function ImportBiddersModal({ isOpen, onClose, onImportBidders }: ImportB
           <div className="flex items-center gap-3">
             <div
               className="w-10 h-10 rounded-lg flex items-center justify-center"
-              style={{ backgroundColor: 'rgba(255, 48, 0, 0.1)' }}
+              style={{ backgroundColor: 'var(--mda-bg-light)' }}
             >
-              <Upload className="w-5 h-5" style={{ color: '#FF3000' }} />
+              <Upload className="w-5 h-5" style={{ color: 'var(--mda-primary)' }} />
             </div>
             <h2 id="import-bidders-title" style={{ fontSize: '18px', fontWeight: 600 }}>
               Import Bidders
@@ -202,9 +202,10 @@ export function ImportBiddersModal({ isOpen, onClose, onImportBidders }: ImportB
                 onClick={() => fileInputRef.current?.click()}
                 className={`border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition-colors ${
                   isDragging
-                    ? 'border-[#FF3000] bg-[#fff5f3]'
-                    : 'border-border hover:border-[#FF3000]/40 hover:bg-muted/50'
+                    ? 'border-border bg-muted/50'
+                    : 'border-border hover:bg-muted/50'
                 }`}
+                style={isDragging ? { borderColor: 'var(--mda-primary)', backgroundColor: 'var(--mda-bg-light)' } : {}}
               >
                 <Upload className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
                 <p style={{ fontSize: '16px', fontWeight: 500 }} className="mb-2">
@@ -338,7 +339,7 @@ export function ImportBiddersModal({ isOpen, onClose, onImportBidders }: ImportB
                   onClick={handleImport}
                   disabled={validCount === 0}
                   className="flex-1 px-4 py-2.5 rounded-md text-white disabled:opacity-50 disabled:cursor-not-allowed"
-                  style={{ backgroundColor: '#FF3000' }}
+                  style={{ backgroundColor: 'var(--mda-primary)' }}
                 >
                   Import {validCount} Bidder{validCount !== 1 ? 's' : ''}
                 </button>

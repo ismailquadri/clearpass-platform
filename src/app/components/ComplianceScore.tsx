@@ -55,7 +55,7 @@ export const ComplianceScore = memo(function ComplianceScore({
 
   return (
     <div className="bg-card border border-border rounded-lg p-4">
-      <p className="mb-4" style={{ fontSize: '16px', fontWeight: '600' }}>
+      <p className="mb-4 text-base font-semibold">
         Compliance Health Score
       </p>
 
@@ -80,11 +80,11 @@ export const ComplianceScore = memo(function ComplianceScore({
           </svg>
           <div className="absolute inset-0 flex flex-col items-center justify-center">
             {cacUnverified ? (
-              <span style={{ fontSize: '22px', fontWeight: '600', color: '#9CA3AF', textAlign: 'center', lineHeight: '1.2' }}>N/A</span>
+              <span className="text-[22px] font-semibold text-[#9CA3AF] text-center leading-[1.2]">N/A</span>
             ) : (
               <>
-                <span style={{ fontSize: '36px', fontWeight: '600', lineHeight: '1' }}>{score}</span>
-                <span className="text-muted-foreground" style={{ fontSize: '13px' }}>/ 100</span>
+                <span className="text-[36px] font-semibold leading-[1]">{score}</span>
+                <span className="text-muted-foreground text-sm">/ 100</span>
               </>
             )}
           </div>
@@ -95,18 +95,16 @@ export const ComplianceScore = memo(function ComplianceScore({
           <div>
             <div className="flex items-center gap-2 mb-1.5">
               <span
-                className="px-2.5 py-0.5 rounded-full"
+                className="px-2.5 py-0.5 rounded-full text-xs font-medium"
                 style={{
                   backgroundColor: `${scoreColor}20`,
                   color: scoreColor,
-                  fontSize: '12px',
-                  fontWeight: '500',
                 }}
               >
                 {scoreLabel}
               </span>
             </div>
-            <p className="text-muted-foreground text-[#404040]" style={{ fontSize: '13px' }}>
+            <p className="text-muted-foreground text-[#404040] text-sm">
               Your compliance score is calculated based on certificate coverage, freshness, and
               verification quality.
             </p>
@@ -114,51 +112,45 @@ export const ComplianceScore = memo(function ComplianceScore({
 
           {/* Hard block alerts */}
           {cacUnverified && (
-            <div className="flex items-start gap-2 px-3 py-2 rounded-md" style={{ backgroundColor: 'rgba(156,163,175,0.12)', border: '1px solid #9CA3AF' }}>
-              <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" style={{ color: '#9CA3AF' }} />
+            <div className="flex items-start gap-2 px-3 py-2 rounded-md bg-[rgba(156,163,175,0.12)] border border-[#9CA3AF]">
+              <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5 text-[#9CA3AF]" />
               <div>
-                <p style={{ fontSize: '13px', fontWeight: 500, color: '#6B7280' }}>Score Not Available</p>
-                <p className="text-muted-foreground" style={{ fontSize: '12px' }}>Complete CAC verification to unlock your compliance score</p>
+                <p className="text-sm font-medium text-[#6B7280]">Score Not Available</p>
+                <p className="text-muted-foreground text-xs">Complete CAC verification to unlock your compliance score</p>
               </div>
             </div>
           )}
           {nhiaHardBlock && !cacUnverified && (
-            <div className="flex items-start gap-2 px-3 py-2 rounded-md" style={{ backgroundColor: 'rgba(255,48,0,0.08)', border: '1px solid rgba(255,48,0,0.3)' }}>
-              <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" style={{ color: '#FF3000' }} />
+            <div className="flex items-start gap-2 px-3 py-2 rounded-md bg-[rgba(255,48,0,0.08)] border border-[rgba(255,48,0,0.3)]">
+              <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5 text-[#FF3000]" />
               <div>
-                <p style={{ fontSize: '13px', fontWeight: 500, color: '#FF3000' }}>Score capped at 49 — NHIA required</p>
-                <p className="text-muted-foreground" style={{ fontSize: '12px' }}>NHIA enrollment is mandatory for federal procurement eligibility</p>
+                <p className="text-sm font-medium text-[#FF3000]">Score capped at 49 — NHIA required</p>
+                <p className="text-muted-foreground text-xs">NHIA enrollment is mandatory for federal procurement eligibility</p>
               </div>
             </div>
           )}
 
           {/* Procurement Ready Badge */}
           {isProcurementReady ? (
-            <div
-              className="flex items-center gap-2 px-3 py-2 rounded-md"
-              style={{ backgroundColor: 'rgba(255, 48, 0, 0.1)' }}
-            >
-              <CheckCircle2 className="w-4 h-4" style={{ color: '#FF3000' }} />
+            <div className="flex items-center gap-2 px-3 py-2 rounded-md bg-[rgba(255,48,0,0.1)]">
+              <CheckCircle2 className="w-4 h-4 text-[#FF3000]" />
               <div>
-                <p style={{ fontSize: '13px', fontWeight: '500', color: '#FF3000' }}>
+                <p className="text-sm font-medium text-[#FF3000]">
                   Procurement Ready
                 </p>
-                <p className="text-muted-foreground text-[#404040]" style={{ fontSize: '13px' }}>
+                <p className="text-muted-foreground text-[#404040] text-sm">
                   Eligible for federal procurement
                 </p>
               </div>
             </div>
           ) : (
-            <div
-              className="flex items-center gap-2 px-3 py-2 rounded-md"
-              style={{ backgroundColor: 'rgba(255, 48, 0, 0.1)' }}
-            >
-              <AlertTriangle className="w-4 h-4" style={{ color: '#FF3000' }} />
+            <div className="flex items-center gap-2 px-3 py-2 rounded-md bg-[rgba(255,48,0,0.1)]">
+              <AlertTriangle className="w-4 h-4 text-[#FF3000]" />
               <div>
-                <p style={{ fontSize: '13px', fontWeight: '500', color: '#FF3000' }}>
+                <p className="text-sm font-medium text-[#FF3000]">
                   Ineligible to Bid
                 </p>
-                <p className="text-muted-foreground text-[#404040]" style={{ fontSize: '13px' }}>
+                <p className="text-muted-foreground text-[#404040] text-sm">
                   Complete all certificates to become eligible
                 </p>
               </div>
@@ -169,10 +161,10 @@ export const ComplianceScore = memo(function ComplianceScore({
           {goalText && activeCerts !== undefined && (
             <div>
               <div className="flex items-center justify-between mb-1.5">
-                <p className="text-muted-foreground" style={{ fontSize: '12px' }}>
+                <p className="text-muted-foreground text-xs">
                   {activeCerts}/{totalCerts} certificates active
                 </p>
-                <p style={{ fontSize: '12px', fontWeight: 500, color: scoreColor }}>
+                <p className="text-xs font-medium" style={{ color: scoreColor }}>
                   {goalText}
                 </p>
               </div>
@@ -190,15 +182,9 @@ export const ComplianceScore = memo(function ComplianceScore({
 
           {/* Projected Score Warning */}
           {projectedScore && (
-            <div
-              className="px-3 py-2 rounded-md border border-[#e5e5e5]"
-              style={{ backgroundColor: 'rgba(255, 48, 0, 0.08)' }}
-            >
-              <p style={{ fontSize: '12px', fontWeight: '500', color: '#FF3000' }}>Score at Risk</p>
-              <p
-                className="text-muted-foreground mt-0.5 text-[#404040]"
-                style={{ fontSize: '13px' }}
-              >
+            <div className="px-3 py-2 rounded-md border border-[#e5e5e5] bg-[rgba(255,48,0,0.08)]">
+              <p className="text-xs font-medium text-[#FF3000]">Score at Risk</p>
+              <p className="text-muted-foreground mt-0.5 text-[#404040] text-sm">
                 Projected score on {projectedScore.date}:{' '}
                 <strong>{projectedScore.score}/100</strong> if {projectedScore.certificate} is not
                 renewed

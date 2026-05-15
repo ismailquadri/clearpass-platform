@@ -7,10 +7,16 @@ import {
   AlertTriangle,
   Clock,
 } from 'lucide-react';
-import { useState, useRef } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { VendorVerificationModal } from './VendorVerificationModal';
 import { useToast } from './ToastProvider';
-import { useVerifyVendor, verifyVendor } from '../api';
+import {
+  mdaReportDownloadUrl,
+  useGenerateMDAVerificationReport,
+  useVerifyVendor,
+  verifyVendor,
+} from '../api';
+import { openVerificationReport } from '../utils/reportGenerator';
 import type { VendorEligibilityStatus, VendorVerification } from '../api';
 import { EmptyState } from './ui';
 import { MDAActivityHook } from './NextBestAction';
@@ -77,9 +83,13 @@ export function MDAVerifyView() {
   const [searchQuery, setSearchQuery] = useState('');
   const [verificationResults, setVerificationResults] = useState<VendorVerification[]>([]);
   const [isVerificationModalOpen, setIsVerificationModalOpen] = useState(false);
+  const [quickVerifyQuery, setQuickVerifyQuery] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [bulkResults, setBulkResults] = useState<BulkRow[]>([]);
   const [isBulkProcessing, setIsBulkProcessing] = useState(false);
+  const handleQuickVerifyResult = useCallback((result: VendorVerification) => {
+    setVerificationResults([result]);
+  }, []);
 
   const handleSearch = async () => {
     setError(null);
@@ -87,30 +97,24 @@ export function MDAVerifyView() {
       setError('Please enter an RC number to search');
       return;
     }
+    const query = searchQuery.trim();
     const rcPattern = /^RC\d{7,}$/i;
-    if (!rcPattern.test(searchQuery.trim())) {
+    const looksLikeRc = /^RC/i.test(query);
+    if (looksLikeRc && !rcPattern.test(query)) {
       setError('Please enter a valid RC number (e.g., RC1234567)');
       return;
     }
+    if (!looksLikeRc && query.length < 3) {
+      setError('Enter at least 3 characters for company name search');
+      return;
+    }
     try {
-      // For the demo we fan out to a few RC numbers to populate results;
-      // wire this to a single-vendor or list endpoint as needed.
-      const primary = await verify.mutate(searchQuery.trim());
-      const additional = await Promise.all([
-        verifyVendor('RC7654321').catch(() => null),
-        verifyVendor('RC9876543').catch(() => null),
-      ]);
-      const results = [primary, ...additional.filter((v): v is VendorVerification => !!v)]
-        // De-duplicate by RC number.
-        .reduce<VendorVerification[]>((acc, v) => {
-          if (!acc.some((x) => x.rcNumber === v.rcNumber)) acc.push(v);
-          return acc;
-        }, []);
-      setVerificationResults(results);
+      const primary = await verify.mutate(query);
+      setVerificationResults([primary]);
       showToast(
         'success',
-        'Search Complete',
-        `Found ${results.length} verification result${results.length === 1 ? '' : 's'}`
+        'Verification Complete',
+        `${primary.companyName} verification result is ready`
       );
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Verification failed. Try again.';
@@ -154,29 +158,33 @@ export function MDAVerifyView() {
         return;
       }
 
-      // Simulate async processing with mock data
-      setTimeout(() => {
-        const results: BulkRow[] = rcNumbers.map((rc) => {
-          if (MOCK_BULK_RESULTS[rc]) return MOCK_BULK_RESULTS[rc];
-          return {
-            rcNumber: rc,
-            companyName: 'Unknown Company',
-            status: 'pending' as const,
-            score: 0,
-            nhia: false,
-            pcc: false,
-            nsitf: false,
-            firs: false,
-          };
+      void Promise.all(
+        rcNumbers.map(async (rc) => {
+          try {
+            const result = await verifyVendor(rc);
+            return toBulkRow(result);
+          } catch {
+            return MOCK_BULK_RESULTS[rc] ?? {
+              rcNumber: rc,
+              companyName: 'Unknown Company',
+              status: 'pending' as const,
+              score: 0,
+              nhia: false,
+              pcc: false,
+              nsitf: false,
+              firs: false,
+            };
+          }
+        })
+      ).then((results) => {
+          setBulkResults(results);
+          setIsBulkProcessing(false);
+          showToast('success', 'Bulk Verification Complete', `${results.length} RC numbers processed.`);
+        })
+        .catch(() => {
+          setIsBulkProcessing(false);
+          showToast('error', 'Bulk Verification Failed', 'Please check the CSV and try again.');
         });
-        setBulkResults(results);
-        setIsBulkProcessing(false);
-        showToast(
-          'success',
-          'Bulk Verification Complete',
-          `${results.length} RC numbers processed.`
-        );
-      }, 1200);
     };
     reader.readAsText(file);
     e.target.value = '';
@@ -205,9 +213,7 @@ export function MDAVerifyView() {
     <div className="flex-1 h-full overflow-y-auto bg-background">
       <div className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto">
         <header className="mb-6 sm:mb-8">
-          <h1 className="mb-2" style={{ fontSize: '28px' }}>
-            Verify Vendors
-          </h1>
+          <h1 className="cp-page-title mb-2">Verify Vendors</h1>
           <p className="text-muted-foreground" style={{ fontSize: '16px' }}>
             Real-time compliance verification for procurement pre-qualification
           </p>
@@ -240,7 +246,7 @@ export function MDAVerifyView() {
                   onKeyDown={(e) => {
                     if (e.key === 'Enter' && !verify.isPending) handleSearch();
                   }}
-                  placeholder="Enter RC number (e.g., RC1234567)"
+                  placeholder="Enter RC number or company name"
                   aria-invalid={!!error}
                   aria-describedby={error ? 'mda-search-error' : undefined}
                   className={`w-full pl-10 pr-4 py-3 min-h-[48px] bg-input-background border rounded-md ${
@@ -263,8 +269,11 @@ export function MDAVerifyView() {
             </div>
             <div className="flex flex-col sm:flex-row gap-3">
               <button
-                onClick={() => setIsVerificationModalOpen(true)}
-                className="px-6 py-3 min-h-[44px] rounded-md text-white flex items-center justify-center gap-2 hover:opacity-90 transition-opacity"
+                onClick={() => {
+                  setQuickVerifyQuery(searchQuery.trim());
+                  setIsVerificationModalOpen(true);
+                }}
+                className="cp-shimmer px-6 py-3 min-h-[44px] rounded-md text-white flex items-center justify-center gap-2"
                 style={{ backgroundColor: 'var(--mda-primary)' }}
               >
                 <Search className="w-5 h-5" aria-hidden="true" />
@@ -307,7 +316,7 @@ export function MDAVerifyView() {
         {(isBulkProcessing || bulkResults.length > 0) && (
           <div className="bg-card border border-border rounded-lg p-4 sm:p-6 mb-6">
             <div className="flex items-center justify-between mb-4">
-              <h2 style={{ fontSize: '18px', fontWeight: 600 }}>
+              <h2 className="cp-section-title">
                 Bulk Verification Results
                 {isBulkProcessing && (
                   <span className="ml-2 text-muted-foreground" style={{ fontSize: '14px' }}>
@@ -337,7 +346,7 @@ export function MDAVerifyView() {
                 {/* Summary */}
                 <div className="grid grid-cols-3 gap-3 mb-4">
                   <div className="bg-muted/30 rounded-lg p-3 text-center">
-                    <p style={{ fontSize: '20px', fontWeight: 700, color: '#1FC16B' }}>
+                      <p style={{ fontSize: '20px', fontWeight: 700, color: 'var(--mda-success)' }}>
                       {bulkResults.filter((r) => r.status === 'eligible').length}
                     </p>
                     <p className="text-muted-foreground" style={{ fontSize: '12px' }}>
@@ -345,7 +354,7 @@ export function MDAVerifyView() {
                     </p>
                   </div>
                   <div className="bg-muted/30 rounded-lg p-3 text-center">
-                    <p style={{ fontSize: '20px', fontWeight: 700, color: 'var(--mda-primary)' }}>
+                    <p style={{ fontSize: '20px', fontWeight: 700, color: 'var(--mda-error)' }}>
                       {bulkResults.filter((r) => r.status === 'ineligible').length}
                     </p>
                     <p className="text-muted-foreground" style={{ fontSize: '12px' }}>
@@ -353,7 +362,7 @@ export function MDAVerifyView() {
                     </p>
                   </div>
                   <div className="bg-muted/30 rounded-lg p-3 text-center">
-                    <p style={{ fontSize: '20px', fontWeight: 700, color: '#F59E0B' }}>
+                    <p style={{ fontSize: '20px', fontWeight: 700, color: 'var(--mda-warning)' }}>
                       {bulkResults.filter((r) => r.status === 'pending').length}
                     </p>
                     <p className="text-muted-foreground" style={{ fontSize: '12px' }}>
@@ -391,10 +400,10 @@ export function MDAVerifyView() {
                       {bulkResults.map((row) => {
                         const statusColor =
                           row.status === 'eligible'
-                            ? '#1FC16B'
+                    ? 'var(--mda-success)'
                             : row.status === 'ineligible'
-                              ? 'var(--mda-primary)'
-                              : '#F59E0B';
+                              ? 'var(--mda-error)'
+                              : 'var(--mda-warning)';
                         return (
                           <tr key={row.rcNumber} className="border-b border-border last:border-0">
                             <td className="py-2" style={{ fontSize: '13px' }}>
@@ -425,7 +434,7 @@ export function MDAVerifyView() {
                             {[row.nhia, row.pcc, row.nsitf, row.firs].map((v, i) => (
                               <td key={i} className="py-2">
                                 {v ? (
-                                  <CheckCircle2 className="w-4 h-4" style={{ color: '#1FC16B' }} />
+                                  <CheckCircle2 className="w-4 h-4" style={{ color: 'var(--mda-success)' }} />
                                 ) : (
                                   <XCircle className="w-4 h-4" style={{ color: 'var(--mda-primary)' }} />
                                 )}
@@ -443,9 +452,9 @@ export function MDAVerifyView() {
                   {bulkResults.map((row) => {
                     const statusColor =
                       row.status === 'eligible'
-                        ? '#1FC16B'
+                        ? 'var(--mda-success)'
                         : row.status === 'ineligible'
-                          ? 'var(--mda-primary)'
+                          ? 'var(--mda-error)'
                           : '#F59E0B';
                     return (
                       <div key={row.rcNumber} className="border border-border rounded-lg p-3">
@@ -504,30 +513,28 @@ export function MDAVerifyView() {
               <StatTile
                 label="Procurement Ready"
                 value={verificationResults.filter((r) => r.status === 'procurement-ready').length}
-                color="var(--mda-primary)"
+                color="var(--mda-success)"
               />
               <StatTile
                 label="Attention Required"
                 value={verificationResults.filter((r) => r.status === 'attention-required').length}
-                color="var(--mda-primary)"
+                color="var(--mda-warning)"
               />
               <StatTile
                 label="Ineligible"
                 value={verificationResults.filter((r) => r.status === 'ineligible').length}
-                color="var(--mda-primary)"
+                color="var(--mda-error)"
               />
             </div>
 
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
-              <h2 style={{ fontSize: '20px' }}>Verification Results</h2>
+              <h2 className="cp-section-title">Verification Results</h2>
               <button
                 className="px-4 py-2 min-h-[40px] rounded-md border border-border hover:bg-muted transition-colors flex items-center justify-center gap-2"
-                onClick={() =>
-                  showToast('success', 'Export Started', 'Generating verification report PDF...')
-                }
+                onClick={() => exportVerificationResults(verificationResults, showToast)}
               >
                 <Download className="w-4 h-4" aria-hidden="true" />
-                Export Report
+                Export CSV
               </button>
             </div>
 
@@ -551,6 +558,8 @@ export function MDAVerifyView() {
       <VendorVerificationModal
         isOpen={isVerificationModalOpen}
         onClose={() => setIsVerificationModalOpen(false)}
+        initialQuery={quickVerifyQuery}
+        onVerified={handleQuickVerifyResult}
       />
     </div>
   );
@@ -565,9 +574,174 @@ function StatTile({ label, value, color }: { label: string; value: number; color
   );
 }
 
+function toBulkRow(result: VendorVerification): BulkRow {
+  const hasActive = (name: string) =>
+    result.certificates.some(
+      (cert) => cert.name.toLowerCase().includes(name) && cert.status === 'active'
+    );
+
+  return {
+    rcNumber: result.rcNumber,
+    companyName: result.companyName,
+    status:
+      result.status === 'procurement-ready'
+        ? 'eligible'
+        : result.status === 'ineligible'
+          ? 'ineligible'
+          : 'pending',
+    score: result.score,
+    nhia: hasActive('nhia'),
+    pcc: hasActive('pcc'),
+    nsitf: hasActive('nsitf'),
+    firs: hasActive('firs'),
+  };
+}
+
+function exportVerificationResults(
+  results: VendorVerification[],
+  showToast: ReturnType<typeof useToast>['showToast']
+) {
+  if (!results.length) return;
+  const header = 'RC Number,Company Name,Status,Score,Last Verified\n';
+  const rows = results
+    .map((r) => `${r.rcNumber},${r.companyName},${r.status},${r.score},${r.lastVerified}`)
+    .join('\n');
+  const blob = new Blob([header + rows], { type: 'text/csv' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `mda-verification-${new Date().toISOString().slice(0, 10)}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('success', 'Export Complete', 'Verification results downloaded.');
+}
+
+function addToStoredPrequalification(result: VendorVerification) {
+  const key = 'clearpass.mda.prequalification.pendingVendor';
+  try {
+    localStorage.setItem(
+      key,
+      JSON.stringify({
+        rcNumber: result.rcNumber,
+        companyName: result.companyName,
+        score: result.score,
+        status:
+          result.status === 'procurement-ready'
+            ? 'qualified'
+            : result.status === 'ineligible'
+              ? 'disqualified'
+              : 'attention',
+      })
+    );
+    window.dispatchEvent(
+      new CustomEvent('clearpass:navigate', {
+        detail: { persona: 'MDA', section: 'prequalification' },
+      })
+    );
+  } catch {
+    // ignore
+  }
+}
+
 function ResultCard({ result }: { result: VendorVerification }) {
+  const { showToast } = useToast();
+  const generateReport = useGenerateMDAVerificationReport();
   const statusConfig = getStatusConfig(result.status);
   const StatusIcon = statusConfig.icon;
+
+  const openReport = () => {
+    try {
+      localStorage.setItem('clearpass.mda.reports.prefillRc', result.rcNumber);
+    } catch {
+      // ignore
+    }
+    window.dispatchEvent(
+      new CustomEvent('clearpass:navigate', {
+        detail: { persona: 'MDA', section: 'reports' },
+      })
+    );
+  };
+
+  const downloadPdf = async () => {
+    try {
+      let liveUrl: string | undefined;
+      let reportId: string | undefined;
+      try {
+        const report = await generateReport.mutate({ rc_number: result.rcNumber });
+        if (report.pdf_url && report.pdf_url !== '#') {
+          window.open(mdaReportDownloadUrl(report.id), '_blank', 'noopener,noreferrer');
+          showToast('success', 'Report Ready', `Verification report opened for ${result.companyName}`);
+          return;
+        }
+        liveUrl = report.live_url;
+        reportId = report.id;
+      } catch {
+        // API offline — fall through to local report generation
+      }
+      openVerificationReport({
+        companyName: result.companyName,
+        rcNumber: result.rcNumber,
+        score: result.score,
+        status: result.status,
+        certificates: result.certificates,
+        lastVerified: result.lastVerified,
+        generatedBy: 'Dr. Bello Adamu',
+        reportId,
+        liveUrl,
+      });
+      showToast('success', 'Report Ready', `Verification report opened for ${result.companyName}`);
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Unable to generate report';
+      showToast('error', 'Report Failed', message);
+    }
+  };
+
+  const addToWatchlist = () => {
+    const key = 'clearpass.mda.watchlist.v1';
+    try {
+      const existing = JSON.parse(localStorage.getItem(key) || '[]') as Array<{
+        rcNumber: string;
+      }>;
+      if (existing.some((item) => item.rcNumber === result.rcNumber)) {
+        showToast('info', 'Already Monitored', `${result.rcNumber} is already on the watchlist.`);
+        return;
+      }
+      const today = new Date().toLocaleDateString('en-GB', {
+        day: 'numeric',
+        month: 'short',
+        year: 'numeric',
+      });
+      const dates = result.certificates
+        .map((cert) => new Date(cert.expiryDate))
+        .filter((date) => !Number.isNaN(date.getTime()));
+      const nearest = dates.length ? dates.reduce((a, b) => (a < b ? a : b)) : null;
+      const days = nearest
+        ? Math.ceil((nearest.getTime() - Date.now()) / (1000 * 60 * 60 * 24))
+        : 0;
+      const next = [
+        {
+          id: `w${Date.now()}`,
+          companyName: result.companyName,
+          rcNumber: result.rcNumber,
+          score: result.score,
+          status: result.status,
+          nearestExpiry: nearest
+            ? nearest.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
+            : 'N/A',
+          daysToExpiry: days,
+          alertsEnabled: true,
+          addedDate: today,
+          lastVerified: today,
+        },
+        ...existing,
+      ];
+      localStorage.setItem(key, JSON.stringify(next));
+      showToast('success', 'Added to Watchlist', `${result.companyName} is now monitored.`);
+    } catch {
+      showToast('error', 'Watchlist Failed', 'Unable to update watchlist.');
+    }
+  };
+
   return (
     <div className="bg-card border border-border rounded-lg p-4 sm:p-6">
       <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4 mb-4">
@@ -596,6 +770,7 @@ function ResultCard({ result }: { result: VendorVerification }) {
         <div className="lg:text-right">
           <p className="caption text-muted-foreground mb-1">Compliance Score</p>
           <p
+            className="cp-score-reveal tabnum"
             style={{
               fontSize: '28px',
               fontWeight: 600,
@@ -613,16 +788,16 @@ function ResultCard({ result }: { result: VendorVerification }) {
           {result.certificates.map((cert, idx) => {
             const certColor =
               cert.status === 'active'
-                ? 'var(--mda-primary)'
+                ? 'var(--mda-success)'
                 : cert.status === 'expiring'
-                  ? 'var(--mda-primary)'
-                  : 'var(--mda-primary)';
+                  ? 'var(--mda-warning)'
+                  : 'var(--mda-error)';
             const certBg =
               cert.status === 'active'
-                ? 'rgba(255, 48, 0, 0.1)'
+                ? 'var(--mda-success-light)'
                 : cert.status === 'expiring'
-                  ? 'rgba(255, 48, 0, 0.1)'
-                  : 'rgba(255, 48, 0, 0.1)';
+                  ? 'var(--mda-warning-light)'
+                  : 'var(--mda-error-light)';
             return (
               <div key={idx} className="px-3 py-2 rounded-md" style={{ backgroundColor: certBg }}>
                 <p
@@ -642,14 +817,30 @@ function ResultCard({ result }: { result: VendorVerification }) {
       )}
 
       <div className="flex flex-wrap gap-2 mt-4">
-        <button className="px-4 py-2 min-h-[40px] rounded-md border border-border hover:bg-muted transition-colors">
+        <button
+          onClick={openReport}
+          className="px-4 py-2 min-h-[40px] rounded-md border border-border hover:bg-muted transition-colors"
+        >
           View Full Report
         </button>
-        <button className="px-4 py-2 min-h-[40px] rounded-md border border-border hover:bg-muted transition-colors">
-          Download PDF
+        <button
+          onClick={downloadPdf}
+          disabled={generateReport.isPending}
+          className="px-4 py-2 min-h-[40px] rounded-md border border-border hover:bg-muted transition-colors disabled:opacity-50"
+        >
+          {generateReport.isPending ? 'Preparing PDF...' : 'Download PDF'}
         </button>
-        <button className="px-4 py-2 min-h-[40px] rounded-md border border-border hover:bg-muted transition-colors">
+        <button
+          onClick={() => addToStoredPrequalification(result)}
+          className="px-4 py-2 min-h-[40px] rounded-md border border-border hover:bg-muted transition-colors"
+        >
           Add to Pre-Qualification List
+        </button>
+        <button
+          onClick={addToWatchlist}
+          className="px-4 py-2 min-h-[40px] rounded-md border border-border hover:bg-muted transition-colors"
+        >
+          Add to Watchlist
         </button>
       </div>
     </div>
@@ -661,22 +852,22 @@ function getStatusConfig(status: VendorEligibilityStatus) {
     case 'procurement-ready':
       return {
         icon: CheckCircle2,
-        color: 'var(--mda-primary)',
-        bgColor: 'rgba(255, 48, 0, 0.1)',
+    color: 'var(--mda-success)',
+    bgColor: 'var(--mda-success-light)',
         label: 'Procurement Ready',
       };
     case 'attention-required':
       return {
         icon: AlertTriangle,
-        color: 'var(--mda-primary)',
-        bgColor: 'rgba(255, 48, 0, 0.1)',
+        color: 'var(--mda-warning)',
+        bgColor: 'var(--mda-warning-light)',
         label: 'Attention Required',
       };
     case 'ineligible':
       return {
         icon: XCircle,
-        color: 'var(--mda-primary)',
-        bgColor: 'rgba(255, 48, 0, 0.1)',
+        color: 'var(--mda-error)',
+        bgColor: 'var(--mda-error-light)',
         label: 'Ineligible to Bid',
       };
   }

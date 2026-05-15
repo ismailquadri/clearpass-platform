@@ -28,7 +28,7 @@ const ACCOUNT_TYPE_LABELS: Record<AccountType, string> = {
 
 const DEMO_CREDENTIALS = [
   { type: 'Business', email: 'amaka@techventures.ng', password: 'demo1234' },
-  { type: 'MDA', email: 'bello.adamu@procurement.gov.ng', password: 'demo1234' },
+  { type: 'MDA', email: 'bello.adamu@nhia.gov.ng', password: 'demo1234' },
   { type: 'Partner', email: 'chisom@compliancepro.ng', password: 'demo1234' },
   { type: 'HMO', email: 'fatima@axiahmo.ng', password: 'demo1234' },
   { type: 'Admin', email: 'admin@clearpass.com.ng', password: 'admin1234' },
@@ -489,7 +489,7 @@ function Field({ label, htmlFor, children }: { label: string; htmlFor: string; c
 }
 
 function InputWithIcon({
-  id, type, value, onChange, placeholder, icon: Icon, onEnter,
+  id, type, value, onChange, placeholder, icon: Icon, onEnter, maxLength,
 }: {
   id: string;
   type: string;
@@ -498,6 +498,7 @@ function InputWithIcon({
   placeholder: string;
   icon: typeof Mail;
   onEnter?: () => void;
+  maxLength?: number;
 }) {
   return (
     <div className="relative">
@@ -506,6 +507,7 @@ function InputWithIcon({
         id={id}
         type={type}
         value={value}
+        maxLength={maxLength}
         onChange={(e) => onChange(e.target.value)}
         onKeyDown={(e) => e.key === 'Enter' && onEnter?.()}
         placeholder={placeholder}

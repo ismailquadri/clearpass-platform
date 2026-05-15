@@ -77,9 +77,9 @@ export function AddVendorModal({ isOpen, onClose, onAddVendor }: AddVendorModalP
           <div className="flex items-center gap-3">
             <div
               className="w-10 h-10 rounded-lg flex items-center justify-center"
-              style={{ backgroundColor: 'rgba(255, 48, 0, 0.1)' }}
+              style={{ backgroundColor: 'var(--mda-bg-light)' }}
             >
-              <Building2 className="w-5 h-5" style={{ color: '#FF3000' }} />
+              <Building2 className="w-5 h-5" style={{ color: 'var(--mda-primary)' }} />
             </div>
             <h2 id="add-vendor-title" style={{ fontSize: '18px', fontWeight: 600 }}>
               Add Vendor
@@ -165,7 +165,7 @@ export function AddVendorModal({ isOpen, onClose, onAddVendor }: AddVendorModalP
             <button
               type="submit"
               className="flex-1 px-4 py-2.5 rounded-md text-white"
-              style={{ backgroundColor: '#FF3000' }}
+              style={{ backgroundColor: 'var(--mda-primary)' }}
             >
               Add Vendor
             </button>

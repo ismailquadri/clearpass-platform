@@ -80,9 +80,7 @@ export function AlertsView() {
                 <header className="mb-6 sm:mb-8">
                   <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-2">
                     <div className="flex items-center gap-3 flex-wrap">
-                      <h1 style={{ fontSize: '28px' }} className="sm:text-[32px]">
-                        Alerts
-                      </h1>
+                      <h1 className="cp-page-title">Alerts</h1>
                       {unreadCount > 0 && (
                         <span
                           className="px-3 py-1 rounded-full text-white"

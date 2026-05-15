@@ -52,9 +52,7 @@ export function BusinessVerifyView() {
       <div className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="mb-2" style={{ fontSize: '32px' }}>
-            Verify Company
-          </h1>
+          <h1 className="cp-page-title mb-2">Verify Company</h1>
           <p className="text-muted-foreground" style={{ fontSize: '16px' }}>
             Check compliance status of potential partners and subcontractors
           </p>

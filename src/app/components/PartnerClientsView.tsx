@@ -204,9 +204,7 @@ function ClientsContent({
     <>
       <header className="mb-6 sm:mb-8">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-2">
-          <h1 style={{ fontSize: '28px' }} className="sm:text-[32px]">
-            My Clients
-          </h1>
+          <h1 className="cp-page-title">My Clients</h1>
           <div className="flex flex-col sm:flex-row gap-3">
             <button
               onClick={onUploadCertificate}
@@ -940,6 +938,7 @@ function ClientManagementModal({ client, onClose }: ClientManagementModalProps) 
     if (permissionsQuery.data && permissionsQuery.data.length > 0) {
       const link = permissionsQuery.data[0];
       if (isMounted) {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setPermissions({
           certificatesView: link.permissions.includes('certificates.view'),
           certificatesEdit: link.permissions.includes('certificates.edit'),

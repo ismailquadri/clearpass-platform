@@ -23,8 +23,9 @@ export function RateLimitMonitor() {
   };
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     refreshLimits();
-    const interval = setInterval(refreshLimits, 10000); // Refresh every 10 seconds
+    const interval = setInterval(refreshLimits, 10000);
     return () => clearInterval(interval);
   }, []);
 

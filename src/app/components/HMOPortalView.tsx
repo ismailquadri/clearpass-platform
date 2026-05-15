@@ -122,7 +122,7 @@ function HMOOverview() {
     <div className="flex-1 h-full overflow-y-auto bg-background">
       <div className="p-4 sm:p-6 lg:p-8 max-w-5xl mx-auto">
         <header className="mb-6">
-          <h1 className="mb-1" style={{ fontSize: '28px' }}>HMO Partner Dashboard</h1>
+          <h1 className="cp-page-title mb-1">HMO Partner Dashboard</h1>
           <p className="text-muted-foreground" style={{ fontSize: '15px' }}>Axia Health Insurance · Fatima Okafor</p>
         </header>
 
@@ -209,7 +209,7 @@ function HMOReferrals() {
     <div className="flex-1 h-full overflow-y-auto bg-background">
       <div className="p-4 sm:p-6 lg:p-8 max-w-5xl mx-auto">
         <header className="mb-6">
-          <h1 className="mb-2" style={{ fontSize: '28px' }}>Referral Pipeline</h1>
+          <h1 className="cp-page-title mb-2">Referral Pipeline</h1>
           <p className="text-muted-foreground" style={{ fontSize: '15px' }}>Companies referred from ClearPass that need NHIA enrollment</p>
         </header>
 
@@ -308,7 +308,7 @@ function HMOEnrollments() {
     <div className="flex-1 h-full overflow-y-auto bg-background">
       <div className="p-4 sm:p-6 lg:p-8 max-w-5xl mx-auto">
         <header className="mb-6">
-          <h1 className="mb-2" style={{ fontSize: '28px' }}>Enrollment Management</h1>
+          <h1 className="cp-page-title mb-2">Enrollment Management</h1>
           <p className="text-muted-foreground" style={{ fontSize: '15px' }}>Track enrollment progress for each company</p>
         </header>
 
@@ -389,7 +389,7 @@ function HMOCommissions() {
     <div className="flex-1 h-full overflow-y-auto bg-background">
       <div className="p-4 sm:p-6 lg:p-8 max-w-5xl mx-auto">
         <header className="mb-6">
-          <h1 className="mb-2" style={{ fontSize: '28px' }}>Commission Tracking</h1>
+          <h1 className="cp-page-title mb-2">Commission Tracking</h1>
           <p className="text-muted-foreground" style={{ fontSize: '15px' }}>8% commission on monthly premiums for referred enrollments</p>
         </header>
 
@@ -494,7 +494,7 @@ function HMOAnalytics() {
     <div className="flex-1 h-full overflow-y-auto bg-background">
       <div className="p-4 sm:p-6 lg:p-8 max-w-5xl mx-auto">
         <header className="mb-6">
-          <h1 className="mb-2" style={{ fontSize: '28px' }}>Analytics</h1>
+          <h1 className="cp-page-title mb-2">Analytics</h1>
           <p className="text-muted-foreground" style={{ fontSize: '15px' }}>Performance metrics and pipeline health</p>
         </header>
 

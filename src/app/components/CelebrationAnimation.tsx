@@ -36,7 +36,9 @@ export function CelebrationAnimation({ trigger, onComplete }: CelebrationAnimati
         duration: 2 + Math.random() * 2,
       }));
 
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setConfetti(pieces);
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setIsVisible(true);
 
       // Hide after animation

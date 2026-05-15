@@ -18,8 +18,9 @@ export function NotificationDeliveryMonitor() {
   };
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     refreshData();
-    const interval = setInterval(refreshData, 10000); // Refresh every 10 seconds
+    const interval = setInterval(refreshData, 10000);
     return () => clearInterval(interval);
   }, []);
 

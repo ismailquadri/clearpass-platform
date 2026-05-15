@@ -1,9 +1,8 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Search,
   Filter,
   Download,
-  Calendar,
   Shield,
   AlertTriangle,
   Info,
@@ -40,12 +39,6 @@ export function DetailedAuditTrailView() {
   const [selectedEntityType, setSelectedEntityType] = useState<EntityType | ''>('');
   const [selectedSeverity, setSelectedSeverity] = useState<AuditLogEntry['severity'] | ''>('');
   const [selectedCategory, setSelectedCategory] = useState<AuditLogEntry['category'] | ''>('');
-
-  // Load entries on mount and filter change
-  useEffect(() => {
-    loadEntries();
-    loadStats();
-  }, [filters, searchQuery, dateRange]);
 
   const loadEntries = () => {
     let effectiveFilters: AuditTrailFilters = { ...filters };
@@ -90,6 +83,14 @@ export function DetailedAuditTrailView() {
   const loadStats = () => {
     setStats(auditTrail.getStats());
   };
+
+  // Load entries on mount and filter change
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    loadEntries();
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    loadStats();
+  }, [filters, searchQuery, dateRange]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleRefresh = () => {
     setIsRefreshing(true);
@@ -207,7 +208,7 @@ export function DetailedAuditTrailView() {
         <div className="mb-6">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-2">
             <div>
-              <h1 style={{ fontSize: '32px' }}>Detailed Audit Trail</h1>
+              <h1 className="cp-page-title">Detailed Audit Trail</h1>
               <p className="text-muted-foreground" style={{ fontSize: '16px' }}>
                 Comprehensive logging of all compliance-related actions
               </p>

@@ -8,12 +8,12 @@ import { useCertificates } from '../api';
 import type { Certificate } from '../api';
 import { ApiState, EmptyState } from './ui';
 import { CertificateGridSkeleton } from './ui/Skeleton';
-import { exportCertificatesToCSV, printCertificateReport, type CertificateExportData } from '../utils/exportUtils';
+import { exportCertificatesToCSV, printCertificateReport } from '../utils/exportUtils';
 
 type StatusFilter = 'all' | 'active' | 'expiring' | 'expired';
 
 export function CertificatesView() {
-  const { showToast } = useToast();
+  useToast();
   const [searchQuery, setSearchQuery] = useState('');
   const [filterStatus, setFilterStatus] = useState<StatusFilter>('all');
   const [selectedCertificate, setSelectedCertificate] = useState<Certificate | null>(null);
@@ -26,9 +26,7 @@ export function CertificatesView() {
       <div className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto">
         <header className="mb-6 sm:mb-8">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-2">
-            <h1 style={{ fontSize: '28px' }} className="sm:text-[32px]">
-              My Certificates
-            </h1>
+            <h1 className="cp-page-title">My Certificates</h1>
             <button
               onClick={() => setIsUploadModalOpen(true)}
               className="px-4 py-2 rounded-md text-white flex items-center justify-center gap-2 min-h-[44px] hover:opacity-90 transition-opacity"
@@ -123,7 +121,7 @@ interface CertificatesContentProps {
   filterStatus: StatusFilter;
   setFilterStatus: (f: StatusFilter) => void;
   onSelectCertificate: (c: Certificate) => void;
-  onExport: (certificates: Certificate[]) => void;
+  onExport: () => void;
 }
 
 function CertificatesContent({

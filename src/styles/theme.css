@@ -201,7 +201,7 @@
 
   body {
     @apply bg-background text-foreground;
-    font-family: 'Geist', sans-serif;
+    font-family: 'SuisseIntl', sans-serif;
   }
 }
 
@@ -212,72 +212,72 @@
   :where(:not(:has([class*=' text-']), :not(:has([class^='text-'])))) {
     h1 {
       font-size: var(--text-h1);
-      font-weight: var(--font-weight-medium);
+      font-weight: 300;
       line-height: 1.5;
-      font-family: 'Geist', sans-serif;
+      font-family: 'SuisseIntl', sans-serif;
     }
 
     h2 {
       font-size: var(--text-h2);
       font-weight: var(--font-weight-medium);
       line-height: 1.5;
-      font-family: 'Geist', sans-serif;
+      font-family: 'SuisseIntl', sans-serif;
     }
 
     h3 {
       font-size: var(--text-h3);
       font-weight: var(--font-weight-medium);
       line-height: 1.5;
-      font-family: 'Geist', sans-serif;
+      font-family: 'SuisseIntl', sans-serif;
     }
 
     h4 {
       font-size: var(--text-h4);
       font-weight: var(--font-weight-medium);
       line-height: 1.5;
-      font-family: 'Geist', sans-serif;
+      font-family: 'SuisseIntl', sans-serif;
     }
 
     p {
       font-size: var(--text-base);
       font-weight: var(--font-weight-normal);
       line-height: 1.5;
-      font-family: 'Geist', sans-serif;
+      font-family: 'SuisseIntl', sans-serif;
     }
 
     label {
       font-size: var(--text-sm);
       font-weight: var(--font-weight-medium);
       line-height: 1.5;
-      font-family: 'Geist', sans-serif;
+      font-family: 'SuisseIntl', sans-serif;
     }
 
     button {
       font-size: var(--text-base);
       font-weight: var(--font-weight-medium);
       line-height: 1.5;
-      font-family: 'Geist', sans-serif;
+      font-family: 'SuisseIntl', sans-serif;
     }
 
     input {
       font-size: var(--text-base);
       font-weight: var(--font-weight-normal);
       line-height: 1.5;
-      font-family: 'Geist', sans-serif;
+      font-family: 'SuisseIntl', sans-serif;
     }
 
     .caption {
       font-size: var(--text-xs);
       font-weight: var(--font-weight-normal);
       line-height: 1.5;
-      font-family: 'Geist', sans-serif;
+      font-family: 'SuisseIntl', sans-serif;
     }
 
     .badge {
       font-size: var(--text-2xs);
       font-weight: var(--font-weight-medium);
       line-height: 1.5;
-      font-family: 'Geist', sans-serif;
+      font-family: 'SuisseIntl', sans-serif;
       text-transform: uppercase;
     }
   }
@@ -285,7 +285,7 @@
 
 html {
   font-size: var(--font-size);
-  font-family: 'Geist', sans-serif;
+  font-family: 'SuisseIntl', sans-serif;
 }
 
 /* Respect user's motion preferences */
@@ -316,4 +316,11 @@ html {
   animation-name: confetti-fall;
   animation-timing-function: ease-in;
   animation-fill-mode: forwards;
+}
+
+/* Navigation progress bar — slides across then fades on completion */
+@keyframes progress {
+  0%   { transform: translateX(-100%); opacity: 1; }
+  60%  { transform: translateX(0%);    opacity: 1; }
+  100% { transform: translateX(0%);    opacity: 0; }
 }

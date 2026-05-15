@@ -1,0 +1,103 @@
+/* SuisseIntl — primary UI typeface */
+
+@font-face {
+  font-family: 'SuisseIntl';
+  src: url('/fonts/SuisseIntlTrial-Light.otf') format('opentype');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'SuisseIntl';
+  src: url('/fonts/SuisseIntlTrial-LightIt.otf') format('opentype');
+  font-weight: 300;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'SuisseIntl';
+  src: url('/fonts/SuisseIntlTrial-Book.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'SuisseIntl';
+  src: url('/fonts/SuisseIntlTrial-BookIt.otf') format('opentype');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'SuisseIntl';
+  src: url('/fonts/SuisseIntlTrial-Regular.otf') format('opentype');
+  font-weight: 450;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'SuisseIntl';
+  src: url('/fonts/SuisseIntlTrial-RegularIt.otf') format('opentype');
+  font-weight: 450;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'SuisseIntl';
+  src: url('/fonts/SuisseIntlTrial-Medium.otf') format('opentype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'SuisseIntl';
+  src: url('/fonts/SuisseIntlTrial-MediumIt.otf') format('opentype');
+  font-weight: 500;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'SuisseIntl';
+  src: url('/fonts/SuisseIntlTrial-Medium.otf') format('opentype');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'SuisseIntl';
+  src: url('/fonts/SuisseIntlTrial-MediumIt.otf') format('opentype');
+  font-weight: 600;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'SuisseIntl';
+  src: url('/fonts/SuisseIntlTrial-Semibold.otf') format('opentype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'SuisseIntl';
+  src: url('/fonts/SuisseIntlTrial-SemiboldIt.otf') format('opentype');
+  font-weight: 700;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* SuisseIntlMono — monospace / code */
+
+@font-face {
+  font-family: 'SuisseIntlMono';
+  src: url('/fonts/SuisseIntlMonoTrial-Regular.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'SuisseIntlMono';
+  src: url('/fonts/SuisseIntlMonoTrial-Bold.otf') format('opentype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}

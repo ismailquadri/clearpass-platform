@@ -1,4 +1,4 @@
-import { Search, FileCheck, Activity, BarChart3, Settings, Star } from 'lucide-react';
+import { Search, FileCheck, Activity, BarChart3, Settings, Star, QrCode, LayoutDashboard } from 'lucide-react';
 import { useState } from 'react';
 import { ProfileModal } from './ProfileModal';
 import { useAuth } from '../context/AuthContext';
@@ -26,7 +26,9 @@ interface MenuItem {
 }
 
 const VERIFICATION_ITEMS: MenuItem[] = [
+  { id: 'nhia-overview', label: 'Dashboard', icon: LayoutDashboard },
   { id: 'verify', label: 'Verify Vendors', icon: Search },
+  { id: 'scan', label: 'Scan QR Document', icon: QrCode },
   { id: 'prequalification', label: 'Pre-Qualification', icon: FileCheck },
   { id: 'watchlist', label: 'Company Watchlist', icon: Star },
   { id: 'reports', label: 'Verification Reports', icon: BarChart3 },
@@ -51,22 +53,20 @@ export function MDASidebar({
   };
 
   const userProfile = {
-    name: user?.name ?? 'MDA Officer',
+    name: user?.name ?? 'NHIA Officer',
     email: user?.email ?? '',
     phone: user?.phone ?? '',
     company: user?.mdaName ?? '',
-    role: 'Procurement Officer',
+    role: 'NHIA Verification Officer',
   };
 
   return (
     <aside className={`${fluid ? 'w-full' : 'w-56 lg:w-64'} h-full bg-card flex flex-col`}>
-      <div className="px-4 py-4 border-b border-border">
-        <div className="flex items-center gap-2">
-          <img src="/clearpass-logo-mda.svg" alt="ClearPass MDA" className="h-9 w-auto" />
-        </div>
+      <div className="px-4 h-[70px] flex items-center border-b border-border">
+        <img src="/nhia-logo.png" alt="National Health Insurance Authority" className="w-full h-auto object-contain" style={{ maxHeight: '48px' }} />
       </div>
 
-      <nav aria-label="MDA portal navigation" className="flex-1 p-3 overflow-y-auto">
+      <nav aria-label="NHIA portal navigation" className="flex-1 p-3 overflow-y-auto">
         <Group
           label="Verification Tools"
           items={VERIFICATION_ITEMS}
@@ -91,10 +91,10 @@ export function MDASidebar({
             {getInitials(userProfile.name)}
           </div>
           <div className="flex-1 overflow-hidden text-left">
-            <p style={{ fontSize: '12px' }} className="truncate">
+            <p style={{ fontSize: '13px', fontWeight: 500 }} className="truncate">
               {userProfile.name}
             </p>
-            <p className="text-muted-foreground truncate" style={{ fontSize: '13px' }}>
+            <p className="text-muted-foreground truncate" style={{ fontSize: '11px' }}>
               {userProfile.role}
             </p>
           </div>

@@ -213,6 +213,14 @@ export function useGamification() {
     }
   }, [state.totalCertificates, state.totalVerifications, state.totalReports, state.streakDays, state.totalActions, state.unlockedAchievements]);
 
+  // Calculate streak bonus (extra XP multiplier based on streak)
+  const calculateStreakBonus = useCallback((): number => {
+    if (state.streakDays >= 30) return 50;
+    if (state.streakDays >= 14) return 25;
+    if (state.streakDays >= 7) return 10;
+    return 0;
+  }, [state.streakDays]);
+
   // Complete a daily challenge
   const completeDailyChallenge = useCallback((challengeId: string) => {
     const challenge = dailyChallenges.find(c => c.id === challengeId);
@@ -235,14 +243,6 @@ export function useGamification() {
 
     return totalXP;
   }, [dailyChallenges, state.totalXP]);
-
-  // Calculate streak bonus (extra XP multiplier based on streak)
-  const calculateStreakBonus = useCallback((): number => {
-    if (state.streakDays >= 30) return 50; // 50 bonus XP for 30+ day streak
-    if (state.streakDays >= 14) return 25; // 25 bonus XP for 14+ day streak
-    if (state.streakDays >= 7) return 10; // 10 bonus XP for 7+ day streak
-    return 0;
-  }, [state.streakDays]);
 
   // Get daily challenges completion status
   const getDailyChallengesStatus = useCallback(() => {

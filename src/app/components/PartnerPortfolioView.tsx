@@ -37,27 +37,7 @@ function PortfolioContent({ clients, searchQuery, setSearchQuery }: PortfolioCon
     );
   }, [clients, searchQuery]);
 
-  if (filteredClients.length === 0 && searchQuery) {
-    return (
-      <EmptyState
-        icon={Search}
-        title="No Clients Found"
-        description="Try adjusting your search query."
-      />
-    );
-  }
-
-  if (filteredClients.length === 0) {
-    return (
-      <EmptyState
-        icon={Building2}
-        title="No Clients in Portfolio"
-        description="Start by adding clients to track their compliance and certificates."
-      />
-    );
-  }
-
-  // Portfolio-level aggregate metrics - always call hooks
+  // Portfolio-level aggregate metrics
   const totalMonthlyRevenue = useMemo(() => {
     return filteredClients.reduce((sum, c) => sum + c.monthlyFee, 0);
   }, [filteredClients]);
@@ -142,19 +122,37 @@ function PortfolioContent({ clients, searchQuery, setSearchQuery }: PortfolioCon
   }, [filteredClients]);
 
   const certificateHealthRate = useMemo(() => {
-    return totalCertificates > 0 
-      ? Math.round((activeCertificates / totalCertificates) * 100) 
+    return totalCertificates > 0
+      ? Math.round((activeCertificates / totalCertificates) * 100)
       : 0;
   }, [totalCertificates, activeCertificates]);
+
+  if (filteredClients.length === 0 && searchQuery) {
+    return (
+      <EmptyState
+        icon={Search}
+        title="No Clients Found"
+        description="Try adjusting your search query."
+      />
+    );
+  }
+
+  if (filteredClients.length === 0) {
+    return (
+      <EmptyState
+        icon={Building2}
+        title="No Clients in Portfolio"
+        description="Start by adding clients to track their compliance and certificates."
+      />
+    );
+  }
 
   return (
     <>
       <header className="mb-6 sm:mb-8">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
           <div>
-            <h1 style={{ fontSize: '28px' }} className="sm:text-[32px]">
-              Portfolio Overview
-            </h1>
+            <h1 className="cp-page-title">Portfolio Overview</h1>
             <p className="text-muted-foreground" style={{ fontSize: '16px' }}>
               Aggregate performance and revenue across your client portfolio
             </p>

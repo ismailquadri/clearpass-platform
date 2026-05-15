@@ -54,7 +54,8 @@ export function ProfileModal({
   const [copiedCode, setCopiedCode] = useState(false);
 
   const primaryColor = persona === 'MDA' ? 'var(--mda-primary)' : '#FF3000';
-  const primaryColorLight = persona === 'MDA' ? 'var(--mda-bg-light)' : 'rgba(255, 48, 0, 0.1)';
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const _primaryColorLight = persona === 'MDA' ? 'var(--mda-bg-light)' : 'rgba(255, 48, 0, 0.1)';
 
   // Mock referral data - in real implementation, this would come from the backend
   const referralData: ReferralData = {
@@ -87,7 +88,7 @@ export function ProfileModal({
           text: `Join ClearPass and streamline your compliance management. Use my referral code: ${referralData.referralCode}`,
           url: referralData.referralLink,
         });
-      } catch (err) {
+      } catch {
         handleCopyLink();
       }
     } else {

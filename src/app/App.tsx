@@ -1,6 +1,7 @@
-import { useEffect, useState, lazy, Suspense } from 'react';
+import { useEffect, useState, lazy, Suspense, useTransition, useCallback } from 'react';
 import { FileQuestion } from 'lucide-react';
 import ErrorBoundary from './components/ErrorBoundary';
+import { GlobalNav } from './components/GlobalNav';
 import { Sidebar } from './components/Sidebar';
 import { MDASidebar } from './components/MDASidebar';
 import { PartnerSidebar } from './components/PartnerSidebar';
@@ -12,9 +13,11 @@ import { EmptyState } from './components/ui/EmptyState';
 import { OfflineBanner } from './components/OfflineBanner';
 import { AuthProvider, useAuth, type AccountType } from './context/AuthContext';
 import { useOnlineStatus } from './hooks/useOnlineStatus';
+import { useCertificateNotifications } from './hooks/useCertificateNotifications';
 import type { Persona } from './api/types';
 
 const AuthView = lazy(() => import('./components/AuthView').then((m) => ({ default: m.AuthView })));
+
 import {
   PageHeaderSkeleton,
   StatCardGridSkeleton,
@@ -134,6 +137,21 @@ const MDAWatchlistView = lazy(() =>
     default: m.MDAWatchlistView,
   }))
 );
+const QRScannerView = lazy(() =>
+  import('./components/QRScannerView').then((m) => ({
+    default: m.QRScannerView,
+  }))
+);
+const MDASettingsView = lazy(() =>
+  import('./components/MDASettingsView').then((m) => ({
+    default: m.MDASettingsView,
+  }))
+);
+const NHIADashboardView = lazy(() =>
+  import('./components/NHIADashboardView').then((m) => ({
+    default: m.NHIADashboardView,
+  }))
+);
 const AdminPortalView = lazy(() =>
   import('./components/AdminPortalView').then((m) => ({
     default: m.AdminPortalView,
@@ -147,6 +165,16 @@ const HMOPortalView = lazy(() =>
 const CompanyProfile = lazy(() =>
   import('./components/CompanyProfile').then((m) => ({
     default: m.CompanyProfile,
+  }))
+);
+const WorkersView = lazy(() =>
+  import('./components/WorkersView').then((m) => ({
+    default: m.WorkersView,
+  }))
+);
+const ComplianceView = lazy(() =>
+  import('./components/ComplianceView').then((m) => ({
+    default: m.ComplianceView,
   }))
 );
 
@@ -265,7 +293,35 @@ function AppInner() {
   );
   const [activeSection, setActiveSection] = useState('overview');
   const [selectedPersona, setSelectedPersona] = useState<'Business' | 'MDA' | 'Partner' | 'HMO' | 'Admin'>('Business');
+  const [isPending, startTransition] = useTransition();
   const isOnline = useOnlineStatus();
+  useCertificateNotifications();
+
+  // Stable navigate — wraps section-only changes in startTransition.
+  // Memoised so child components don't re-render unnecessarily.
+  const navigate = useCallback(
+    (section: string) => startTransition(() => setActiveSection(section)),
+    [startTransition]
+  );
+
+  // Allow deep navigation from within portal components without introducing
+  // a full router. Components can dispatch `clearpass:navigate` with a target
+  // persona + section.
+  useEffect(() => {
+    const onNavigate = (e: Event) => {
+      const detail = (e as CustomEvent).detail as
+        | { persona?: Persona | 'Business' | 'MDA' | 'Partner' | 'HMO' | 'Admin'; section?: string }
+        | undefined;
+      if (!detail?.section) return;
+      // Batch persona + section in ONE transition so they always apply together.
+      startTransition(() => {
+        if (detail.persona) setSelectedPersona(detail.persona as any);
+        setActiveSection(detail.section!);
+      });
+    };
+    window.addEventListener('clearpass:navigate', onNavigate as EventListener);
+    return () => window.removeEventListener('clearpass:navigate', onNavigate as EventListener);
+  }, []);
 
   // When a user logs in, sync the persona from their account type.
   useEffect(() => {
@@ -276,7 +332,7 @@ function AppInner() {
 
       setActiveSection(() => {
         if (persona === 'Business') return 'overview';
-        if (persona === 'MDA') return 'verify';
+        if (persona === 'MDA') return 'nhia-overview';
         if (persona === 'HMO') return 'hmo-overview';
         if (persona === 'Admin') return 'admin-overview';
         return 'clients';
@@ -311,7 +367,7 @@ function AppInner() {
       <div className="fixed inset-0 flex items-center justify-center bg-background">
         <div className="flex flex-col items-center gap-3">
           <img src="/clearpass-logo.svg" alt="ClearPass" className="h-10 w-auto animate-pulse" />
-          <p className="text-muted-foreground" style={{ fontSize: '14px' }}>
+          <p className="text-muted-foreground text-sm">
             Loading…
           </p>
         </div>
@@ -319,7 +375,7 @@ function AppInner() {
     );
   }
 
-  // Auth gate — show login screen when no session exists.
+  // Auth gate — show auth view directly.
   if (!isAuthenticated) {
     return (
       <Suspense
@@ -335,12 +391,17 @@ function AppInner() {
   }
 
   const handlePersonaChange = (persona: Persona) => {
-    setSelectedPersona(persona);
-    if (persona === 'Business') setActiveSection('overview');
-    else if (persona === 'MDA') setActiveSection('verify');
-    else if (persona === 'HMO') setActiveSection('hmo-overview');
-    else if (persona === 'Admin') setActiveSection('admin-overview');
-    else setActiveSection('clients');
+    // Both persona AND section must change atomically in one transition —
+    // splitting them creates an intermediate render where persona is new
+    // but section is still from the old persona, hitting SectionNotFound.
+    startTransition(() => {
+      setSelectedPersona(persona);
+      if (persona === 'Business') setActiveSection('overview');
+      else if (persona === 'MDA') setActiveSection('nhia-overview');
+      else if (persona === 'HMO') setActiveSection('hmo-overview');
+      else if (persona === 'Admin') setActiveSection('admin-overview');
+      else setActiveSection('clients');
+    });
   };
 
   const handleOnboardingComplete = (persona: Persona) => {
@@ -350,18 +411,18 @@ function AppInner() {
   };
 
   const goHome = () => {
-    if (selectedPersona === 'Business') setActiveSection('overview');
-    else if (selectedPersona === 'MDA') setActiveSection('verify');
-    else if (selectedPersona === 'HMO') setActiveSection('hmo-overview');
-    else if (selectedPersona === 'Admin') setActiveSection('admin-overview');
-    else setActiveSection('clients');
+    if (selectedPersona === 'Business') navigate('overview');
+    else if (selectedPersona === 'MDA') navigate('nhia-overview');
+    else if (selectedPersona === 'HMO') navigate('hmo-overview');
+    else if (selectedPersona === 'Admin') navigate('admin-overview');
+    else navigate('clients');
   };
 
   // Sidebar factory (one for desktop, one for the drawer that closes itself).
   const renderSidebar = (onItemSelect?: () => void) => {
     const props = {
       activeSection,
-      onSectionChange: setActiveSection,
+      onSectionChange: navigate,
       onItemSelect,
     };
     switch (selectedPersona) {
@@ -384,7 +445,7 @@ function AppInner() {
         case 'overview':
           return (
             <Suspense fallback={<DashboardSkeleton />}>
-              <StateAwareDashboard onNavigate={setActiveSection} />
+              <StateAwareDashboard onNavigate={navigate} />
             </Suspense>
           );
         case 'certificates':
@@ -453,6 +514,18 @@ function AppInner() {
               <CompanyProfile />
             </Suspense>
           );
+        case 'workers':
+          return (
+            <Suspense fallback={<GenericSkeleton />}>
+              <WorkersView />
+            </Suspense>
+          );
+        case 'compliance':
+          return (
+            <Suspense fallback={<GenericSkeleton />}>
+              <ComplianceView />
+            </Suspense>
+          );
         default:
           return <SectionNotFound persona="Business" section={activeSection} onHome={goHome} />;
       }
@@ -460,10 +533,22 @@ function AppInner() {
 
     if (selectedPersona === 'MDA') {
       switch (activeSection) {
+        case 'nhia-overview':
+          return (
+            <Suspense fallback={<DashboardSkeleton />}>
+              <NHIADashboardView onNavigate={navigate} />
+            </Suspense>
+          );
         case 'verify':
           return (
             <Suspense fallback={<GenericSkeleton />}>
               <MDAVerifyView />
+            </Suspense>
+          );
+        case 'scan':
+          return (
+            <Suspense fallback={<GenericSkeleton />}>
+              <QRScannerView />
             </Suspense>
           );
         case 'prequalification':
@@ -493,7 +578,7 @@ function AppInner() {
         case 'settings':
           return (
             <Suspense fallback={<GenericSkeleton />}>
-              <SettingsView />
+              <MDASettingsView />
             </Suspense>
           );
         default:
@@ -564,7 +649,7 @@ function AppInner() {
       default:
         return <SectionNotFound persona="Partner" section={activeSection} onHome={goHome} />;
     }
-  };
+};
 
   return (
     <>
@@ -578,13 +663,37 @@ function AppInner() {
 
       <OfflineBanner isOnline={isOnline} />
 
-      <AppShell
-        persona={selectedPersona}
-        sidebar={renderSidebar()}
-        drawerSidebar={(close) => renderSidebar(close)}
-      >
-        {renderMainContent()}
-      </AppShell>
+      <GlobalNav
+        activeSection={activeSection}
+        onNavigate={navigate}
+      />
+
+      <div className="h-full box-border">
+        <AppShell
+          persona={selectedPersona}
+          sidebar={renderSidebar()}
+          drawerSidebar={(close) => renderSidebar(close)}
+          activeSection={activeSection}
+          onSectionChange={navigate}
+        >
+          {/* Navigation progress bar — shown during lazy chunk loads */}
+          {isPending && (
+            <div
+              aria-hidden="true"
+              className="fixed top-0 left-0 right-0 z-[100] h-[3px] overflow-hidden"
+            >
+              <div
+                className="h-full animate-[progress_600ms_ease-in-out_infinite]"
+                style={{ background: 'var(--mda-primary, #057a46)', width: '100%' }}
+              />
+            </div>
+          )}
+          {/* key re-mounts on each nav → triggers cp-view-enter fade-in */}
+          <div key={activeSection} className="cp-view-enter h-full">
+            {renderMainContent()}
+          </div>
+        </AppShell>
+      </div>
 
       {showOnboarding && (
         <Suspense fallback={null}>

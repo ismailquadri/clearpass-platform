@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import {
   Building2,
   CheckCircle2,
-  Circle,
   ChevronRight,
   X,
   UserPlus,
@@ -10,6 +9,7 @@ import {
   ShieldCheck,
   CreditCard,
 } from 'lucide-react';
+import { useToast } from './ToastProvider';
 
 export interface OnboardingTask {
   id: string;
@@ -19,6 +19,7 @@ export interface OnboardingTask {
   actionLabel: string;
   actionRoute: string;
   completed: boolean;
+  toastMessage?: string;
 }
 
 interface OnboardingChecklistProps {
@@ -33,7 +34,8 @@ const TASK_CONFIG = [
     description: 'Add your company details, RC number, and contact information',
     icon: Building2,
     actionLabel: 'Go to Company Profile',
-    actionRoute: '/company-profile',
+    actionRoute: 'company-profile',
+    toastMessage: 'Opening Company Profile...',
   },
   {
     id: 'verify-bvn',
@@ -41,7 +43,8 @@ const TASK_CONFIG = [
     description: 'Verify your Bank Verification Number for enhanced security',
     icon: CreditCard,
     actionLabel: 'Verify BVN',
-    actionRoute: '/settings',
+    actionRoute: 'settings',
+    toastMessage: 'Opening BVN Verification in Settings...',
   },
   {
     id: 'upload-documents',
@@ -49,7 +52,8 @@ const TASK_CONFIG = [
     description: 'Upload CAC documents, tax certificates, and compliance proofs',
     icon: FileText,
     actionLabel: 'Upload Documents',
-    actionRoute: '/company-profile',
+    actionRoute: 'company-profile',
+    toastMessage: 'Opening Document Upload...',
   },
   {
     id: 'add-worker',
@@ -57,7 +61,8 @@ const TASK_CONFIG = [
     description: 'Add your first employee to begin tracking their compliance',
     icon: UserPlus,
     actionLabel: 'Add Worker',
-    actionRoute: '/workers',
+    actionRoute: 'settings',
+    toastMessage: 'Opening Team Management to add workers...',
   },
   {
     id: 'compliance-check',
@@ -65,22 +70,25 @@ const TASK_CONFIG = [
     description: 'Run your first compliance verification to see your status',
     icon: ShieldCheck,
     actionLabel: 'Run Check',
-    actionRoute: '/compliance',
+    actionRoute: 'certificates',
+    toastMessage: 'Running Compliance Check...',
   },
 ];
 
 export function OnboardingChecklist({ onClose, onTaskClick }: OnboardingChecklistProps) {
+  const { showToast } = useToast();
   const [tasks, setTasks] = useState<OnboardingTask[]>(() => {
     try {
       const saved = localStorage.getItem('onboarding-tasks');
       if (saved) {
         const savedTasks = JSON.parse(saved);
-        // Reconstruct tasks with proper icon functions
+        // Reconstruct tasks with proper icon functions and toastMessages
         return savedTasks.map((savedTask: any) => {
           const config = TASK_CONFIG.find(c => c.id === savedTask.id);
           return {
             ...savedTask,
             icon: config?.icon || Building2,
+            toastMessage: config?.toastMessage || 'Opening...',
           };
         });
       }
@@ -95,7 +103,7 @@ export function OnboardingChecklist({ onClose, onTaskClick }: OnboardingChecklis
 
   useEffect(() => {
     // Save only serializable data (without icon functions)
-    const serializableTasks = tasks.map(({ icon, ...task }) => task);
+    const serializableTasks = tasks.map(({ icon: _icon, ...task }) => task);
     localStorage.setItem('onboarding-tasks', JSON.stringify(serializableTasks));
   }, [tasks]);
 
@@ -105,11 +113,14 @@ export function OnboardingChecklist({ onClose, onTaskClick }: OnboardingChecklis
 
   const handleTaskClick = (task: OnboardingTask) => {
     if (!task.completed) {
+      // Show toast with action message
+      showToast('info', task.actionLabel, task.toastMessage || 'Opening...');
       onTaskClick(task.actionRoute);
     }
   };
 
-  const markTaskComplete = (taskId: string) => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const _markTaskComplete = (taskId: string) => {
     setTasks((prev) => prev.map((t) => (t.id === taskId ? { ...t, completed: true } : t)));
   };
 
@@ -267,7 +278,9 @@ export function useOnboardingChecklist() {
     localStorage.removeItem('onboarding-dismissed');
     localStorage.removeItem('onboarding-tasks');
     setShowChecklist(true);
-    setTasks(TASK_CONFIG.map(task => ({ ...task, completed: false })));
+    // Force re-render of tasks by clearing localStorage
+    // The OnboardingChecklist component will reset on next render
+    window.location.reload();
   };
 
   return {

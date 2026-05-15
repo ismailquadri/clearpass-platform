@@ -228,9 +228,7 @@ function ReportsContent({
     <>
       <header className="mb-6 sm:mb-8">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-2">
-          <h1 style={{ fontSize: '28px' }} className="sm:text-[32px]">
-            Client Reports
-          </h1>
+          <h1 className="cp-page-title">Client Reports</h1>
           <button
             onClick={onGenerateReport}
             className="px-4 py-2 min-h-[44px] rounded-md text-white flex items-center justify-center gap-2 hover:opacity-90 transition-opacity"
@@ -355,9 +353,8 @@ function ReportCard({ report, onDownload, onView, onDelete }: ReportCardProps) {
     }
   };
 
-  const daysAgo = useMemo(() => {
-    return Math.floor((Date.now() - new Date(report.generatedAt).getTime()) / (1000 * 60 * 60 * 24));
-  }, [report.generatedAt]);
+  // eslint-disable-next-line react-hooks/purity
+  const daysAgo = Math.floor((Date.now() - new Date(report.generatedAt).getTime()) / (1000 * 60 * 60 * 24));
 
   return (
     <div className="bg-card border border-border rounded-lg p-4 sm:p-5">

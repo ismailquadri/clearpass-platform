@@ -17,10 +17,14 @@ interface Env {
 }
 
 function readEnv(): Env {
-  // Backend disconnected - always use mocks
-  const apiBaseUrl = '/api'; // Placeholder, not used
-  const useMocks = true; // Always use mocks
-  const mockLatencyMs = Number((import.meta.env.VITE_MOCK_LATENCY_MS as string | undefined) ?? 350);
+  // By default we keep mock mode on for demo environments. When the backend is
+  // available, set `VITE_USE_MOCKS=false` (and optionally `VITE_API_BASE_URL`).
+  const apiBaseUrl = (import.meta.env.VITE_API_BASE_URL as string | undefined) ?? '';
+  const useMocksRaw = (import.meta.env.VITE_USE_MOCKS as string | undefined) ?? 'true';
+  const useMocks = useMocksRaw !== 'false';
+  const mockLatencyMs = Number(
+    (import.meta.env.VITE_MOCK_LATENCY_MS as string | undefined) ?? 350
+  );
   return { apiBaseUrl, useMocks, mockLatencyMs };
 }
 
@@ -103,14 +107,41 @@ async function parseError(res: Response): Promise<ApiClientError> {
 }
 
 export async function request<T>(path: string, options: RequestOptions = {}): Promise<T> {
-  // Backend disconnected - always use mock mode
-  // This function should never be called since all API modules check env.useMocks first
-  console.warn(`API request attempted but backend is disconnected: ${path}`);
-  throw new ApiClientError(
-    503,
-    'BACKEND_DISCONNECTED',
-    'Backend is disconnected. Please build the backend API separately.'
-  );
+  const url = buildUrl(path, options.query);
+  const token = getAuthToken();
+
+  const headers: Record<string, string> = {
+    Accept: 'application/json',
+    ...(options.body ? { 'Content-Type': 'application/json' } : {}),
+    ...(options.headers ?? {}),
+  };
+  if (token) headers.Authorization = `Bearer ${token}`;
+
+  const method = options.method ?? 'GET';
+  const body = options.body !== undefined ? JSON.stringify(options.body) : undefined;
+  const retries = options.retries ?? 1;
+
+  for (let attempt = 0; attempt <= retries; attempt++) {
+    try {
+      const res = await fetch(url, { method, headers, body, signal: options.signal });
+      if (!res.ok) throw await parseError(res);
+      const contentType = res.headers.get('content-type') ?? '';
+      if (res.status === 204) return undefined as T;
+      if (contentType.includes('application/json')) {
+        return (await res.json()) as T;
+      }
+      // Fallback: for endpoints that return non-JSON, return text.
+      return (await res.text()) as unknown as T;
+    } catch (err) {
+      if (isAbortError(err)) throw err;
+      if (err instanceof ApiClientError && err.status < 500) throw err;
+      if (attempt >= retries) throw err;
+      await wait(backoffMs(attempt));
+    }
+  }
+
+  // Unreachable, but TS doesn't know.
+  throw new ApiClientError(500, 'UNKNOWN', 'Unknown request error');
 }
 
 function backoffMs(attempt: number): number {

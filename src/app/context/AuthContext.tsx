@@ -72,12 +72,12 @@ const MOCK_USERS: (AuthUser & { password: string })[] = [
   },
   {
     id: 'usr-002',
-    name: 'Engr. Bello Adamu',
-    email: 'bello.adamu@procurement.gov.ng',
+    name: 'Dr. Bello Adamu',
+    email: 'bello.adamu@nhia.gov.ng',
     phone: '+2348023456789',
     password: 'demo1234',
     accountType: 'mda',
-    mdaName: 'Federal Ministry of Works',
+    mdaName: 'National Health Insurance Authority',
     mfaEnabled: true,
     emailVerified: true,
     phoneVerified: true,
@@ -148,9 +148,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (stored) {
       try {
         const user = JSON.parse(stored) as AuthUser;
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setState({ user, isLoading: false, isAuthenticated: true });
       } catch {
         localStorage.removeItem(STORAGE_KEY);
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setState({ user: null, isLoading: false, isAuthenticated: false });
       }
     } else {
@@ -167,6 +169,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       (u) => u.email.toLowerCase() === email.toLowerCase() && u.password === password
     );
     if (!found) return { success: false, error: 'Invalid email or password' };
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { password: _pw, ...user } = found;
     localStorage.setItem(STORAGE_KEY, JSON.stringify(user));
     setState({ user, isLoading: false, isAuthenticated: true });

@@ -63,9 +63,7 @@ export function ExpiryTimelineView({ isPartner = false }: ExpiryTimelineViewProp
     <div className="flex-1 h-full overflow-y-auto bg-background">
       <div className="p-4 sm:p-6 lg:p-8 max-w-4xl mx-auto">
         <header className="mb-6 sm:mb-8">
-          <h1 className="mb-2" style={{ fontSize: '28px' }}>
-            Expiry Timeline
-          </h1>
+          <h1 className="cp-page-title mb-2">Expiry Timeline</h1>
           <p className="text-muted-foreground" style={{ fontSize: '16px' }}>
             Chronological view of all certificate expirations in the next 180 days
           </p>

@@ -12,7 +12,7 @@ export function Login({ onSuccess, onRegisterClick }: LoginProps) {
   const { showToast } = useToast();
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [requiresMfa, setRequiresMfa] = useState(false);
+  const [requiresMfa] = useState(false);
   const [errors, setErrors] = useState<{ email?: string; password?: string; mfaCode?: string }>({});
   const [formData, setFormData] = useState({
     email: '',

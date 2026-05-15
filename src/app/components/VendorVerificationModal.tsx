@@ -8,14 +8,19 @@ import {
   FileText,
   Shield,
 } from 'lucide-react';
-import { useState, useEffect } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useToast } from './ToastProvider';
 import { useFocusTrap } from '../hooks/useFocusTrap';
+import { openVerificationReport } from '../utils/reportGenerator';
+import { verifyVendor } from '../api';
+import type { VendorVerification } from '../api';
 import '../../app/styles/mda-theme.css';
 
 interface VendorVerificationModalProps {
   isOpen: boolean;
   onClose: () => void;
+  initialQuery?: string;
+  onVerified?: (result: VendorVerification) => void;
 }
 
 interface VerificationResult {
@@ -33,12 +38,57 @@ interface VerificationResult {
   cacVerified: boolean;
 }
 
-export function VendorVerificationModal({ isOpen, onClose }: VendorVerificationModalProps) {
+export function VendorVerificationModal({
+  isOpen,
+  onClose,
+  initialQuery = '',
+  onVerified,
+}: VendorVerificationModalProps) {
   const { showToast } = useToast();
   const [rcNumber, setRcNumber] = useState('');
   const [isVerifying, setIsVerifying] = useState(false);
   const [verificationResult, setVerificationResult] = useState<VerificationResult | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const autoVerifiedQueryRef = useRef('');
+
+  const runVerification = useCallback(
+    async (query: string) => {
+      const trimmed = query.trim();
+      setError(null);
+
+      if (!trimmed) {
+        setError('Please enter an RC number or company name to verify');
+        return;
+      }
+
+      const rcPattern = /^RC\d{7,}$/i;
+      const looksLikeRc = /^RC/i.test(trimmed);
+      if (looksLikeRc && !rcPattern.test(trimmed)) {
+        setError('Please enter a valid RC number (e.g., RC1234567)');
+        return;
+      }
+      if (!looksLikeRc && trimmed.length < 3) {
+        setError('Enter at least 3 characters for company name search');
+        return;
+      }
+
+      setIsVerifying(true);
+      try {
+        const result = await verifyVendor(trimmed);
+        setVerificationResult(toModalResult(result));
+        onVerified?.(result);
+        showToast('success', 'Vendor Found', `Successfully verified ${result.companyName}`);
+      } catch (err) {
+        const message = err instanceof Error ? err.message : 'Unable to verify vendor';
+        setVerificationResult(null);
+        setError(message);
+        showToast('error', 'Verification Failed', message);
+      } finally {
+        setIsVerifying(false);
+      }
+    },
+    [onVerified, showToast]
+  );
 
   // Handle Escape key to close modal
   useEffect(() => {
@@ -59,128 +109,80 @@ export function VendorVerificationModal({ isOpen, onClose }: VendorVerificationM
 
   const modalRef = useFocusTrap(isOpen);
 
-  if (!isOpen) return null;
-
-  const handleVerify = async () => {
+  useEffect(() => {
+    if (!isOpen) {
+      autoVerifiedQueryRef.current = '';
+      return;
+    }
+    const trimmed = initialQuery.trim();
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setRcNumber(trimmed);
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setVerificationResult(null);
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setError(null);
 
-    if (!rcNumber.trim()) {
-      setError('Please enter an RC number to verify');
-      return;
+    if (trimmed && autoVerifiedQueryRef.current !== trimmed) {
+      autoVerifiedQueryRef.current = trimmed;
+      void runVerification(trimmed);
     }
+    // Only reset/auto-run when the modal open state or incoming query changes.
+    // Including runVerification here causes toast/provider re-renders to clear the fresh result.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [initialQuery, isOpen]);
 
-    // Basic RC number format validation
-    const rcPattern = /^RC\d{7,}$/i;
-    if (!rcPattern.test(rcNumber.trim())) {
-      setError('Please enter a valid RC number (e.g., RC1234567)');
-      return;
-    }
+  if (!isOpen) return null;
 
-    setIsVerifying(true);
-
-    // Simulate vendor verification
-    setTimeout(() => {
-      const mockResults: VerificationResult[] = [
-        {
-          companyName: 'TechBuild Nigeria Ltd',
-          rcNumber: 'RC1234567',
-          complianceScore: 73,
-          status: 'attention-required',
-          certificates: [
-            { name: 'NHIA', status: 'active', expiryDate: '15 Jan 2027', daysToExpiry: 245 },
-            { name: 'PCC', status: 'active', expiryDate: '05 Jun 2026', daysToExpiry: 28 },
-            { name: 'NSITF', status: 'expired', expiryDate: '15 May 2026' },
-            { name: 'FIRS TCC', status: 'active', expiryDate: '14 Nov 2026', daysToExpiry: 189 },
-            { name: 'BPP', status: 'active', expiryDate: '16 Mar 2027', daysToExpiry: 312 },
-            { name: 'ITF', status: 'missing' },
-          ],
-          lastVerified: '9 May 2026, 10:23 AM',
-          cacVerified: true,
-        },
-        {
-          companyName: 'GreenEnergy Solutions Ltd',
-          rcNumber: 'RC7654321',
-          complianceScore: 92,
-          status: 'procurement-ready',
-          certificates: [
-            { name: 'NHIA', status: 'active', expiryDate: '20 Feb 2027', daysToExpiry: 280 },
-            { name: 'PCC', status: 'active', expiryDate: '15 Aug 2026', daysToExpiry: 98 },
-            { name: 'NSITF', status: 'active', expiryDate: '22 Sep 2026', daysToExpiry: 136 },
-            { name: 'FIRS TCC', status: 'active', expiryDate: '10 Dec 2026', daysToExpiry: 215 },
-            { name: 'BPP', status: 'active', expiryDate: '05 Apr 2027', daysToExpiry: 331 },
-            { name: 'ITF', status: 'active', expiryDate: '18 Nov 2026', daysToExpiry: 193 },
-          ],
-          lastVerified: '9 May 2026, 9:45 AM',
-          cacVerified: true,
-        },
-        {
-          companyName: 'BuildCorp Infrastructure',
-          rcNumber: 'RC9988776',
-          complianceScore: 34,
-          status: 'non-compliant',
-          certificates: [
-            { name: 'NHIA', status: 'expired', expiryDate: '15 Mar 2026' },
-            { name: 'PCC', status: 'expired', expiryDate: '10 Apr 2026' },
-            { name: 'NSITF', status: 'missing' },
-            { name: 'FIRS TCC', status: 'missing' },
-            { name: 'BPP', status: 'active', expiryDate: '25 Jul 2026', daysToExpiry: 77 },
-            { name: 'ITF', status: 'missing' },
-          ],
-          lastVerified: '9 May 2026, 8:12 AM',
-          cacVerified: true,
-        },
-      ];
-
-      // Randomly select a result or show "not found"
-      const found = Math.random() > 0.2;
-      setIsVerifying(false);
-
-      if (found) {
-        const result = mockResults[Math.floor(Math.random() * mockResults.length)];
-        setVerificationResult(result);
-        showToast('success', 'Vendor Found', `Successfully verified ${result.companyName}`);
-      } else {
-        setVerificationResult(null);
-        showToast('error', 'Vendor Not Found', 'No company found with this RC number');
-      }
-    }, 2000);
+  const handleVerify = () => {
+    autoVerifiedQueryRef.current = rcNumber.trim();
+    void runVerification(rcNumber);
   };
 
   const handleDownloadReport = () => {
-    if (verificationResult) {
-      showToast(
-        'success',
-        'Report Downloaded',
-        `Verification report for ${verificationResult.companyName}`
-      );
-    }
+    if (!verificationResult) return;
+    openVerificationReport({
+      companyName: verificationResult.companyName,
+      rcNumber: verificationResult.rcNumber,
+      score: verificationResult.complianceScore,
+      status: verificationResult.status === 'non-compliant' ? 'ineligible' : verificationResult.status,
+      certificates: verificationResult.certificates.map((c) => ({
+        name: c.name,
+        status: c.status,
+        expiryDate: c.expiryDate ?? '',
+      })),
+      lastVerified: verificationResult.lastVerified,
+      generatedBy: 'Dr. Bello Adamu',
+    });
+    showToast('success', 'Report Ready', `Verification report opened for ${verificationResult.companyName}`);
   };
 
   const handleReset = () => {
     setRcNumber('');
     setVerificationResult(null);
+    setError(null);
+    autoVerifiedQueryRef.current = '';
   };
 
   const getStatusConfig = (status: VerificationResult['status']) => {
     switch (status) {
       case 'procurement-ready':
         return {
-          color: 'var(--mda-primary)',
-          bgColor: 'rgba(255, 48, 0, 0.1)',
+          color: 'var(--mda-success)',
+          bgColor: 'var(--mda-success-light)',
           label: 'Procurement Ready',
           icon: CheckCircle2,
         };
       case 'attention-required':
         return {
-          color: 'var(--mda-primary)',
-          bgColor: 'rgba(255, 48, 0, 0.1)',
+          color: 'var(--mda-warning)',
+          bgColor: 'var(--mda-warning-light)',
           label: 'Attention Required',
           icon: AlertTriangle,
         };
       case 'non-compliant':
         return {
-          color: 'var(--mda-primary)',
-          bgColor: 'rgba(255, 48, 0, 0.1)',
+          color: 'var(--mda-error)',
+          bgColor: 'var(--mda-error-light)',
           label: 'Non-Compliant',
           icon: XCircle,
         };
@@ -190,9 +192,9 @@ export function VendorVerificationModal({ isOpen, onClose }: VendorVerificationM
   const getCertStatusConfig = (status: 'active' | 'expired' | 'missing') => {
     switch (status) {
       case 'active':
-        return { color: 'var(--mda-primary)', label: 'Active', icon: CheckCircle2 };
+        return { color: 'var(--mda-success)', label: 'Active', icon: CheckCircle2 };
       case 'expired':
-        return { color: 'var(--mda-primary)', label: 'Expired', icon: XCircle };
+        return { color: 'var(--mda-error)', label: 'Expired', icon: XCircle };
       case 'missing':
         return { color: 'rgb(92, 92, 92)', label: 'Missing', icon: AlertTriangle };
     }
@@ -226,7 +228,7 @@ export function VendorVerificationModal({ isOpen, onClose }: VendorVerificationM
             <div className="flex items-center gap-3">
               <div
                 className="w-10 h-10 rounded-lg flex items-center justify-center"
-                style={{ backgroundColor: 'rgba(255, 48, 0, 0.1)' }}
+                style={{ backgroundColor: 'var(--mda-bg-light)' }}
               >
                 <Shield className="w-5 h-5" style={{ color: 'var(--mda-primary)' }} />
               </div>
@@ -273,7 +275,7 @@ export function VendorVerificationModal({ isOpen, onClose }: VendorVerificationM
                     setError(null);
                   }}
                   onKeyDown={(e) => e.key === 'Enter' && handleVerify()}
-                  placeholder="e.g., RC1234567"
+                  placeholder="e.g., RC1234567 or TechBuild"
                   required
                   disabled={isVerifying}
                   aria-invalid={!!error}
@@ -379,12 +381,12 @@ export function VendorVerificationModal({ isOpen, onClose }: VendorVerificationM
                         CAC Status
                       </p>
                       <div className="flex items-center gap-1.5">
-                        <CheckCircle2 className="w-4 h-4" style={{ color: 'var(--mda-primary)' }} />
+                        <CheckCircle2 className="w-4 h-4" style={{ color: 'var(--mda-success)' }} />
                         <p
                           style={{
                             fontSize: '13px',
                             fontWeight: '500',
-                            color: 'var(--mda-primary)',
+                            color: 'var(--mda-success)',
                           }}
                         >
                           Verified
@@ -448,7 +450,7 @@ export function VendorVerificationModal({ isOpen, onClose }: VendorVerificationM
                 </div>
 
                 {/* Verification Note */}
-                <div className="px-4 py-3 rounded-lg border border-[#e5e5e5] bg-[#ffe6e6] bg-opacity-30">
+                <div className="px-4 py-3 rounded-lg border border-[var(--mda-border-light)] bg-[var(--mda-bg-light)]">
                   <div className="flex items-start gap-3">
                     <FileText className="w-5 h-5 flex-shrink-0" style={{ color: 'var(--mda-primary)' }} />
                     <div>
@@ -505,4 +507,35 @@ export function VendorVerificationModal({ isOpen, onClose }: VendorVerificationM
       </div>
     </>
   );
+}
+
+function toModalResult(result: VendorVerification): VerificationResult {
+  const today = Date.now();
+
+  return {
+    companyName: result.companyName,
+    rcNumber: result.rcNumber,
+    complianceScore: result.score,
+    status: result.status === 'ineligible' ? 'non-compliant' : result.status,
+    certificates: result.certificates.map((cert) => {
+      const expiry = new Date(cert.expiryDate);
+      const daysToExpiry = Number.isNaN(expiry.getTime())
+        ? undefined
+        : Math.ceil((expiry.getTime() - today) / (1000 * 60 * 60 * 24));
+
+      return {
+        name: cert.name,
+        status:
+          cert.status === 'active'
+            ? 'active'
+            : cert.status === 'expired'
+              ? 'expired'
+              : 'missing',
+        expiryDate: cert.expiryDate,
+        daysToExpiry,
+      };
+    }),
+    lastVerified: result.lastVerified,
+    cacVerified: true,
+  };
 }

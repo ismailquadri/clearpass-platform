@@ -6,7 +6,7 @@
 
 :root {
   /* Primary brand color */
-  --mda-primary: #05A756;
+  --mda-primary: #057a46;
   
   /* Lighter tints (for backgrounds, hover states) */
   --mda-primary-5: #f0fcf6;
@@ -16,34 +16,34 @@
   --mda-primary-40: #87e1af;
   
   /* Base variations */
-  --mda-primary-50: #69da8;
+  --mda-primary-50: #69daa8;
   --mda-primary-60: #4cd696;
   --mda-primary-70: #3fd284;
   --mda-primary-80: #31ce72;
   
   /* Darker shades (for text, borders, active states) */
   --mda-primary-90: #24ca60;
-  --mda-primary-100: #05A756;
-  --mda-primary-200: #048647;
-  --mda-primary-300: #036538;
-  --mda-primary-400: #024429;
-  --mda-primary-500: #01231a;
+  --mda-primary-100: #057a46;
+  --mda-primary-200: #04663b;
+  --mda-primary-300: #03542f;
+  --mda-primary-400: #024326;
+  --mda-primary-500: #012d1a;
   
   /* Semantic variations */
   --mda-bg-light: #f0fcf6;
   --mda-bg-medium: #e1f8eb;
-  --mda-bg-dark: #036538;
+  --mda-bg-dark: #03542f;
   
-  --mda-text-primary: #05A756;
-  --mda-text-secondary: #048647;
-  --mda-text-muted: #24ca60;
+  --mda-text-primary: #057a46;
+  --mda-text-secondary: #04663b;
+  --mda-text-muted: #167a4a;
   
   --mda-border-light: #c3f1d7;
   --mda-border-medium: #87e1af;
-  --mda-border-dark: #048647;
+  --mda-border-dark: #04663b;
   
   /* Accent colors for different states */
-  --mda-success: #05A756;
+  --mda-success: #057a46;
   --mda-success-light: #e1f8eb;
   --mda-warning: #f59e0b;
   --mda-warning-light: #fef3c7;
@@ -53,9 +53,18 @@
   --mda-info-light: #e0f2fe;
   
   /* Gradient combinations */
-  --mda-gradient-primary: linear-gradient(135deg, #05A756 0%, #4cd696 100%);
+  --mda-gradient-primary: linear-gradient(135deg, #057a46 0%, #2fbf75 100%);
   --mda-gradient-subtle: linear-gradient(135deg, #e1f8eb 0%, #c3f1d7 100%);
-  --mda-gradient-dark: linear-gradient(135deg, #048647 0%, #036538 100%);
+  --mda-gradient-dark: linear-gradient(135deg, #04663b 0%, #03542f 100%);
+}
+
+/* Input focus ring — override browser/Tailwind defaults inside MDA portal */
+[data-mda-portal] input:focus,
+[data-mda-portal] textarea:focus,
+[data-mda-portal] select:focus {
+  outline: none;
+  border-color: var(--mda-primary) !important;
+  box-shadow: 0 0 0 3px rgba(5, 122, 70, 0.15);
 }
 
 /* Dark mode variations */

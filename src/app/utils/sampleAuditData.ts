@@ -20,7 +20,7 @@ export function populateSampleAuditData() {
 
   // Sample certificate actions
   auditTrail.logCertificateAction('created', 'cert_001', 'NHIA Certificate', testUser, {
-    before: null,
+    before: {},
     after: { certificateNumber: 'NHIA-2024-001', status: 'active' },
   });
 
@@ -41,7 +41,7 @@ export function populateSampleAuditData() {
 
   // Sample company actions
   auditTrail.logCompanyAction('created', 'company_001', 'TechBuild Nigeria Ltd', testUser, {
-    before: null,
+    before: {},
     after: { rcNumber: 'RC1234567', status: 'active' },
   });
 
@@ -55,7 +55,7 @@ export function populateSampleAuditData() {
 
   // Sample user actions
   auditTrail.logUserAction('created', 'user_456', 'Chidi Obi', testUser, {
-    before: null,
+    before: {},
     after: { role: 'Editor', department: 'Compliance' },
   });
 

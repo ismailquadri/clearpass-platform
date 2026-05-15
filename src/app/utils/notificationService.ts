@@ -199,7 +199,7 @@ ClearPass Team`,
 
     // Replace variables in template
     const subject = this.replaceVariables(template.subject, { ...variables, name: recipient.name });
-    const body = this.replaceVariables(template.body, { ...variables, name: recipient.name, email: recipient.email });
+    this.replaceVariables(template.body, { ...variables, name: recipient.name, email: recipient.email });
 
     const delivery: NotificationDelivery = {
       id: this.generateId(),

@@ -8,15 +8,19 @@ import { mockPrequalification, mockVendorVerifications } from './mocks';
 import type { PrequalificationApplicant, VendorVerification } from './types';
 import { useApi, useMutation } from './useApi';
 
-export async function verifyVendor(rcNumber: string): Promise<VendorVerification> {
+export async function verifyVendor(query: string): Promise<VendorVerification> {
+  const trimmedQuery = query.trim();
   if (env.useMocks) {
+    const normalizedQuery = trimmedQuery.toUpperCase();
     const found = mockVendorVerifications.find(
-      (v) => v.rcNumber.toUpperCase() === rcNumber.toUpperCase()
+      (v) =>
+        v.rcNumber.toUpperCase() === normalizedQuery ||
+        v.companyName.toUpperCase().includes(normalizedQuery)
     );
     if (!found) {
       // Generate a synthetic "no record" response.
       const synthetic: VendorVerification = {
-        rcNumber: rcNumber.toUpperCase(),
+        rcNumber: /^RC\d{7,}$/i.test(trimmedQuery) ? trimmedQuery.toUpperCase() : 'N/A',
         companyName: 'Unknown Vendor',
         score: 0,
         status: 'ineligible',
@@ -27,7 +31,7 @@ export async function verifyVendor(rcNumber: string): Promise<VendorVerification
     }
     return mockResponse(found);
   }
-  return request<VendorVerification>(ENDPOINTS.mda.verify(rcNumber));
+  return request<VendorVerification>(ENDPOINTS.mda.verify(trimmedQuery));
 }
 
 export function useVerifyVendor() {

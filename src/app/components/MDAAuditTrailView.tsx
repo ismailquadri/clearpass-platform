@@ -25,104 +25,104 @@ export function MDAAuditTrailView() {
   const [selectedEntry, setSelectedEntry] = useState<AuditLogEntry | null>(null);
 
   // Mock audit trail data - in real implementation, this would come from the backend
-  const mockAuditLogs: AuditLogEntry[] = [
+  const mockAuditLogs = useMemo<AuditLogEntry[]>(() => [
     {
       id: '1',
-      timestamp: '2026-01-15T14:30:00Z',
-      action: 'verification_initiated',
-      actor: 'Engr. Bello',
-      actorRole: 'Procurement Officer',
+      timestamp: '2026-05-15T10:14:00Z',
+      action: 'verification_completed',
+      actor: 'Dr. Bello Adamu',
+      actorRole: 'NHIA Verification Officer',
       targetVendor: 'TechVentures Nigeria Ltd',
       rcNumber: 'RC1234567',
-      details: 'Initiated compliance verification for NHIA certificate',
+      details: 'NHIA certificate verified — Active, valid until 31 Dec 2026',
       status: 'success',
-      ipAddress: '192.168.1.100',
+      ipAddress: '197.210.54.102',
     },
     {
       id: '2',
-      timestamp: '2026-01-15T14:35:00Z',
-      action: 'verification_completed',
-      actor: 'System',
-      actorRole: 'Automated',
-      targetVendor: 'TechVentures Nigeria Ltd',
-      rcNumber: 'RC1234567',
-      details: 'NHIA certificate verified - Valid until 2026-12-31',
+      timestamp: '2026-05-15T09:48:00Z',
+      action: 'verification_initiated',
+      actor: 'Dr. Bello Adamu',
+      actorRole: 'NHIA Verification Officer',
+      targetVendor: 'BuildCo Construction Ltd',
+      rcNumber: 'RC7654321',
+      details: 'Initiated real-time compliance check for all 6 certificates',
       status: 'success',
-      ipAddress: '192.168.1.100',
+      ipAddress: '197.210.54.102',
     },
     {
       id: '3',
-      timestamp: '2026-01-14T10:15:00Z',
-      action: 'prequalification_started',
-      actor: 'Procurement Team',
-      actorRole: 'MDA Staff',
-      targetVendor: 'BuildWell Construction',
-      rcNumber: 'RC7654321',
-      details: 'Started pre-qualification process for tender #2026-042',
+      timestamp: '2026-05-14T15:22:00Z',
+      action: 'prequalification_completed',
+      actor: 'Dr. Bello Adamu',
+      actorRole: 'NHIA Verification Officer',
+      targetVendor: 'ProServe Engineering',
+      rcNumber: 'RC1122334',
+      details: 'Pre-qualification approved — Vendor cleared for FGN/NHIA/2026/045',
       status: 'success',
-      ipAddress: '192.168.1.105',
+      ipAddress: '197.210.54.102',
     },
     {
       id: '4',
-      timestamp: '2026-01-14T11:45:00Z',
-      action: 'prequalification_completed',
-      actor: 'Engr. Bello',
-      actorRole: 'Procurement Officer',
-      targetVendor: 'BuildWell Construction',
-      rcNumber: 'RC7654321',
-      details: 'Pre-qualification completed - Vendor approved for tender',
+      timestamp: '2026-05-14T11:05:00Z',
+      action: 'prequalification_started',
+      actor: 'Dr. Bello Adamu',
+      actorRole: 'NHIA Verification Officer',
+      targetVendor: 'Delta Logistics Ltd',
+      rcNumber: 'RC5566778',
+      details: 'Pre-qualification started for Infrastructure Project Q2 2026',
       status: 'success',
-      ipAddress: '192.168.1.100',
+      ipAddress: '197.210.54.102',
     },
     {
       id: '5',
-      timestamp: '2026-01-13T09:00:00Z',
+      timestamp: '2026-05-13T16:44:00Z',
       action: 'report_generated',
-      actor: 'Internal Audit',
-      actorRole: 'Auditor',
-      targetVendor: 'GreenEnergy Solutions',
+      actor: 'Dr. Bello Adamu',
+      actorRole: 'NHIA Verification Officer',
+      targetVendor: 'Alpha Services Ltd',
       rcNumber: 'RC9876543',
-      details: 'Generated compliance audit report for Q4 2025',
+      details: 'Verification report generated — Submitted to tender file',
       status: 'success',
-      ipAddress: '192.168.1.110',
+      ipAddress: '197.210.54.102',
     },
     {
       id: '6',
-      timestamp: '2026-01-12T16:20:00Z',
+      timestamp: '2026-05-13T09:30:00Z',
       action: 'certificate_expired',
       actor: 'System',
-      actorRole: 'Automated',
+      actorRole: 'Automated Monitor',
       targetVendor: 'Nigeria Logistics Co',
       rcNumber: 'RC4567890',
-      details: 'NSITF certificate expired - Vendor flagged for renewal',
+      details: 'NSITF certificate expired — Vendor automatically flagged as Ineligible',
       status: 'failed',
-      ipAddress: '192.168.1.1',
+      ipAddress: '127.0.0.1',
     },
     {
       id: '7',
-      timestamp: '2026-01-11T13:10:00Z',
+      timestamp: '2026-05-12T14:18:00Z',
       action: 'compliance_flagged',
       actor: 'System',
-      actorRole: 'Automated',
+      actorRole: 'Automated Monitor',
       targetVendor: 'SecureTech Services',
       rcNumber: 'RC3456789',
-      details: 'Compliance score dropped below threshold - Requires review',
+      details: 'Compliance score dropped from 81 to 47 — NHIA certificate not renewed',
       status: 'pending',
-      ipAddress: '192.168.1.1',
+      ipAddress: '127.0.0.1',
     },
     {
       id: '8',
-      timestamp: '2026-01-10T08:30:00Z',
+      timestamp: '2026-05-12T08:55:00Z',
       action: 'verification_initiated',
-      actor: 'Engr. Bello',
-      actorRole: 'Procurement Officer',
-      targetVendor: 'Alpha Construction Ltd',
+      actor: 'Dr. Bello Adamu',
+      actorRole: 'NHIA Verification Officer',
+      targetVendor: 'GreenEnergy Solutions',
       rcNumber: 'RC2345678',
-      details: 'Initiated full compliance verification for all certificates',
-      status: 'pending',
-      ipAddress: '192.168.1.100',
+      details: 'Bulk CSV upload — 12 vendors queued for simultaneous verification',
+      status: 'success',
+      ipAddress: '197.210.54.102',
     },
-  ];
+  ], []);
 
   const filteredLogs = useMemo(() => {
     const q = searchQuery.toLowerCase();
@@ -140,7 +140,21 @@ export function MDAAuditTrailView() {
   }, [mockAuditLogs, searchQuery, filterAction, filterStatus]);
 
   const handleExportAuditTrail = () => {
-    showToast('success', 'Exporting Audit Trail', 'Audit trail is being exported to CSV...');
+    const header = 'Timestamp,Action,Actor,Role,Vendor,RC Number,Status,IP Address,Details\n';
+    const rows = filteredLogs
+      .map(
+        (log) =>
+          `${new Date(log.timestamp).toISOString()},${getActionLabel(log.action)},${log.actor},${log.actorRole},${log.targetVendor},${log.rcNumber},${log.status},${log.ipAddress ?? ''},${log.details}`
+      )
+      .join('\n');
+    const blob = new Blob([header + rows], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `mda-audit-trail-${new Date().toISOString().slice(0, 10)}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+    showToast('success', 'Export Complete', 'Audit trail downloaded.');
   };
 
   const handleViewEntry = (entry: AuditLogEntry) => {
@@ -187,11 +201,12 @@ export function MDAAuditTrailView() {
   };
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="flex-1 h-full overflow-y-auto bg-background">
+      <div className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto space-y-6">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold">Audit Trail</h1>
+          <h1 className="cp-page-title">Audit Trail</h1>
           <p className="text-muted-foreground mt-1">
     Complete immutable log of all verification activities
           </p>
@@ -334,7 +349,7 @@ export function MDAAuditTrailView() {
           <div className="bg-card rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6">
             <div className="flex items-start justify-between mb-6">
               <div>
-                <h2 className="text-xl font-bold">Audit Log Entry</h2>
+                <h2 className="cp-section-title">Audit Log Entry</h2>
                 <p className="text-muted-foreground mt-1">Entry ID: {selectedEntry.id}</p>
               </div>
               <button
@@ -414,6 +429,7 @@ export function MDAAuditTrailView() {
           </div>
         </div>
       )}
+      </div>
     </div>
   );
 }

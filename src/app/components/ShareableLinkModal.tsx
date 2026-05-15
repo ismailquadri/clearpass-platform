@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link, CheckCircle2, Copy, X, AlertTriangle, Clock } from 'lucide-react';
+import { Link, CheckCircle2, Copy, X, Clock } from 'lucide-react';
 import { useToast } from './ToastProvider';
 
 interface ShareableLinkModalProps {

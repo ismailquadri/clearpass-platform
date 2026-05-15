@@ -1,8 +1,53 @@
-import { CheckCircle2, Menu, Shield, Briefcase, X, HeartPulse, Building } from 'lucide-react';
+import {
+  CheckCircle2, Menu, Shield, Briefcase, X, HeartPulse, Building,
+  LayoutDashboard, FileText, Bell, Settings, Search,
+  BarChart3, Users, ClipboardList, CheckSquare,
+  TrendingUp, QrCode, Home,
+} from 'lucide-react';
 import { useEffect, useState } from 'react';
 import type { ReactNode } from 'react';
 import type { Persona } from '../api/types';
 import '../styles/mda-theme.css';
+
+interface NavItem {
+  id: string;
+  label: string;
+  icon: typeof LayoutDashboard;
+}
+
+const BOTTOM_NAV_ITEMS: Record<Persona, NavItem[]> = {
+  Business: [
+    { id: 'overview', label: 'Overview', icon: LayoutDashboard },
+    { id: 'certificates', label: 'Certificates', icon: FileText },
+    { id: 'alerts', label: 'Alerts', icon: Bell },
+    { id: 'settings', label: 'Settings', icon: Settings },
+  ],
+  MDA: [
+    { id: 'nhia-overview', label: 'Home', icon: Home },
+    { id: 'verify', label: 'Verify', icon: Search },
+    { id: 'scan', label: 'Scan QR', icon: QrCode },
+    { id: 'reports', label: 'Reports', icon: BarChart3 },
+  ],
+  Partner: [
+    { id: 'clients', label: 'Clients', icon: Users },
+    { id: 'portfolio', label: 'Portfolio', icon: Briefcase },
+    { id: 'analytics', label: 'Analytics', icon: TrendingUp },
+    { id: 'settings', label: 'Settings', icon: Settings },
+  ],
+  HMO: [
+    { id: 'hmo-overview', label: 'Overview', icon: LayoutDashboard },
+    { id: 'hmo-referrals', label: 'Referrals', icon: Users },
+    { id: 'hmo-enrollments', label: 'Enroll', icon: ClipboardList },
+    { id: 'hmo-settings', label: 'Settings', icon: Settings },
+  ],
+  Admin: [
+    { id: 'admin-overview', label: 'Overview', icon: LayoutDashboard },
+    { id: 'admin-review', label: 'Review', icon: CheckSquare },
+    { id: 'admin-accounts', label: 'Accounts', icon: Users },
+    { id: 'admin-analytics', label: 'Analytics', icon: BarChart3 },
+    { id: 'admin-settings', label: 'Settings', icon: Settings },
+  ],
+};
 
 interface AppShellProps {
   persona: Persona;
@@ -12,6 +57,10 @@ interface AppShellProps {
   drawerSidebar: (closeDrawer: () => void) => ReactNode;
   /** Main content area. */
   children: ReactNode;
+  /** Current active section for bottom nav highlighting */
+  activeSection: string;
+  /** Called when a bottom nav item is selected */
+  onSectionChange: (section: string) => void;
 }
 
 const PERSONA_ICON: Record<Persona, typeof CheckCircle2> = {
@@ -24,7 +73,7 @@ const PERSONA_ICON: Record<Persona, typeof CheckCircle2> = {
 
 const PERSONA_LABEL: Record<Persona, string> = {
   Business: 'Business Portal',
-  MDA: 'MDA Portal',
+  MDA: 'NHIA Portal',
   Partner: 'Partner Portal',
   HMO: 'HMO Portal',
   Admin: 'Admin Portal',
@@ -42,9 +91,10 @@ const PERSONA_COLOR: Record<Persona, string> = {
  * Two-column layout that collapses to a mobile drawer below md.
  *
  * - Desktop: persistent sidebar on the left, main content on the right.
- * - Mobile: top bar with a hamburger that opens a slide-in drawer.
+ * - Mobile: top bar with a hamburger that opens a slide-in drawer
+ *   plus a bottom navigation tab bar.
  */
-export function AppShell({ persona, sidebar, drawerSidebar, children }: AppShellProps) {
+export function AppShell({ persona, sidebar, drawerSidebar, children, activeSection, onSectionChange }: AppShellProps) {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const Icon = PERSONA_ICON[persona];
 
@@ -97,23 +147,33 @@ export function AppShell({ persona, sidebar, drawerSidebar, children }: AppShell
           <Menu className="w-5 h-5" aria-hidden="true" />
         </button>
         <div className="flex items-center gap-2">
-          <div
-            className="w-9 h-9 rounded-md flex items-center justify-center"
-            style={{ backgroundColor: PERSONA_COLOR[persona] }}
-          >
-            <Icon className="w-5 h-5 text-white" aria-hidden="true" />
-          </div>
-          <div className="leading-tight">
-            <span className="text-muted-foreground" style={{ fontSize: '11px' }}>
-              {PERSONA_LABEL[persona]}
-            </span>
-          </div>
+          {persona === 'MDA' ? (
+            <img
+              src="/nhia-logo.png"
+              alt="National Health Insurance Authority"
+              style={{ height: '40px', width: 'auto', maxWidth: '180px', objectFit: 'contain' }}
+            />
+          ) : (
+            <>
+              <div
+                className="w-9 h-9 rounded-md flex items-center justify-center"
+                style={{ backgroundColor: PERSONA_COLOR[persona] }}
+              >
+                <Icon className="w-5 h-5 text-white" aria-hidden="true" />
+              </div>
+              <div className="leading-tight">
+                <span className="text-muted-foreground text-[11px]">
+                  {PERSONA_LABEL[persona]}
+                </span>
+              </div>
+            </>
+          )}
         </div>
         <div aria-hidden="true" className="w-9" />
       </header>
 
-      {/* Desktop sidebar */}
-      <div className="hidden md:flex md:shrink-0">{sidebar}</div>
+      {/* Desktop sidebar — sticky so it stays put while content scrolls */}
+      <div className="hidden md:flex md:shrink-0 sticky top-0 h-screen self-start">{sidebar}</div>
 
       {/* Mobile drawer */}
       {drawerOpen && (
@@ -143,8 +203,43 @@ export function AppShell({ persona, sidebar, drawerSidebar, children }: AppShell
         </div>
       )}
 
-      {/* Main content */}
-      <main id="main-content" role="main" className="flex-1 min-w-0 overflow-hidden">
+      {/* Bottom navigation — mobile only */}
+      <nav
+        className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-card border-t border-border flex items-center justify-around px-2 pb-2"
+        role="tablist"
+        aria-label="Main navigation"
+      >
+        {BOTTOM_NAV_ITEMS[persona].map((item) => {
+          const Icon = item.icon;
+          const isActive = activeSection === item.id;
+          return (
+            <button
+              key={item.id}
+              role="tab"
+              aria-selected={isActive}
+              onClick={() => onSectionChange(item.id)}
+              className={`flex flex-col items-center gap-0.5 py-2 px-3 min-w-[56px] min-h-[44px] rounded-md transition-colors ${
+                isActive
+                  ? persona === 'MDA'
+                    ? 'text-[var(--mda-primary)]'
+                    : 'text-[#FF3000]'
+                  : 'text-muted-foreground hover:text-foreground'
+              }`}
+            >
+              <Icon className="w-5 h-5" aria-hidden="true" />
+              <span className="text-[10px] leading-tight">{item.label}</span>
+            </button>
+          );
+        })}
+      </nav>
+
+      {/* Main content — on desktop pt-[70px] clears the fixed GlobalNav; pb-16 on mobile clears the bottom nav */}
+      <main
+        id="main-content"
+        role="main"
+        className="flex-1 min-w-0 overflow-hidden pb-16 md:pb-0 md:pt-[70px]"
+        {...(persona === 'MDA' ? { 'data-mda-portal': '' } : {})}
+      >
         {children}
       </main>
     </div>

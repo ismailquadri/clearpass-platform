@@ -1,9 +1,6 @@
 import { useState } from 'react';
 import {
   Building2,
-  MapPin,
-  Phone,
-  Mail,
   Upload,
   CheckCircle2,
   AlertCircle,
@@ -13,7 +10,6 @@ import {
   AlertTriangle,
 } from 'lucide-react';
 import { useToast } from './ToastProvider';
-import { ApiState } from './ui';
 
 interface CompanyProfileProps {
   onSave?: () => void;
@@ -99,11 +95,6 @@ export function CompanyProfile({ onSave }: CompanyProfileProps) {
     return /^RC\d{7,}$/i.test(rc);
   };
 
-  const validateTaxId = (taxId: string): boolean => {
-    // Tax ID format varies, but typically alphanumeric
-    return taxId.length >= 8;
-  };
-
   const validateEmail = (email: string): boolean => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
@@ -137,7 +128,7 @@ export function CompanyProfile({ onSave }: CompanyProfileProps) {
         delete newErrors.rcNumber;
         return newErrors;
       });
-    } catch (error) {
+    } catch {
       setVerificationStatus((prev) => ({ ...prev, rcNumber: 'failed' }));
       showToast(
         'error',
@@ -300,7 +291,7 @@ export function CompanyProfile({ onSave }: CompanyProfileProps) {
         <header className="mb-8">
           <div className="flex items-center gap-3 mb-2">
             <Building2 className="w-8 h-8 text-[#FF3000]" />
-            <h1 className="text-3xl font-bold">Company Profile</h1>
+            <h1 className="cp-page-title">Company Profile</h1>
           </div>
           <p className="text-muted-foreground">
             Manage your company information and verify your business details
