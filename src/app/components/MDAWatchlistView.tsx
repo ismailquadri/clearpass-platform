@@ -10,8 +10,9 @@ import {
   ExternalLink,
   Plus,
 } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useToast } from './ToastProvider';
+import { verifyVendor } from '../api';
 import '../../app/styles/mda-theme.css';
 
 interface WatchlistCompany {
@@ -27,18 +28,62 @@ interface WatchlistCompany {
   lastVerified: string;
 }
 
-const INITIAL_WATCHLIST: WatchlistCompany[] = [
-  { id: 'w1', companyName: 'TechVentures Nigeria Ltd', rcNumber: 'RC1234567', score: 92, status: 'procurement-ready', nearestExpiry: 'Jun 7, 2026', daysToExpiry: 28, alertsEnabled: true, addedDate: 'Apr 12, 2026', lastVerified: 'May 10, 2026' },
-  { id: 'w2', companyName: 'Lagos Builders Ltd', rcNumber: 'RC7654321', score: 74, status: 'attention-required', nearestExpiry: 'May 22, 2026', daysToExpiry: 12, alertsEnabled: true, addedDate: 'Mar 20, 2026', lastVerified: 'May 9, 2026' },
-  { id: 'w3', companyName: 'Delta Contractors', rcNumber: 'RC9876543', score: 41, status: 'ineligible', nearestExpiry: 'May 7, 2026', daysToExpiry: -3, alertsEnabled: false, addedDate: 'May 1, 2026', lastVerified: 'May 8, 2026' },
-  { id: 'w4', companyName: 'Abuja Roads Co.', rcNumber: 'RC2345678', score: 88, status: 'procurement-ready', nearestExpiry: 'Sep 15, 2026', daysToExpiry: 128, alertsEnabled: true, addedDate: 'Feb 14, 2026', lastVerified: 'May 7, 2026' },
-  { id: 'w5', companyName: 'Niger Works Ltd', rcNumber: 'RC3456789', score: 67, status: 'attention-required', nearestExpiry: 'Jun 30, 2026', daysToExpiry: 51, alertsEnabled: false, addedDate: 'Apr 28, 2026', lastVerified: 'May 6, 2026' },
-];
+const WATCHLIST_STORAGE_KEY = 'clearpass.mda.watchlist.v1';
+
+function readWatchlist(): WatchlistCompany[] {
+  try {
+    const raw = localStorage.getItem(WATCHLIST_STORAGE_KEY);
+    if (!raw) return [];
+    const parsed = JSON.parse(raw) as WatchlistCompany[];
+    if (!Array.isArray(parsed)) return [];
+    return parsed;
+  } catch {
+    return [];
+  }
+}
+
+function writeWatchlist(items: WatchlistCompany[]) {
+  try {
+    localStorage.setItem(WATCHLIST_STORAGE_KEY, JSON.stringify(items));
+  } catch {
+    // ignore
+  }
+}
+
+function deriveWatchlistFields(v: {
+  score: number;
+  status: WatchlistCompany['status'];
+  certificates: Array<{ expiryDate: string; status: string }>;
+}) {
+  const today = new Date();
+  const validDates = v.certificates
+    .map((c) => c.expiryDate)
+    .filter(Boolean)
+    .map((d) => new Date(d))
+    .filter((d) => !Number.isNaN(d.getTime()));
+  const nearest = validDates.length ? validDates.reduce((a, b) => (a < b ? a : b)) : null;
+  const days = nearest
+    ? Math.ceil((nearest.getTime() - today.getTime()) / (1000 * 60 * 60 * 24))
+    : 0;
+  return {
+    score: v.score,
+    status: v.status,
+    nearestExpiry: nearest
+      ? nearest.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
+      : 'N/A',
+    daysToExpiry: nearest ? days : 0,
+  };
+}
 
 function statusCfg(status: WatchlistCompany['status']) {
   switch (status) {
     case 'procurement-ready':
-      return { icon: CheckCircle2, color: '#1FC16B', bg: '#dcfce7', label: 'Procurement Ready' };
+      return {
+        icon: CheckCircle2,
+        color: 'var(--mda-success)',
+        bg: 'var(--mda-success-light)',
+        label: 'Procurement Ready',
+      };
     case 'attention-required':
       return { icon: AlertTriangle, color: '#F59E0B', bg: '#fef3c7', label: 'Attention Required' };
     case 'ineligible':
@@ -48,18 +93,123 @@ function statusCfg(status: WatchlistCompany['status']) {
 
 export function MDAWatchlistView() {
   const { showToast } = useToast();
-  const [watchlist, setWatchlist] = useState<WatchlistCompany[]>(INITIAL_WATCHLIST);
+  const [watchlist, setWatchlist] = useState<WatchlistCompany[]>(() => readWatchlist());
   const [search, setSearch] = useState('');
   const [addRC, setAddRC] = useState('');
   const [isAdding, setIsAdding] = useState(false);
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
 
-  const filtered = watchlist.filter(
-    (c) =>
-      search === '' ||
-      c.companyName.toLowerCase().includes(search.toLowerCase()) ||
-      c.rcNumber.toLowerCase().includes(search.toLowerCase())
+  const prevSnapshots = useRef<
+    Map<
+      string,
+      {
+        score: number;
+        status: WatchlistCompany['status'];
+        nearestExpiry: string;
+        daysToExpiry: number;
+      }
+    >
+  >(new Map());
+
+  useEffect(() => {
+    writeWatchlist(watchlist);
+  }, [watchlist]);
+
+  const filtered = useMemo(
+    () =>
+      watchlist.filter(
+        (c) =>
+          search === '' ||
+          c.companyName.toLowerCase().includes(search.toLowerCase()) ||
+          c.rcNumber.toLowerCase().includes(search.toLowerCase())
+      ),
+    [watchlist, search]
   );
+
+  const refreshOne = async (rcNumber: string, noisy: boolean) => {
+    try {
+      const v = await verifyVendor(rcNumber);
+      const derived = deriveWatchlistFields({
+        score: v.score,
+        status: v.status,
+        certificates: v.certificates.map((c) => ({ expiryDate: c.expiryDate, status: c.status })),
+      });
+
+      setWatchlist((prev) =>
+        prev.map((c) =>
+          c.rcNumber.toUpperCase() === rcNumber.toUpperCase()
+            ? {
+                ...c,
+                companyName: v.companyName || c.companyName,
+                score: derived.score,
+                status: derived.status,
+                nearestExpiry: derived.nearestExpiry,
+                daysToExpiry: derived.daysToExpiry,
+                lastVerified: new Date().toLocaleDateString('en-GB', {
+                  day: 'numeric',
+                  month: 'short',
+                  year: 'numeric',
+                }),
+              }
+            : c
+        )
+      );
+
+      const prev = prevSnapshots.current.get(rcNumber.toUpperCase());
+      if (prev) {
+        const changed =
+          prev.status !== derived.status ||
+          prev.nearestExpiry !== derived.nearestExpiry ||
+          prev.daysToExpiry !== derived.daysToExpiry;
+        if (changed) {
+          const alertsOn =
+            watchlist.find((w) => w.rcNumber.toUpperCase() === rcNumber.toUpperCase())
+              ?.alertsEnabled ?? true;
+          if (alertsOn && noisy) {
+            showToast(
+              derived.status === 'ineligible'
+                ? 'error'
+                : derived.status === 'attention-required'
+                  ? 'info'
+                  : 'success',
+              'Watchlist Update',
+              `${rcNumber.toUpperCase()} is now ${derived.status.replace('-', ' ')}`
+            );
+          }
+        }
+      }
+      prevSnapshots.current.set(rcNumber.toUpperCase(), derived);
+    } catch (err) {
+      if (noisy) {
+        const msg = err instanceof Error ? err.message : 'Unable to verify vendor right now';
+        showToast('error', 'Verification Failed', msg);
+      }
+    }
+  };
+
+  // Monitor watchlist: periodic refresh. This works both with real API and with mock mode.
+  useEffect(() => {
+    if (!watchlist.length) return;
+
+    // Seed snapshot map from current state so we can detect changes.
+    for (const c of watchlist) {
+      prevSnapshots.current.set(c.rcNumber.toUpperCase(), {
+        score: c.score,
+        status: c.status,
+        nearestExpiry: c.nearestExpiry,
+        daysToExpiry: c.daysToExpiry,
+      });
+    }
+
+    const intervalMs = 60_000; // 1 minute polling; safe for demo + light monitoring.
+    const t = setInterval(() => {
+      // Refresh only items with alerts enabled (monitoring intent).
+      const toRefresh = watchlist.filter((w) => w.alertsEnabled).slice(0, 10);
+      void Promise.all(toRefresh.map((w) => refreshOne(w.rcNumber, true)));
+    }, intervalMs);
+    return () => clearInterval(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [watchlist.map((w) => `${w.rcNumber}:${w.alertsEnabled}`).join('|')]);
 
   const handleAdd = async () => {
     if (!addRC.trim()) return;
@@ -73,30 +223,48 @@ export function MDAWatchlistView() {
       return;
     }
     setIsAdding(true);
-    await new Promise((r) => setTimeout(r, 800));
-    const newEntry: WatchlistCompany = {
-      id: `w${Date.now()}`,
-      companyName: 'Kano Civil Works Ltd',
-      rcNumber: addRC.toUpperCase(),
-      score: 79,
-      status: 'attention-required',
-      nearestExpiry: 'Jul 12, 2026',
-      daysToExpiry: 63,
-      alertsEnabled: true,
-      addedDate: 'Today',
-      lastVerified: 'Today',
-    };
-    setWatchlist((prev) => [newEntry, ...prev]);
-    setAddRC('');
-    setIsAdding(false);
-    showToast('success', 'Added to Watchlist', `${addRC} is now being monitored`);
+    const rc = addRC.toUpperCase();
+    try {
+      const v = await verifyVendor(rc);
+      const derived = deriveWatchlistFields({
+        score: v.score,
+        status: v.status,
+        certificates: v.certificates.map((c) => ({ expiryDate: c.expiryDate, status: c.status })),
+      });
+      const nowLabel = new Date().toLocaleDateString('en-GB', {
+        day: 'numeric',
+        month: 'short',
+        year: 'numeric',
+      });
+      const newEntry: WatchlistCompany = {
+        id: `w${Date.now()}`,
+        companyName: v.companyName || 'Unknown Vendor',
+        rcNumber: rc,
+        score: derived.score,
+        status: derived.status,
+        nearestExpiry: derived.nearestExpiry,
+        daysToExpiry: derived.daysToExpiry,
+        alertsEnabled: true,
+        addedDate: nowLabel,
+        lastVerified: nowLabel,
+      };
+      setWatchlist((prev) => [newEntry, ...prev]);
+      prevSnapshots.current.set(rc, derived);
+      setAddRC('');
+      showToast('success', 'Added to Watchlist', `${rc} is now being monitored`);
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : 'Unable to add vendor';
+      showToast('error', 'Add Failed', msg);
+    } finally {
+      setIsAdding(false);
+    }
   };
 
   const toggleAlerts = (id: string) => {
+    const company = watchlist.find((c) => c.id === id);
     setWatchlist((prev) =>
       prev.map((c) => (c.id === id ? { ...c, alertsEnabled: !c.alertsEnabled } : c))
     );
-    const company = watchlist.find((c) => c.id === id);
     if (company) {
       showToast(
         'info',
@@ -117,7 +285,7 @@ export function MDAWatchlistView() {
     <div className="flex-1 h-full overflow-y-auto bg-background">
       <div className="p-4 sm:p-6 lg:p-8 max-w-5xl mx-auto">
         <header className="mb-6 sm:mb-8">
-          <h1 className="mb-2" style={{ fontSize: '28px' }}>Company Watchlist</h1>
+          <h1 className="cp-page-title mb-2">Company Watchlist</h1>
           <p className="text-muted-foreground" style={{ fontSize: '16px' }}>
             Monitor compliance status for vendors you regularly verify
           </p>
@@ -125,7 +293,7 @@ export function MDAWatchlistView() {
 
         {/* Add company */}
         <div className="bg-card border border-border rounded-lg p-4 sm:p-5 mb-6">
-          <h2 className="mb-3" style={{ fontSize: '16px', fontWeight: 600 }}>Add Company to Watchlist</h2>
+          <h2 className="cp-section-title mb-3">Add Company to Watchlist</h2>
           <div className="flex flex-col sm:flex-row gap-3">
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
@@ -154,16 +322,26 @@ export function MDAWatchlistView() {
         {/* Summary tiles */}
         <div className="grid grid-cols-3 gap-3 mb-5">
           <div className="bg-card border border-border rounded-lg p-3 sm:p-4">
-            <p className="text-muted-foreground" style={{ fontSize: '12px' }}>Watching</p>
+            <p className="text-muted-foreground" style={{ fontSize: '12px' }}>
+              Watching
+            </p>
             <p style={{ fontSize: '24px', fontWeight: 700 }}>{watchlist.length}</p>
           </div>
           <div className="bg-card border border-border rounded-lg p-3 sm:p-4">
-            <p className="text-muted-foreground" style={{ fontSize: '12px' }}>Alerts On</p>
-            <p style={{ fontSize: '24px', fontWeight: 700, color: '#1FC16B' }}>{watchlist.filter((c) => c.alertsEnabled).length}</p>
+            <p className="text-muted-foreground" style={{ fontSize: '12px' }}>
+              Alerts On
+            </p>
+            <p style={{ fontSize: '24px', fontWeight: 700, color: 'var(--mda-success)' }}>
+              {watchlist.filter((c) => c.alertsEnabled).length}
+            </p>
           </div>
           <div className="bg-card border border-border rounded-lg p-3 sm:p-4">
-            <p className="text-muted-foreground" style={{ fontSize: '12px' }}>Need Attention</p>
-            <p style={{ fontSize: '24px', fontWeight: 700, color: 'var(--mda-primary)' }}>{watchlist.filter((c) => c.status !== 'procurement-ready').length}</p>
+            <p className="text-muted-foreground" style={{ fontSize: '12px' }}>
+              Need Attention
+            </p>
+            <p style={{ fontSize: '24px', fontWeight: 700, color: 'var(--mda-primary)' }}>
+              {watchlist.filter((c) => c.status !== 'procurement-ready').length}
+            </p>
           </div>
         </div>
 
@@ -203,7 +381,12 @@ export function MDAWatchlistView() {
                       <h3 style={{ fontSize: '15px', fontWeight: 600 }}>{company.companyName}</h3>
                       <span
                         className="flex items-center gap-1 px-2 py-0.5 rounded-full"
-                        style={{ backgroundColor: cfg.bg, color: cfg.color, fontSize: '11px', fontWeight: 500 }}
+                        style={{
+                          backgroundColor: cfg.bg,
+                          color: cfg.color,
+                          fontSize: '11px',
+                          fontWeight: 500,
+                        }}
                       >
                         <StatusIcon className="w-3 h-3" aria-hidden="true" />
                         {cfg.label}
@@ -211,7 +394,9 @@ export function MDAWatchlistView() {
                     </div>
                     <div className="flex flex-wrap gap-3 text-muted-foreground">
                       <span style={{ fontSize: '13px' }}>{company.rcNumber}</span>
-                      <span style={{ fontSize: '13px' }}>Score: <strong style={{ color: cfg.color }}>{company.score}</strong>/100</span>
+                      <span style={{ fontSize: '13px' }}>
+                        Score: <strong style={{ color: cfg.color }}>{company.score}</strong>/100
+                      </span>
                       <span style={{ fontSize: '13px' }}>
                         {company.daysToExpiry < 0
                           ? `Expired ${Math.abs(company.daysToExpiry)}d ago`
@@ -228,14 +413,31 @@ export function MDAWatchlistView() {
                       onClick={() => toggleAlerts(company.id)}
                       className="p-2 rounded-md border border-border hover:bg-muted transition-colors"
                       aria-label={company.alertsEnabled ? 'Disable alerts' : 'Enable alerts'}
-                      title={company.alertsEnabled ? 'Alerts on — click to disable' : 'Alerts off — click to enable'}
+                      title={
+                        company.alertsEnabled
+                          ? 'Alerts on — click to disable'
+                          : 'Alerts off — click to enable'
+                      }
                     >
-                      {company.alertsEnabled
-                        ? <Bell className="w-4 h-4" style={{ color: 'var(--mda-primary)' }} />
-                        : <BellOff className="w-4 h-4 text-muted-foreground" />}
+                      {company.alertsEnabled ? (
+                        <Bell className="w-4 h-4" style={{ color: 'var(--mda-primary)' }} />
+                      ) : (
+                        <BellOff className="w-4 h-4 text-muted-foreground" />
+                      )}
                     </button>
                     <button
-                      onClick={() => showToast('info', 'Viewing Report', `Opening full report for ${company.companyName}`)}
+                      onClick={() => {
+                        try {
+                          localStorage.setItem('clearpass.mda.reports.prefillRc', company.rcNumber);
+                        } catch {
+                          // ignore
+                        }
+                        window.dispatchEvent(
+                          new CustomEvent('clearpass:navigate', {
+                            detail: { persona: 'MDA', section: 'reports' },
+                          })
+                        );
+                      }}
                       className="p-2 rounded-md border border-border hover:bg-muted transition-colors"
                       aria-label="View full report"
                     >
@@ -243,8 +445,18 @@ export function MDAWatchlistView() {
                     </button>
                     {deleteConfirm === company.id ? (
                       <div className="flex gap-1">
-                        <button onClick={() => handleRemove(company.id)} className="px-2 py-1 rounded text-white bg-red-600 text-xs">Remove</button>
-                        <button onClick={() => setDeleteConfirm(null)} className="px-2 py-1 rounded border text-xs">Cancel</button>
+                        <button
+                          onClick={() => handleRemove(company.id)}
+                          className="px-2 py-1 rounded text-white bg-red-600 text-xs"
+                        >
+                          Remove
+                        </button>
+                        <button
+                          onClick={() => setDeleteConfirm(null)}
+                          className="px-2 py-1 rounded border text-xs"
+                        >
+                          Cancel
+                        </button>
                       </div>
                     ) : (
                       <button

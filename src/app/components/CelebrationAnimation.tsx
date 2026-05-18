@@ -16,7 +16,16 @@ interface CelebrationAnimationProps {
   onComplete?: () => void;
 }
 
-const COLORS = ['#FF3000', '#FF6B6B', '#FFD700', '#FFA500', '#FF69B4', '#00CED1', '#32CD32', '#9370DB'];
+const COLORS = [
+  '#FF3000',
+  '#FF6B6B',
+  '#FFD700',
+  '#FFA500',
+  '#FF69B4',
+  '#00CED1',
+  '#32CD32',
+  '#9370DB',
+];
 
 export function CelebrationAnimation({ trigger, onComplete }: CelebrationAnimationProps) {
   const [confetti, setConfetti] = useState<ConfettiPiece[]>([]);
@@ -36,7 +45,9 @@ export function CelebrationAnimation({ trigger, onComplete }: CelebrationAnimati
         duration: 2 + Math.random() * 2,
       }));
 
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setConfetti(pieces);
+
       setIsVisible(true);
 
       // Hide after animation

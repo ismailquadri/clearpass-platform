@@ -102,11 +102,11 @@ export function PartnerActivityDigestView() {
   const clientAlertSummaries = useMemo(() => {
     if (!clientsQuery.data) return [];
 
-    const summaries: ClientAlertSummary[] = clientsQuery.data.map(client => {
-      const clientActivities = mockActivities.filter(a => a.clientId === client.id);
-      const criticalIssues = clientActivities.filter(a => a.severity === 'critical').length;
-      const warnings = clientActivities.filter(a => a.severity === 'warning').length;
-      
+    const summaries: ClientAlertSummary[] = clientsQuery.data.map((client) => {
+      const clientActivities = mockActivities.filter((a) => a.clientId === client.id);
+      const criticalIssues = clientActivities.filter((a) => a.severity === 'critical').length;
+      const warnings = clientActivities.filter((a) => a.severity === 'warning').length;
+
       let urgency: 'high' | 'medium' | 'low' = 'low';
       if (client.score < 50 || criticalIssues > 0 || client.daysToExpiry < 7) {
         urgency = 'high';
@@ -139,10 +139,10 @@ export function PartnerActivityDigestView() {
   // Group activities by severity
   const activitiesBySeverity = useMemo(() => {
     return {
-      critical: mockActivities.filter(a => a.severity === 'critical'),
-      warning: mockActivities.filter(a => a.severity === 'warning'),
-      info: mockActivities.filter(a => a.severity === 'info'),
-      success: mockActivities.filter(a => a.severity === 'success'),
+      critical: mockActivities.filter((a) => a.severity === 'critical'),
+      warning: mockActivities.filter((a) => a.severity === 'warning'),
+      info: mockActivities.filter((a) => a.severity === 'info'),
+      success: mockActivities.filter((a) => a.severity === 'success'),
     };
   }, []);
 
@@ -179,7 +179,11 @@ export function PartnerActivityDigestView() {
       case 'medium':
         return { color: '#FFA500', bgColor: 'rgba(255, 165, 0, 0.1)', label: 'Medium Priority' };
       case 'low':
-        return { color: 'rgb(92, 92, 92)', bgColor: 'rgba(92, 92, 92, 0.1)', label: 'Low Priority' };
+        return {
+          color: 'rgb(92, 92, 92)',
+          bgColor: 'rgba(92, 92, 92, 0.1)',
+          label: 'Low Priority',
+        };
     }
   };
 
@@ -187,9 +191,7 @@ export function PartnerActivityDigestView() {
     <div className="flex-1 h-full overflow-y-auto bg-background">
       <div className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto">
         <header className="mb-6 sm:mb-8">
-          <h1 style={{ fontSize: '28px' }} className="sm:text-[32px]">
-            Client Activity Digest
-          </h1>
+          <h1 className="cp-page-title">Client Activity Digest</h1>
           <p className="text-muted-foreground" style={{ fontSize: '16px' }}>
             Consolidated updates and urgency ranking across all your clients
           </p>
@@ -266,7 +268,8 @@ export function PartnerActivityDigestView() {
                     <div
                       className="px-2 py-1 rounded text-xs font-bold min-w-[32px] text-center"
                       style={{
-                        backgroundColor: index < 3 ? 'rgba(255, 48, 0, 0.1)' : 'rgba(92, 92, 92, 0.1)',
+                        backgroundColor:
+                          index < 3 ? 'rgba(255, 48, 0, 0.1)' : 'rgba(92, 92, 92, 0.1)',
                         color: index < 3 ? '#FF3000' : 'rgb(92, 92, 92)',
                       }}
                     >
@@ -279,9 +282,7 @@ export function PartnerActivityDigestView() {
                   </div>
                   <div className="flex items-center gap-4">
                     <div className="text-right">
-                      <p style={{ fontSize: '14px', fontWeight: 600 }}>
-                        {client.healthScore}/100
-                      </p>
+                      <p style={{ fontSize: '14px', fontWeight: 600 }}>{client.healthScore}/100</p>
                       <p className="caption text-muted-foreground">Score</p>
                     </div>
                     <div className="text-right">
@@ -319,10 +320,7 @@ export function PartnerActivityDigestView() {
           </h3>
           <div className="space-y-4">
             {mockActivities.map((activity) => (
-              <div
-                key={activity.id}
-                className="flex items-start gap-3 p-3 bg-muted rounded-md"
-              >
+              <div key={activity.id} className="flex items-start gap-3 p-3 bg-muted rounded-md">
                 <div className="mt-1">{getSeverityIcon(activity.severity)}</div>
                 <div className="flex-1">
                   <div className="flex items-start justify-between gap-2 mb-1">

@@ -68,9 +68,7 @@ export function DashboardOverview() {
       <div className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="mb-2" style={{ fontSize: '32px' }}>
-            Welcome back, Amaka
-          </h1>
+          <h1 className="cp-page-title mb-2">Welcome back, Amaka</h1>
           <p className="text-muted-foreground" style={{ fontSize: '16px' }}>
             Here's your compliance status for TechBuild Nigeria Ltd.
           </p>

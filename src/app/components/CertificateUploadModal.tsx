@@ -71,11 +71,15 @@ export function CertificateUploadModal({
     if (savedData) {
       try {
         const data = JSON.parse(savedData);
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setCertificateNumber(data.certificateNumber || '');
+
         setIssuedDate(data.issuedDate || '');
+
         setExpiryDate(data.expiryDate || '');
+
         setIssuingAuthority(data.issuingAuthority || '');
-      } catch (_e) {
+      } catch {
         // Ignore parse errors
       }
     }
@@ -85,13 +89,23 @@ export function CertificateUploadModal({
   useEffect(() => {
     if (!isOpen) return;
     const storageKey = `clearpass_cert_upload_${certificateType.shortName}`;
-    localStorage.setItem(storageKey, JSON.stringify({
-      certificateNumber,
-      issuedDate,
-      expiryDate,
-      issuingAuthority,
-    }));
-  }, [isOpen, certificateType.shortName, certificateNumber, issuedDate, expiryDate, issuingAuthority]);
+    localStorage.setItem(
+      storageKey,
+      JSON.stringify({
+        certificateNumber,
+        issuedDate,
+        expiryDate,
+        issuingAuthority,
+      })
+    );
+  }, [
+    isOpen,
+    certificateType.shortName,
+    certificateNumber,
+    issuedDate,
+    expiryDate,
+    issuingAuthority,
+  ]);
 
   const modalRef = useFocusTrap(isOpen);
 
@@ -345,10 +359,10 @@ export function CertificateUploadModal({
           {/* Header */}
           <div className="flex items-start justify-between p-6 border-b border-border">
             <div>
-              <h2 id="modal-title" style={{ fontSize: '24px', fontWeight: '600' }}>
+              <h2 id="modal-title" className="text-2xl font-semibold">
                 Connect {certificateType.shortName}
               </h2>
-              <p className="text-muted-foreground text-[#404040] mt-1" style={{ fontSize: '14px' }}>
+              <p className="text-muted-foreground text-[#404040] mt-1 text-sm">
                 {certificateType.name}
               </p>
             </div>
@@ -367,49 +381,15 @@ export function CertificateUploadModal({
           <div className="flex-1 overflow-y-auto p-6">
             {/* State-Aware Banner */}
             {urgencyLevel !== 'low' && (
-              <div
-                className="mb-6 px-4 py-3 rounded-lg border border-[#e5e5e5] flex items-start gap-3"
-                style={{
-                  backgroundColor:
-                    urgencyLevel === 'critical'
-                      ? 'rgba(255, 48, 0, 0.1)'
-                      : urgencyLevel === 'high'
-                        ? 'rgba(255, 48, 0, 0.1)'
-                        : 'rgba(255, 48, 0, 0.1)',
-                }}
-              >
-                <AlertCircle
-                  className="w-5 h-5 flex-shrink-0"
-                  style={{
-                    color:
-                      urgencyLevel === 'critical'
-                        ? '#FF3000'
-                        : urgencyLevel === 'high'
-                          ? '#FF3000'
-                          : '#FF3000',
-                  }}
-                />
+              <div className="mb-6 px-4 py-3 rounded-lg border border-[#e5e5e5] flex items-start gap-3 bg-[rgba(255,48,0,0.1)]">
+                <AlertCircle className="w-5 h-5 flex-shrink-0 text-[#FF3000]" />
                 <div>
-                  <p
-                    style={{
-                      fontSize: '14px',
-                      fontWeight: '500',
-                      color:
-                        urgencyLevel === 'critical'
-                          ? '#FF3000'
-                          : urgencyLevel === 'high'
-                            ? '#FF3000'
-                            : '#FF3000',
-                    }}
-                  >
+                  <p className="text-sm font-medium text-[#FF3000]">
                     {urgencyLevel === 'critical' && 'Critical: Immediate Action Required'}
                     {urgencyLevel === 'high' && 'High Priority Upload'}
                     {urgencyLevel === 'medium' && 'Complete Your Profile'}
                   </p>
-                  <p
-                    className="text-muted-foreground text-[#404040] mt-1"
-                    style={{ fontSize: '13px' }}
-                  >
+                  <p className="text-muted-foreground text-[#404040] mt-1 text-[13px]">
                     {dashboardState === 'New Registration' &&
                       'Complete your certificate setup to activate procurement eligibility.'}
                     {dashboardState === 'Non-Compliant' &&
@@ -439,18 +419,12 @@ export function CertificateUploadModal({
                   style={{ color: uploadMethod === 'file' ? '#FF3000' : '#5c5c5c' }}
                 />
                 <p
-                  style={{
-                    fontSize: '13px',
-                    fontWeight: '500',
-                    color: uploadMethod === 'file' ? '#FF3000' : '#171717',
-                  }}
+                  className="text-[13px] font-medium"
+                  style={{ color: uploadMethod === 'file' ? '#FF3000' : '#171717' }}
                 >
                   Upload File
                 </p>
-                <p
-                  className="text-muted-foreground text-[#404040] mt-1"
-                  style={{ fontSize: '11px' }}
-                >
+                <p className="text-muted-foreground text-[#404040] mt-1 text-[11px]">
                   PDF or Image
                 </p>
               </button>
@@ -469,18 +443,12 @@ export function CertificateUploadModal({
                   style={{ color: uploadMethod === 'manual' ? '#FF3000' : '#5c5c5c' }}
                 />
                 <p
-                  style={{
-                    fontSize: '13px',
-                    fontWeight: '500',
-                    color: uploadMethod === 'manual' ? '#FF3000' : '#171717',
-                  }}
+                  className="text-[13px] font-medium"
+                  style={{ color: uploadMethod === 'manual' ? '#FF3000' : '#171717' }}
                 >
                   Manual Entry
                 </p>
-                <p
-                  className="text-muted-foreground text-[#404040] mt-1"
-                  style={{ fontSize: '11px' }}
-                >
+                <p className="text-muted-foreground text-[#404040] mt-1 text-[11px]">
                   Type details
                 </p>
               </button>
@@ -499,20 +467,12 @@ export function CertificateUploadModal({
                   style={{ color: uploadMethod === 'api' ? '#FF3000' : '#5c5c5c' }}
                 />
                 <p
-                  style={{
-                    fontSize: '13px',
-                    fontWeight: '500',
-                    color: uploadMethod === 'api' ? '#FF3000' : '#171717',
-                  }}
+                  className="text-[13px] font-medium"
+                  style={{ color: uploadMethod === 'api' ? '#FF3000' : '#171717' }}
                 >
                   API Connect
                 </p>
-                <p
-                  className="text-muted-foreground text-[#404040] mt-1"
-                  style={{ fontSize: '11px' }}
-                >
-                  Auto-verify
-                </p>
+                <p className="text-muted-foreground text-[#404040] mt-1 text-[11px]">Auto-verify</p>
               </button>
             </div>
 
@@ -530,13 +490,10 @@ export function CertificateUploadModal({
                 >
                   {selectedFile ? (
                     <div className="flex items-center justify-center gap-3">
-                      <FileText className="w-8 h-8" style={{ color: '#FF3000' }} />
+                      <FileText className="w-8 h-8 text-[#FF3000]" />
                       <div className="text-left">
-                        <p style={{ fontSize: '14px', fontWeight: '500' }}>{selectedFile.name}</p>
-                        <p
-                          className="text-muted-foreground text-[#404040]"
-                          style={{ fontSize: '13px' }}
-                        >
+                        <p className="text-sm font-medium">{selectedFile.name}</p>
+                        <p className="text-muted-foreground text-[#404040] text-[13px]">
                           {(selectedFile.size / 1024 / 1024).toFixed(2)} MB
                         </p>
                       </div>
@@ -551,13 +508,10 @@ export function CertificateUploadModal({
                   ) : (
                     <>
                       <Upload className="w-12 h-12 mx-auto mb-3 text-muted-foreground" />
-                      <p style={{ fontSize: '14px', fontWeight: '500' }} className="mb-1">
+                      <p className="text-sm font-medium mb-1">
                         Drop your certificate here or click to browse
                       </p>
-                      <p
-                        className="text-muted-foreground text-[#404040]"
-                        style={{ fontSize: '13px' }}
-                      >
+                      <p className="text-muted-foreground text-[#404040] text-[13px]">
                         Supports PDF and image files (max 10MB)
                       </p>
                       <input
@@ -569,8 +523,7 @@ export function CertificateUploadModal({
                       />
                       <label
                         htmlFor="file-upload"
-                        className="inline-block mt-4 px-4 py-2 rounded-md border border-border hover:bg-muted transition-colors cursor-pointer"
-                        style={{ fontSize: '13px' }}
+                        className="inline-block mt-4 px-4 py-2 rounded-md border border-border hover:bg-muted transition-colors cursor-pointer text-[13px]"
                       >
                         Choose File
                       </label>
@@ -583,8 +536,7 @@ export function CertificateUploadModal({
                   <div>
                     <label
                       htmlFor="cert-number-file"
-                      className="block mb-2"
-                      style={{ fontSize: '13px', fontWeight: '500' }}
+                      className="block mb-2 text-[13px] font-medium"
                     >
                       Certificate Number *
                     </label>
@@ -594,8 +546,7 @@ export function CertificateUploadModal({
                       value={certificateNumber}
                       onChange={(e) => setCertificateNumber(e.target.value)}
                       placeholder="e.g., NHIA/2026/FCT/AB12345678"
-                      className="w-full pl-10 pr-4 py-2 bg-input-background border border-border rounded-md"
-                      style={{ fontSize: '14px' }}
+                      className="w-full pl-10 pr-4 py-2 bg-input-background border border-border rounded-md text-sm"
                     />
                   </div>
 
@@ -603,8 +554,7 @@ export function CertificateUploadModal({
                     <div>
                       <label
                         htmlFor="issue-date-file"
-                        className="block mb-2"
-                        style={{ fontSize: '13px', fontWeight: '500' }}
+                        className="block mb-2 text-[13px] font-medium"
                       >
                         Issue Date *
                       </label>
@@ -613,16 +563,14 @@ export function CertificateUploadModal({
                         id="issue-date-file"
                         value={issuedDate}
                         onChange={(e) => setIssuedDate(e.target.value)}
-                        className="w-full pl-10 pr-4 py-2 bg-input-background border border-border rounded-md"
-                        style={{ fontSize: '14px' }}
+                        className="w-full pl-10 pr-4 py-2 bg-input-background border border-border rounded-md text-sm"
                       />
                     </div>
 
                     <div>
                       <label
                         htmlFor="expiry-date-file"
-                        className="block mb-2"
-                        style={{ fontSize: '13px', fontWeight: '500' }}
+                        className="block mb-2 text-[13px] font-medium"
                       >
                         Expiry Date *
                       </label>
@@ -631,8 +579,7 @@ export function CertificateUploadModal({
                         id="expiry-date-file"
                         value={expiryDate}
                         onChange={(e) => setExpiryDate(e.target.value)}
-                        className="w-full pl-10 pr-4 py-2 bg-input-background border border-border rounded-md"
-                        style={{ fontSize: '14px' }}
+                        className="w-full pl-10 pr-4 py-2 bg-input-background border border-border rounded-md text-sm"
                       />
                     </div>
                   </div>
@@ -640,8 +587,7 @@ export function CertificateUploadModal({
                   <div>
                     <label
                       htmlFor="issuing-authority-file"
-                      className="block mb-2"
-                      style={{ fontSize: '13px', fontWeight: '500' }}
+                      className="block mb-2 text-[13px] font-medium"
                     >
                       Issuing Authority *
                     </label>
@@ -651,8 +597,7 @@ export function CertificateUploadModal({
                       value={issuingAuthority}
                       onChange={(e) => setIssuingAuthority(e.target.value)}
                       placeholder="e.g., National Pension Commission, Federal Government of Nigeria"
-                      className="w-full pl-10 pr-4 py-2 bg-input-background border border-border rounded-md"
-                      style={{ fontSize: '14px' }}
+                      className="w-full pl-10 pr-4 py-2 bg-input-background border border-border rounded-md text-sm"
                     />
                   </div>
                 </div>
@@ -663,11 +608,7 @@ export function CertificateUploadModal({
             {uploadMethod === 'manual' && (
               <div className="space-y-4">
                 <div>
-                  <label
-                    htmlFor="cert-number"
-                    className="block mb-2"
-                    style={{ fontSize: '13px', fontWeight: '500' }}
-                  >
+                  <label htmlFor="cert-number" className="block mb-2 text-[13px] font-medium">
                     Certificate Number *
                   </label>
                   <input
@@ -682,10 +623,9 @@ export function CertificateUploadModal({
                     required
                     aria-invalid={!!errors.certificateNumber}
                     aria-describedby={errors.certificateNumber ? 'cert-number-error' : undefined}
-                    className={`w-full px-3 py-2 rounded-md border bg-background ${
+                    className={`w-full px-3 py-2 rounded-md border bg-background text-[13px] ${
                       errors.certificateNumber ? 'border-red-500' : 'border-border'
                     }`}
-                    style={{ fontSize: '13px' }}
                   />
                   {errors.certificateNumber && (
                     <p
@@ -703,8 +643,7 @@ export function CertificateUploadModal({
                   <div>
                     <label
                       htmlFor="cert-issued-date"
-                      className="block mb-2"
-                      style={{ fontSize: '13px', fontWeight: '500' }}
+                      className="block mb-2 text-[13px] font-medium"
                     >
                       Issued Date *
                     </label>
@@ -719,10 +658,9 @@ export function CertificateUploadModal({
                       required
                       aria-invalid={!!errors.issuedDate}
                       aria-describedby={errors.issuedDate ? 'cert-issued-date-error' : undefined}
-                      className={`w-full px-3 py-2 rounded-md border bg-background ${
+                      className={`w-full px-3 py-2 rounded-md border bg-background text-[13px] ${
                         errors.issuedDate ? 'border-red-500' : 'border-border'
                       }`}
-                      style={{ fontSize: '13px' }}
                     />
                     {errors.issuedDate && (
                       <p
@@ -739,8 +677,7 @@ export function CertificateUploadModal({
                   <div>
                     <label
                       htmlFor="cert-expiry-date"
-                      className="block mb-2"
-                      style={{ fontSize: '13px', fontWeight: '500' }}
+                      className="block mb-2 text-[13px] font-medium"
                     >
                       Expiry Date *
                     </label>
@@ -755,10 +692,9 @@ export function CertificateUploadModal({
                       required
                       aria-invalid={!!errors.expiryDate}
                       aria-describedby={errors.expiryDate ? 'cert-expiry-date-error' : undefined}
-                      className={`w-full px-3 py-2 rounded-md border bg-background ${
+                      className={`w-full px-3 py-2 rounded-md border bg-background text-[13px] ${
                         errors.expiryDate ? 'border-red-500' : 'border-border'
                       }`}
-                      style={{ fontSize: '13px' }}
                     />
                     {errors.expiryDate && (
                       <p
@@ -776,8 +712,7 @@ export function CertificateUploadModal({
                 <div>
                   <label
                     htmlFor="cert-issuing-authority"
-                    className="block mb-2"
-                    style={{ fontSize: '13px', fontWeight: '500' }}
+                    className="block mb-2 text-[13px] font-medium"
                   >
                     Issuing Authority *
                   </label>
@@ -795,10 +730,9 @@ export function CertificateUploadModal({
                     aria-describedby={
                       errors.issuingAuthority ? 'cert-issuing-authority-error' : undefined
                     }
-                    className={`w-full px-3 py-2 rounded-md border bg-background ${
+                    className={`w-full px-3 py-2 rounded-md border bg-background text-[13px] ${
                       errors.issuingAuthority ? 'border-red-500' : 'border-border'
                     }`}
-                    style={{ fontSize: '13px' }}
                   />
                   {errors.issuingAuthority && (
                     <p
@@ -819,15 +753,12 @@ export function CertificateUploadModal({
               <div className="space-y-4">
                 <div className="p-4 rounded-lg border border-[#e5e5e5] bg-[#ffe6e6] bg-opacity-30">
                   <div className="flex items-start gap-3">
-                    <CheckCircle2 className="w-5 h-5 flex-shrink-0" style={{ color: '#FF3000' }} />
+                    <CheckCircle2 className="w-5 h-5 flex-shrink-0 text-[#FF3000]" />
                     <div>
-                      <p style={{ fontSize: '14px', fontWeight: '500', color: '#FF3000' }}>
+                      <p className="text-sm font-medium text-[#FF3000]">
                         Auto-Verification Available
                       </p>
-                      <p
-                        className="text-muted-foreground text-[#404040] mt-1"
-                        style={{ fontSize: '13px' }}
-                      >
+                      <p className="text-muted-foreground text-[#404040] mt-1 text-[13px]">
                         Connect directly to the government database to automatically verify and sync
                         your {certificateType.shortName} certificate. This provides real-time
                         updates and instant verification.
@@ -837,11 +768,7 @@ export function CertificateUploadModal({
                 </div>
 
                 <div>
-                  <label
-                    htmlFor="api-cert-number"
-                    className="block mb-2"
-                    style={{ fontSize: '13px', fontWeight: '500' }}
-                  >
+                  <label htmlFor="api-cert-number" className="block mb-2 text-[13px] font-medium">
                     Certificate Number
                   </label>
                   <input
@@ -850,13 +777,9 @@ export function CertificateUploadModal({
                     value={certificateNumber}
                     onChange={(e) => setCertificateNumber(e.target.value)}
                     placeholder="Enter your certificate number for verification"
-                    className="w-full px-3 py-2 rounded-md border border-border bg-background"
-                    style={{ fontSize: '13px' }}
+                    className="w-full px-3 py-2 rounded-md border border-border bg-background text-[13px]"
                   />
-                  <p
-                    className="text-muted-foreground text-[#404040] mt-1"
-                    style={{ fontSize: '11px' }}
-                  >
+                  <p className="text-muted-foreground text-[#404040] mt-1 text-[11px]">
                     We'll securely verify this with the issuing authority
                   </p>
                 </div>
@@ -870,8 +793,7 @@ export function CertificateUploadModal({
               <button
                 onClick={handleClose}
                 disabled={isUploading}
-                className="w-full sm:w-auto px-4 py-2.5 rounded-md border border-border hover:bg-muted transition-colors disabled:opacity-50"
-                style={{ fontSize: '13px' }}
+                className="w-full sm:w-auto px-4 py-2.5 rounded-md border border-border hover:bg-muted transition-colors disabled:opacity-50 text-[13px]"
               >
                 Cancel
               </button>
@@ -886,8 +808,7 @@ export function CertificateUploadModal({
                 disabled={isUploading}
                 aria-live="polite"
                 aria-busy={isUploading}
-                className="w-full sm:w-auto px-4 py-2.5 rounded-md text-white flex items-center justify-center gap-2 disabled:opacity-50"
-                style={{ backgroundColor: '#FF3000', fontSize: '13px', fontWeight: '500' }}
+                className="w-full sm:w-auto px-4 py-2.5 rounded-md text-white bg-[#FF3000] flex items-center justify-center gap-2 disabled:opacity-50 text-[13px] font-medium"
               >
                 {isUploading ? (
                   <>

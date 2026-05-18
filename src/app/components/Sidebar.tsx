@@ -83,7 +83,7 @@ export function Sidebar({
 
   return (
     <aside className={`${fluid ? 'w-full' : 'w-56 lg:w-64'} h-full bg-card flex flex-col`}>
-      <div className="px-4 py-4 border-b border-border">
+      <div className="px-4 h-[70px] flex items-center border-b border-border">
         <div className="flex items-center gap-2">
           <img src="/clearpass-logo.svg" alt="ClearPass" className="h-9 w-auto" />
         </div>
@@ -121,12 +121,8 @@ export function Sidebar({
             {getInitials(userProfile.name)}
           </div>
           <div className="flex-1 overflow-hidden text-left">
-            <p style={{ fontSize: '12px' }} className="truncate">
-              {userProfile.name}
-            </p>
-            <p className="text-muted-foreground truncate" style={{ fontSize: '13px' }}>
-              {userProfile.email}
-            </p>
+            <p className="truncate text-xs">{userProfile.name}</p>
+            <p className="text-muted-foreground truncate text-sm">{userProfile.email}</p>
           </div>
         </button>
       </div>
@@ -191,10 +187,7 @@ function SidebarGroup({
   return (
     <div className={className}>
       <div className="px-2 py-1.5 mb-1">
-        <p
-          className="uppercase tracking-wide text-muted-foreground"
-          style={{ fontSize: '13px', fontWeight: 600 }}
-        >
+        <p className="uppercase tracking-wide text-muted-foreground text-sm font-semibold">
           {label}
         </p>
       </div>
@@ -208,26 +201,17 @@ function SidebarGroup({
               onClick={() => onSelect(item.id)}
               onKeyDown={(e) => handleKeyDown(e, index)}
               aria-current={isActive ? 'page' : undefined}
-              className={`w-full flex items-center gap-2 px-2 py-2 sm:py-1.5 rounded-md transition-all min-h-[40px] outline-none focus-visible:ring-2 focus-visible:ring-[#FF3000] focus-visible:ring-offset-2 ${
+              className={`w-full flex items-center gap-2 px-2 py-2 sm:py-1.5 rounded-md transition-all min-h-[40px] outline-none focus-visible:ring-2 focus-visible:ring-[#FF3000] focus-visible:ring-offset-2 text-sm ${
                 isActive
-                  ? 'bg-[#ffe6e6] text-[#FF3000] dark:bg-[#3a1010] dark:text-[#ff6b6b]'
-                  : 'hover:bg-[#f5f5f5] dark:hover:bg-[#2a2a2a] text-foreground/80'
+                  ? 'bg-[#ffe6e6] text-[#FF3000] dark:bg-[#3a1010] dark:text-[#ff6b6b] font-medium'
+                  : 'hover:bg-[#f5f5f5] dark:hover:bg-[#2a2a2a] text-foreground/80 font-normal'
               }`}
-              style={{
-                fontSize: '13px',
-                fontWeight: isActive ? 500 : 400,
-              }}
             >
               <Icon className="w-4 h-4 shrink-0" aria-hidden="true" />
               <span className="flex-1 text-left">{item.label}</span>
               {item.badge && (
                 <span
-                  className="text-white px-1.5 py-0.5 rounded-full"
-                  style={{
-                    fontSize: '11px',
-                    backgroundColor: '#FF3000',
-                    fontWeight: 600,
-                  }}
+                  className="text-white px-1.5 py-0.5 rounded-full text-[11px] font-semibold bg-[#FF3000]"
                   aria-label={`${item.badge} unread`}
                 >
                   {item.badge}

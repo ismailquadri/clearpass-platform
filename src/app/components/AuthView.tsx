@@ -28,7 +28,7 @@ const ACCOUNT_TYPE_LABELS: Record<AccountType, string> = {
 
 const DEMO_CREDENTIALS = [
   { type: 'Business', email: 'amaka@techventures.ng', password: 'demo1234' },
-  { type: 'MDA', email: 'bello.adamu@procurement.gov.ng', password: 'demo1234' },
+  { type: 'MDA', email: 'bello.adamu@nhia.gov.ng', password: 'demo1234' },
   { type: 'Partner', email: 'chisom@compliancepro.ng', password: 'demo1234' },
   { type: 'HMO', email: 'fatima@axiahmo.ng', password: 'demo1234' },
   { type: 'Admin', email: 'admin@clearpass.com.ng', password: 'admin1234' },
@@ -69,8 +69,14 @@ export function AuthView({ onAuthenticated }: AuthViewProps) {
 
   const handleLogin = async () => {
     setLoginError('');
-    if (!loginEmail.trim()) { setLoginError('Email is required'); return; }
-    if (!loginPassword) { setLoginError('Password is required'); return; }
+    if (!loginEmail.trim()) {
+      setLoginError('Email is required');
+      return;
+    }
+    if (!loginPassword) {
+      setLoginError('Password is required');
+      return;
+    }
     setIsLoading(true);
     const result = await login(loginEmail, loginPassword);
     setIsLoading(false);
@@ -83,14 +89,25 @@ export function AuthView({ onAuthenticated }: AuthViewProps) {
 
   const handleRegisterStep1 = () => {
     setRegError('');
-    if (!regData.name?.trim()) { setRegError('Full name is required'); return; }
-    if (!regData.email?.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(regData.email)) {
-      setRegError('Valid email is required'); return;
+    if (!regData.name?.trim()) {
+      setRegError('Full name is required');
+      return;
     }
-    if (!regData.phone?.trim()) { setRegError('Phone number is required'); return; }
-    if ((regData.password?.length ?? 0) < 8) { setRegError('Password must be at least 8 characters'); return; }
+    if (!regData.email?.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(regData.email)) {
+      setRegError('Valid email is required');
+      return;
+    }
+    if (!regData.phone?.trim()) {
+      setRegError('Phone number is required');
+      return;
+    }
+    if ((regData.password?.length ?? 0) < 8) {
+      setRegError('Password must be at least 8 characters');
+      return;
+    }
     if (regData.accountType === 'mda' && !regData.email?.endsWith('.gov.ng')) {
-      setRegError('MDA accounts require an official .gov.ng email address'); return;
+      setRegError('MDA accounts require an official .gov.ng email address');
+      return;
     }
     setRegStep(2);
   };
@@ -98,16 +115,20 @@ export function AuthView({ onAuthenticated }: AuthViewProps) {
   const handleRegister = async () => {
     setRegError('');
     if (regData.accountType === 'business' && !regData.rcNumber?.trim()) {
-      setRegError('RC Number is required for business accounts'); return;
+      setRegError('RC Number is required for business accounts');
+      return;
     }
     if (regData.accountType === 'business' && !regData.bvn?.trim()) {
-      setRegError('BVN is required for business accounts'); return;
+      setRegError('BVN is required for business accounts');
+      return;
     }
     if (regData.accountType === 'business' && regData.bvn && regData.bvn.length !== 11) {
-      setRegError('BVN must be 11 digits'); return;
+      setRegError('BVN must be 11 digits');
+      return;
     }
     if (!regData.consentGiven) {
-      setRegError('You must agree to the data processing terms to continue'); return;
+      setRegError('You must agree to the data processing terms to continue');
+      return;
     }
     setIsLoading(true);
     const result = await register(regData as RegisterData);
@@ -115,7 +136,11 @@ export function AuthView({ onAuthenticated }: AuthViewProps) {
     if (result.success) {
       setPendingEmail(regData.email ?? '');
       setMode('otp');
-      showToast('info', 'Verification Code Sent', `OTP sent to ${regData.email} and ${regData.phone}`);
+      showToast(
+        'info',
+        'Verification Code Sent',
+        `OTP sent to ${regData.email} and ${regData.phone}`
+      );
     } else {
       setRegError(result.error ?? 'Registration failed');
     }
@@ -131,7 +156,10 @@ export function AuthView({ onAuthenticated }: AuthViewProps) {
 
   const handleOTP = async () => {
     setOtpError('');
-    if (otp.length !== 6) { setOtpError('Enter the 6-digit code'); return; }
+    if (otp.length !== 6) {
+      setOtpError('Enter the 6-digit code');
+      return;
+    }
     setIsLoading(true);
     const ok = await verifyOTP(otp);
     setIsLoading(false);
@@ -158,19 +186,29 @@ export function AuthView({ onAuthenticated }: AuthViewProps) {
         style={{ backgroundColor: '#FF3000' }}
       >
         <div>
-          <img src="/clearpass-logo.svg" alt="ClearPass" className="h-10 w-auto brightness-0 invert mb-10" />
-          <h1 className="text-white mb-4" style={{ fontSize: '36px', fontWeight: 700, lineHeight: 1.2 }}>
+          <img
+            src="/clearpass-logo.svg"
+            alt="ClearPass"
+            className="h-10 w-auto brightness-0 invert mb-10"
+          />
+          <h1
+            className="text-white mb-4"
+            style={{ fontSize: '36px', fontWeight: 700, lineHeight: 1.2 }}
+          >
             Nigeria's Federal Compliance Platform
           </h1>
           <p style={{ color: 'rgba(255,255,255,0.85)', fontSize: '16px', lineHeight: 1.6 }}>
-            Aggregate, verify, and monitor all mandatory federal compliance certificates in one place.
+            Aggregate, verify, and monitor all mandatory federal compliance certificates in one
+            place.
           </p>
         </div>
         <div className="space-y-4">
           {['NHIA', 'PCC', 'NSITF', 'FIRS TIN', 'BPP', 'ITF'].map((cert) => (
             <div key={cert} className="flex items-center gap-3">
               <CheckCircle2 className="w-5 h-5 text-white shrink-0" />
-              <span style={{ color: 'rgba(255,255,255,0.9)', fontSize: '14px' }}>{cert} Certificate Tracking</span>
+              <span style={{ color: 'rgba(255,255,255,0.9)', fontSize: '14px' }}>
+                {cert} Certificate Tracking
+              </span>
             </div>
           ))}
         </div>
@@ -190,7 +228,9 @@ export function AuthView({ onAuthenticated }: AuthViewProps) {
           {/* ── LOGIN ── */}
           {mode === 'login' && (
             <div>
-              <h2 className="mb-1" style={{ fontSize: '26px', fontWeight: 700 }}>Welcome back</h2>
+              <h2 className="mb-1" style={{ fontSize: '26px', fontWeight: 700 }}>
+                Welcome back
+              </h2>
               <p className="text-muted-foreground mb-6" style={{ fontSize: '14px' }}>
                 Sign in to your ClearPass account
               </p>
@@ -248,14 +288,20 @@ export function AuthView({ onAuthenticated }: AuthViewProps) {
 
               <p className="text-center mt-4 text-muted-foreground" style={{ fontSize: '14px' }}>
                 No account?{' '}
-                <button onClick={() => setMode('register')} className="text-[#FF3000] hover:underline font-medium">
+                <button
+                  onClick={() => setMode('register')}
+                  className="text-[#FF3000] hover:underline font-medium"
+                >
                   Register free
                 </button>
               </p>
 
               {/* Demo quick-access */}
               <div className="mt-6 pt-5 border-t border-border">
-                <p className="text-center text-muted-foreground mb-3" style={{ fontSize: '12px', fontWeight: 500 }}>
+                <p
+                  className="text-center text-muted-foreground mb-3"
+                  style={{ fontSize: '12px', fontWeight: 500 }}
+                >
                   DEMO QUICK ACCESS
                 </p>
                 <div className="grid grid-cols-1 gap-2">
@@ -267,7 +313,9 @@ export function AuthView({ onAuthenticated }: AuthViewProps) {
                       className="flex items-center justify-between px-3 py-2 rounded-md border border-border hover:bg-muted transition-colors text-left disabled:opacity-50"
                     >
                       <span style={{ fontSize: '13px', fontWeight: 500 }}>{c.type}</span>
-                      <span className="text-muted-foreground" style={{ fontSize: '12px' }}>{c.email}</span>
+                      <span className="text-muted-foreground" style={{ fontSize: '12px' }}>
+                        {c.email}
+                      </span>
                     </button>
                   ))}
                 </div>
@@ -278,11 +326,18 @@ export function AuthView({ onAuthenticated }: AuthViewProps) {
           {/* ── REGISTER STEP 1 ── */}
           {mode === 'register' && regStep === 1 && (
             <div>
-              <button onClick={() => setMode('login')} className="flex items-center gap-1 text-muted-foreground mb-4 hover:text-foreground">
+              <button
+                onClick={() => setMode('login')}
+                className="flex items-center gap-1 text-muted-foreground mb-4 hover:text-foreground"
+              >
                 <ArrowLeft className="w-4 h-4" /> Back
               </button>
-              <h2 className="mb-1" style={{ fontSize: '26px', fontWeight: 700 }}>Create account</h2>
-              <p className="text-muted-foreground mb-5" style={{ fontSize: '14px' }}>Start your compliance journey</p>
+              <h2 className="mb-1" style={{ fontSize: '26px', fontWeight: 700 }}>
+                Create account
+              </h2>
+              <p className="text-muted-foreground mb-5" style={{ fontSize: '14px' }}>
+                Start your compliance journey
+              </p>
 
               {regError && <ErrorBanner message={regError} />}
 
@@ -291,25 +346,59 @@ export function AuthView({ onAuthenticated }: AuthViewProps) {
                   <select
                     id="reg-type"
                     value={regData.accountType}
-                    onChange={(e) => setRegData((d) => ({ ...d, accountType: e.target.value as AccountType }))}
+                    onChange={(e) =>
+                      setRegData((d) => ({ ...d, accountType: e.target.value as AccountType }))
+                    }
                     className="w-full px-3 py-2.5 min-h-[44px] border border-border rounded-md bg-input-background"
                     style={{ fontSize: '15px' }}
                   >
                     {(Object.entries(ACCOUNT_TYPE_LABELS) as [AccountType, string][])
                       .filter(([k]) => k !== 'admin')
                       .map(([k, v]) => (
-                        <option key={k} value={k}>{v}</option>
+                        <option key={k} value={k}>
+                          {v}
+                        </option>
                       ))}
                   </select>
                 </Field>
                 <Field label="Full name" htmlFor="reg-name">
-                  <InputWithIcon id="reg-name" type="text" value={regData.name ?? ''} onChange={(v) => setRegData((d) => ({ ...d, name: v }))} placeholder="Amaka Okoro" icon={User} />
+                  <InputWithIcon
+                    id="reg-name"
+                    type="text"
+                    value={regData.name ?? ''}
+                    onChange={(v) => setRegData((d) => ({ ...d, name: v }))}
+                    placeholder="Amaka Okoro"
+                    icon={User}
+                  />
                 </Field>
-                <Field label={regData.accountType === 'mda' ? 'Official government email (.gov.ng)' : 'Email address'} htmlFor="reg-email">
-                  <InputWithIcon id="reg-email" type="email" value={regData.email ?? ''} onChange={(v) => setRegData((d) => ({ ...d, email: v }))} placeholder={regData.accountType === 'mda' ? 'you@ministry.gov.ng' : 'you@company.ng'} icon={Mail} />
+                <Field
+                  label={
+                    regData.accountType === 'mda'
+                      ? 'Official government email (.gov.ng)'
+                      : 'Email address'
+                  }
+                  htmlFor="reg-email"
+                >
+                  <InputWithIcon
+                    id="reg-email"
+                    type="email"
+                    value={regData.email ?? ''}
+                    onChange={(v) => setRegData((d) => ({ ...d, email: v }))}
+                    placeholder={
+                      regData.accountType === 'mda' ? 'you@ministry.gov.ng' : 'you@company.ng'
+                    }
+                    icon={Mail}
+                  />
                 </Field>
                 <Field label="Phone number" htmlFor="reg-phone">
-                  <InputWithIcon id="reg-phone" type="tel" value={regData.phone ?? ''} onChange={(v) => setRegData((d) => ({ ...d, phone: v }))} placeholder="+234 801 234 5678" icon={Phone} />
+                  <InputWithIcon
+                    id="reg-phone"
+                    type="tel"
+                    value={regData.phone ?? ''}
+                    onChange={(v) => setRegData((d) => ({ ...d, phone: v }))}
+                    placeholder="+234 801 234 5678"
+                    icon={Phone}
+                  />
                 </Field>
                 <Field label="Password" htmlFor="reg-password">
                   <div className="relative">
@@ -323,52 +412,104 @@ export function AuthView({ onAuthenticated }: AuthViewProps) {
                       style={{ fontSize: '15px' }}
                       placeholder="Min. 8 characters"
                     />
-                    <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground" aria-label={showPassword ? 'Hide password' : 'Show password'}>
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground"
+                      aria-label={showPassword ? 'Hide password' : 'Show password'}
+                    >
                       {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                     </button>
                   </div>
                 </Field>
               </div>
-              <PrimaryButton onClick={handleRegisterStep1} loading={false} label="Continue" className="mt-4" />
+              <PrimaryButton
+                onClick={handleRegisterStep1}
+                loading={false}
+                label="Continue"
+                className="mt-4"
+              />
             </div>
           )}
 
           {/* ── REGISTER STEP 2 ── */}
           {mode === 'register' && regStep === 2 && (
             <div>
-              <button onClick={() => setRegStep(1)} className="flex items-center gap-1 text-muted-foreground mb-4 hover:text-foreground">
+              <button
+                onClick={() => setRegStep(1)}
+                className="flex items-center gap-1 text-muted-foreground mb-4 hover:text-foreground"
+              >
                 <ArrowLeft className="w-4 h-4" /> Back
               </button>
-              <h2 className="mb-1" style={{ fontSize: '26px', fontWeight: 700 }}>Company details</h2>
-              <p className="text-muted-foreground mb-5" style={{ fontSize: '14px' }}>Step 2 of 2 — almost done</p>
+              <h2 className="mb-1" style={{ fontSize: '26px', fontWeight: 700 }}>
+                Company details
+              </h2>
+              <p className="text-muted-foreground mb-5" style={{ fontSize: '14px' }}>
+                Step 2 of 2 — almost done
+              </p>
 
               {regError && <ErrorBanner message={regError} />}
 
               <div className="space-y-3">
-                {(regData.accountType === 'business' || regData.accountType === 'partner' || regData.accountType === 'hmo') && (
+                {(regData.accountType === 'business' ||
+                  regData.accountType === 'partner' ||
+                  regData.accountType === 'hmo') && (
                   <Field label="Company / Organisation name" htmlFor="reg-company">
-                    <InputWithIcon id="reg-company" type="text" value={regData.companyName ?? ''} onChange={(v) => setRegData((d) => ({ ...d, companyName: v }))} placeholder="TechVentures Nigeria Ltd" icon={Building2} />
+                    <InputWithIcon
+                      id="reg-company"
+                      type="text"
+                      value={regData.companyName ?? ''}
+                      onChange={(v) => setRegData((d) => ({ ...d, companyName: v }))}
+                      placeholder="TechVentures Nigeria Ltd"
+                      icon={Building2}
+                    />
                   </Field>
                 )}
                 {regData.accountType === 'business' && (
                   <>
                     <Field label="RC Number (CAC Registration)" htmlFor="reg-rc">
-                      <InputWithIcon id="reg-rc" type="text" value={regData.rcNumber ?? ''} onChange={(v) => setRegData((d) => ({ ...d, rcNumber: v.toUpperCase() }))} placeholder="RC1234567" icon={Hash} />
+                      <InputWithIcon
+                        id="reg-rc"
+                        type="text"
+                        value={regData.rcNumber ?? ''}
+                        onChange={(v) => setRegData((d) => ({ ...d, rcNumber: v.toUpperCase() }))}
+                        placeholder="RC1234567"
+                        icon={Hash}
+                      />
                       <p className="text-muted-foreground mt-1" style={{ fontSize: '12px' }}>
-                        Enter your CAC-registered company RC number for instant profile auto-population
+                        Enter your CAC-registered company RC number for instant profile
+                        auto-population
                       </p>
                     </Field>
                     <Field label="BVN (Bank Verification Number)" htmlFor="reg-bvn">
-                      <InputWithIcon id="reg-bvn" type="text" value={regData.bvn ?? ''} onChange={(v) => setRegData((d) => ({ ...d, bvn: v.replace(/\D/g, '').slice(0, 11) }))} placeholder="12345678901" icon={Hash} maxLength={11} />
+                      <InputWithIcon
+                        id="reg-bvn"
+                        type="text"
+                        value={regData.bvn ?? ''}
+                        onChange={(v) =>
+                          setRegData((d) => ({ ...d, bvn: v.replace(/\D/g, '').slice(0, 11) }))
+                        }
+                        placeholder="12345678901"
+                        icon={Hash}
+                        maxLength={11}
+                      />
                       <p className="text-muted-foreground mt-1" style={{ fontSize: '12px' }}>
-                        Your BVN is required for identity verification and will be validated against the Nigerian Inter-Bank Settlement System
+                        Your BVN is required for identity verification and will be validated against
+                        the Nigerian Inter-Bank Settlement System
                       </p>
                     </Field>
                   </>
                 )}
                 {regData.accountType === 'mda' && (
                   <Field label="Ministry / Agency name" htmlFor="reg-mda">
-                    <InputWithIcon id="reg-mda" type="text" value={regData.mdaName ?? ''} onChange={(v) => setRegData((d) => ({ ...d, mdaName: v }))} placeholder="Federal Ministry of Works" icon={Building2} />
+                    <InputWithIcon
+                      id="reg-mda"
+                      type="text"
+                      value={regData.mdaName ?? ''}
+                      onChange={(v) => setRegData((d) => ({ ...d, mdaName: v }))}
+                      placeholder="Federal Ministry of Works"
+                      icon={Building2}
+                    />
                   </Field>
                 )}
 
@@ -378,29 +519,44 @@ export function AuthView({ onAuthenticated }: AuthViewProps) {
                     <input
                       type="checkbox"
                       checked={regData.consentGiven ?? false}
-                      onChange={(e) => setRegData((d) => ({ ...d, consentGiven: e.target.checked }))}
+                      onChange={(e) =>
+                        setRegData((d) => ({ ...d, consentGiven: e.target.checked }))
+                      }
                       className="mt-0.5 w-4 h-4 accent-[#FF3000]"
                     />
                     <span style={{ fontSize: '13px' }}>
-                      I agree to ClearPass processing my company's compliance data in accordance with the{' '}
-                      <span className="text-[#FF3000]">Nigeria Data Protection Act 2023 (NDPA)</span>.
-                      I understand I can request data deletion at any time through the platform.
+                      I agree to ClearPass processing my company's compliance data in accordance
+                      with the{' '}
+                      <span className="text-[#FF3000]">
+                        Nigeria Data Protection Act 2023 (NDPA)
+                      </span>
+                      . I understand I can request data deletion at any time through the platform.
                     </span>
                   </label>
                 </div>
               </div>
 
-              <PrimaryButton onClick={handleRegister} loading={isLoading} label="Create Account" className="mt-4" />
+              <PrimaryButton
+                onClick={handleRegister}
+                loading={isLoading}
+                label="Create Account"
+                className="mt-4"
+              />
             </div>
           )}
 
           {/* ── RESET PASSWORD ── */}
           {mode === 'reset' && (
             <div>
-              <button onClick={() => setMode('login')} className="flex items-center gap-1 text-muted-foreground mb-4 hover:text-foreground">
+              <button
+                onClick={() => setMode('login')}
+                className="flex items-center gap-1 text-muted-foreground mb-4 hover:text-foreground"
+              >
                 <ArrowLeft className="w-4 h-4" /> Back to login
               </button>
-              <h2 className="mb-1" style={{ fontSize: '26px', fontWeight: 700 }}>Reset password</h2>
+              <h2 className="mb-1" style={{ fontSize: '26px', fontWeight: 700 }}>
+                Reset password
+              </h2>
 
               {!resetSent ? (
                 <>
@@ -408,9 +564,22 @@ export function AuthView({ onAuthenticated }: AuthViewProps) {
                     Enter your registered email and we'll send a reset link.
                   </p>
                   <Field label="Email address" htmlFor="reset-email">
-                    <InputWithIcon id="reset-email" type="email" value={resetEmail} onChange={setResetEmail} placeholder="you@company.ng" icon={Mail} onEnter={handleReset} />
+                    <InputWithIcon
+                      id="reset-email"
+                      type="email"
+                      value={resetEmail}
+                      onChange={setResetEmail}
+                      placeholder="you@company.ng"
+                      icon={Mail}
+                      onEnter={handleReset}
+                    />
                   </Field>
-                  <PrimaryButton onClick={handleReset} loading={isLoading} label="Send Reset Link" className="mt-4" />
+                  <PrimaryButton
+                    onClick={handleReset}
+                    loading={isLoading}
+                    label="Send Reset Link"
+                    className="mt-4"
+                  />
                 </>
               ) : (
                 <div className="text-center py-8">
@@ -419,7 +588,14 @@ export function AuthView({ onAuthenticated }: AuthViewProps) {
                   <p className="text-muted-foreground mt-1" style={{ fontSize: '14px' }}>
                     Check {resetEmail} for your password reset instructions.
                   </p>
-                  <button onClick={() => { setMode('login'); setResetSent(false); }} className="mt-4 text-[#FF3000] hover:underline" style={{ fontSize: '14px' }}>
+                  <button
+                    onClick={() => {
+                      setMode('login');
+                      setResetSent(false);
+                    }}
+                    className="mt-4 text-[#FF3000] hover:underline"
+                    style={{ fontSize: '14px' }}
+                  >
                     Back to login
                   </button>
                 </div>
@@ -431,14 +607,21 @@ export function AuthView({ onAuthenticated }: AuthViewProps) {
           {mode === 'otp' && (
             <div>
               <div className="text-center mb-6">
-                <div className="w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-3" style={{ backgroundColor: 'rgba(255,48,0,0.1)' }}>
+                <div
+                  className="w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-3"
+                  style={{ backgroundColor: 'rgba(255,48,0,0.1)' }}
+                >
                   <Shield className="w-7 h-7" style={{ color: '#FF3000' }} />
                 </div>
-                <h2 className="mb-1" style={{ fontSize: '26px', fontWeight: 700 }}>Verify your account</h2>
+                <h2 className="mb-1" style={{ fontSize: '26px', fontWeight: 700 }}>
+                  Verify your account
+                </h2>
                 <p className="text-muted-foreground" style={{ fontSize: '14px' }}>
                   Enter the 6-digit code sent to {pendingEmail}
                 </p>
-                <p className="text-muted-foreground mt-1" style={{ fontSize: '12px' }}>Demo code: 123456</p>
+                <p className="text-muted-foreground mt-1" style={{ fontSize: '12px' }}>
+                  Demo code: 123456
+                </p>
               </div>
 
               {otpError && <ErrorBanner message={otpError} />}
@@ -458,10 +641,17 @@ export function AuthView({ onAuthenticated }: AuthViewProps) {
                 />
               </Field>
 
-              <PrimaryButton onClick={handleOTP} loading={isLoading} label="Verify" className="mt-4" />
+              <PrimaryButton
+                onClick={handleOTP}
+                loading={isLoading}
+                label="Verify"
+                className="mt-4"
+              />
 
               <button
-                onClick={() => showToast('info', 'Code Resent', 'A new verification code has been sent')}
+                onClick={() =>
+                  showToast('info', 'Code Resent', 'A new verification code has been sent')
+                }
                 className="w-full text-center mt-3 text-muted-foreground hover:text-foreground"
                 style={{ fontSize: '13px' }}
               >
@@ -477,10 +667,22 @@ export function AuthView({ onAuthenticated }: AuthViewProps) {
 
 // ── Sub-components ──
 
-function Field({ label, htmlFor, children }: { label: string; htmlFor: string; children: React.ReactNode }) {
+function Field({
+  label,
+  htmlFor,
+  children,
+}: {
+  label: string;
+  htmlFor: string;
+  children: React.ReactNode;
+}) {
   return (
     <div>
-      <label htmlFor={htmlFor} className="block mb-1.5" style={{ fontSize: '13px', fontWeight: 500 }}>
+      <label
+        htmlFor={htmlFor}
+        className="block mb-1.5"
+        style={{ fontSize: '13px', fontWeight: 500 }}
+      >
         {label}
       </label>
       {children}
@@ -489,7 +691,14 @@ function Field({ label, htmlFor, children }: { label: string; htmlFor: string; c
 }
 
 function InputWithIcon({
-  id, type, value, onChange, placeholder, icon: Icon, onEnter,
+  id,
+  type,
+  value,
+  onChange,
+  placeholder,
+  icon: Icon,
+  onEnter,
+  maxLength,
 }: {
   id: string;
   type: string;
@@ -498,6 +707,7 @@ function InputWithIcon({
   placeholder: string;
   icon: typeof Mail;
   onEnter?: () => void;
+  maxLength?: number;
 }) {
   return (
     <div className="relative">
@@ -506,6 +716,7 @@ function InputWithIcon({
         id={id}
         type={type}
         value={value}
+        maxLength={maxLength}
         onChange={(e) => onChange(e.target.value)}
         onKeyDown={(e) => e.key === 'Enter' && onEnter?.()}
         placeholder={placeholder}
@@ -517,7 +728,10 @@ function InputWithIcon({
 }
 
 function PrimaryButton({
-  onClick, loading, label, className = '',
+  onClick,
+  loading,
+  label,
+  className = '',
 }: {
   onClick: () => void;
   loading: boolean;
@@ -538,7 +752,10 @@ function PrimaryButton({
 
 function ErrorBanner({ message }: { message: string }) {
   return (
-    <div className="flex items-start gap-2 px-3 py-2.5 rounded-md mb-4 border" style={{ backgroundColor: 'rgba(220,38,38,0.06)', borderColor: '#fca5a5' }}>
+    <div
+      className="flex items-start gap-2 px-3 py-2.5 rounded-md mb-4 border"
+      style={{ backgroundColor: 'rgba(220,38,38,0.06)', borderColor: '#fca5a5' }}
+    >
       <AlertTriangle className="w-4 h-4 text-red-500 shrink-0 mt-0.5" />
       <p style={{ fontSize: '13px', color: '#dc2626' }}>{message}</p>
     </div>

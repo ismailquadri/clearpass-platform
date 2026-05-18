@@ -5,11 +5,9 @@ import { NextBestAction } from './NextBestAction';
 import { NHIAEnrollmentBanner } from './NHIAEnrollmentBanner';
 import { ActivityFeed } from './ActivityFeed';
 import { OnboardingChecklist, useOnboardingChecklist } from './OnboardingChecklist';
-import { Calendar, TrendingUp, Building2 } from 'lucide-react';
-import { useToast } from './ToastProvider';
+import { Calendar } from 'lucide-react';
 import { useDashboard } from '../api';
 import { ApiState } from './ui';
-import { useState } from 'react';
 
 interface StateAwareDashboardProps {
   onNavigate: (section: string) => void;
@@ -23,13 +21,9 @@ function getTimeGreeting(): string {
 }
 
 export function StateAwareDashboard({ onNavigate }: StateAwareDashboardProps) {
-  const { showToast } = useToast();
-  const dashboardQuery = useDashboard('Healthy'); // Default to Healthy state
+  const dashboardQuery = useDashboard('Healthy');
   const { showChecklist, dismissChecklist } = useOnboardingChecklist();
-  const [activeSection, setActiveSection] = useState<string | null>(null);
-
   const handleTaskClick = (route: string) => {
-    setActiveSection(route);
     onNavigate(route);
   };
 
@@ -40,35 +34,39 @@ export function StateAwareDashboard({ onNavigate }: StateAwareDashboardProps) {
         <header className="mb-6 sm:mb-8">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-2">
             <div>
-              <h1 className="mb-1" style={{ fontSize: '28px' }}>
-                {getTimeGreeting()}, Amaka
-              </h1>
+              <h1 className="cp-page-title mb-1">{getTimeGreeting()}, Amaka</h1>
               <p className="text-muted-foreground" style={{ fontSize: '16px' }}>
                 Here's your compliance overview for today
               </p>
             </div>
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <Calendar className="w-4 h-4" />
-              <span>{new Date().toLocaleDateString('en-NG', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</span>
+              <span>
+                {new Date().toLocaleDateString('en-NG', {
+                  weekday: 'long',
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric',
+                })}
+              </span>
             </div>
           </div>
         </header>
 
-        <ApiState
-          query={dashboardQuery}
-          loading={<DashboardSkeleton />}
-        >
+        <ApiState query={dashboardQuery} loading={<DashboardSkeleton />}>
           {(dashboard) => (
             <>
               {/* NHIA Enrollment Banner */}
-              <NHIAEnrollmentBanner onClose={() => {}} />
+              <NHIAEnrollmentBanner
+                companyName="TechVentures Nigeria Ltd"
+                rcNumber="RC1234567"
+                employeeCount={84}
+                sector="Technology Services"
+              />
 
               {/* Onboarding Checklist */}
               {showChecklist && (
-                <OnboardingChecklist
-                  onClose={dismissChecklist}
-                  onTaskClick={handleTaskClick}
-                />
+                <OnboardingChecklist onClose={dismissChecklist} onTaskClick={handleTaskClick} />
               )}
 
               {/* Compliance Score */}
@@ -93,11 +91,7 @@ export function StateAwareDashboard({ onNavigate }: StateAwareDashboardProps) {
                   value={dashboard.summary.expiringCount}
                   color="#F59E0B"
                 />
-                <StatCard
-                  label="Expired"
-                  value={dashboard.summary.expiredCount}
-                  color="#FF3000"
-                />
+                <StatCard label="Expired" value={dashboard.summary.expiredCount} color="#FF3000" />
                 <StatCard
                   label="Pending Review"
                   value={dashboard.summary.pendingCount}
@@ -149,10 +143,9 @@ export function StateAwareDashboard({ onNavigate }: StateAwareDashboardProps) {
                     {dashboard.recentAlerts.slice(0, 3).map((alert) => (
                       <AlertCard
                         key={alert.id}
-                        type={alert.type}
+                        type={alert.type === 'warning' ? 'warning' : 'info'}
                         title={alert.title}
                         message={alert.message}
-                        timestamp={alert.timestamp}
                       />
                     ))}
                   </div>
@@ -161,7 +154,7 @@ export function StateAwareDashboard({ onNavigate }: StateAwareDashboardProps) {
 
               {/* Next Best Action */}
               <div className="mb-6">
-                <NextBestAction 
+                <NextBestAction
                   state={{ label: dashboard.state }}
                   onAction={(section) => onNavigate(section)}
                 />
@@ -178,7 +171,7 @@ export function StateAwareDashboard({ onNavigate }: StateAwareDashboardProps) {
                     View All
                   </button>
                 </div>
-                <ActivityFeed limit={5} />
+                <ActivityFeed />
               </div>
             </>
           )}

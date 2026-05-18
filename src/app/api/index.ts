@@ -15,5 +15,7 @@ export * from './auth';
 export * from './certificates';
 export * from './dashboard';
 export * from './mda';
+export * from './mdaReports';
+export * from './reports';
 export * from './partner';
 export * from './settings';

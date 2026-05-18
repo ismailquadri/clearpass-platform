@@ -11,7 +11,7 @@ import {
   Crown,
   Settings,
   X,
-  CheckCircle2
+  CheckCircle2,
 } from 'lucide-react';
 import { useState } from 'react';
 import { useToast } from './ToastProvider';
@@ -47,19 +47,31 @@ export function ProfileModal({
   onClose,
   persona,
   userProfile,
-  onLogout
+  onLogout,
 }: ProfileModalProps) {
   const { showToast } = useToast();
   const [activeTab, setActiveTab] = useState<'profile' | 'referral'>('profile');
   const [copiedCode, setCopiedCode] = useState(false);
 
   const primaryColor = persona === 'MDA' ? 'var(--mda-primary)' : '#FF3000';
-  const primaryColorLight = persona === 'MDA' ? 'var(--mda-bg-light)' : 'rgba(255, 48, 0, 0.1)';
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const _primaryColorLight = persona === 'MDA' ? 'var(--mda-bg-light)' : 'rgba(255, 48, 0, 0.1)';
 
   // Mock referral data - in real implementation, this would come from the backend
   const referralData: ReferralData = {
-    referralCode: 'CLEARPASS-' + userProfile.name.split(' ').map(n => n[0]).join('').toUpperCase() + '2026',
-    referralLink: `https://clearpass.com/invite?ref=${userProfile.name.split(' ').map(n => n[0]).join('').toLowerCase()}2026`,
+    referralCode:
+      'CLEARPASS-' +
+      userProfile.name
+        .split(' ')
+        .map((n) => n[0])
+        .join('')
+        .toUpperCase() +
+      '2026',
+    referralLink: `https://clearpass.com/invite?ref=${userProfile.name
+      .split(' ')
+      .map((n) => n[0])
+      .join('')
+      .toLowerCase()}2026`,
     totalReferrals: 12,
     successfulReferrals: 8,
     pendingReferrals: 4,
@@ -87,7 +99,7 @@ export function ProfileModal({
           text: `Join ClearPass and streamline your compliance management. Use my referral code: ${referralData.referralCode}`,
           url: referralData.referralLink,
         });
-      } catch (err) {
+      } catch {
         handleCopyLink();
       }
     } else {
@@ -131,7 +143,7 @@ export function ProfileModal({
               }`}
               style={{
                 color: activeTab === 'profile' ? primaryColor : undefined,
-                borderColor: activeTab === 'profile' ? primaryColor : undefined
+                borderColor: activeTab === 'profile' ? primaryColor : undefined,
               }}
             >
               Profile
@@ -145,7 +157,7 @@ export function ProfileModal({
               }`}
               style={{
                 color: activeTab === 'referral' ? primaryColor : undefined,
-                borderColor: activeTab === 'referral' ? primaryColor : undefined
+                borderColor: activeTab === 'referral' ? primaryColor : undefined,
               }}
             >
               Referral Program
@@ -159,8 +171,15 @@ export function ProfileModal({
             <div className="space-y-6">
               {/* Avatar Section */}
               <div className="flex items-center gap-4">
-                <div className="w-16 h-16 rounded-full flex items-center justify-center text-white text-xl font-bold" style={{ backgroundColor: primaryColor }}>
-                  {userProfile.avatar || userProfile.name.split(' ').map(n => n[0]).join('')}
+                <div
+                  className="w-16 h-16 rounded-full flex items-center justify-center text-white text-xl font-bold"
+                  style={{ backgroundColor: primaryColor }}
+                >
+                  {userProfile.avatar ||
+                    userProfile.name
+                      .split(' ')
+                      .map((n) => n[0])
+                      .join('')}
                 </div>
                 <div>
                   <h3 className="text-lg font-semibold">{userProfile.name}</h3>
@@ -239,13 +258,19 @@ export function ProfileModal({
             <div className="space-y-6">
               {/* Referral Stats */}
               <div className="grid grid-cols-2 gap-4">
-                <div className="rounded-lg p-4 text-white" style={{
-                  background: persona === 'MDA' 
-                    ? 'var(--mda-gradient-primary)' 
-                    : 'linear-gradient(to bottom right, #FF3000, #e62e00)'
-                }}>
+                <div
+                  className="rounded-lg p-4 text-white"
+                  style={{
+                    background:
+                      persona === 'MDA'
+                        ? 'var(--mda-gradient-primary)'
+                        : 'linear-gradient(to bottom right, #FF3000, #e62e00)',
+                  }}
+                >
                   <Gift className="w-8 h-8 mb-2 opacity-80" />
-                  <p className="text-2xl font-bold">₦{referralData.rewardsEarned.toLocaleString()}</p>
+                  <p className="text-2xl font-bold">
+                    ₦{referralData.rewardsEarned.toLocaleString()}
+                  </p>
                   <p className="text-sm opacity-80">Total Earned</p>
                 </div>
                 <div className="bg-gradient-to-br from-blue-600 to-blue-700 rounded-lg p-4 text-white">
@@ -314,7 +339,9 @@ export function ProfileModal({
                 <h4 className="font-medium text-blue-900 mb-2">How it works</h4>
                 <ul className="text-sm text-blue-800 space-y-1">
                   <li>• Share your referral code or link with others</li>
-                  <li>• Earn ₦{referralData.referralBonus.toLocaleString()} for each successful signup</li>
+                  <li>
+                    • Earn ₦{referralData.referralBonus.toLocaleString()} for each successful signup
+                  </li>
                   <li>• Get credited when they complete their first compliance verification</li>
                   <li>• Track your referrals and earnings in real-time</li>
                 </ul>
@@ -330,11 +357,15 @@ export function ProfileModal({
                   </div>
                   <div className="flex justify-between items-center p-3 bg-green-50 rounded-lg border border-green-200">
                     <span className="text-sm text-green-800">Successful</span>
-                    <span className="font-semibold text-green-800">{referralData.successfulReferrals}</span>
+                    <span className="font-semibold text-green-800">
+                      {referralData.successfulReferrals}
+                    </span>
                   </div>
                   <div className="flex justify-between items-center p-3 bg-yellow-50 rounded-lg border border-yellow-200">
                     <span className="text-sm text-yellow-800">Pending</span>
-                    <span className="font-semibold text-yellow-800">{referralData.pendingReferrals}</span>
+                    <span className="font-semibold text-yellow-800">
+                      {referralData.pendingReferrals}
+                    </span>
                   </div>
                 </div>
               </div>

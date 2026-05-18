@@ -12,29 +12,125 @@ interface ExpiringCert {
 }
 
 const CERTS: ExpiringCert[] = [
-  { id: '1', name: 'NSITF Certificate', daysUntilExpiry: 5, expiryDate: 'May 15, 2026', status: 'expiring_urgent', renewalCost: 12000 },
-  { id: '2', name: 'Pension Clearance (PCC)', daysUntilExpiry: 12, expiryDate: 'May 22, 2026', status: 'expiring_critical', renewalCost: 0 },
-  { id: '3', name: 'NHIA Certificate', daysUntilExpiry: 28, expiryDate: 'Jun 7, 2026', status: 'active', renewalCost: 85000 },
-  { id: '4', name: 'FIRS Tax Clearance (TIN)', daysUntilExpiry: 65, expiryDate: 'Jul 14, 2026', status: 'active', renewalCost: 0 },
-  { id: '5', name: 'BPP Certificate', daysUntilExpiry: 112, expiryDate: 'Aug 30, 2026', status: 'active', renewalCost: 25000 },
-  { id: '6', name: 'ITF Certificate', daysUntilExpiry: -3, expiryDate: 'May 7, 2026', status: 'expired', renewalCost: 15000 },
-  { id: '7', name: 'NSITF Certificate', companyName: 'Delta Contractors', daysUntilExpiry: 8, expiryDate: 'May 18, 2026', status: 'expiring_critical', renewalCost: 12000 },
-  { id: '8', name: 'Pension Clearance (PCC)', companyName: 'Lagos Builders Ltd', daysUntilExpiry: 35, expiryDate: 'Jun 14, 2026', status: 'active', renewalCost: 0 },
-  { id: '9', name: 'BPP Certificate', companyName: 'Niger Works Ltd', daysUntilExpiry: 91, expiryDate: 'Aug 9, 2026', status: 'renewal_in_progress', renewalCost: 25000 },
+  {
+    id: '1',
+    name: 'NSITF Certificate',
+    daysUntilExpiry: 5,
+    expiryDate: 'May 15, 2026',
+    status: 'expiring_urgent',
+    renewalCost: 12000,
+  },
+  {
+    id: '2',
+    name: 'Pension Clearance (PCC)',
+    daysUntilExpiry: 12,
+    expiryDate: 'May 22, 2026',
+    status: 'expiring_critical',
+    renewalCost: 0,
+  },
+  {
+    id: '3',
+    name: 'NHIA Certificate',
+    daysUntilExpiry: 28,
+    expiryDate: 'Jun 7, 2026',
+    status: 'active',
+    renewalCost: 85000,
+  },
+  {
+    id: '4',
+    name: 'FIRS Tax Clearance (TIN)',
+    daysUntilExpiry: 65,
+    expiryDate: 'Jul 14, 2026',
+    status: 'active',
+    renewalCost: 0,
+  },
+  {
+    id: '5',
+    name: 'BPP Certificate',
+    daysUntilExpiry: 112,
+    expiryDate: 'Aug 30, 2026',
+    status: 'active',
+    renewalCost: 25000,
+  },
+  {
+    id: '6',
+    name: 'ITF Certificate',
+    daysUntilExpiry: -3,
+    expiryDate: 'May 7, 2026',
+    status: 'expired',
+    renewalCost: 15000,
+  },
+  {
+    id: '7',
+    name: 'NSITF Certificate',
+    companyName: 'Delta Contractors',
+    daysUntilExpiry: 8,
+    expiryDate: 'May 18, 2026',
+    status: 'expiring_critical',
+    renewalCost: 12000,
+  },
+  {
+    id: '8',
+    name: 'Pension Clearance (PCC)',
+    companyName: 'Lagos Builders Ltd',
+    daysUntilExpiry: 35,
+    expiryDate: 'Jun 14, 2026',
+    status: 'active',
+    renewalCost: 0,
+  },
+  {
+    id: '9',
+    name: 'BPP Certificate',
+    companyName: 'Niger Works Ltd',
+    daysUntilExpiry: 91,
+    expiryDate: 'Aug 9, 2026',
+    status: 'renewal_in_progress',
+    renewalCost: 25000,
+  },
 ];
 
 function urgencyConfig(status: ExpiringCert['status']) {
   switch (status) {
     case 'expired':
-      return { color: '#DC2626', bg: 'rgba(220,38,38,0.08)', icon: AlertTriangle, label: 'Expired', band: 0 };
+      return {
+        color: '#DC2626',
+        bg: 'rgba(220,38,38,0.08)',
+        icon: AlertTriangle,
+        label: 'Expired',
+        band: 0,
+      };
     case 'expiring_urgent':
-      return { color: '#FF3000', bg: 'rgba(255,48,0,0.08)', icon: AlertTriangle, label: '1–7 days', band: 1 };
+      return {
+        color: '#FF3000',
+        bg: 'rgba(255,48,0,0.08)',
+        icon: AlertTriangle,
+        label: '1–7 days',
+        band: 1,
+      };
     case 'expiring_critical':
-      return { color: '#F59E0B', bg: 'rgba(245,158,11,0.08)', icon: Clock, label: '8–30 days', band: 2 };
+      return {
+        color: '#F59E0B',
+        bg: 'rgba(245,158,11,0.08)',
+        icon: Clock,
+        label: '8–30 days',
+        band: 2,
+      };
     case 'renewal_in_progress':
-      return { color: '#6366F1', bg: 'rgba(99,102,241,0.08)', icon: RefreshCw, label: 'Renewal In Progress', band: 3 };
+      return {
+        color: '#6366F1',
+        bg: 'rgba(99,102,241,0.08)',
+        icon: RefreshCw,
+        label: 'Renewal In Progress',
+        band: 3,
+      };
     case 'active':
-      return { color: '#1FC16B', bg: 'rgba(31,193,107,0.08)', icon: CheckCircle2, label: 'Active', band: 4 };
+      return {
+        color: '#1FC16B',
+        bg: 'rgba(31,193,107,0.08)',
+        icon: CheckCircle2,
+        label: 'Active',
+        band: 4,
+      };
   }
 }
 
@@ -63,9 +159,7 @@ export function ExpiryTimelineView({ isPartner = false }: ExpiryTimelineViewProp
     <div className="flex-1 h-full overflow-y-auto bg-background">
       <div className="p-4 sm:p-6 lg:p-8 max-w-4xl mx-auto">
         <header className="mb-6 sm:mb-8">
-          <h1 className="mb-2" style={{ fontSize: '28px' }}>
-            Expiry Timeline
-          </h1>
+          <h1 className="cp-page-title mb-2">Expiry Timeline</h1>
           <p className="text-muted-foreground" style={{ fontSize: '16px' }}>
             Chronological view of all certificate expirations in the next 180 days
           </p>
@@ -73,10 +167,23 @@ export function ExpiryTimelineView({ isPartner = false }: ExpiryTimelineViewProp
 
         {/* Summary row */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
-          <SummaryTile label="Expired" count={urgent.filter((c) => c.status === 'expired').length} color="#DC2626" />
-          <SummaryTile label="Urgent (≤7 days)" count={urgent.filter((c) => c.status !== 'expired').length} color="#FF3000" />
+          <SummaryTile
+            label="Expired"
+            count={urgent.filter((c) => c.status === 'expired').length}
+            color="#DC2626"
+          />
+          <SummaryTile
+            label="Urgent (≤7 days)"
+            count={urgent.filter((c) => c.status !== 'expired').length}
+            color="#FF3000"
+          />
           <SummaryTile label="Critical (8–30 days)" count={critical.length} color="#F59E0B" />
-          <SummaryTile label="90-day renewal cost" count={null} value={fmt(totalRenewalCost)} color="#1FC16B" />
+          <SummaryTile
+            label="90-day renewal cost"
+            count={null}
+            value={fmt(totalRenewalCost)}
+            color="#1FC16B"
+          />
         </div>
 
         {/* Timeline bands */}
@@ -118,12 +225,25 @@ export function ExpiryTimelineView({ isPartner = false }: ExpiryTimelineViewProp
             <span>180 days</span>
           </div>
           <div className="flex flex-wrap gap-3 mt-4">
-            {(['expired', 'expiring_urgent', 'expiring_critical', 'renewal_in_progress', 'active'] as const).map((s) => {
+            {(
+              [
+                'expired',
+                'expiring_urgent',
+                'expiring_critical',
+                'renewal_in_progress',
+                'active',
+              ] as const
+            ).map((s) => {
               const cfg = urgencyConfig(s);
               return (
                 <div key={s} className="flex items-center gap-1.5">
-                  <span className="w-3 h-3 rounded-full inline-block" style={{ backgroundColor: cfg.color }} />
-                  <span className="text-muted-foreground" style={{ fontSize: '12px' }}>{cfg.label}</span>
+                  <span
+                    className="w-3 h-3 rounded-full inline-block"
+                    style={{ backgroundColor: cfg.color }}
+                  />
+                  <span className="text-muted-foreground" style={{ fontSize: '12px' }}>
+                    {cfg.label}
+                  </span>
                 </div>
               );
             })}
@@ -135,7 +255,10 @@ export function ExpiryTimelineView({ isPartner = false }: ExpiryTimelineViewProp
 }
 
 function SummaryTile({
-  label, count, value, color,
+  label,
+  count,
+  value,
+  color,
 }: {
   label: string;
   count: number | null;
@@ -144,16 +267,18 @@ function SummaryTile({
 }) {
   return (
     <div className="bg-card border border-border rounded-lg p-3 sm:p-4">
-      <p className="text-muted-foreground mb-1" style={{ fontSize: '12px' }}>{label}</p>
-      <p style={{ fontSize: '22px', fontWeight: 700, color }}>
-        {count !== null ? count : value}
+      <p className="text-muted-foreground mb-1" style={{ fontSize: '12px' }}>
+        {label}
       </p>
+      <p style={{ fontSize: '22px', fontWeight: 700, color }}>{count !== null ? count : value}</p>
     </div>
   );
 }
 
 function TimelineBand({
-  title, certs, isPartner,
+  title,
+  certs,
+  isPartner,
 }: {
   title: string;
   certs: ExpiringCert[];
@@ -161,7 +286,9 @@ function TimelineBand({
 }) {
   return (
     <div className="mb-5">
-      <h2 className="mb-3" style={{ fontSize: '15px', fontWeight: 600 }}>{title}</h2>
+      <h2 className="mb-3" style={{ fontSize: '15px', fontWeight: 600 }}>
+        {title}
+      </h2>
       <div className="space-y-2">
         {certs.map((cert) => {
           const cfg = urgencyConfig(cert.status);
@@ -172,18 +299,29 @@ function TimelineBand({
               className="flex items-start gap-3 p-3 sm:p-4 rounded-lg border"
               style={{ backgroundColor: cfg.bg, borderColor: cfg.color + '33' }}
             >
-              <Icon className="w-4 h-4 shrink-0 mt-0.5" style={{ color: cfg.color }} aria-hidden="true" />
+              <Icon
+                className="w-4 h-4 shrink-0 mt-0.5"
+                style={{ color: cfg.color }}
+                aria-hidden="true"
+              />
               <div className="flex-1 min-w-0">
                 <div className="flex items-start justify-between flex-wrap gap-1">
                   <div>
                     <p style={{ fontSize: '14px', fontWeight: 500 }}>{cert.name}</p>
                     {isPartner && cert.companyName && (
-                      <p className="text-muted-foreground" style={{ fontSize: '12px' }}>{cert.companyName}</p>
+                      <p className="text-muted-foreground" style={{ fontSize: '12px' }}>
+                        {cert.companyName}
+                      </p>
                     )}
                   </div>
                   <span
                     className="px-2 py-0.5 rounded-full shrink-0"
-                    style={{ backgroundColor: cfg.color + '20', color: cfg.color, fontSize: '11px', fontWeight: 500 }}
+                    style={{
+                      backgroundColor: cfg.color + '20',
+                      color: cfg.color,
+                      fontSize: '11px',
+                      fontWeight: 500,
+                    }}
                   >
                     {cfg.label}
                   </span>

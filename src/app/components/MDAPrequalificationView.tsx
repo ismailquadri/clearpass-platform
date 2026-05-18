@@ -1,5 +1,15 @@
-import { Download, Upload, Plus, CheckCircle2, XCircle, AlertTriangle, Trash2 } from 'lucide-react';
-import { useState } from 'react';
+import {
+  Download,
+  Upload,
+  Plus,
+  CheckCircle2,
+  XCircle,
+  AlertTriangle,
+  Trash2,
+  Eye,
+  X,
+} from 'lucide-react';
+import { useEffect, useState } from 'react';
 import { useToast } from './ToastProvider';
 import { AddVendorModal } from './AddVendorModal';
 import { ImportBiddersModal } from './ImportBiddersModal';
@@ -69,11 +79,50 @@ export function MDAPrequalificationView() {
   // Modal states
   const [isAddVendorModalOpen, setIsAddVendorModalOpen] = useState(false);
   const [isImportBiddersModalOpen, setIsImportBiddersModalOpen] = useState(false);
+  const [selectedVendor, setSelectedVendor] = useState<Vendor | null>(null);
 
   const qualifiedCount = vendors.filter((v) => v.status === 'qualified').length;
   const attentionCount = vendors.filter((v) => v.status === 'attention').length;
   const disqualifiedCount = vendors.filter((v) => v.status === 'disqualified').length;
-  const avgScore = Math.round(vendors.reduce((sum, v) => sum + v.score, 0) / vendors.length);
+  const avgScore = vendors.length
+    ? Math.round(vendors.reduce((sum, v) => sum + v.score, 0) / vendors.length)
+    : 0;
+
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem('clearpass.mda.prequalification.pendingVendor');
+      if (!raw) return;
+      localStorage.removeItem('clearpass.mda.prequalification.pendingVendor');
+      const pending = JSON.parse(raw) as Pick<
+        Vendor,
+        'rcNumber' | 'companyName' | 'score' | 'status'
+      >;
+      if (!pending.rcNumber || vendors.some((v) => v.rcNumber === pending.rcNumber)) return;
+      const submissionDate = new Date().toLocaleDateString('en-GB', {
+        day: 'numeric',
+        month: 'short',
+        year: 'numeric',
+      });
+      queueMicrotask(() => {
+        setVendors((prev) => [
+          {
+            id: Date.now().toString(),
+            rcNumber: pending.rcNumber,
+            companyName: pending.companyName,
+            score: pending.score,
+            status: pending.status,
+            submissionDate,
+          },
+          ...prev,
+        ]);
+        showToast('success', 'Vendor Added', `${pending.companyName} added to this list.`);
+      });
+    } catch {
+      // ignore malformed pending data
+    }
+    // Run once when this view opens.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const validateForm = () => {
     const newErrors: typeof errors = {};
@@ -99,7 +148,31 @@ export function MDAPrequalificationView() {
       showToast('error', 'Validation Error', 'Please correct the errors in the form');
       return;
     }
-    // ... existing generate logic
+    exportPrequalificationCsv('report');
+  };
+
+  const exportPrequalificationCsv = (kind: 'report' | 'draft' | 'list') => {
+    const header = 'Tender Number,List Name,RC Number,Company Name,Score,Status,Submission Date\n';
+    const rows = vendors
+      .map(
+        (v) =>
+          `${tenderNumber},${listName},${v.rcNumber},${v.companyName},${v.score},${v.status},${v.submissionDate}`
+      )
+      .join('\n');
+    const blob = new Blob([header + rows], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `mda-prequalification-${kind}-${new Date().toISOString().slice(0, 10)}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+    showToast(
+      'success',
+      kind === 'draft' ? 'Draft Saved' : 'Export Complete',
+      kind === 'draft'
+        ? 'Pre-qualification draft downloaded.'
+        : 'Pre-qualification list downloaded.'
+    );
   };
 
   const getStatusConfig = (status: Vendor['status']) => {
@@ -107,22 +180,22 @@ export function MDAPrequalificationView() {
       case 'qualified':
         return {
           icon: CheckCircle2,
-          color: 'var(--mda-primary)',
-          bgColor: 'rgba(255, 48, 0, 0.1)',
+          color: 'var(--mda-success)',
+          bgColor: 'var(--mda-success-light)',
           label: 'Pre-Qualified',
         };
       case 'attention':
         return {
           icon: AlertTriangle,
-          color: 'var(--mda-primary)',
-          bgColor: 'rgba(255, 48, 0, 0.1)',
+          color: 'var(--mda-warning)',
+          bgColor: 'var(--mda-warning-light)',
           label: 'Needs Review',
         };
       case 'disqualified':
         return {
           icon: XCircle,
-          color: 'var(--mda-primary)',
-          bgColor: 'rgba(255, 48, 0, 0.1)',
+          color: 'var(--mda-error)',
+          bgColor: 'var(--mda-error-light)',
           label: 'Disqualified',
         };
     }
@@ -130,18 +203,8 @@ export function MDAPrequalificationView() {
 
   const removeVendor = (id: string) => {
     const vendor = vendors.find((v) => v.id === id);
-    if (
-      window.confirm(
-        `Are you sure you want to remove ${vendor?.companyName} from the pre-qualification list? This action cannot be undone.`
-      )
-    ) {
-      setVendors(vendors.filter((v) => v.id !== id));
-      showToast(
-        'success',
-        'Vendor Removed',
-        `${vendor?.companyName} has been removed from the list`
-      );
-    }
+    setVendors(vendors.filter((v) => v.id !== id));
+    showToast('success', 'Vendor Removed', `${vendor?.companyName} has been removed from the list`);
   };
 
   const handleAddVendor = (vendorData: { rcNumber: string; companyName: string }) => {
@@ -204,7 +267,7 @@ export function MDAPrequalificationView() {
         {/* Header */}
         <div className="mb-8">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-2">
-            <h1 style={{ fontSize: '32px' }}>Pre-Qualification List</h1>
+            <h1 className="cp-page-title">Pre-Qualification List</h1>
             <div className="flex flex-col sm:flex-row gap-3">
               <button
                 onClick={() => setIsImportBiddersModalOpen(true)}
@@ -215,7 +278,7 @@ export function MDAPrequalificationView() {
               </button>
               <button
                 onClick={() => setIsAddVendorModalOpen(true)}
-                className="w-full sm:w-auto px-4 py-2.5 rounded-md text-white flex items-center justify-center gap-2"
+                className="cp-shimmer w-full sm:w-auto px-4 py-2.5 rounded-md text-white flex items-center justify-center gap-2"
                 style={{ backgroundColor: 'var(--mda-primary)' }}
               >
                 <Plus className="w-4 h-4" />
@@ -316,19 +379,19 @@ export function MDAPrequalificationView() {
           </div>
           <div className="bg-card border border-border rounded-lg p-5">
             <p className="caption text-muted-foreground mb-1">Pre-Qualified</p>
-            <p style={{ fontSize: '32px', fontWeight: '600', color: 'var(--mda-primary)' }}>
+            <p style={{ fontSize: '32px', fontWeight: '600', color: 'var(--mda-success)' }}>
               {qualifiedCount}
             </p>
           </div>
           <div className="bg-card border border-border rounded-lg p-5">
             <p className="caption text-muted-foreground mb-1">Needs Review</p>
-            <p style={{ fontSize: '32px', fontWeight: '600', color: 'var(--mda-primary)' }}>
+            <p style={{ fontSize: '32px', fontWeight: '600', color: 'var(--mda-warning)' }}>
               {attentionCount}
             </p>
           </div>
           <div className="bg-card border border-border rounded-lg p-5">
             <p className="caption text-muted-foreground mb-1">Disqualified</p>
-            <p style={{ fontSize: '32px', fontWeight: '600', color: 'var(--mda-primary)' }}>
+            <p style={{ fontSize: '32px', fontWeight: '600', color: 'var(--mda-error)' }}>
               {disqualifiedCount}
             </p>
           </div>
@@ -341,8 +404,11 @@ export function MDAPrequalificationView() {
         {/* Vendors Table */}
         <div className="bg-card border border-border rounded-lg overflow-hidden">
           <div className="p-4 border-b border-border flex items-center justify-between">
-            <h2 style={{ fontSize: '18px', fontWeight: '500' }}>Vendors ({vendors.length})</h2>
-            <button className="px-4 py-2 rounded-md border border-border hover:bg-muted transition-colors flex items-center gap-2">
+            <h2 className="cp-section-title">Vendors ({vendors.length})</h2>
+            <button
+              onClick={() => exportPrequalificationCsv('list')}
+              className="px-4 py-2 rounded-md border border-border hover:bg-muted transition-colors flex items-center gap-2"
+            >
               <Download className="w-4 h-4" />
               Export List
             </button>
@@ -452,7 +518,11 @@ export function MDAPrequalificationView() {
                       </td>
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-2">
-                          <button className="px-3 py-1 rounded-md border border-border hover:bg-muted transition-colors">
+                          <button
+                            onClick={() => setSelectedVendor(vendor)}
+                            className="px-3 py-1 rounded-md border border-border hover:bg-muted transition-colors inline-flex items-center gap-1"
+                          >
+                            <Eye className="w-3 h-3" />
                             <span style={{ fontSize: '12px' }}>View Details</span>
                           </button>
                           <button
@@ -490,7 +560,13 @@ export function MDAPrequalificationView() {
               Generate Pre-Qualification Report
             </button>
             <button
-              onClick={handleGenerateReport}
+              onClick={() => {
+                if (!validateForm()) {
+                  showToast('error', 'Validation Error', 'Please correct the errors in the form');
+                  return;
+                }
+                exportPrequalificationCsv('draft');
+              }}
               className="w-full sm:w-auto px-6 py-2.5 rounded-md border border-border hover:bg-muted transition-colors"
             >
               Save as Draft
@@ -498,18 +574,64 @@ export function MDAPrequalificationView() {
           </div>
         </div>
 
-      {/* Modals */}
-      <AddVendorModal
-        isOpen={isAddVendorModalOpen}
-        onClose={() => setIsAddVendorModalOpen(false)}
-        onAddVendor={handleAddVendor}
-      />
+        {/* Modals */}
+        <AddVendorModal
+          isOpen={isAddVendorModalOpen}
+          onClose={() => setIsAddVendorModalOpen(false)}
+          onAddVendor={handleAddVendor}
+        />
 
-      <ImportBiddersModal
-        isOpen={isImportBiddersModalOpen}
-        onClose={() => setIsImportBiddersModalOpen(false)}
-        onImportBidders={handleImportBidders}
-      />
+        <ImportBiddersModal
+          isOpen={isImportBiddersModalOpen}
+          onClose={() => setIsImportBiddersModalOpen(false)}
+          onImportBidders={handleImportBidders}
+        />
+
+        {selectedVendor && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+            <div className="bg-card border border-border rounded-lg w-full max-w-md p-6">
+              <div className="flex items-start justify-between mb-5">
+                <div>
+                  <h2 className="text-xl font-semibold">Vendor Details</h2>
+                  <p className="text-muted-foreground text-sm mt-1">{selectedVendor.rcNumber}</p>
+                </div>
+                <button
+                  onClick={() => setSelectedVendor(null)}
+                  className="p-2 rounded-md hover:bg-muted"
+                  aria-label="Close details"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+              <div className="space-y-3 text-sm">
+                <div className="flex justify-between gap-4">
+                  <span className="text-muted-foreground">Company</span>
+                  <span className="font-medium text-right">{selectedVendor.companyName}</span>
+                </div>
+                <div className="flex justify-between gap-4">
+                  <span className="text-muted-foreground">Score</span>
+                  <span className="font-medium">{selectedVendor.score}/100</span>
+                </div>
+                <div className="flex justify-between gap-4">
+                  <span className="text-muted-foreground">Status</span>
+                  <span className="font-medium">
+                    {getStatusConfig(selectedVendor.status).label}
+                  </span>
+                </div>
+                <div className="flex justify-between gap-4">
+                  <span className="text-muted-foreground">Submission Date</span>
+                  <span className="font-medium">{selectedVendor.submissionDate}</span>
+                </div>
+              </div>
+              <button
+                onClick={() => setSelectedVendor(null)}
+                className="mt-6 w-full px-4 py-2.5 rounded-md border border-border hover:bg-muted transition-colors"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

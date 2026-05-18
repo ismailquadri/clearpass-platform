@@ -166,12 +166,14 @@ ClearPass Team`,
   private smsTemplates: Record<string, SMSMessage> = {
     criticalExpiry: {
       to: '',
-      message: 'ALERT: Your {{certificateName}} expires in {{daysRemaining}} days. Renew now to maintain compliance. ClearPass',
+      message:
+        'ALERT: Your {{certificateName}} expires in {{daysRemaining}} days. Renew now to maintain compliance. ClearPass',
     },
 
     scoreDrop: {
       to: '',
-      message: 'Your compliance score dropped to {{score}}. Please check your ClearPass dashboard for details.',
+      message:
+        'Your compliance score dropped to {{score}}. Please check your ClearPass dashboard for details.',
     },
 
     verificationComplete: {
@@ -199,7 +201,11 @@ ClearPass Team`,
 
     // Replace variables in template
     const subject = this.replaceVariables(template.subject, { ...variables, name: recipient.name });
-    const body = this.replaceVariables(template.body, { ...variables, name: recipient.name, email: recipient.email });
+    this.replaceVariables(template.body, {
+      ...variables,
+      name: recipient.name,
+      email: recipient.email,
+    });
 
     const delivery: NotificationDelivery = {
       id: this.generateId(),
@@ -323,14 +329,20 @@ ClearPass Team`,
 
     // Process email queue
     for (const delivery of queue.emails) {
-      if (delivery.status === 'pending' || (delivery.status === 'retrying' && this.shouldRetry(delivery, now))) {
+      if (
+        delivery.status === 'pending' ||
+        (delivery.status === 'retrying' && this.shouldRetry(delivery, now))
+      ) {
         await this.simulateDelivery(delivery);
       }
     }
 
     // Process SMS queue
     for (const delivery of queue.sms) {
-      if (delivery.status === 'pending' || (delivery.status === 'retrying' && this.shouldRetry(delivery, now))) {
+      if (
+        delivery.status === 'pending' ||
+        (delivery.status === 'retrying' && this.shouldRetry(delivery, now))
+      ) {
         await this.simulateDelivery(delivery);
       }
     }
@@ -345,7 +357,9 @@ ClearPass Team`,
     cutoffDate.setDate(cutoffDate.getDate() - olderThanDays);
 
     const filtered = history.filter((item) => {
-      const lastAttempt = item.lastAttempt ? new Date(item.lastAttempt) : new Date(item.scheduledFor || Date.now());
+      const lastAttempt = item.lastAttempt
+        ? new Date(item.lastAttempt)
+        : new Date(item.scheduledFor || Date.now());
       return lastAttempt >= cutoffDate;
     });
 
@@ -484,11 +498,7 @@ export const notifications = {
       daysRemaining: daysRemaining.toString(),
     }),
 
-  sendWelcomeEmail: (
-    recipient: NotificationRecipient,
-    companyName: string,
-    accountType: string
-  ) =>
+  sendWelcomeEmail: (recipient: NotificationRecipient, companyName: string, accountType: string) =>
     notificationService.sendEmail('welcomeEmail', recipient, {
       companyName,
       accountType,

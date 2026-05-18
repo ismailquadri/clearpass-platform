@@ -21,9 +21,7 @@ export function PartnerAnalyticsView() {
     <div className="flex-1 h-full overflow-y-auto bg-background">
       <div className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto">
         <header className="mb-6 sm:mb-8">
-          <h1 className="mb-2" style={{ fontSize: '28px' }}>
-            Analytics
-          </h1>
+          <h1 className="cp-page-title mb-2">Analytics</h1>
           <p className="text-muted-foreground" style={{ fontSize: '16px' }}>
             Track client performance, revenue trends, and compliance metrics
           </p>

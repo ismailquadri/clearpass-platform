@@ -1,8 +1,31 @@
-import { Users, Search, Plus, AlertCircle, TrendingUp, Upload, FileText, DollarSign, Calendar, Activity, Clock, CheckSquare, Square, Mail, FileDown } from 'lucide-react';
+import {
+  Users,
+  Search,
+  Plus,
+  AlertCircle,
+  TrendingUp,
+  Upload,
+  FileText,
+  DollarSign,
+  Calendar,
+  Activity,
+  Clock,
+  CheckSquare,
+  Square,
+  Mail,
+  FileDown,
+} from 'lucide-react';
 import { useMemo, useState, useEffect } from 'react';
 import { PartnerCertificateUploadModal } from './PartnerCertificateUploadModal';
 import { useToast } from './ToastProvider';
-import { usePartnerClients, updateClientPermissions, useClientPermissions, useClientCertificates, revokeClientAccess, restoreClientAccess } from '../api';
+import {
+  usePartnerClients,
+  updateClientPermissions,
+  useClientPermissions,
+  useClientCertificates,
+  revokeClientAccess,
+  restoreClientAccess,
+} from '../api';
 import type { ClientStatus, PartnerClient, Permission, ClientCertificate } from '../api';
 import { getActivitiesForClient } from '../api/mocks';
 import { validateClientManagementForm, type ClientManagementFormData } from '../utils/validation';
@@ -45,11 +68,19 @@ export function PartnerClientsView() {
               selectedClients={selectedClients}
               setSelectedClients={setSelectedClients}
               onBulkSendReminder={() => {
-                showToast('success', 'Reminders Sent', `Sent reminders to ${selectedClients.size} client(s)`);
+                showToast(
+                  'success',
+                  'Reminders Sent',
+                  `Sent reminders to ${selectedClients.size} client(s)`
+                );
                 setSelectedClients(new Set());
               }}
               onBulkGenerateReport={() => {
-                showToast('success', 'Reports Generated', `Generated reports for ${selectedClients.size} client(s)`);
+                showToast(
+                  'success',
+                  'Reports Generated',
+                  `Generated reports for ${selectedClients.size} client(s)`
+                );
                 setSelectedClients(new Set());
               }}
               onUploadCertificate={() => {
@@ -70,17 +101,11 @@ export function PartnerClientsView() {
       />
 
       {viewingClient && (
-        <ClientScopedView
-          client={viewingClient}
-          onClose={() => setViewingClient(null)}
-        />
+        <ClientScopedView client={viewingClient} onClose={() => setViewingClient(null)} />
       )}
 
       {managingClient && (
-        <ClientManagementModal
-          client={managingClient}
-          onClose={() => setManagingClient(null)}
-        />
+        <ClientManagementModal client={managingClient} onClose={() => setManagingClient(null)} />
       )}
 
       {isInviteModalOpen && (
@@ -134,7 +159,7 @@ function ClientsContent({
 }: ClientsContentProps) {
   // Extract unique sectors from clients
   const sectors = useMemo(() => {
-    const uniqueSectors = new Set(clients.map(c => c.sector).filter(Boolean));
+    const uniqueSectors = new Set(clients.map((c) => c.sector).filter(Boolean));
     return Array.from(uniqueSectors).sort();
   }, [clients]);
 
@@ -155,13 +180,7 @@ function ClientsContent({
   }, [filtered]);
 
   // Pagination for large client lists
-  const {
-    currentPage,
-    totalPages,
-    paginatedData,
-    goToPage,
-    totalItems,
-  } = usePagination({
+  const { currentPage, totalPages, paginatedData, goToPage, totalItems } = usePagination({
     data: sortedClients,
     pageSize: 10,
   });
@@ -180,7 +199,7 @@ function ClientsContent({
     if (selectedClients.size === sortedClients.length) {
       setSelectedClients(new Set());
     } else {
-      setSelectedClients(new Set(sortedClients.map(c => c.id)));
+      setSelectedClients(new Set(sortedClients.map((c) => c.id)));
     }
   };
 
@@ -188,15 +207,16 @@ function ClientsContent({
 
   const criticalClients = clients.filter((c) => c.status === 'critical').length;
   const attentionClients = clients.filter((c) => c.status === 'attention').length;
-  
+
   // Aggregate health scores across all clients
-  const averageHealthScore = clients.length > 0
-    ? Math.round(clients.reduce((sum, c) => sum + c.score, 0) / clients.length)
-    : 0;
-  
+  const averageHealthScore =
+    clients.length > 0
+      ? Math.round(clients.reduce((sum, c) => sum + c.score, 0) / clients.length)
+      : 0;
+
   // Upcoming expirations overview - clients expiring within 30 days
   const upcomingExpirations = clients
-    .filter(c => c.daysToExpiry > 0 && c.daysToExpiry <= 30)
+    .filter((c) => c.daysToExpiry > 0 && c.daysToExpiry <= 30)
     .sort((a, b) => a.daysToExpiry - b.daysToExpiry)
     .slice(0, 5); // Show top 5 most urgent
 
@@ -204,9 +224,7 @@ function ClientsContent({
     <>
       <header className="mb-6 sm:mb-8">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-2">
-          <h1 style={{ fontSize: '28px' }} className="sm:text-[32px]">
-            My Clients
-          </h1>
+          <h1 className="cp-page-title">My Clients</h1>
           <div className="flex flex-col sm:flex-row gap-3">
             <button
               onClick={onUploadCertificate}
@@ -232,7 +250,10 @@ function ClientsContent({
 
       {/* Bulk Actions Bar */}
       {selectedClients.size > 0 && (
-        <div className="bg-card border border-border rounded-lg p-4 mb-6" style={{ borderLeft: '4px solid #FF3000' }}>
+        <div
+          className="bg-card border border-border rounded-lg p-4 mb-6"
+          style={{ borderLeft: '4px solid #FF3000' }}
+        >
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
             <div>
               <p style={{ fontSize: '14px', fontWeight: 600 }}>
@@ -280,7 +301,9 @@ function ClientsContent({
           value={`${averageHealthScore}/100`}
           subtitle="Across all clients"
           icon={TrendingUp}
-          color={averageHealthScore >= 80 ? '#FF3000' : averageHealthScore >= 50 ? '#FFA500' : '#FF3000'}
+          color={
+            averageHealthScore >= 80 ? '#FF3000' : averageHealthScore >= 50 ? '#FFA500' : '#FF3000'
+          }
         />
         <KpiCard
           label="Need Attention"
@@ -366,7 +389,9 @@ function ClientsContent({
               ) : (
                 <Square className="w-5 h-5" />
               )}
-              <span className="hidden sm:inline">{isAllSelected ? 'Deselect All' : 'Select All'}</span>
+              <span className="hidden sm:inline">
+                {isAllSelected ? 'Deselect All' : 'Select All'}
+              </span>
             </button>
           )}
         </div>
@@ -401,9 +426,7 @@ function ClientsContent({
                       <p className="caption text-muted-foreground">{client.rcNumber}</p>
                     </div>
                     <div className="text-right">
-                      <p style={{ fontSize: '14px', fontWeight: 500 }}>
-                        {client.nextExpiry}
-                      </p>
+                      <p style={{ fontSize: '14px', fontWeight: 500 }}>{client.nextExpiry}</p>
                       <p
                         className="caption"
                         style={{ color: client.daysToExpiry <= 7 ? '#FF3000' : '#FFA500' }}
@@ -499,7 +522,9 @@ function ClientRow({
     client.daysToExpiry < 0 ? '#FF3000' : client.daysToExpiry < 15 ? '#FF3000' : 'inherit';
 
   return (
-    <div className={`bg-card border border-border rounded-lg p-4 sm:p-5 transition-colors ${isSelected ? 'border-[#FF3000]' : ''}`}>
+    <div
+      className={`bg-card border border-border rounded-lg p-4 sm:p-5 transition-colors ${isSelected ? 'border-[#FF3000]' : ''}`}
+    >
       <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
         <div className="flex items-start gap-4 flex-1 min-w-0">
           {/* Checkbox */}
@@ -680,9 +705,7 @@ function ClientScopedView({ client, onClose }: ClientScopedViewProps) {
               <p className="text-muted-foreground" style={{ fontSize: '14px' }}>
                 Viewing as:
               </p>
-              <h2 style={{ fontSize: '24px', fontWeight: 600 }}>
-                {client.companyName}
-              </h2>
+              <h2 style={{ fontSize: '24px', fontWeight: 600 }}>{client.companyName}</h2>
             </div>
             <button
               onClick={onClose}
@@ -762,23 +785,26 @@ function ClientScopedView({ client, onClose }: ClientScopedViewProps) {
           {/* Historical Score Trend */}
           <div className="bg-card border border-border rounded-lg p-4 sm:p-5">
             <div className="flex items-center justify-between mb-4">
-              <h3 style={{ fontSize: '18px', fontWeight: 600 }}>
-                Score History
-              </h3>
+              <h3 style={{ fontSize: '18px', fontWeight: 600 }}>Score History</h3>
               <Activity className="w-5 h-5 text-muted-foreground" />
             </div>
             <div className="space-y-3">
               {historicalScores.map((entry, index) => (
                 <div key={entry.date} className="flex items-center justify-between">
                   <p className="caption text-muted-foreground">
-                    {new Date(entry.date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
+                    {new Date(entry.date).toLocaleDateString('en-GB', {
+                      day: 'numeric',
+                      month: 'short',
+                      year: 'numeric',
+                    })}
                   </p>
                   <div className="flex items-center gap-2">
                     {index > 0 && (
                       <span
                         style={{
                           fontSize: '12px',
-                          color: entry.score > historicalScores[index - 1].score ? '#FF3000' : '#FFA500',
+                          color:
+                            entry.score > historicalScores[index - 1].score ? '#FF3000' : '#FFA500',
                         }}
                       >
                         {entry.score > historicalScores[index - 1].score ? '+' : ''}
@@ -810,24 +836,38 @@ function ClientScopedView({ client, onClose }: ClientScopedViewProps) {
               </div>
             ) : (
               <div className="space-y-3">
-                {certificates.length > 0 ? certificates.map((cert) => (
-                  <div key={cert.id} className="flex items-center justify-between p-3 bg-muted rounded-md">
-                    <div>
-                      <p style={{ fontSize: '14px', fontWeight: 500 }}>{cert.name}</p>
-                      <p className="caption text-muted-foreground">{cert.certificateNumber}</p>
+                {certificates.length > 0 ? (
+                  certificates.map((cert) => (
+                    <div
+                      key={cert.id}
+                      className="flex items-center justify-between p-3 bg-muted rounded-md"
+                    >
+                      <div>
+                        <p style={{ fontSize: '14px', fontWeight: 500 }}>{cert.name}</p>
+                        <p className="caption text-muted-foreground">{cert.certificateNumber}</p>
+                      </div>
+                      <span
+                        className="px-2 py-1 rounded text-xs font-medium"
+                        style={{
+                          backgroundColor:
+                            cert.status === 'expired' || cert.status === 'expiring-critical'
+                              ? 'rgba(251, 55, 72, 0.1)'
+                              : cert.status === 'expiring-urgent' || cert.status === 'expiring-soon'
+                                ? 'rgba(255, 165, 0, 0.1)'
+                                : 'rgba(255, 48, 0, 0.1)',
+                          color:
+                            cert.status === 'expired' || cert.status === 'expiring-critical'
+                              ? 'rgb(251, 55, 72)'
+                              : cert.status === 'expiring-urgent' || cert.status === 'expiring-soon'
+                                ? '#FFA500'
+                                : '#FF3000',
+                        }}
+                      >
+                        {getCertificateStatusBadge(cert.status)}
+                      </span>
                     </div>
-                    <span className="px-2 py-1 rounded text-xs font-medium" style={{ 
-                      backgroundColor: cert.status === 'expired' || cert.status === 'expiring-critical' ? 'rgba(251, 55, 72, 0.1)' :
-                                     cert.status === 'expiring-urgent' || cert.status === 'expiring-soon' ? 'rgba(255, 165, 0, 0.1)' :
-                                     'rgba(255, 48, 0, 0.1)', 
-                      color: cert.status === 'expired' || cert.status === 'expiring-critical' ? 'rgb(251, 55, 72)' :
-                             cert.status === 'expiring-urgent' || cert.status === 'expiring-soon' ? '#FFA500' :
-                             '#FF3000' 
-                    }}>
-                      {getCertificateStatusBadge(cert.status)}
-                    </span>
-                  </div>
-                )) : (
+                  ))
+                ) : (
                   <div className="text-center py-4 text-muted-foreground text-sm">
                     No certificates found for this client
                   </div>
@@ -839,9 +879,7 @@ function ClientScopedView({ client, onClose }: ClientScopedViewProps) {
           {/* Renewal Cost Forecast */}
           <div className="bg-card border border-border rounded-lg p-4 sm:p-5">
             <div className="flex items-center justify-between mb-4">
-              <h3 style={{ fontSize: '18px', fontWeight: 600 }}>
-                Renewal Forecast
-              </h3>
+              <h3 style={{ fontSize: '18px', fontWeight: 600 }}>Renewal Forecast</h3>
               <Calendar className="w-5 h-5 text-muted-foreground" />
             </div>
             <div className="mb-4 p-3 bg-muted rounded-md">
@@ -854,7 +892,10 @@ function ClientScopedView({ client, onClose }: ClientScopedViewProps) {
             </div>
             <div className="space-y-3">
               {renewalForecast.map((item) => (
-                <div key={item.certificate} className="flex items-center justify-between p-3 bg-muted rounded-md">
+                <div
+                  key={item.certificate}
+                  className="flex items-center justify-between p-3 bg-muted rounded-md"
+                >
                   <div>
                     <p style={{ fontSize: '14px', fontWeight: 500 }}>{item.certificate}</p>
                     <p className="caption text-muted-foreground">{item.expiryDate}</p>
@@ -871,18 +912,22 @@ function ClientScopedView({ client, onClose }: ClientScopedViewProps) {
         {/* Activity Feed */}
         <div className="bg-card border border-border rounded-lg p-4 sm:p-5">
           <div className="flex items-center justify-between mb-4">
-            <h3 style={{ fontSize: '18px', fontWeight: 600 }}>
-              Recent Activity
-            </h3>
+            <h3 style={{ fontSize: '18px', fontWeight: 600 }}>Recent Activity</h3>
             <Clock className="w-5 h-5 text-muted-foreground" />
           </div>
           <div className="space-y-3">
             {clientActivities.map((activity) => (
               <div key={activity.id} className="flex items-start gap-3 p-3 bg-muted rounded-md">
                 <div className="mt-1">
-                  {activity.severity === 'success' && <CheckCircle className="w-5 h-5" style={{ color: '#FF3000' }} />}
-                  {activity.severity === 'warning' && <AlertCircle className="w-5 h-5" style={{ color: '#FFA500' }} />}
-                  {activity.severity === 'critical' && <AlertCircle className="w-5 h-5" style={{ color: '#FF3000' }} />}
+                  {activity.severity === 'success' && (
+                    <CheckCircle className="w-5 h-5" style={{ color: '#FF3000' }} />
+                  )}
+                  {activity.severity === 'warning' && (
+                    <AlertCircle className="w-5 h-5" style={{ color: '#FFA500' }} />
+                  )}
+                  {activity.severity === 'critical' && (
+                    <AlertCircle className="w-5 h-5" style={{ color: '#FF3000' }} />
+                  )}
                 </div>
                 <div className="flex-1">
                   <p style={{ fontSize: '14px', fontWeight: 600 }}>{activity.title}</p>
@@ -904,14 +949,13 @@ function ClientScopedView({ client, onClose }: ClientScopedViewProps) {
 
 function CheckCircle({ className, style }: { className: string; style?: React.CSSProperties }) {
   return (
-    <svg
-      className={className}
-      style={style}
-      fill="none"
-      stroke="currentColor"
-      viewBox="0 0 24 24"
-    >
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+    <svg className={className} style={style} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+      />
     </svg>
   );
 }
@@ -930,7 +974,7 @@ function ClientManagementModal({ client, onClose }: ClientManagementModalProps) 
     reportsGenerate: false,
   });
   const [isSaving, setIsSaving] = useState(false);
-  
+
   // Undo functionality for destructive actions
   const { executeAction, undoToast, clearUndoToast, isExecuting } = useUndoableActions();
 
@@ -940,6 +984,7 @@ function ClientManagementModal({ client, onClose }: ClientManagementModalProps) 
     if (permissionsQuery.data && permissionsQuery.data.length > 0) {
       const link = permissionsQuery.data[0];
       if (isMounted) {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setPermissions({
           certificatesView: link.permissions.includes('certificates.view'),
           certificatesEdit: link.permissions.includes('certificates.edit'),
@@ -953,7 +998,7 @@ function ClientManagementModal({ client, onClose }: ClientManagementModalProps) 
   }, [permissionsQuery.data]);
 
   const handlePermissionChange = (key: keyof typeof permissions, value: boolean) => {
-    setPermissions(prev => ({ ...prev, [key]: value }));
+    setPermissions((prev) => ({ ...prev, [key]: value }));
   };
 
   // Optimistic mutation for permission updates
@@ -988,10 +1033,14 @@ function ClientManagementModal({ client, onClose }: ClientManagementModalProps) 
     };
 
     const validation = validateClientManagementForm(formData);
-    
+
     if (!validation.isValid) {
       const firstError = Object.values(validation.errors)[0];
-      showToast('error', 'Validation Error', firstError || 'Please correct the errors before saving');
+      showToast(
+        'error',
+        'Validation Error',
+        firstError || 'Please correct the errors before saving'
+      );
       return;
     }
 
@@ -1012,9 +1061,7 @@ function ClientManagementModal({ client, onClose }: ClientManagementModalProps) 
         <div className="p-6 border-b border-border">
           <div className="flex items-center justify-between">
             <div>
-              <h2 style={{ fontSize: '20px', fontWeight: 600 }}>
-                Manage Client
-              </h2>
+              <h2 style={{ fontSize: '20px', fontWeight: 600 }}>Manage Client</h2>
               <p className="text-muted-foreground" style={{ fontSize: '14px' }}>
                 {client.companyName}
               </p>
@@ -1025,7 +1072,12 @@ function ClientManagementModal({ client, onClose }: ClientManagementModalProps) 
               aria-label="Close modal"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M6 18L18 6M6 6l12 12"
+                />
               </svg>
             </button>
           </div>
@@ -1046,20 +1098,30 @@ function ClientManagementModal({ client, onClose }: ClientManagementModalProps) 
                 </h3>
                 <div className="bg-muted rounded-md p-4 space-y-2">
                   <div className="flex justify-between">
-                    <span className="text-muted-foreground" style={{ fontSize: '14px' }}>RC Number:</span>
+                    <span className="text-muted-foreground" style={{ fontSize: '14px' }}>
+                      RC Number:
+                    </span>
                     <span style={{ fontSize: '14px', fontWeight: 500 }}>{client.rcNumber}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-muted-foreground" style={{ fontSize: '14px' }}>Status:</span>
+                    <span className="text-muted-foreground" style={{ fontSize: '14px' }}>
+                      Status:
+                    </span>
                     <span style={{ fontSize: '14px', fontWeight: 500 }}>{client.status}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-muted-foreground" style={{ fontSize: '14px' }}>Compliance Score:</span>
+                    <span className="text-muted-foreground" style={{ fontSize: '14px' }}>
+                      Compliance Score:
+                    </span>
                     <span style={{ fontSize: '14px', fontWeight: 500 }}>{client.score}/100</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-muted-foreground" style={{ fontSize: '14px' }}>Monthly Fee:</span>
-                    <span style={{ fontSize: '14px', fontWeight: 500 }}>₦{client.monthlyFee.toLocaleString()}</span>
+                    <span className="text-muted-foreground" style={{ fontSize: '14px' }}>
+                      Monthly Fee:
+                    </span>
+                    <span style={{ fontSize: '14px', fontWeight: 500 }}>
+                      ₦{client.monthlyFee.toLocaleString()}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -1073,7 +1135,9 @@ function ClientManagementModal({ client, onClose }: ClientManagementModalProps) 
                   <label className="flex items-center justify-between p-3 bg-muted rounded-md cursor-pointer hover:bg-muted/80 transition-colors">
                     <div>
                       <p style={{ fontSize: '14px', fontWeight: 500 }}>View Certificates</p>
-                      <p className="caption text-muted-foreground">Can view client certificate details</p>
+                      <p className="caption text-muted-foreground">
+                        Can view client certificate details
+                      </p>
                     </div>
                     <input
                       type="checkbox"
@@ -1085,7 +1149,9 @@ function ClientManagementModal({ client, onClose }: ClientManagementModalProps) 
                   <label className="flex items-center justify-between p-3 bg-muted rounded-md cursor-pointer hover:bg-muted/80 transition-colors">
                     <div>
                       <p style={{ fontSize: '14px', fontWeight: 500 }}>Edit Certificates</p>
-                      <p className="caption text-muted-foreground">Can upload and update certificates</p>
+                      <p className="caption text-muted-foreground">
+                        Can upload and update certificates
+                      </p>
                     </div>
                     <input
                       type="checkbox"
@@ -1097,7 +1163,9 @@ function ClientManagementModal({ client, onClose }: ClientManagementModalProps) 
                   <label className="flex items-center justify-between p-3 bg-muted rounded-md cursor-pointer hover:bg-muted/80 transition-colors">
                     <div>
                       <p style={{ fontSize: '14px', fontWeight: 500 }}>Generate Reports</p>
-                      <p className="caption text-muted-foreground">Can generate compliance reports</p>
+                      <p className="caption text-muted-foreground">
+                        Can generate compliance reports
+                      </p>
                     </div>
                     <input
                       type="checkbox"
@@ -1121,7 +1189,9 @@ function ClientManagementModal({ client, onClose }: ClientManagementModalProps) 
                   >
                     <Upload className="w-5 h-5 mb-2" />
                     <p style={{ fontSize: '14px', fontWeight: 500 }}>Upload Certificate</p>
-                    <p className="caption text-muted-foreground">Add certificates on behalf of client</p>
+                    <p className="caption text-muted-foreground">
+                      Add certificates on behalf of client
+                    </p>
                   </button>
                   <button
                     onClick={async () => {
@@ -1129,11 +1199,19 @@ function ClientManagementModal({ client, onClose }: ClientManagementModalProps) 
                         await executeAction({
                           action: async () => {
                             await revokeClientAccess(client.id);
-                            showToast('success', 'Access Revoked', `Access revoked for ${client.companyName}`);
+                            showToast(
+                              'success',
+                              'Access Revoked',
+                              `Access revoked for ${client.companyName}`
+                            );
                           },
                           undo: async () => {
                             await restoreClientAccess(client.id);
-                            showToast('success', 'Access Restored', `Access restored for ${client.companyName}`);
+                            showToast(
+                              'success',
+                              'Access Restored',
+                              `Access restored for ${client.companyName}`
+                            );
                           },
                           description: `Revoked access for ${client.companyName}`,
                         });
@@ -1146,7 +1224,9 @@ function ClientManagementModal({ client, onClose }: ClientManagementModalProps) 
                     className="px-4 py-3 rounded-md border border-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors text-left"
                   >
                     <FileDown className="w-5 h-5 mb-2 text-red-500" />
-                    <p style={{ fontSize: '14px', fontWeight: 500 }} className="text-red-500">Revoke Access</p>
+                    <p style={{ fontSize: '14px', fontWeight: 500 }} className="text-red-500">
+                      Revoke Access
+                    </p>
                     <p className="caption text-muted-foreground">Remove client access (undoable)</p>
                   </button>
                 </div>
@@ -1229,16 +1309,19 @@ function InviteNewClientModal({ onClose, onInviteSuccess }: InviteNewClientModal
       <div className="bg-card rounded-lg w-full max-w-md">
         <div className="p-6 border-b border-border">
           <div className="flex items-center justify-between">
-            <h2 style={{ fontSize: '20px', fontWeight: 600 }}>
-              Invite New Client
-            </h2>
+            <h2 style={{ fontSize: '20px', fontWeight: 600 }}>Invite New Client</h2>
             <button
               onClick={onClose}
               className="p-2 hover:bg-muted rounded-md transition-colors"
               aria-label="Close modal"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M6 18L18 6M6 6l12 12"
+                />
               </svg>
             </button>
           </div>
@@ -1248,7 +1331,11 @@ function InviteNewClientModal({ onClose, onInviteSuccess }: InviteNewClientModal
           {step === 'enter' && (
             <div className="space-y-4">
               <div>
-                <label htmlFor="rc-number" className="block mb-2" style={{ fontSize: '14px', fontWeight: 500 }}>
+                <label
+                  htmlFor="rc-number"
+                  className="block mb-2"
+                  style={{ fontSize: '14px', fontWeight: 500 }}
+                >
                   Client RC Number
                 </label>
                 <input

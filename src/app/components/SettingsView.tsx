@@ -15,10 +15,15 @@ import {
 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { useToast } from './ToastProvider';
+import { useAuth } from '../context/AuthContext';
 import { ShareableLinkModal } from './ShareableLinkModal';
 
 export function SettingsView() {
   const { showToast } = useToast();
+  const { user } = useAuth();
+  const accentColor = user?.accountType === 'mda' ? 'var(--mda-primary)' : '#FF3000';
+  const accentBg = user?.accountType === 'mda' ? 'var(--mda-bg-light)' : '#fff5f3';
+  const accentBorder = user?.accountType === 'mda' ? 'var(--mda-primary)' : '#FF3000';
   const [activeTab, setActiveTab] = useState<
     'company' | 'team' | 'notifications' | 'preferences' | 'security'
   >('company');
@@ -101,11 +106,15 @@ export function SettingsView() {
     if (savedPrefs) {
       try {
         const prefs = JSON.parse(savedPrefs);
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         if (prefs.emailNotifications) setEmailNotifications(prefs.emailNotifications);
+
         if (prefs.smsNotifications) setSmsNotifications(prefs.smsNotifications);
+
         if (prefs.certAlerts) setCertAlerts(prefs.certAlerts);
+
         if (prefs.alertChannels) setAlertChannels(prefs.alertChannels);
-      } catch (error) {
+      } catch {
         console.error('Failed to load notification preferences:', error);
       }
     }
@@ -220,9 +229,7 @@ export function SettingsView() {
       <div className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="mb-2" style={{ fontSize: '32px' }}>
-            Settings
-          </h1>
+          <h1 className="cp-page-title mb-2">Settings</h1>
           <p className="text-muted-foreground" style={{ fontSize: '16px' }}>
             Manage your company profile, notifications, and preferences
           </p>
@@ -249,7 +256,7 @@ export function SettingsView() {
                     ? 'text-foreground'
                     : 'border-transparent text-muted-foreground hover:text-foreground'
                 }`}
-                style={activeTab === tab.id ? { borderColor: '#FF3000' } : {}}
+                style={activeTab === tab.id ? { borderColor: accentColor } : {}}
               >
                 <Icon className="w-5 h-5" />
                 <span style={{ fontSize: '14px', fontWeight: '500' }}>{tab.label}</span>
@@ -494,22 +501,36 @@ export function SettingsView() {
             <div className="bg-card border border-border rounded-lg p-6">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-2">
-                  <Link className="w-5 h-5 text-[#FF3000]" />
+                  <Link className="w-5 h-5" style={{ color: accentColor }} />
                   <h2 className="text-lg font-semibold">Shareable Compliance Link</h2>
                 </div>
                 <button
                   onClick={() => setIsShareableLinkModalOpen(true)}
-                  className="px-4 py-2 rounded-md border border-[#FF3000] text-[#FF3000] hover:bg-[#fff5f3] transition-colors text-sm font-medium"
+                  className="px-4 py-2 rounded-md border transition-colors text-sm font-medium hover:opacity-90"
+                  style={{
+                    borderColor: accentBorder,
+                    color: accentColor,
+                    backgroundColor: 'transparent',
+                  }}
+                  onMouseEnter={(e) => {
+                    (e.currentTarget as HTMLButtonElement).style.backgroundColor = accentBg;
+                  }}
+                  onMouseLeave={(e) => {
+                    (e.currentTarget as HTMLButtonElement).style.backgroundColor = 'transparent';
+                  }}
                 >
                   Generate Link
                 </button>
               </div>
               <p className="text-sm text-muted-foreground mb-4">
-                Generate a shareable link to let MDAs verify your compliance status without requiring them to log in to ClearPass.
+                Generate a shareable link to let MDAs verify your compliance status without
+                requiring them to log in to ClearPass.
               </p>
               <div className="flex items-center gap-2 text-sm">
                 <CheckCircle2 className="w-4 h-4 text-green-600" />
-                <span className="text-muted-foreground">Links are read-only and can be deactivated at any time</span>
+                <span className="text-muted-foreground">
+                  Links are read-only and can be deactivated at any time
+                </span>
               </div>
             </div>
 
@@ -526,7 +547,7 @@ export function SettingsView() {
                 aria-live="polite"
                 aria-busy={isSaving}
                 className="w-full sm:w-auto px-6 py-2.5 rounded-md text-white flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
-                style={{ backgroundColor: '#FF3000' }}
+                style={{ backgroundColor: accentColor }}
               >
                 <Save className="w-4 h-4" />
                 {isSaving ? 'Saving...' : 'Save Changes'}
@@ -569,7 +590,7 @@ export function SettingsView() {
                     setInviteEmail('');
                   }}
                   className="px-5 py-2.5 min-h-[44px] rounded-md text-white hover:opacity-90 transition-opacity w-full sm:w-auto"
-                  style={{ backgroundColor: '#FF3000', fontSize: '14px' }}
+                  style={{ backgroundColor: accentColor, fontSize: '14px' }}
                 >
                   Send Invite
                 </button>
@@ -592,8 +613,8 @@ export function SettingsView() {
                   >
                     <div className="flex items-center gap-3">
                       <div
-                        className="w-8 h-8 rounded-full bg-[#FF3000] flex items-center justify-center text-white shrink-0"
-                        style={{ fontSize: '12px', fontWeight: 700 }}
+                        className="w-8 h-8 rounded-full flex items-center justify-center text-white shrink-0"
+                        style={{ backgroundColor: accentColor, fontSize: '12px', fontWeight: 700 }}
                       >
                         {m.name
                           .split(' ')
@@ -768,7 +789,7 @@ export function SettingsView() {
                       <div
                         className="w-11 h-6 rounded-full peer peer-focus:ring-4 peer-focus:ring-orange-300 dark:peer-focus:ring-orange-800 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all"
                         style={{
-                          backgroundColor: item.enabled ? '#FF3000' : 'rgb(209, 209, 209)',
+                          backgroundColor: item.enabled ? accentColor : 'rgb(209, 209, 209)',
                         }}
                       />
                     </label>
@@ -825,7 +846,7 @@ export function SettingsView() {
                       <div
                         className="w-11 h-6 rounded-full peer peer-focus:ring-4 peer-focus:ring-orange-300 dark:peer-focus:ring-orange-800 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all"
                         style={{
-                          backgroundColor: item.enabled ? '#FF3000' : 'rgb(209, 209, 209)',
+                          backgroundColor: item.enabled ? accentColor : 'rgb(209, 209, 209)',
                         }}
                       />
                     </label>
@@ -849,7 +870,8 @@ export function SettingsView() {
                       type="checkbox"
                       checked={certAlerts[cert]}
                       onChange={() => setCertAlerts((prev) => ({ ...prev, [cert]: !prev[cert] }))}
-                      className="w-4 h-4 accent-[#FF3000]"
+                      className="w-4 h-4"
+                      style={{ accentColor: accentColor }}
                     />
                     <span style={{ fontSize: '13px', fontWeight: 500 }}>{cert.toUpperCase()}</span>
                   </label>
@@ -873,7 +895,8 @@ export function SettingsView() {
                   <label key={key} className="flex items-center justify-between cursor-pointer">
                     <span style={{ fontSize: '14px' }}>{label}</span>
                     <div
-                      className={`relative w-10 h-5 rounded-full transition-colors cursor-pointer ${alertChannels[key] ? 'bg-[#FF3000]' : 'bg-muted'}`}
+                      className="relative w-10 h-5 rounded-full transition-colors cursor-pointer bg-muted"
+                      style={{ backgroundColor: alertChannels[key] ? accentColor : undefined }}
                       onClick={() => setAlertChannels((prev) => ({ ...prev, [key]: !prev[key] }))}
                       role="switch"
                       aria-checked={alertChannels[key]}
@@ -901,7 +924,7 @@ export function SettingsView() {
                 aria-live="polite"
                 aria-busy={isSavingNotifications}
                 className="w-full sm:w-auto px-6 py-2.5 rounded-md text-white flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
-                style={{ backgroundColor: '#FF3000' }}
+                style={{ backgroundColor: accentColor }}
               >
                 <Save className="w-4 h-4" />
                 {isSavingNotifications ? 'Saving...' : 'Save Changes'}
@@ -1077,7 +1100,7 @@ export function SettingsView() {
                   showToast('success', 'API Key Generated', 'Your new API key has been generated')
                 }
                 className="px-4 py-2 rounded-md text-white"
-                style={{ backgroundColor: '#FF3000' }}
+                style={{ backgroundColor: accentColor }}
               >
                 Generate API Key
               </button>

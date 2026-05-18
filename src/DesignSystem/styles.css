@@ -283,7 +283,7 @@
 }
 
 .title-h1-title {
-  font-family: 'Geist';
+  font-family: 'SuisseIntl', sans-serif;
   font-style: 'Medium';
   font-size: 56px;
   font-weight: 500;
@@ -291,7 +291,7 @@
 }
 
 .title-h2-title {
-  font-family: 'Geist';
+  font-family: 'SuisseIntl', sans-serif;
   font-style: 'Medium';
   font-size: 48px;
   font-weight: 500;
@@ -299,7 +299,7 @@
 }
 
 .title-h3-title {
-  font-family: 'Geist';
+  font-family: 'SuisseIntl', sans-serif;
   font-style: 'Medium';
   font-size: 40px;
   font-weight: 500;
@@ -307,7 +307,7 @@
 }
 
 .title-h4-title {
-  font-family: 'Geist';
+  font-family: 'SuisseIntl', sans-serif;
   font-style: 'Medium';
   font-size: 32px;
   font-weight: 500;
@@ -315,7 +315,7 @@
 }
 
 .title-h5-title {
-  font-family: 'Geist';
+  font-family: 'SuisseIntl', sans-serif;
   font-style: 'Medium';
   font-size: 24px;
   font-weight: 500;
@@ -324,7 +324,7 @@
 }
 
 .title-h6-title {
-  font-family: 'Geist';
+  font-family: 'SuisseIntl', sans-serif;
   font-style: 'Medium';
   font-size: 20px;
   font-weight: 500;
@@ -333,7 +333,7 @@
 }
 
 .label-x-large {
-  font-family: 'Geist';
+  font-family: 'SuisseIntl', sans-serif;
   font-style: 'Medium';
   font-size: 24px;
   font-weight: 500;
@@ -341,7 +341,7 @@
 }
 
 .label-large {
-  font-family: 'Geist';
+  font-family: 'SuisseIntl', sans-serif;
   font-style: 'Medium';
   font-size: 18px;
   font-weight: 500;
@@ -349,7 +349,7 @@
 }
 
 .label-medium {
-  font-family: 'Geist';
+  font-family: 'SuisseIntl', sans-serif;
   font-style: 'Medium';
   font-size: 16px;
   font-weight: 500;
@@ -357,7 +357,7 @@
 }
 
 .label-small {
-  font-family: 'Geist';
+  font-family: 'SuisseIntl', sans-serif;
   font-style: 'Medium';
   font-size: 14px;
   font-weight: 500;
@@ -365,7 +365,7 @@
 }
 
 .label-x-small {
-  font-family: 'Geist';
+  font-family: 'SuisseIntl', sans-serif;
   font-style: 'Medium';
   font-size: 12px;
   font-weight: 500;
@@ -374,7 +374,7 @@
 }
 
 .paragraph-x-large {
-  font-family: 'Geist';
+  font-family: 'SuisseIntl', sans-serif;
   font-style: 'Regular';
   font-size: 24px;
   font-weight: 400;
@@ -382,7 +382,7 @@
 }
 
 .paragraph-large {
-  font-family: 'Geist';
+  font-family: 'SuisseIntl', sans-serif;
   font-style: 'Regular';
   font-size: 18px;
   font-weight: 400;
@@ -390,7 +390,7 @@
 }
 
 .paragraph-medium {
-  font-family: 'Geist';
+  font-family: 'SuisseIntl', sans-serif;
   font-style: 'Regular';
   font-size: 16px;
   font-weight: 400;
@@ -398,7 +398,7 @@
 }
 
 .paragraph-small {
-  font-family: 'Geist';
+  font-family: 'SuisseIntl', sans-serif;
   font-style: 'Regular';
   font-size: 14px;
   font-weight: 400;
@@ -406,7 +406,7 @@
 }
 
 .paragraph-x-small {
-  font-family: 'Geist';
+  font-family: 'SuisseIntl', sans-serif;
   font-style: 'Regular';
   font-size: 12px;
   font-weight: 400;
@@ -415,7 +415,7 @@
 }
 
 .subheading-medium {
-  font-family: 'Geist';
+  font-family: 'SuisseIntl', sans-serif;
   font-style: 'Medium';
   font-size: 16px;
   font-weight: 500;
@@ -423,7 +423,7 @@
 }
 
 .subheading-small {
-  font-family: 'Geist';
+  font-family: 'SuisseIntl', sans-serif;
   font-style: 'Medium';
   font-size: 14px;
   font-weight: 500;
@@ -431,7 +431,7 @@
 }
 
 .subheading-x-small {
-  font-family: 'Geist';
+  font-family: 'SuisseIntl', sans-serif;
   font-style: 'Medium';
   font-size: 12px;
   font-weight: 500;
@@ -439,7 +439,7 @@
 }
 
 .subheading-2x-small {
-  font-family: 'Geist';
+  font-family: 'SuisseIntl', sans-serif;
   font-style: 'Medium';
   font-size: 11px;
   font-weight: 500;
@@ -447,7 +447,7 @@
 }
 
 .docs-label {
-  font-family: 'Geist';
+  font-family: 'SuisseIntl', sans-serif;
   font-style: 'Medium';
   font-size: 18px;
   font-weight: 500;
@@ -455,7 +455,7 @@
 }
 
 .docs-paragraph {
-  font-family: 'Geist';
+  font-family: 'SuisseIntl', sans-serif;
   font-style: 'Regular';
   font-size: 18px;
   font-weight: 400;

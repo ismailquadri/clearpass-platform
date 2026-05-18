@@ -6,7 +6,9 @@ import { auditTrail } from '../utils/auditTrail';
 
 export function RateLimitMonitor() {
   const { showToast } = useToast();
-  const [activeLimits, setActiveLimits] = useState<Record<string, { current: number; limit: number }>>({});
+  const [activeLimits, setActiveLimits] = useState<
+    Record<string, { current: number; limit: number }>
+  >({});
   const [isRefreshing, setIsRefreshing] = useState(false);
 
   const refreshLimits = () => {
@@ -23,13 +25,18 @@ export function RateLimitMonitor() {
   };
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     refreshLimits();
-    const interval = setInterval(refreshLimits, 10000); // Refresh every 10 seconds
+    const interval = setInterval(refreshLimits, 10000);
     return () => clearInterval(interval);
   }, []);
 
   const handleResetAll = () => {
-    if (window.confirm('Are you sure you want to reset all rate limits? This action cannot be undone.')) {
+    if (
+      window.confirm(
+        'Are you sure you want to reset all rate limits? This action cannot be undone.'
+      )
+    ) {
       rateLimiter.resetAll();
       refreshLimits();
       showToast('success', 'Reset Complete', 'All rate limits have been reset');
@@ -82,9 +89,7 @@ export function RateLimitMonitor() {
           </div>
           <div>
             <h3 style={{ fontSize: '18px', fontWeight: 600 }}>Rate Limit Monitor</h3>
-            <p className="text-sm text-muted-foreground">
-              Real-time API rate limiting status
-            </p>
+            <p className="text-sm text-muted-foreground">Real-time API rate limiting status</p>
           </div>
         </div>
         <div className="flex gap-2">

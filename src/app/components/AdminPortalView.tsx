@@ -1340,7 +1340,7 @@ export function AdminPortalView({ section }: AdminPortalViewProps) {
       <div className="p-4 sm:p-6 lg:p-8 max-w-6xl mx-auto">
         <header className="mb-6 sm:mb-8">
           <div className="flex items-center gap-2 mb-1">
-            <h1 style={{ fontSize: '28px' }}>
+            <h1 className="cp-page-title">
               {section === 'admin-overview' && 'Admin Overview'}
               {section === 'admin-review' && 'Certificate Review Queue'}
               {section === 'admin-accounts' && 'Account Oversight'}

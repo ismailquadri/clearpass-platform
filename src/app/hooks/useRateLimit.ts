@@ -4,7 +4,7 @@ import {
   type RateLimitConfig,
   type RateLimitResult,
   RATE_LIMITS,
-  type RateLimitError,
+  RateLimitError,
 } from '../utils/rateLimiter';
 
 export interface UseRateLimitReturn {
@@ -46,12 +46,12 @@ export function useRateLimit(config?: RateLimitConfig): UseRateLimitReturn {
   }, []);
 
   const executeWithRateLimit = useCallback(
-    async <T,>(
+    async <T>(
       fn: () => Promise<T>,
       key: string = 'default',
       rateLimitConfig?: RateLimitConfig
     ): Promise<T> => {
-      const effectiveConfig = rateLimitConfig || config || RATE_LIMITS.general;
+      const effectiveConfig: RateLimitConfig = rateLimitConfig || config || RATE_LIMITS.general;
       const result = rateLimiter.check(key, effectiveConfig);
 
       setRateLimitInfo(result.limitInfo);

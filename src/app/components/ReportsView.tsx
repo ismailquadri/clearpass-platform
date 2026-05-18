@@ -151,7 +151,7 @@ export function ReportsView() {
         {/* Header */}
         <div className="mb-8">
           <div className="flex items-center justify-between mb-2">
-            <h1 style={{ fontSize: '32px' }}>Compliance Reports</h1>
+            <h1 className="cp-page-title">Compliance Reports</h1>
             <button
               onClick={generateNewReport}
               className="px-4 py-2 rounded-md text-white flex items-center gap-2"

@@ -72,7 +72,7 @@ export function PartnerSidebar({
 
   return (
     <aside className={`${fluid ? 'w-full' : 'w-56 lg:w-64'} h-full bg-card flex flex-col`}>
-      <div className="px-4 py-4 border-b border-border">
+      <div className="px-4 h-[70px] flex items-center border-b border-border">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <img src="/clearpass-logo.svg" alt="ClearPass" className="h-9 w-auto" />

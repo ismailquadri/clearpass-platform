@@ -89,8 +89,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
 
       {/* Toast Container */}
       <div
-        className="fixed bottom-4 right-4 z-[100] flex flex-col gap-2"
-        style={{ maxWidth: '390px' }}
+        className="fixed bottom-4 right-4 z-[100] flex flex-col gap-2 max-w-[390px]"
         role="region"
         aria-live="polite"
         aria-label="Notifications"
@@ -109,25 +108,13 @@ export function ToastProvider({ children }: { children: ReactNode }) {
                 <Icon className="w-4 h-4" style={{ color: config.iconColor }} />
               </div>
               <div className="flex-1 min-w-0">
-                <p
-                  className="leading-tight"
-                  style={{
-                    fontSize: '14px',
-                    color: config.textColor,
-                    fontFamily: 'Geist, sans-serif',
-                  }}
-                >
+                <p className="leading-tight text-sm" style={{ color: config.textColor }}>
                   {toast.title}
                 </p>
                 {toast.message && (
                   <p
-                    className="leading-tight mt-0.5"
-                    style={{
-                      fontSize: '12px',
-                      color: config.textColor,
-                      opacity: 0.7,
-                      fontFamily: 'Geist, sans-serif',
-                    }}
+                    className="leading-tight mt-0.5 text-xs opacity-70"
+                    style={{ color: config.textColor }}
                   >
                     {toast.message}
                   </p>
