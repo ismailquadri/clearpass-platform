@@ -40,3 +40,18 @@ coverage/
 .temp/
 tmp/
 .vercel
+
+# Claude worktrees
+.claude/
+
+# Temp files
+.tmp/
+
+# Font files (proprietary/trial)
+Font/
+
+# Screenshots
+screenshots/
+
+# Scripts
+scripts/

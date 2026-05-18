@@ -24,62 +24,246 @@ interface Vendor {
   submissionDate: string;
 }
 
+interface TenderList {
+  id: string;
+  name: string;
+  tenderNumber: string;
+  vendors: Vendor[];
+}
+
+const INITIAL_TENDERS: TenderList[] = [
+  {
+    id: 'tender-1',
+    name: 'Infrastructure Project Q2 2026',
+    tenderNumber: 'FGN/MDA/2026/045',
+    vendors: [
+      {
+        id: '1',
+        rcNumber: 'RC1234567',
+        companyName: 'TechBuild Nigeria Ltd',
+        score: 73,
+        status: 'attention',
+        submissionDate: '8 May 2026',
+      },
+      {
+        id: '2',
+        rcNumber: 'RC7654321',
+        companyName: 'BuildCo Construction Ltd',
+        score: 92,
+        status: 'qualified',
+        submissionDate: '8 May 2026',
+      },
+      {
+        id: '3',
+        rcNumber: 'RC9876543',
+        companyName: 'Alpha Services Ltd',
+        score: 28,
+        status: 'disqualified',
+        submissionDate: '8 May 2026',
+      },
+      {
+        id: '4',
+        rcNumber: 'RC1122334',
+        companyName: 'ProServe Engineering',
+        score: 88,
+        status: 'qualified',
+        submissionDate: '7 May 2026',
+      },
+      {
+        id: '5',
+        rcNumber: 'RC5566778',
+        companyName: 'Delta Logistics Ltd',
+        score: 65,
+        status: 'attention',
+        submissionDate: '7 May 2026',
+      },
+    ],
+  },
+  {
+    id: 'tender-2',
+    name: 'NHIA Medical Supplies & Equipment 2026',
+    tenderNumber: 'NHIA/PROC/2026/012',
+    vendors: [
+      {
+        id: 't2-1',
+        rcNumber: 'RC2255667',
+        companyName: 'Apex Healthcare Ltd',
+        score: 96,
+        status: 'qualified',
+        submissionDate: '12 May 2026',
+      },
+      {
+        id: 't2-2',
+        rcNumber: 'RC9988776',
+        companyName: 'GreenEnergy Solutions',
+        score: 95,
+        status: 'qualified',
+        submissionDate: '12 May 2026',
+      },
+      {
+        id: 't2-3',
+        rcNumber: 'RC6677889',
+        companyName: 'Sunrise Pharmaceuticals Ltd',
+        score: 91,
+        status: 'qualified',
+        submissionDate: '11 May 2026',
+      },
+      {
+        id: 't2-4',
+        rcNumber: 'RC3344556',
+        companyName: 'FinTech Innovations Ltd',
+        score: 88,
+        status: 'qualified',
+        submissionDate: '11 May 2026',
+      },
+      {
+        id: 't2-5',
+        rcNumber: 'RC5577889',
+        companyName: 'Sterling Medical Supplies',
+        score: 84,
+        status: 'qualified',
+        submissionDate: '11 May 2026',
+      },
+      {
+        id: 't2-6',
+        rcNumber: 'RC4455667',
+        companyName: 'MediCare Health Services Ltd',
+        score: 82,
+        status: 'qualified',
+        submissionDate: '10 May 2026',
+      },
+      {
+        id: 't2-7',
+        rcNumber: 'RC7788990',
+        companyName: 'EduPrime Schools Ltd',
+        score: 79,
+        status: 'qualified',
+        submissionDate: '10 May 2026',
+      },
+      {
+        id: 't2-8',
+        rcNumber: 'RC1188990',
+        companyName: 'NovaMed Industries Ltd',
+        score: 77,
+        status: 'qualified',
+        submissionDate: '10 May 2026',
+      },
+      {
+        id: 't2-9',
+        rcNumber: 'RC8899001',
+        companyName: 'GoldLine Engineering Works',
+        score: 72,
+        status: 'attention',
+        submissionDate: '9 May 2026',
+      },
+      {
+        id: 't2-10',
+        rcNumber: 'RC2233445',
+        companyName: 'AgriGrow Nigeria Ltd',
+        score: 64,
+        status: 'attention',
+        submissionDate: '9 May 2026',
+      },
+      {
+        id: 't2-11',
+        rcNumber: 'RC7788001',
+        companyName: 'Atlantic Distributors Ltd',
+        score: 68,
+        status: 'attention',
+        submissionDate: '9 May 2026',
+      },
+      {
+        id: 't2-12',
+        rcNumber: 'RC6677001',
+        companyName: 'Beacon Pharmaceuticals',
+        score: 61,
+        status: 'attention',
+        submissionDate: '8 May 2026',
+      },
+      {
+        id: 't2-13',
+        rcNumber: 'RC3366778',
+        companyName: 'Gateway ICT Solutions',
+        score: 57,
+        status: 'attention',
+        submissionDate: '8 May 2026',
+      },
+      {
+        id: 't2-14',
+        rcNumber: 'RC4477002',
+        companyName: 'Pinnacle Contractors Ltd',
+        score: 41,
+        status: 'disqualified',
+        submissionDate: '7 May 2026',
+      },
+      {
+        id: 't2-15',
+        rcNumber: 'RC1144556',
+        companyName: 'Coastal Freight Nigeria',
+        score: 32,
+        status: 'disqualified',
+        submissionDate: '7 May 2026',
+      },
+      {
+        id: 't2-16',
+        rcNumber: 'RC2255001',
+        companyName: 'Omega Health Logistics',
+        score: 25,
+        status: 'disqualified',
+        submissionDate: '6 May 2026',
+      },
+      {
+        id: 't2-17',
+        rcNumber: 'RC9876543',
+        companyName: 'Alpha Services Ltd',
+        score: 28,
+        status: 'disqualified',
+        submissionDate: '6 May 2026',
+      },
+      {
+        id: 't2-18',
+        rcNumber: 'RC0011223',
+        companyName: 'MaxCon Building Solutions',
+        score: 18,
+        status: 'disqualified',
+        submissionDate: '5 May 2026',
+      },
+    ],
+  },
+];
+
 export function MDAPrequalificationView() {
   const { showToast } = useToast();
-  const [vendors, setVendors] = useState<Vendor[]>([
-    {
-      id: '1',
-      rcNumber: 'RC1234567',
-      companyName: 'TechBuild Nigeria Ltd',
-      score: 73,
-      status: 'attention',
-      submissionDate: '8 May 2026',
-    },
-    {
-      id: '2',
-      rcNumber: 'RC7654321',
-      companyName: 'BuildCo Construction Ltd',
-      score: 92,
-      status: 'qualified',
-      submissionDate: '8 May 2026',
-    },
-    {
-      id: '3',
-      rcNumber: 'RC9876543',
-      companyName: 'Alpha Services Ltd',
-      score: 28,
-      status: 'disqualified',
-      submissionDate: '8 May 2026',
-    },
-    {
-      id: '4',
-      rcNumber: 'RC1122334',
-      companyName: 'ProServe Engineering',
-      score: 88,
-      status: 'qualified',
-      submissionDate: '7 May 2026',
-    },
-    {
-      id: '5',
-      rcNumber: 'RC5566778',
-      companyName: 'Delta Logistics Ltd',
-      score: 65,
-      status: 'attention',
-      submissionDate: '7 May 2026',
-    },
-  ]);
+  const [tenders, setTenders] = useState<TenderList[]>(INITIAL_TENDERS);
+  const [activeTenderIdx, setActiveTenderIdx] = useState(0);
+  const [errors, setErrors] = useState<{ listName?: string; tenderNumber?: string }>({});
 
-  const [listName, setListName] = useState('Infrastructure Project Q2 2026');
-  const [tenderNumber, setTenderNumber] = useState('FGN/MDA/2026/045');
-  const [errors, setErrors] = useState<{
-    listName?: string;
-    tenderNumber?: string;
-  }>({});
-
-  // Modal states
   const [isAddVendorModalOpen, setIsAddVendorModalOpen] = useState(false);
   const [isImportBiddersModalOpen, setIsImportBiddersModalOpen] = useState(false);
   const [selectedVendor, setSelectedVendor] = useState<Vendor | null>(null);
+
+  const activeTender = tenders[activeTenderIdx];
+  const vendors = activeTender.vendors;
+  const listName = activeTender.name;
+  const tenderNumber = activeTender.tenderNumber;
+
+  const setVendors = (updater: Vendor[] | ((prev: Vendor[]) => Vendor[])) => {
+    setTenders((prev) =>
+      prev.map((t, i) =>
+        i === activeTenderIdx
+          ? { ...t, vendors: typeof updater === 'function' ? updater(t.vendors) : updater }
+          : t
+      )
+    );
+  };
+
+  const setListName = (name: string) =>
+    setTenders((prev) => prev.map((t, i) => (i === activeTenderIdx ? { ...t, name } : t)));
+
+  const setTenderNumber = (tn: string) =>
+    setTenders((prev) =>
+      prev.map((t, i) => (i === activeTenderIdx ? { ...t, tenderNumber: tn } : t))
+    );
 
   const qualifiedCount = vendors.filter((v) => v.status === 'qualified').length;
   const attentionCount = vendors.filter((v) => v.status === 'attention').length;
@@ -136,7 +320,8 @@ export function MDAPrequalificationView() {
     if (!tenderNumber.trim()) {
       newErrors.tenderNumber = 'Tender number is required';
     } else if (!tenderNumber.includes('/')) {
-      newErrors.tenderNumber = 'Please enter a valid tender number format (e.g., FGN/MDA/2026/045)';
+      newErrors.tenderNumber =
+        'Please enter a valid tender number format (e.g., FGN/MDA/2026/045)';
     }
 
     setErrors(newErrors);
@@ -204,11 +389,14 @@ export function MDAPrequalificationView() {
   const removeVendor = (id: string) => {
     const vendor = vendors.find((v) => v.id === id);
     setVendors(vendors.filter((v) => v.id !== id));
-    showToast('success', 'Vendor Removed', `${vendor?.companyName} has been removed from the list`);
+    showToast(
+      'success',
+      'Vendor Removed',
+      `${vendor?.companyName} has been removed from the list`
+    );
   };
 
   const handleAddVendor = (vendorData: { rcNumber: string; companyName: string }) => {
-    // Check for duplicate RC number
     if (vendors.some((v) => v.rcNumber === vendorData.rcNumber)) {
       showToast('error', 'Duplicate Vendor', 'A vendor with this RC Number already exists');
       return;
@@ -218,8 +406,8 @@ export function MDAPrequalificationView() {
       id: Date.now().toString(),
       rcNumber: vendorData.rcNumber,
       companyName: vendorData.companyName,
-      score: 0, // Will be calculated when compliance check is run
-      status: 'attention', // Default status until verified
+      score: 0,
+      status: 'attention',
       submissionDate: new Date().toLocaleDateString('en-GB', {
         day: 'numeric',
         month: 'short',
@@ -231,7 +419,6 @@ export function MDAPrequalificationView() {
   };
 
   const handleImportBidders = (bidders: Array<{ rcNumber: string; companyName: string }>) => {
-    // Filter out duplicates
     const existingRcNumbers = new Set(vendors.map((v) => v.rcNumber));
     const newBidders = bidders.filter((b) => !existingRcNumbers.has(b.rcNumber));
 
@@ -265,9 +452,9 @@ export function MDAPrequalificationView() {
     <div className="flex-1 h-full overflow-y-auto bg-background">
       <div className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto">
         {/* Header */}
-        <div className="mb-8">
+        <div className="mb-6">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-2">
-            <h1 className="cp-page-title">Pre-Qualification List</h1>
+            <h1 className="cp-page-title">Pre-Qualification Lists</h1>
             <div className="flex flex-col sm:flex-row gap-3">
               <button
                 onClick={() => setIsImportBiddersModalOpen(true)}
@@ -289,6 +476,30 @@ export function MDAPrequalificationView() {
           <p className="text-muted-foreground" style={{ fontSize: '16px' }}>
             Manage vendor pre-qualification lists for tender evaluation
           </p>
+        </div>
+
+        {/* Tender tabs */}
+        <div className="flex gap-2 mb-6 overflow-x-auto pb-1">
+          {tenders.map((t, i) => (
+            <button
+              key={t.id}
+              onClick={() => {
+                setActiveTenderIdx(i);
+                setErrors({});
+              }}
+              className="px-4 py-2 rounded-md whitespace-nowrap transition-colors"
+              style={{
+                fontSize: '13px',
+                fontWeight: 500,
+                backgroundColor:
+                  activeTenderIdx === i ? 'var(--mda-primary)' : undefined,
+                color: activeTenderIdx === i ? 'white' : undefined,
+                border: activeTenderIdx === i ? 'none' : '1px solid var(--border)',
+              }}
+            >
+              {t.name}
+            </button>
+          ))}
         </div>
 
         {/* List Details */}

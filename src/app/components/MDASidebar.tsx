@@ -71,12 +71,12 @@ export function MDASidebar({
 
   return (
     <aside className={`${fluid ? 'w-full' : 'w-56 lg:w-64'} h-full bg-card flex flex-col`}>
-      <div className="px-4 h-[70px] flex items-center border-b border-border">
+      <div className="px-2 h-[70px] flex items-center border-b border-border">
         <img
           src="/nhia-logo.png"
           alt="National Health Insurance Authority"
           className="w-full h-auto object-contain"
-          style={{ maxHeight: '48px' }}
+          style={{ maxHeight: '44px' }}
         />
       </div>
 
